@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.PIDController;
 public class WheelPod implements MotorSafety
 {
     private static final Logger LOGGER = Logger.getLogger(WheelPod.class);
+    final String name;
     private CANTalon driveMotor;
     public static final double kDefaultExpirationTime = 0.1;
     private MotorSafetyHelper m_safetyHelper;
@@ -28,8 +29,9 @@ public class WheelPod implements MotorSafety
     
     private double lastSpeed = 0.0;
     
-    public WheelPod(int driveMotorID, int steeringMotorID, int steeringSensorID, PID pid, double center, boolean invert)
+    public WheelPod(String name, int driveMotorID, int steeringMotorID, int steeringSensorID, PID pid, double center, boolean invert)
     {
+        this.name = name;
         steering = new Steering(pid, steeringMotorID, steeringSensorID, center);
         driveMotor = new CANTalon(driveMotorID);
         setupMotorSafety();
@@ -53,7 +55,7 @@ public class WheelPod implements MotorSafety
                 driveMotor.set(correction.speed, SYNC_GROUP);
                 m_safetyHelper.feed();
                 steering.setAngle(correction.angle);
-                LOGGER.debug("DRIVE");
+                LOGGER.debug(name + " DRIVE: " + speed + ", " + angle);
             }
             catch (Exception e)
             {

@@ -178,18 +178,22 @@ public class Steering
         
         if (steeringSensor.getChannel() == RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL)
         {
+            LOGGER.debug("FLSensor: " + output);
             SmartDashboard.putNumber("Front-Left Angle", output);
         }
         else if (steeringSensor.getChannel() == RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL)
         {
+            LOGGER.debug("FRSensor: " + output);
             SmartDashboard.putNumber("Front-Right Angle", output);
         }
         else if (steeringSensor.getChannel() == RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL)
         {
+            LOGGER.debug("BLSensor: " + output);
             SmartDashboard.putNumber("Back-Left Angle", output);
         }
         else if (steeringSensor.getChannel() == RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL)
         {
+            LOGGER.debug("BRSensor: " + output);
             SmartDashboard.putNumber("Back-Right Angle", output);
         }
         return output;
