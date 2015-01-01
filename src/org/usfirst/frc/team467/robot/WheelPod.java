@@ -204,10 +204,10 @@ public class WheelPod implements MotorSafety
         public double speed;
         public double angle;
 
-        public WheelCorrection(double angleIn, double speedIn)
+        public WheelCorrection(double speedIn, double angleIn)
         {
-            angle = angleIn;
             speed = speedIn;
+            angle = angleIn;
         }
 
         @Override
