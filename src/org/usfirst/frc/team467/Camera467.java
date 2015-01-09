@@ -1,6 +1,7 @@
 package org.usfirst.frc.team467;
 
-import edu.wpi.first.wpilibj.camera.*;
+import edu.wpi.first.wpilibj.vision.AxisCamera;
+//import edu.wpi.first.wpilibj.camera.*;
 import edu.wpi.first.wpilibj.image.BinaryImage;
 import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
@@ -27,8 +28,9 @@ public class Camera467 implements Runnable
 
     private Camera467()
     {
-        cam = AxisCamera.getInstance();
-        cam.writeResolution(AxisCamera.ResolutionT.k640x480);
+    	// Used to be Singleton
+        cam = new AxisCamera("10.4.67.11");
+        cam.writeResolution(AxisCamera.Resolution.k640x480);
         cam.writeCompression(0);
     }
 
@@ -89,7 +91,7 @@ public class Camera467 implements Runnable
     {
         try
         {
-            if (cam.freshImage())
+            if (cam.isFreshImage())
             {
                 if (currentImage != null)
                 {
@@ -103,10 +105,7 @@ public class Camera467 implements Runnable
                 System.out.println("[Camera] No image!");
             }
         }
-        catch (AxisCameraException ex)
-        {
-            ex.printStackTrace();
-        }
+        
         catch (NIVisionException ex)
         {
             ex.printStackTrace();
@@ -334,11 +333,11 @@ public class Camera467 implements Runnable
         
         if (readingCamera)
         {
-            cam.writeResolution(AxisCamera.ResolutionT.k320x240);
+            cam.writeResolution(AxisCamera.Resolution.k320x240);
         }
         else
         {
-            cam.writeResolution(AxisCamera.ResolutionT.k640x480);
+            cam.writeResolution(AxisCamera.Resolution.k640x480);
         }
     }
 
