@@ -25,8 +25,8 @@ public class Driverstation
     private Driverstation()
     {
         driverstation = DriverStation.getInstance();
-        JoystickLeft = new Joystick467(1);
-        JoystickRight = new Joystick467(2);
+        JoystickLeft = new Joystick467(0);
+        JoystickRight = new Joystick467(1);
     }
 
     /**

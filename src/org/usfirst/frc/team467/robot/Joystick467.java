@@ -28,12 +28,12 @@ public class Joystick467
     public static final int TRIGGER = 1;
     private static final double DEADZONE = 0.1;
 
-    private static final int AXIS_X = 1;
-    private static final int AXIS_Y = 2;
-    private static final int TWIST_AXIS = 3;
-    private static final int FLAP_AXIS = 4;
-    private static final int HAT_AXIS_X = 5;
-    private static final int HAT_AXIS_Y = 6;
+    private static final int AXIS_X = 0;
+    private static final int AXIS_Y = 1;
+    private static final int TWIST_AXIS = 2;
+    private static final int FLAP_AXIS = 3;
+    private static final int HAT_AXIS_X = 4;
+    private static final int HAT_AXIS_Y = 5;
 
     /**
      * Create a new joystick on a given channel

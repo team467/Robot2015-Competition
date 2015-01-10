@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.*;
 public class Steering
 {
     
-    private static final boolean PID_OUTPUT_INVERT = false;
+    private static final boolean PID_OUTPUT_INVERT = true;
     //Sensor used to determine angle
     private AnalogInput steeringSensor;
 
@@ -77,8 +77,8 @@ public class Steering
     public double getSensorValue()
     {
         // Use this if we need to invert steering
-        //return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
-        return steeringSensor.getAverageValue();
+        return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
+        //return steeringSensor.getAverageValue();
     }
     
     /**
