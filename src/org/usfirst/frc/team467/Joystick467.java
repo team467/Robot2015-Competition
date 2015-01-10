@@ -5,7 +5,7 @@
  */
 package org.usfirst.frc.team467;
 
-import com.sun.squawk.util.MathUtils;
+import java.lang.Math;
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
@@ -191,7 +191,7 @@ public class Joystick467
         }
 
         // Return value in range -1.0 to 1.0
-        double stickAngle = MathUtils.atan(stickX / -stickY);
+        double stickAngle = Math.atan(stickX / -stickY);
 
         if (stickY > 0)
         {
