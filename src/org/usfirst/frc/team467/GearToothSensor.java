@@ -51,7 +51,7 @@ public class GearToothSensor
     {
         counting = true;
 
-        // Replaced counter.stop();
+        // MIGRATION Replaced counter.stop();
         counter.startLiveWindowMode();
 
         startTime = System.currentTimeMillis();
@@ -64,7 +64,7 @@ public class GearToothSensor
     {
         counting = false;
 
-        // Replaced counter.stop();
+        // MIGRATION Replaced counter.stop();
         counter.stopLiveWindowMode();
     }
 
