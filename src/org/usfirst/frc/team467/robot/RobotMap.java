@@ -114,7 +114,7 @@ public class RobotMap
     };
 
     //Number of increments on the steering sensor
-    public static final double STEERING_RANGE = 953;
+    public static final double STEERING_RANGE = 4047; // Previously 953
 
     // PID array 
     public static final double[][] PIDvalues =
