@@ -13,7 +13,7 @@ public class Steering
     
     private static final boolean PID_OUTPUT_INVERT = true;
     //Sensor used to determine angle
-    private AnalogChannel steeringSensor;
+    private AnalogInput steeringSensor;
 
     //PID Controller object
     private PIDController steeringPID;
@@ -53,7 +53,7 @@ public class Steering
         
 
         // Make steering sensor
-        steeringSensor = new AnalogChannel(sensor);
+        steeringSensor = new AnalogInput(sensor);
 
         // Set steering center
         steeringCenter = center;
