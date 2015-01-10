@@ -29,25 +29,25 @@ public class RobotMap
     public static final int BACK_RIGHT = 3;
 
     // Drive motors - Talon, digital sidecar
-    public static final int FRONT_LEFT_MOTOR_CHANNEL = 1;
-    public static final int FRONT_RIGHT_MOTOR_CHANNEL = 7;
-    public static final int BACK_LEFT_MOTOR_CHANNEL = 3;
-    public static final int BACK_RIGHT_MOTOR_CHANNEL = 5;
+    public static final int FRONT_LEFT_MOTOR_CHANNEL = 4;
+    public static final int FRONT_RIGHT_MOTOR_CHANNEL = 2;
+    public static final int BACK_LEFT_MOTOR_CHANNEL = 6;
+    public static final int BACK_RIGHT_MOTOR_CHANNEL = 0;
 
     // Steering motors - Talon, digital sidecar
-    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 2;
-    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 8;
-    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 4;
-    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 6;
+    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 5;
+    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 3;
+    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 7;
+    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 1;
     
     // Feeder motor - Talon
     public static final int FEEDER_MOTOR_CHANNEL = 9;
 
     // Steering sensors - Analog bumper
     public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 2;
-    public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 6;
+    public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 1;
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 3;
-    public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 5;
+    public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 0;
     
 
     // Gear tooth sensor channels - Digital sidecar
@@ -114,7 +114,7 @@ public class RobotMap
     };
 
     //Number of increments on the steering sensor
-    public static final double STEERING_RANGE = 953;
+    public static final double STEERING_RANGE = 4047; // Previously 953
 
     // PID array 
     public static final double[][] PIDvalues =

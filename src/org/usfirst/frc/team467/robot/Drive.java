@@ -27,9 +27,6 @@ public class Drive extends RobotDrive
     //Data storage object
     private DataStorage data;
 
-    //Driverstation object (for sake of printing debugs)
-    private Driverstation driverstation;
-
     //Angle to turn at when rotating in place
     //Length is the short side, wide is the long side
     private static final double LENGTH_ROBOT = 16.75; //inches btw the wheels
@@ -59,9 +56,7 @@ public class Drive extends RobotDrive
 
         //Make objects
         data = DataStorage.getInstance();
-        driverstation = Driverstation.getInstance();
-//        gyro = GyroAnalog467.getInstance();
-
+        
         //takes the arctan of width over length, stores in diagonalAngle
         //theta is the diagonalAngle of the diagonal
         //Length is the wide side
@@ -172,15 +167,6 @@ public class Drive extends RobotDrive
         }
     }
 
-    private double flp = 0.0;
-    private double frp = 0.0;
-    private double blp = 0.0;
-    private double brp = 0.0;
-    private double fla = 0.0;
-    private double fra = 0.0;
-    private double bla = 0.0;
-    private double bra = 0.0;
-
     public void fourWheelSteer(double frontLeft, double frontRight, double backLeft, double backRight)
     {
         //set the angles to steer
@@ -188,30 +174,6 @@ public class Drive extends RobotDrive
         steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
         steering[RobotMap.BACK_LEFT].setAngle(backLeft);
         steering[RobotMap.BACK_RIGHT].setAngle(backRight);
-
-        double delta = 0.0;
-        //update the angle using deltas
-        //will flip the delta if the initial delta is rolled over
-
-        
-        //front left
-        delta = steering[RobotMap.FRONT_LEFT].getSensorValue() - flp;
-        fla += (Math.abs(delta) > (RobotMap.STEERING_RANGE / 2))? RobotMap.STEERING_RANGE - Math.abs(delta):delta;    
-        //front right
-        delta = steering[RobotMap.FRONT_RIGHT].getSensorValue() - frp;
-        fra += (Math.abs(delta) > (RobotMap.STEERING_RANGE / 2))? RobotMap.STEERING_RANGE - Math.abs(delta):delta;
-        //back left
-        delta = steering[RobotMap.BACK_LEFT].getSensorValue() - blp;
-        bla += (Math.abs(delta) > (RobotMap.STEERING_RANGE / 2))? RobotMap.STEERING_RANGE - Math.abs(delta):delta;
-        //back right
-        delta = steering[RobotMap.BACK_RIGHT].getSensorValue() - brp;
-        bra += (Math.abs(delta) > (RobotMap.STEERING_RANGE / 2))? RobotMap.STEERING_RANGE - Math.abs(delta):delta;
-        
-        flp = steering[RobotMap.FRONT_LEFT].getSensorValue();
-        frp = steering[RobotMap.FRONT_RIGHT].getSensorValue();
-        blp = steering[RobotMap.BACK_LEFT].getSensorValue();
-        brp = steering[RobotMap.BACK_RIGHT].getSensorValue();
-//        System.out.println("FL: " + fla / RobotMap.STEERING_RANGE + " FR: " + fra / RobotMap.STEERING_RANGE + " BL: " + bla / RobotMap.STEERING_RANGE + " BR: " + bra / RobotMap.STEERING_RANGE);
     }
 
     /**

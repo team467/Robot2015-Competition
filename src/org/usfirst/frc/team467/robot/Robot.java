@@ -184,20 +184,12 @@ public class Robot extends IterativeRobot
 
         if (buttonCalibrate.getCalibrate())
         {
-            if (!calibrateDebounce)//first time entering calibrate
-            {
-                drive.disableSteeringPID();
-            }
             System.out.println("CALIBRATE");
             buttonDrive.updateButtons(joyLeft);
             updateCalibrateControl(joyLeft);
         }
         else//drive mode, not calibrate
         {
-            if (calibrateDebounce)//first time entering calibrate
-            {
-                drive.enableSteeringPID();
-            }
             //operates using the updated buttons
             updateDriveAndNavigate();
         }

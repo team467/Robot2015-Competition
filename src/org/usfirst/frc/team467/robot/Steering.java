@@ -77,8 +77,8 @@ public class Steering
     public double getSensorValue()
     {
         // Use this if we need to invert steering
-        return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
-        // return steeringSensor.getAverageValue();
+        //return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
+        return steeringSensor.getAverageValue();
     }
     
     /**
