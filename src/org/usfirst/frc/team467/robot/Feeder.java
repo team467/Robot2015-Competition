@@ -1,4 +1,4 @@
-package org.usfirst.frc.team467;
+package org.usfirst.frc.team467.robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;

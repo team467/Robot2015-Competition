@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.usfirst.frc.team467;
+package org.usfirst.frc.team467.robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
 
