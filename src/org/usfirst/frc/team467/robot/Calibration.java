@@ -10,12 +10,10 @@ package org.usfirst.frc.team467.robot;
  */
 public class Calibration
 {
-
     //Creates objects
 
     private static Drive drive;
     private static DataStorage data;
-    private static Driverstation driverstation;
     
     private static ButtonCalibrate buttonCalibrate;
     private static OpsCalibrate opsCalibrate;
@@ -31,7 +29,6 @@ public class Calibration
         //makes the objects
         drive = Drive.getInstance();
         data = DataStorage.getInstance();
-        driverstation = Driverstation.getInstance();
         buttonCalibrate = ButtonCalibrate.getInstance();
         opsCalibrate = OpsCalibrate.getInstance();
     }

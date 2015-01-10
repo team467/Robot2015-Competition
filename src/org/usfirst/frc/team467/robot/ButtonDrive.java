@@ -11,7 +11,6 @@ package org.usfirst.frc.team467.robot;
  */
 public class ButtonDrive
 {
-
     private static ButtonDrive buttonDrive = null;
 
     //bools    
@@ -44,8 +43,6 @@ public class ButtonDrive
     {
     }
     
-    
-    
     /**
      * Update the value of the buttons. Must be called <b>every</b> loop.
      * @param joyLeft 
@@ -70,7 +67,6 @@ public class ButtonDrive
     {
 
     }
-    
 
     public boolean getSneak()
     {
@@ -82,7 +78,6 @@ public class ButtonDrive
         return turbo;
     }
         
-    
     public boolean getCarDrive()
     {
         return carDrive;
