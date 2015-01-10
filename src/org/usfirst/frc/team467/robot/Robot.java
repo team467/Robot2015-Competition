@@ -49,7 +49,7 @@ public class Robot extends IterativeRobot
         //SpeedCalibration.init();
         //LED = LEDring.getInstance();
         // static static static static static
-        Calibration.init();
+        Calibration.init();        
     }
 
     public void disabledInit()
@@ -164,6 +164,10 @@ public class Robot extends IterativeRobot
         //Read driverstation inputs
         driverstation.readInputs();
 
+        Steering steering = drive.getSteering(RobotMap.FRONT_LEFT);
+        //System.out.println("FL: " + steering.getSensorValue());
+        steering.printSteeringParameters();
+        
         //
         //Branch based on mode
         //Use driver's stick        

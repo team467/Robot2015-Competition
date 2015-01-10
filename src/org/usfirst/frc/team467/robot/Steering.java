@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.*;
 public class Steering
 {
     
-    private static final boolean PID_OUTPUT_INVERT = true;
+    private static final boolean PID_OUTPUT_INVERT = false;
     //Sensor used to determine angle
     private AnalogInput steeringSensor;
 
