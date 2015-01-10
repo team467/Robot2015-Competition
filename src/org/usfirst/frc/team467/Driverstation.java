@@ -149,8 +149,7 @@ public class Driverstation
      */
     private void printFinal(String text, int lineNum)
     {
-// TODO
-    	throw new RuntimeException("TODO MIGRATION: no DriverStationLCD class");
+// TODO MIGRATION
     	
 //        //Determine Line based on given integer
 //        Line line = null;
