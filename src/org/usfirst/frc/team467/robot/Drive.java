@@ -279,18 +279,6 @@ public class Drive extends RobotDrive
         });
     }
 
-    /**
-     * Prints sensor angles from steering sensors to lines 3-6 of the
-     * driverstation
-     */
-    public void logDrive()
-    {
-        driverstation.println("Angle FL: " + getSteeringAngle(RobotMap.FRONT_LEFT), 3);
-        driverstation.println("Angle FR: " + getSteeringAngle(RobotMap.FRONT_RIGHT), 4);
-        driverstation.println("Angle BL: " + getSteeringAngle(RobotMap.BACK_LEFT), 5);
-        driverstation.println("Angle BR: " + getSteeringAngle(RobotMap.BACK_RIGHT), 6);
-    }
-
     private double lastSpeed = 0.0;
 
     /**

@@ -1,10 +1,7 @@
 package org.usfirst.frc.team467.robot;
 
 import javax.management.RuntimeErrorException;
-
 import edu.wpi.first.wpilibj.DriverStation;
-//import edu.wpi.first.wpilibj.DriverStationLCD;
-//import edu.wpi.first.wpilibj.DriverStationLCD.Line;
 
 /**
  * Singleton class to handle driverstation I/O on Team467 2014 Robot
@@ -17,33 +14,19 @@ public class Driverstation
     //Singleton instance variable
     private static Driverstation instance;
 
-    private static boolean NAVIGATOR_CONTROLLER_IS_GUITAR = false;
-
     //Driverstation objects
     private DriverStation driverstation;
-    // TODO private DriverStationLCD lcd;
 
     //Joystick objects
     private Joystick467 JoystickLeft;
     private Joystick467 JoystickRight;
 
-    //Blank line to append to driverstation printouts so no previous text can be seen
-    private static final String BLANK_LINE = "                              ";
-
     //Singleton so constructor is private
     private Driverstation()
     {
         driverstation = DriverStation.getInstance();
-        // TODO lcd = DriverStationLCD.getInstance();
         JoystickLeft = new Joystick467(1);
-        if (NAVIGATOR_CONTROLLER_IS_GUITAR)
-        {
-            JoystickRight = new GuitarHeroJoystick(2);
-        }
-        else
-        {
-            JoystickRight = new Joystick467(2);
-        }
+        JoystickRight = new Joystick467(2);
     }
 
     /**
@@ -94,104 +77,6 @@ public class Driverstation
     public Joystick467 getNavJoystick()
     {
         return JoystickRight;
-    }
-
-    /**
-     * Prints the specified text to the string buffer
-     *
-     * @param text The text to print
-     * @param line The line number to print to (1-6)
-     */
-    public void println(String text, int line)
-    {
-        printFinal(text, line);
-    }
-
-    /**
-     * Prints the specified text to the string buffer
-     *
-     * @param text The text to print
-     * @param line The line number to print to (1-6)
-     */
-    public void println(int text, int line)
-    {
-        printFinal(Integer.toString(text), line);
-    }
-
-    /**
-     * Prints the specified text to the string buffer
-     *
-     * @param text The text to print
-     * @param line The line number to print to (1-6)
-     */
-    public void println(double text, int line)
-    {
-        printFinal(Double.toString(text), line);
-    }
-
-    /**
-     * Clears the driverstation screen.
-     */
-    public void clearPrint()
-    {
-        for (int i = 1; i <= 6; i++)
-        {
-            printFinal(BLANK_LINE, i);
-        }
-    }
-
-    /**
-     * Private print function to determine which line to print to (gets called
-     * by all println functions for the driverstation)
-     *
-     * @param text
-     * @param lineNum
-     */
-    private void printFinal(String text, int lineNum)
-    {
-// TODO MIGRATION
-    	
-//        //Determine Line based on given integer
-//        Line line = null;
-//        switch (lineNum)
-//        {
-//            case 1:
-//                line = Line.kUser1;
-//                break;
-//            case 2:
-//                line = Line.kUser2;
-//                break;
-//            case 3:
-//                line = Line.kUser3;
-//                break;
-//            case 4:
-//                line = Line.kUser4;
-//                break;
-//            case 5:
-//                line = Line.kUser5;
-//                break;
-//            case 6:
-//                line = Line.kUser6;
-//                break;
-//        }
-//
-//        //Return if line number is invalid
-//        if (line == null)
-//        {
-//            return;
-//        }
-//
-//        //Print to string buffer
-//        lcd.println(line, 1, text + BLANK_LINE);
-    }
-
-    /**
-     * Send the string buffer to the driverstation
-     */
-    public void sendData()
-    {
-    	throw new RuntimeException("TODO MIGRATION: no DriverStationLCD class");
-        // TODO lcd.updateLCD();
     }
 
 }
