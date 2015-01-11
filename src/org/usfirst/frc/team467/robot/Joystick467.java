@@ -20,8 +20,7 @@ public class Joystick467
     private boolean[] prevButtons = new boolean[12];    // array of previous button states, involved in edge detection.
     private double stickX = 0.0;
     private double stickY = 0.0;
-    private double hatX = 0.0;
-    private double hatY = 0.0;
+    private int pov = 0;
     private double twist = 0.0;
     private boolean flap = false;
 
@@ -32,8 +31,10 @@ public class Joystick467
     private static final int AXIS_Y = 1;
     private static final int TWIST_AXIS = 2;
     private static final int FLAP_AXIS = 3;
-    private static final int HAT_AXIS_X = 4;
-    private static final int HAT_AXIS_Y = 5;
+    private static final int POV_INDEX = 0;
+    
+    //private static final int HAT_AXIS_X = 4;
+    //private static final int HAT_AXIS_Y = 5;
 
     /**
      * Create a new joystick on a given channel
@@ -73,8 +74,7 @@ public class Joystick467
         stickY = accelerateJoystickInput(joystick.getRawAxis(AXIS_Y));
         stickX = accelerateJoystickInput(joystick.getRawAxis(AXIS_X));
         twist = accelerateJoystickInput(joystick.getRawAxis(TWIST_AXIS));
-        hatX = joystick.getRawAxis(HAT_AXIS_X);
-        hatY = joystick.getRawAxis(HAT_AXIS_Y);
+        pov = joystick.getPOV(POV_INDEX);
     }
 
     /**
@@ -135,14 +135,9 @@ public class Joystick467
         return stickY;
     }
     
-    public double getHatX()
+    public int getPOV()
     {
-        return hatX;
-    }
-
-    public double getHatY()
-    {
-        return hatY;
+        return pov;
     }
     
     /**

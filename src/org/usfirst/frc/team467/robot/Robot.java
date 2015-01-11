@@ -173,7 +173,12 @@ public class Robot extends IterativeRobot
         //Use driver's stick        
         Joystick467 joyLeft = driverstation.getDriveJoystick();
         Joystick467 joyRight = driverstation.getNavJoystick();
-
+        int pov = joyLeft.getPOV();
+        if (pov != -1)
+        {
+        	System.out.println("pov=" + pov);
+        }
+        
         //updates the buttons
         if (SINGLE_STICK_DRIVE)
         {
