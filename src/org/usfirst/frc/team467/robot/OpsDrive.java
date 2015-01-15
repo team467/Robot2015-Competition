@@ -7,7 +7,7 @@ package org.usfirst.frc.team467.robot;
 
 /**
  *
- * @author kyle
+ * @author Kyle
  */
 public class OpsDrive
 {
@@ -23,7 +23,7 @@ public class OpsDrive
     {
         if (opsDrive == null)
         {
-            opsDrive = new OpsDrive();
+        	opsDrive = new OpsDrive();
         }
         return opsDrive;
     }    
@@ -79,5 +79,10 @@ public class OpsDrive
     public void hybridDrive()
     {                
         drive.hybridDrive(joyLeft.getTwist(), joyLeft.getStickAngle(), speed.getHybridDriveSpeed());
+    }
+    
+    public void strafeDrive()
+    {
+    	
     }
 }

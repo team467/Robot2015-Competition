@@ -374,16 +374,13 @@ public class Drive extends RobotDrive
     }
 
     /**
-     * Yo dog, I heard you like to drive, so I put a car in yo car so you can
-     * drive while you drive.
-     *
      * Drives the robot similarly to a car. Essentially works by angling the
      * wheels so they are tangent to a circular path, and driving the wheels at
      * the appropriate speed so they do not drag.
      *
      * TODO: Make a method that isn't slow as balls.
      *
-     * See RobotMain for controls.
+     * See Robot for controls.
      *
      * @param twistTurnAngle Angle to turn at, from -1.0 to 1.0. Negative values
      * drive left, positive values drive right.
@@ -394,17 +391,16 @@ public class Drive extends RobotDrive
         System.out.println(stickAngle);
         // Dampen speed.
         speed = limitSpeed(speed);
-
+        
         // 2pi, for convenience.
         double PI2 = Math.PI * 2;
-
-        // Dampen the turning angle, ensuring the inner wheels will not turn
-        //   more than 45 degrees.
+        
+        // Dampen the turning angle, ensuring the inner wheels will not turn more than 45 degrees.
         double dampenedTurningAngle = twistTurnAngle / 2.5;
-
+        
         // Convert turning angle for use with outerTurnAngle algorithm.
-        // Note: To convert from robot angles to radians, multiply
-        //   by 2pi.
+        // Note: To convert from robot angles to radians, multiply by 2pi.
+        // To convert to degrees, multiply by 360.
         double absTurnAngle = Math.abs(dampenedTurningAngle);
         double turnAngleRadians = absTurnAngle * PI2;
 
@@ -519,6 +515,12 @@ public class Drive extends RobotDrive
                 leftSpeedConditional, rightSpeedConditional,
                 leftAngleConditional * direction, rightAngleConditional * direction,
                 -leftAngleConditional * direction, -rightAngleConditional * direction);
+    }
+    
+    // TODO
+    public void strafeDrive()
+    {
+    	drive(lastSpeed, null);
     }
 
     /**

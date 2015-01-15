@@ -82,11 +82,17 @@ public class Speed
         if (buttonState.getSneak())
         {
             d = d * getSneakMultiplier();
-        }
-        if (buttonState.getTurbo())
+        } else if (buttonState.getTurbo())
         {
-            d = d * getTurboMultiplier();
-        }                
+        	// Turbo mode disabled
+//            d = d * getTurboMultiplier();
+        }
+        else
+        {
+        	// Regular speed is 80%.
+        	d *= 0.8;
+        }
+        
         return d;
     }
 

@@ -121,25 +121,25 @@ public class RobotMap
     {
         // Front Left PID values
         {
-            0.004, // P
+            0.003, // P
             0.0, // I
             0.0     // D
         },
         // Front Right PID values
         {
-            0.004, // P
+            0.003, // P
             0.0, // I
             0.0     // D
         },
         // Back Left PID values
         {
-            0.004, // P
+            0.003, // P
             0.0, // I
             0.0     // D
         },
         // Back Right PID values
         {
-            0.004, // P
+            0.003, // P
             0.0, // I
             0.0     // D
         }

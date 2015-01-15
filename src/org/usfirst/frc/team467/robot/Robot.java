@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package org.usfirst.frc.team467.robot;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -23,13 +24,12 @@ public class Robot extends IterativeRobot
     private Driverstation driverstation;
     private Drive drive;
 
-    //private Camera467 cam;    
-
     private OpsDrive opsDrive;
     private OpsCalibrate opsCalibrate;
     private ButtonDrive buttonDrive;
     private ButtonCalibrate buttonCalibrate;
-    //private LEDring LED;
+    
+    CameraServer cameraServer;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -41,13 +41,18 @@ public class Robot extends IterativeRobot
         driverstation = Driverstation.getInstance();
         drive = Drive.getInstance();
         buttonDrive = ButtonDrive.getInstance();
-        //cam = Camera467.getInstance();
+        
         opsDrive = OpsDrive.getInstance();
         opsCalibrate = OpsCalibrate.getInstance();
         buttonDrive = ButtonDrive.getInstance();
         buttonCalibrate = ButtonCalibrate.getInstance();
         //SpeedCalibration.init();
-        //LED = LEDring.getInstance();
+        
+        cameraServer = CameraServer.getInstance();
+        cameraServer.setQuality(50);
+        cameraServer.startAutomaticCapture("cam0");
+
+        
         // static static static static static
         Calibration.init();        
     }
