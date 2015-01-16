@@ -218,7 +218,11 @@ public class Robot extends IterativeRobot
         ///Update Drive
         ///
         //priority for each state is intentional, not bug
-        if (buttonDrive.getTurnInPlace())
+        if (buttonDrive.getStrafeDrive())
+        {
+        	opsDrive.strafeDrive();
+        }
+        else if (buttonDrive.getTurnInPlace())
         {
             opsDrive.turnInPlace();
         }

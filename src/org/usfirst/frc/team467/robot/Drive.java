@@ -518,9 +518,17 @@ public class Drive extends RobotDrive
     }
     
     // TODO
-    public void strafeDrive()
+    /**
+     * @param speed
+     * @param direction 1 = left, 0 = right
+     */
+    public void strafeDrive(double speed, int direction)
     {
-    	drive(lastSpeed, null);
+    	// Angle in radians
+    	double angle = (direction == 0) ? (-Math.PI / 2) : (Math.PI / 2);
+    	
+        wrapAroundDrive(speed, speed, speed, speed,
+        		angle, angle, angle, angle);
     }
 
     /**

@@ -83,6 +83,10 @@ public class OpsDrive
     
     public void strafeDrive()
     {
-    	
+    	int direction = 1;
+    	if (joyLeft.buttonDown(6)) {
+    		direction = 0;
+    	}
+    	drive.strafeDrive(speed.getStrafeDriveSpeed(), direction);
     }
 }

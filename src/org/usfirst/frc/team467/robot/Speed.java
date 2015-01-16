@@ -57,6 +57,11 @@ public class Speed
         return calcMultiplier(joyLeft.getStickDistance());
     }
     
+    public double getStrafeDriveSpeed()
+    {
+    	return 0.3;
+    }
+    
     ///
     ///private utility functions
     ///
