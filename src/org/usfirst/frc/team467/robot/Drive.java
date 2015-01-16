@@ -29,15 +29,14 @@ public class Drive extends RobotDrive
 
     //Angle to turn at when rotating in place
     //Length is the short side, wide is the long side
+    // Based on 2012 robot's geometry. Change for newer robots!
     private static final double LENGTH_ROBOT = 16.75; //inches btw the wheels
     private static final double WIDTH_ROBOT = 25.0; //inches btw the wheels        
 
     private static double turnAngle = 0.183;
-
-    // 2 times the longer dimension of the robot divided by the shorter.
-    // Based on 2012 robot's geometry. Change for newer robots!
+    
     // (Used in car drive).
-    private static final double ROBOT_RATIO = 2.98507;
+    private static final double ROBOT_RATIO = (2 * WIDTH_ROBOT) / LENGTH_ROBOT;
 
     // Magic number copied from WPI code
     private static final byte SYNC_GROUP = (byte) 0x80;
