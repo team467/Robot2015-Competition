@@ -54,7 +54,9 @@ public class ButtonDrive
         hybridDrive = joyLeft.buttonDown(4);
         //crabDriveFA = joyLeft.buttonDown(5);
         turnInPlace = joyLeft.buttonDown(2);
-        strafeDrive = joyLeft.buttonDown(5) || joyLeft.buttonDown(6);
+        strafeDrive = (joyLeft.getPOV() != -1 &&
+        			   joyLeft.getPOV() != 0 &&
+        			   joyLeft.getPOV() != 180);
         crabDriveNoFA = !(carDrive || crabDriveFA || turnInPlace || hybridDrive);        
         sneak = joyLeft.buttonDown(Joystick467.TRIGGER);
         turbo = joyLeft.buttonDown(7);                

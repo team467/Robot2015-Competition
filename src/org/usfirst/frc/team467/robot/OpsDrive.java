@@ -84,7 +84,7 @@ public class OpsDrive
     public void strafeDrive()
     {
     	int direction = 1;
-    	if (joyLeft.buttonDown(6)) {
+    	if (joyLeft.getPOV() < 180) {
     		direction = 0;
     	}
     	drive.strafeDrive(speed.getStrafeDriveSpeed(), direction);

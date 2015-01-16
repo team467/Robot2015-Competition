@@ -135,6 +135,10 @@ public class Joystick467
         return stickY;
     }
     
+    /**
+     * 
+     * @return the angle of the POV in degrees, or -1 if the POV is not pressed.
+     */
     public int getPOV()
     {
         return pov;
