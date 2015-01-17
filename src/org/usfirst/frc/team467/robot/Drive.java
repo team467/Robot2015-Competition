@@ -26,6 +26,8 @@ public class Drive extends RobotDrive
     // TODO - can we calculate the turnAngle based on Robot Dimensions from RobotMap
     private static double turnAngle = 0.183;
     
+    private static double rotations = 0;
+    
     // (Used in car drive).
     private static final double ROBOT_RATIO = (2 * RobotMap.WIDTH) / RobotMap.LENGTH;
 
@@ -286,7 +288,17 @@ public class Drive extends RobotDrive
         //speed to drive at
         fourWheelDrive(driveValues[1], driveValues[1], driveValues[1], driveValues[1]);
     }
-
+    
+    /**
+     * @param frontLeftSpeed
+     * @param frontRightSpeed
+     * @param backLeftSpeed
+     * @param backRightSpeed
+     * @param frontLeftAngle
+     * @param frontRightAngle
+     * @param backLeftAngle
+     * @param backRightAngle
+     */
     public void wrapAroundDrive(double frontLeftSpeed, double frontRightSpeed,
             double backLeftSpeed, double backRightSpeed,
             double frontLeftAngle, double frontRightAngle,
@@ -304,7 +316,14 @@ public class Drive extends RobotDrive
         fourWheelSteer(frontLeft[0], frontRight[0], backLeft[0], backRight[0]);
         fourWheelDrive(frontLeft[1], frontRight[1], backLeft[1], backLeft[1]);
     }
-
+    
+    /**
+     * 
+     * @param mapConstant
+     * @param targetAngle
+     * @param targetSpeed
+     * @return product
+     */
     private double[] wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
     {
         double finalAngle = targetAngle;
@@ -516,18 +535,21 @@ public class Drive extends RobotDrive
     /**
      * Function to determine the wrapped around difference from the joystick
      * angle to the steering angle.
+     * 
+     * TODO Go the long way if rotations > 1
      *
-     * @param value1 The first angle to check against
-     * @param value2 The second angle to check against
+     * @param currentAngle The first angle to check against
+     * @param targetAngle The second angle to check against
      * @return The normalized wrap around difference
      */
-    private double wrapAroundDifference(double value1, double value2)
+    private double wrapAroundDifference(double currentAngle, double targetAngle)
     {
-        double diff = Math.abs(value1 - value2);
+        double diff = Math.abs(currentAngle - targetAngle);
         if (diff > 1.0)
         {
             diff = 2.0 - diff;
         }
+        
         return diff;
     }
 
