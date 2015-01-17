@@ -527,7 +527,7 @@ public class Drive extends RobotDrive
     public void strafeDrive(double speed, Direction direction)
     {
     	// Angle in radians
-    	double angle = (direction == Direction.Right) ? (-Math.PI / 2) : (Math.PI / 2);
+    	double angle = (direction == Direction.RIGHT) ? (-Math.PI / 2) : (Math.PI / 2);
     	
         wrapAroundDrive(speed, speed, speed, speed,
         		angle, angle, angle, angle);
@@ -545,7 +545,7 @@ public class Drive extends RobotDrive
     	//System.out.println("Front Angle=" + frontAngle + ", Back Angle=" + backAngle);
     	
     	// Back Left wheel is reversed! ??
-    	if (direction == Direction.Left)
+    	if (direction == Direction.LEFT)
     	{
     		fourMotorDrive(-FRONT_SPEED, FRONT_SPEED, -BACK_SPEED, BACK_SPEED);
     		fourWheelSteer(-frontAngle, frontAngle, -backAngle, backAngle);

@@ -80,19 +80,19 @@ public class OpsDrive
     
     public void strafeDrive()
     {
-    	Direction direction = Direction.Left;
+    	Direction direction = Direction.LEFT;
     	if (joyLeft.getPOV() < 180) {
-    		direction = Direction.Right;
+    		direction = Direction.RIGHT;
     	}
     	drive.strafeDrive(speed.getStrafeDriveSpeed(), direction);
     }
     
     public void revolveDrive()
     {
-    	Direction direction = Direction.Left;
+    	Direction direction = Direction.LEFT;
     	if (joyLeft.buttonDown(6))
     	{
-    		direction = Direction.Right;
+    		direction = Direction.RIGHT;
     	}
     	drive.revolveDrive(direction);
     }
