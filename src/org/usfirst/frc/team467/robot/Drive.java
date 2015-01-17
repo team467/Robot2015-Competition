@@ -535,22 +535,24 @@ public class Drive extends RobotDrive
     
     public void revolveDrive(Direction direction)
     {
-    	final double RADIUS = 65;
-    	final double SPEED = 0.4;
+    	final double FRONT_RADIUS = 65;
+    	final double BACK_RADIUS = FRONT_RADIUS + LENGTH;
+    	final double BACK_SPEED = 0.4;
+    	final double FRONT_SPEED = BACK_SPEED * (FRONT_RADIUS / BACK_RADIUS);
     	// Angles converted from radians to degrees
-    	double frontAngle = (Math.atan((2 * RADIUS) / WIDTH));// * 360 / (Math.PI * 2));
-    	double backAngle = (Math.atan((2 * (RADIUS + LENGTH)) / WIDTH));// * 360 / (Math.PI * 2));
+    	double frontAngle = (Math.atan((2 * FRONT_RADIUS) / WIDTH));// * 360 / (Math.PI * 2));
+    	double backAngle = (Math.atan((2 * BACK_RADIUS) / WIDTH));// * 360 / (Math.PI * 2));
     	//System.out.println("Front Angle=" + frontAngle + ", Back Angle=" + backAngle);
     	
     	// Back Left wheel is reversed! ??
     	if (direction == Direction.Left)
     	{
-    		fourMotorDrive(-SPEED, SPEED, -SPEED, SPEED);
+    		fourMotorDrive(-FRONT_SPEED, FRONT_SPEED, -BACK_SPEED, BACK_SPEED);
     		fourWheelSteer(-frontAngle, frontAngle, -backAngle, backAngle);
 //    		wrapAroundDrive(-SPEED, SPEED, -SPEED, SPEED,
 //            		-frontAngle, frontAngle, -backAngle, backAngle);
     	} else {
-    		fourMotorDrive(SPEED, -SPEED, SPEED, -SPEED);
+    		fourMotorDrive(FRONT_SPEED, -FRONT_SPEED, BACK_SPEED, -BACK_SPEED);
     		fourWheelSteer(-frontAngle, frontAngle, -backAngle, backAngle);
 //    		wrapAroundDrive(SPEED, -SPEED, SPEED, -SPEED,
 //            		-frontAngle, frontAngle, -backAngle, backAngle);
