@@ -11,14 +11,12 @@ package org.usfirst.frc.team467.robot;
  */
 public class Speed
 {
-
     private static Speed speed = null;
     private Joystick467 joyLeft = null;
     private ButtonDrive buttonState = null;
 
     public static Speed getInstance()
     {
-
         if (speed == null)
         {
             speed = new Speed();
@@ -44,7 +42,7 @@ public class Speed
 
     public double getTurnInPlaceSpeed()
     {
-        return calcMultiplier(-joyLeft.getTwist());//inversion purpousful
+        return calcMultiplier(-joyLeft.getTwist()); // inversion intentional
     }
 
     public double getCrabDriveNoFASpeed()
@@ -83,7 +81,7 @@ public class Speed
      */
     private double calcMultiplier(double d)
     {
-        //Purpously does both operations if both buttons pressed...
+        // Intentionally does both operations if both buttons pressed...
         if (buttonState.getSneak())
         {
             d = d * getSneakMultiplier();

@@ -31,8 +31,6 @@ public class OpsDrive
         drive = Drive.getInstance();
         joyLeft = Driverstation.getInstance().getDriveJoystick();
     }
-    
-    
 
     /**
      * Car Drive Drive Mode
@@ -50,7 +48,7 @@ public class OpsDrive
      */
     public void swerveDriveFAlign()
     {
-        drive.crabDrive(joyLeft.getStickAngle(), speed.getCrabDriveFASpeed(), true/*field aligned*/);
+        drive.crabDrive(joyLeft.getStickAngle(), speed.getCrabDriveFASpeed(), true /* field aligned */ );
     }
 
     /**
@@ -59,7 +57,7 @@ public class OpsDrive
      */
     public void swerveDriveNoFAlign()
     {
-        drive.crabDrive(joyLeft.getStickAngle(), speed.getCrabDriveNoFASpeed(), false/*not field aligned*/);
+        drive.crabDrive(joyLeft.getStickAngle(), speed.getCrabDriveNoFASpeed(), false /* not field aligned */);
     }
     
     /**

@@ -46,14 +46,11 @@ public class Robot extends IterativeRobot
         opsCalibrate = OpsCalibrate.getInstance();
         buttonDrive = ButtonDrive.getInstance();
         buttonCalibrate = ButtonCalibrate.getInstance();
-        //SpeedCalibration.init();
         
         cameraServer = CameraServer.getInstance();
         cameraServer.setQuality(50);
         cameraServer.startAutomaticCapture("cam0");
-
         
-        // static static static static static
         Calibration.init();        
     }
 
@@ -66,7 +63,7 @@ public class Robot extends IterativeRobot
      */
     public void autonomousInit()
     {
-        //Read driverstation inputs
+        // Read driverstation inputs
         driverstation.readInputs();
     }
 
@@ -89,65 +86,6 @@ public class Robot extends IterativeRobot
      */
     public void testPeriodic()
     {
-        /*
-         driverstation.readInputs();
-         Joystick467 joy = driverstation.getNavJoystick();
-         //        if(joy.buttonDown(Joystick467.TRIGGER))
-         //        {            
-         //            drive.driveFeeder(joy.getStickY());
-         //        }
-        
-         comp.update();
-         */
-
-        /*
-         driverstation.readInputs();
-         driverstation.clearPrint();
-         Joystick467 joy = driverstation.getRightJoystick();
-        
-         double speed = joy.getStickY();
-        
-         if (joy.buttonDown(4))
-         {
-         drive.driveParasite(speed);
-         }
-        
-         if (joy.buttonDown(9))
-         {
-         gts.reset();
-         }
-        
-         gts.update();
-        
-         double RPM = gts.getAccurateRPM();
-        
-         driverstation.println("Parasite Wheel", 1);
-         driverstation.println("RPM: " + (int) RPM, 2);
-         driverstation.println("Ticks: " + gts.getTicks(), 3);
-         driverstation.println("Power: " + drive.getParasite().get(), 4);
-         driverstation.println("Speed: ~" + (int) gts.convertRPMtoVelocity(RPM) + " ft/s", 5);
-        
-         if (joy.buttonDown(5))
-         {
-         drive.driveParasite(Math.sin((System.currentTimeMillis() - startTime)*.01));
-         }
-        
-         driverstation.sendData();
-         */
-        /*
-         Steering steering = drive.getSteering(RobotMap.FRONT_LEFT);
-        
-         steering.getMotor().set(.3);
-        
-         double val = drive.getSteering(RobotMap.FRONT_LEFT).getSensorValue();
-        
-         if (val > steeringRange) {
-         steeringRange = val;
-         }
-        
-         System.out.println(steeringRange);
-         */
-//</editor-fold>
     }
 
     /**
@@ -157,67 +95,43 @@ public class Robot extends IterativeRobot
     {
     }
 
-    //this is a persistant variable to select the wheel to calibrate.
+    // this is a static variable to select the wheel to calibrate.
     int calibrateWheelSelect = 0;
-    boolean calibrateDebounce = false;
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
     {
-        //Read driverstation inputs
-        driverstation.readInputs();
-
-        Steering steering = drive.getSteering(RobotMap.FRONT_LEFT);
-        //System.out.println("FL: " + steering.getSensorValue());
-        //steering.printSteeringParameters();
+        // Read driverstation inputs
+        driverstation.readInputs();        
         
-        //
-        //Branch based on mode
-        //Use driver's stick        
+        // Use driver's stick        
         Joystick467 joyLeft = driverstation.getDriveJoystick();
-        Joystick467 joyRight = driverstation.getNavJoystick();
-        int pov = joyLeft.getPOV();
-        if (pov != -1)
-        {
-        	System.out.println("pov=" + pov);
-        }
         
         //updates the buttons
-        if (SINGLE_STICK_DRIVE)
-        {
-            buttonDrive.updateButtons(joyLeft);
-            buttonCalibrate.updateButtons(joyLeft);
-        }
-        else
-        {
-            buttonDrive.updateButtons(joyLeft);
-            buttonCalibrate.updateButtons(joyLeft);
-        }
+        buttonDrive.updateButtons(joyLeft);
+        buttonCalibrate.updateButtons(joyLeft);
 
         if (buttonCalibrate.getCalibrate())
         {
             System.out.println("CALIBRATE");
-            buttonDrive.updateButtons(joyLeft);
             updateCalibrateControl(joyLeft);
         }
-        else//drive mode, not calibrate
+        else // drive mode, not calibrate
         {
-            //operates using the updated buttons
+            // operates using the updated buttons
             updateDriveAndNavigate();
         }
-        calibrateDebounce = buttonCalibrate.getCalibrate();
-
     }
 
     private void updateDriveAndNavigate()
     {
-
         ///
-        ///Update Drive
+        /// Update Drive
         ///
-        //priority for each state is intentional, not bug
+    	
+        // priority for each state is intentional, not bug
     	if (buttonDrive.getRevolveDrive())
     	{
     		opsDrive.revolveDrive();
@@ -247,12 +161,13 @@ public class Robot extends IterativeRobot
             System.out.println("HD D");
             opsDrive.hybridDrive();
         }
-        else//should never enter here
+        else //should never enter here
         {
             System.err.println("Button State not calculated correctly");
             opsDrive.swerveDriveNoFAlign();
         }
     }
+    
     /**
      * Update steering calibration control
      */

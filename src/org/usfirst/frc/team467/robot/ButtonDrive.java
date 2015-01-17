@@ -53,14 +53,14 @@ public class ButtonDrive
     {        
         carDrive = joyLeft.buttonDown(3);         
         hybridDrive = joyLeft.buttonDown(4);
-        //crabDriveFA = joyLeft.buttonDown(5);
+        // crabDriveFA = joyLeft.buttonDown(5);
         turnInPlace = joyLeft.buttonDown(2);
         strafeDrive = (joyLeft.getPOV() != -1 &&
         			   joyLeft.getPOV() != 0 &&
         			   joyLeft.getPOV() != 180);
         crabDriveNoFA = !(carDrive || crabDriveFA || turnInPlace || hybridDrive);
         revolveDrive = joyLeft.buttonDown(5) || joyLeft.buttonDown(6);
-        //System.out.println("revolveDrive=" + revolveDrive);
+        // System.out.println("revolveDrive=" + revolveDrive);
         sneak = joyLeft.buttonDown(Joystick467.TRIGGER);
         turbo = joyLeft.buttonDown(7);                
     }
