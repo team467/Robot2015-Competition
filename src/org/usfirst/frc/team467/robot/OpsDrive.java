@@ -68,14 +68,6 @@ public class OpsDrive
         drive.turnDrive(speed.getTurnInPlaceSpeed());
     } 
     
-    /**
-     * Hybrid Drive
-     */
-    public void hybridDrive()
-    {                
-        drive.hybridDrive(joyLeft.getTwist(), joyLeft.getStickAngle(), speed.getHybridDriveSpeed());
-    }
-    
     public void strafeDrive()
     {
     	Direction direction = Direction.LEFT;

@@ -348,78 +348,6 @@ public class Drive extends RobotDrive
     }
 
     /**
-     * Drives the robot similarly to a car. Essentially works by angling the
-     * wheels so they are tangent to a circular path, and driving the wheels at
-     * the appropriate speed so they do not drag.
-     *
-     * TODO: Make a method that isn't slow as balls.
-     *
-     * See Robot for controls.
-     *
-     * @param twistTurnAngle Angle to turn at, from -1.0 to 1.0. Negative values
-     * drive left, positive values drive right.
-     * @param speed Speed to drive at. Negative values drive backwards.
-     */
-    public void hybridDrive(double twistTurnAngle, double stickAngle, double speed)
-    {
-        System.out.println(stickAngle);
-        // Dampen speed.
-        speed = limitSpeed(speed);
-        
-        // 2pi, for convenience.
-        double PI2 = Math.PI * 2;
-        
-        // Dampen the turning angle, ensuring the inner wheels will not turn more than 45 degrees.
-        double dampenedTurningAngle = twistTurnAngle / 2.5;
-        
-        // Convert turning angle for use with outerTurnAngle algorithm.
-        // Note: To convert from robot angles to radians, multiply by 2pi.
-        // To convert to degrees, multiply by 360.
-        double absTurnAngle = Math.abs(dampenedTurningAngle);
-        double turnAngleRadians = absTurnAngle * PI2;
-
-        // The direction of the turn.
-        //   If left, direction = -1
-        //   If right, direction = 1
-        //   If straight forward or backward, direction = 0
-        int direction = (int) (dampenedTurningAngle / absTurnAngle);
-
-        // Calculate wheel angles such that perpendicular lines drawn from the wheels
-        //   will all intersect at the same point. This ensures that all the wheels will
-        //   follow a circular path.
-        double innerTurnAngle = absTurnAngle / 2;
-        double outerTurnAngle = (Math.PI / 2 - arctanIntegral(Math.tan((Math.PI - turnAngleRadians) / 2) + ROBOT_RATIO, TANGENT_RESOLUTION)) / PI2;
-
-        // Conditional operators for left and right angles, addressing the direction
-        //   of the turn.
-        // If turning right, that is, (direction = 1.0), the right wheels will be the 
-        //   inner wheels, and the left wheels will be the outer wheels. However, 
-        //   for left turns this is reversed.
-        double rightAngleConditional = ((direction > 0) ? innerTurnAngle : outerTurnAngle);
-        double leftAngleConditional = ((direction > 0) ? outerTurnAngle : innerTurnAngle);
-
-        // Calculate the speed for the inner wheels to drive at. This is guaranteed to be smaller
-        //   than the speed of the outer wheels.
-        double sinRt2 = ROBOT_RATIO * Math.sin(turnAngleRadians);
-        double innerSpeed = speed / Math.sqrt(sinRt2 * sinRt2 + ROBOT_RATIO * Math.sin(2 * turnAngleRadians) + 1);
-
-        // Conditional operators for left and right turns.
-        double leftSpeedConditional = -((direction > 0) ? speed : innerSpeed);
-        double rightSpeedConditional = -((direction > 0) ? innerSpeed : speed);
-
-        // Drive the wheels, and set angles. Note that the back wheels turn in the opposite direction, hence
-        //   the inverts. Multiplying by the direction corrects for left and right turning,
-        //   and ensures that if driving straight, all turning angles will absolutely be zero.
-        wrapAroundDrive(
-                /*Speeds*/
-                leftSpeedConditional, rightSpeedConditional,
-                leftSpeedConditional, rightSpeedConditional,
-                /*Angles*/
-                leftAngleConditional * direction + stickAngle, rightAngleConditional * direction + stickAngle,
-                -leftAngleConditional * direction + stickAngle, -rightAngleConditional * direction + stickAngle);
-    }
-
-    /**
      * Yo dog, I heard you like to drive, so I put a car in yo car so you can
      * drive while you drive.
      *
@@ -463,6 +391,7 @@ public class Drive extends RobotDrive
         //   will all intersect at the same point. This ensures that all the wheels will
         //   follow a circular path.
         double innerTurnAngle = absTurnAngle / 2;
+        // TODO: Replace arctanIntegral with real Java Math functions
         double outerTurnAngle = (Math.PI / 2 - arctanIntegral(Math.tan((Math.PI - turnAngleRadians) / 2) + ROBOT_RATIO, TANGENT_RESOLUTION)) / PI2;
 
         // Conditional operators for left and right angles, addressing the direction

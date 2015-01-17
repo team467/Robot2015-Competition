@@ -154,11 +154,6 @@ public class Robot extends IterativeRobot
         {
             opsDrive.swerveDriveNoFAlign();
         }
-        else if (buttonDrive.getHybridDrive())
-        {
-            System.out.println("HD D");
-            opsDrive.hybridDrive();
-        }
         else //should never enter here
         {
             System.err.println("Button State not calculated correctly");
