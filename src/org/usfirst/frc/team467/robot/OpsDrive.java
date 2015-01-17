@@ -11,13 +11,10 @@ package org.usfirst.frc.team467.robot;
  */
 public class OpsDrive
 {
-
     private static OpsDrive opsDrive = null;
     private Speed speed = null;
     private Drive drive = null;
     private Joystick467 joyLeft = null;
-    
-
     
     public static OpsDrive getInstance()
     {
@@ -83,10 +80,20 @@ public class OpsDrive
     
     public void strafeDrive()
     {
-    	int direction = 1;
+    	Direction direction = Direction.Left;
     	if (joyLeft.getPOV() < 180) {
-    		direction = 0;
+    		direction = Direction.Right;
     	}
     	drive.strafeDrive(speed.getStrafeDriveSpeed(), direction);
+    }
+    
+    public void revolveDrive()
+    {
+    	Direction direction = Direction.Left;
+    	if (joyLeft.buttonDown(6))
+    	{
+    		direction = Direction.Right;
+    	}
+    	drive.revolveDrive(direction);
     }
 }

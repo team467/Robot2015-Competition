@@ -19,6 +19,7 @@ public class ButtonDrive
     private boolean crabDriveNoFA = false;    
     private boolean hybridDrive = false;
     private boolean strafeDrive = false;
+    private boolean revolveDrive = false;
     private boolean turnInPlace = false;   
     private boolean sneak = false;
     private boolean turbo = false;    
@@ -57,7 +58,9 @@ public class ButtonDrive
         strafeDrive = (joyLeft.getPOV() != -1 &&
         			   joyLeft.getPOV() != 0 &&
         			   joyLeft.getPOV() != 180);
-        crabDriveNoFA = !(carDrive || crabDriveFA || turnInPlace || hybridDrive);        
+        crabDriveNoFA = !(carDrive || crabDriveFA || turnInPlace || hybridDrive);
+        revolveDrive = joyLeft.buttonDown(5) || joyLeft.buttonDown(6);
+        //System.out.println("revolveDrive=" + revolveDrive);
         sneak = joyLeft.buttonDown(Joystick467.TRIGGER);
         turbo = joyLeft.buttonDown(7);                
     }
@@ -110,6 +113,10 @@ public class ButtonDrive
     public boolean getStrafeDrive()
     {
     	return strafeDrive;
+    }
+    public boolean getRevolveDrive()
+    {
+    	return revolveDrive;
     }
 
 }

@@ -171,7 +171,7 @@ public class Robot extends IterativeRobot
 
         Steering steering = drive.getSteering(RobotMap.FRONT_LEFT);
         //System.out.println("FL: " + steering.getSensorValue());
-        steering.printSteeringParameters();
+        //steering.printSteeringParameters();
         
         //
         //Branch based on mode
@@ -218,7 +218,11 @@ public class Robot extends IterativeRobot
         ///Update Drive
         ///
         //priority for each state is intentional, not bug
-        if (buttonDrive.getStrafeDrive())
+    	if (buttonDrive.getRevolveDrive())
+    	{
+    		opsDrive.revolveDrive();
+    	}
+    	else if (buttonDrive.getStrafeDrive())
         {
         	opsDrive.strafeDrive();
         }
