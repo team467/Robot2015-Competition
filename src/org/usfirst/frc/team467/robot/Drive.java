@@ -131,7 +131,7 @@ public class Drive extends RobotDrive
      * @param backLeftSpeed
      * @param backRightSpeed
      */
-    public void fourWheelDrive(double frontLeftSpeed, double frontRightSpeed,
+    private void fourWheelDrive(double frontLeftSpeed, double frontRightSpeed,
                                double backLeftSpeed, double backRightSpeed)
     {
         // If any of the motors doesn't exist then exit
@@ -152,7 +152,7 @@ public class Drive extends RobotDrive
         }
     }
 
-    public void fourWheelSteer(double frontLeft, double frontRight, double backLeft, double backRight)
+    private void fourWheelSteer(double frontLeft, double frontRight, double backLeft, double backRight)
     {
         //set the angles to steer
         steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
@@ -168,7 +168,7 @@ public class Drive extends RobotDrive
      * @param motor The motor to get
      * @return One of the four Talon drive motors
      */
-    public Talon getDriveMotor(int motor)
+    private Talon getDriveMotor(int motor)
     {
         Talon returnMotor;
         switch (motor)
@@ -235,19 +235,19 @@ public class Drive extends RobotDrive
     {
     	// Apply speed modifiers first
     	
-        if (ButtonDrive.getInstance().getSneak())
+        if (Driverstation.getInstance().getSlow())
         {
-            speed *=  SPEED_SLOW_MODIFIER;
+            speed *= SPEED_SLOW_MODIFIER;
         } 
-        else if (ButtonDrive.getInstance().getTurbo())
-        {
-           speed *= SPEED_TURBO_MODIFIER;
-        }
-        else
-        {
-        	// Limit maximum regular speed to 80%.
-        	speed *= SPEED_MAX_MODIFIER;
-        }
+        else if (Driverstation.getInstance().getTurbo())
+		{
+			speed *= SPEED_TURBO_MODIFIER;
+		}
+		else
+		{
+			// Limit maximum regular speed to 80%.
+			speed *= SPEED_MAX_MODIFIER;
+		}
     	
         // Limit the rate at which robot can change speed once driving over 0.6
         if (Math.abs(speed - lastSpeed) > SPEED_MAX_CHANGE && Math.abs(lastSpeed) > 0.6)

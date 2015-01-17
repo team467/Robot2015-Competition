@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package org.usfirst.frc.team467.robot;
 
-import edu.wpi.first.wpilibj.CameraServer;
+// import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -23,12 +23,11 @@ public class Robot extends IterativeRobot
     //Robot objects
     private Driverstation driverstation;
 
-    private OpsDrive opsDrive;
+    private Drive drive;
     private OpsCalibrate opsCalibrate;
-    private ButtonDrive buttonDrive;
     private ButtonCalibrate buttonCalibrate;
     
-    CameraServer cameraServer;
+    //CameraServer cameraServer;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -38,11 +37,9 @@ public class Robot extends IterativeRobot
     {
         //Make robot objects
         driverstation = Driverstation.getInstance();
-        buttonDrive = ButtonDrive.getInstance();
         
-        opsDrive = OpsDrive.getInstance();
+        drive = Drive.getInstance();
         opsCalibrate = OpsCalibrate.getInstance();
-        buttonDrive = ButtonDrive.getInstance();
         buttonCalibrate = ButtonCalibrate.getInstance();
         
 //        cameraServer = CameraServer.getInstance();
@@ -108,7 +105,6 @@ public class Robot extends IterativeRobot
         Joystick467 joyLeft = driverstation.getDriveJoystick();
         
         //updates the buttons
-        buttonDrive.updateButtons(joyLeft);
         buttonCalibrate.updateButtons(joyLeft);
 
         if (buttonCalibrate.getCalibrate())
@@ -129,36 +125,59 @@ public class Robot extends IterativeRobot
         /// Update Drive
         ///
     	
-        // priority for each state is intentional, not bug
-    	if (buttonDrive.getRevolveDrive())
+    	switch (driverstation.getDriveMode())
     	{
-    		opsDrive.revolveDrive();
+    	
+    	case REVOLVE:
+    	{
+    		Direction direction = Direction.LEFT;
+    	    if (driverstation.getDriveJoystick().buttonDown(6))
+    	    {
+    	    	direction = Direction.RIGHT;
+    	    }
+    	    drive.revolveDrive(direction);
     	}
-    	else if (buttonDrive.getStrafeDrive())
-        {
-        	opsDrive.strafeDrive();
-        }
-        else if (buttonDrive.getTurnInPlace())
-        {
-            opsDrive.turnInPlace();
-        }
-        else if (buttonDrive.getCarDrive())
-        {
-            opsDrive.carDrive();
-        }
-        else if (buttonDrive.getCrabDriveFA())
-        {
-            opsDrive.swerveDriveFAlign();
-        }
-        else if (buttonDrive.getCrabDriveNoFA())
-        {
-            opsDrive.swerveDriveNoFAlign();
-        }
-        else //should never enter here
-        {
-            System.err.println("Button State not calculated correctly");
-            opsDrive.swerveDriveNoFAlign();
-        }
+    	break;
+    	
+    	case STRAFE:
+    	{
+    		Direction direction = Direction.LEFT;
+    	    if (driverstation.getDriveJoystick().getPOV() < 180) 
+    	    {
+    	    	direction = Direction.RIGHT;
+    	    }
+    	    drive.strafeDrive(direction, 0.3);
+    	}
+    	break;
+        
+    	case TURN:
+        	drive.turnDrive(-driverstation.getDriveJoystick().getTwist());
+        	break;
+        
+    	case CAR:
+        	drive.carDrive(driverstation.getDriveJoystick().getTwist(), 
+        				   driverstation.getDriveJoystick().getStickY());
+        	break;
+        
+    	case CRAB_FA:
+        	drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), 
+        				    driverstation.getDriveJoystick().getStickDistance(), 
+        				    true /* field aligned */ );
+        	break;
+        
+    	case CRAB_NO_FA:
+    		drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
+        		  	      driverstation.getDriveJoystick().getStickDistance(), 
+        		  	      false /* not field aligned */ );
+    		break;
+        
+        default:  //should never enter here
+        	System.err.println("Button State not calculated correctly");
+            drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
+  		  	      driverstation.getDriveJoystick().getStickDistance(), 
+  		  	      false /* not field aligned */ );
+            break;
+    	}
     }
     
     /**
