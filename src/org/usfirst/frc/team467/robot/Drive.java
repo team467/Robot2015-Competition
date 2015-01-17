@@ -38,6 +38,12 @@ public class Drive extends RobotDrive
     private static final boolean BACK_LEFT_DRIVE_INVERT = false;
     private static final boolean BACK_RIGHT_DRIVE_INVERT = true;
 
+    // Speed modifier constants
+    private static final double SPEED_SLOW_MODIFIER = 1.0/3.0;
+    private static final double SPEED_TURBO_MODIFIER = 2.0;
+    private static final double SPEED_MAX_MODIFIER = 0.8;
+    private static final double SPEED_MAX_CHANGE = 0.2;
+    
     // Private constructor
     private Drive(Talon frontLeftMotor, Talon backLeftMotor,
             	  Talon frontRightMotor, Talon backRightMotor)
@@ -227,16 +233,32 @@ public class Drive extends RobotDrive
      */
     private double limitSpeed(double speed)
     {
+    	// Apply speed modifiers first
+    	
+        if (ButtonDrive.getInstance().getSneak())
+        {
+            speed *=  SPEED_SLOW_MODIFIER;
+        } 
+        else if (ButtonDrive.getInstance().getTurbo())
+        {
+           speed *= SPEED_TURBO_MODIFIER;
+        }
+        else
+        {
+        	// Limit maximum regular speed to 80%.
+        	speed *= SPEED_MAX_MODIFIER;
+        }
+    	
         // Limit the rate at which robot can change speed once driving over 0.6
-        if (Math.abs(speed - lastSpeed) > 0.2 && Math.abs(lastSpeed) > 0.6)
+        if (Math.abs(speed - lastSpeed) > SPEED_MAX_CHANGE && Math.abs(lastSpeed) > 0.6)
         {
             if (speed > lastSpeed)
             {
-                speed = lastSpeed + 0.2;
+                speed = lastSpeed + SPEED_MAX_CHANGE;
             }
             else
             {
-                speed = lastSpeed - 0.2;
+                speed = lastSpeed - SPEED_MAX_CHANGE;
             }
         }
         lastSpeed = speed;
@@ -422,10 +444,10 @@ public class Drive extends RobotDrive
     
     // TODO
     /**
-     * @param speed
      * @param direction
+     * @param speed
      */
-    public void strafeDrive(double speed, Direction direction)
+    public void strafeDrive(Direction direction, double speed)
     {
     	// Angle in radians
     	double angle = (direction == Direction.RIGHT) ? (-Math.PI / 2) : (Math.PI / 2);

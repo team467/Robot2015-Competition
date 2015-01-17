@@ -45,10 +45,10 @@ public class Robot extends IterativeRobot
         buttonDrive = ButtonDrive.getInstance();
         buttonCalibrate = ButtonCalibrate.getInstance();
         
-        cameraServer = CameraServer.getInstance();
-        cameraServer.setQuality(50);
-        cameraServer.startAutomaticCapture("cam0");
-        
+//        cameraServer = CameraServer.getInstance();
+//        cameraServer.setQuality(50);
+//        cameraServer.startAutomaticCapture("cam0");
+//        
         Calibration.init();        
     }
 

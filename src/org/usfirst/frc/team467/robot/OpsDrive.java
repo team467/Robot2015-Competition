@@ -12,7 +12,6 @@ package org.usfirst.frc.team467.robot;
 public class OpsDrive
 {
     private static OpsDrive opsDrive = null;
-    private Speed speed = null;
     private Drive drive = null;
     private Joystick467 joyLeft = null;
     
@@ -27,7 +26,6 @@ public class OpsDrive
     
     private OpsDrive()
     {
-        speed = Speed.getInstance();
         drive = Drive.getInstance();
         joyLeft = Driverstation.getInstance().getDriveJoystick();
     }
@@ -39,7 +37,7 @@ public class OpsDrive
     public void carDrive()
     {
         // Speed for car drive
-        drive.carDrive(joyLeft.getTwist(), speed.getCarDriveSpeed());
+        drive.carDrive(joyLeft.getTwist(), joyLeft.getStickY());
     }
 
     /**
@@ -48,7 +46,7 @@ public class OpsDrive
      */
     public void swerveDriveFAlign()
     {
-        drive.crabDrive(joyLeft.getStickAngle(), speed.getCrabDriveFASpeed(), true /* field aligned */ );
+        drive.crabDrive(joyLeft.getStickAngle(), joyLeft.getStickDistance(), true /* field aligned */ );
     }
 
     /**
@@ -57,7 +55,7 @@ public class OpsDrive
      */
     public void swerveDriveNoFAlign()
     {
-        drive.crabDrive(joyLeft.getStickAngle(), speed.getCrabDriveNoFASpeed(), false /* not field aligned */);
+        drive.crabDrive(joyLeft.getStickAngle(), joyLeft.getStickDistance(), false /* not field aligned */);
     }
     
     /**
@@ -65,7 +63,7 @@ public class OpsDrive
      */
     public void turnInPlace()
     {
-        drive.turnDrive(speed.getTurnInPlaceSpeed());
+        drive.turnDrive(-joyLeft.getTwist());
     } 
     
     public void strafeDrive()
@@ -74,7 +72,7 @@ public class OpsDrive
     	if (joyLeft.getPOV() < 180) {
     		direction = Direction.RIGHT;
     	}
-    	drive.strafeDrive(speed.getStrafeDriveSpeed(), direction);
+    	drive.strafeDrive(direction, 0.3);
     }
     
     public void revolveDrive()
