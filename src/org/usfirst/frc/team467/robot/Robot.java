@@ -127,56 +127,55 @@ public class Robot extends IterativeRobot
     	
     	switch (driverstation.getDriveMode())
     	{
+    		case REVOLVE:
+    		{
+    			Direction direction = Direction.LEFT;
+    			if (driverstation.getDriveJoystick().buttonDown(6))
+    			{
+    				direction = Direction.RIGHT;
+    			}
+    			drive.revolveDrive(direction);
+    		}
+    		break;
     	
-    	case REVOLVE:
-    	{
-    		Direction direction = Direction.LEFT;
-    	    if (driverstation.getDriveJoystick().buttonDown(6))
-    	    {
-    	    	direction = Direction.RIGHT;
-    	    }
-    	    drive.revolveDrive(direction);
-    	}
-    	break;
-    	
-    	case STRAFE:
-    	{
-    		Direction direction = Direction.LEFT;
-    	    if (driverstation.getDriveJoystick().getPOV() < 180) 
-    	    {
-    	    	direction = Direction.RIGHT;
-    	    }
-    	    drive.strafeDrive(direction, 0.3);
-    	}
-    	break;
-        
-    	case TURN:
-        	drive.turnDrive(-driverstation.getDriveJoystick().getTwist());
-        	break;
-        
-    	case CAR:
-        	drive.carDrive(driverstation.getDriveJoystick().getTwist(), 
-        				   driverstation.getDriveJoystick().getStickY());
-        	break;
-        
-    	case CRAB_FA:
-        	drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), 
-        				    driverstation.getDriveJoystick().getStickDistance(), 
-        				    true /* field aligned */ );
-        	break;
-        
-    	case CRAB_NO_FA:
-    		drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
-        		  	      driverstation.getDriveJoystick().getStickDistance(), 
-        		  	      false /* not field aligned */ );
+    		case STRAFE:
+    		{
+    			Direction direction = Direction.LEFT;
+    			if (driverstation.getDriveJoystick().getPOV() < 180) 
+    			{
+    				direction = Direction.RIGHT;
+    			}
+    			drive.strafeDrive(direction, 0.3);
+    		}
     		break;
         
-        default:  //should never enter here
-        	System.err.println("Button State not calculated correctly");
-            drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
+    		case TURN:
+    			drive.turnDrive(-driverstation.getDriveJoystick().getTwist());
+    			break;
+        
+    		case CAR:
+    			drive.carDrive(driverstation.getDriveJoystick().getTwist(), 
+        		 		   driverstation.getDriveJoystick().getStickY());
+    			break;
+        
+    		case CRAB_FA:
+    			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), 
+        				    driverstation.getDriveJoystick().getStickDistance(), 
+        				    true /* field aligned */ );
+    			break;
+        
+    		case CRAB_NO_FA:
+    			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
+        		  	      driverstation.getDriveJoystick().getStickDistance(), 
+        		  	      false /* not field aligned */ );
+    			break;
+        
+    		default:  //should never enter here
+    			System.err.println("Button State not calculated correctly");
+    			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
   		  	      driverstation.getDriveJoystick().getStickDistance(), 
   		  	      false /* not field aligned */ );
-            break;
+    			break;
     	}
     }
     
