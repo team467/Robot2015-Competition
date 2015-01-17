@@ -22,7 +22,6 @@ public class Robot extends IterativeRobot
 
     //Robot objects
     private Driverstation driverstation;
-    private Drive drive;
 
     private OpsDrive opsDrive;
     private OpsCalibrate opsCalibrate;
@@ -39,7 +38,6 @@ public class Robot extends IterativeRobot
     {
         //Make robot objects
         driverstation = Driverstation.getInstance();
-        drive = Drive.getInstance();
         buttonDrive = ButtonDrive.getInstance();
         
         opsDrive = OpsDrive.getInstance();
