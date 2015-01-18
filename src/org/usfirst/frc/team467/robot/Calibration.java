@@ -17,9 +17,6 @@ public class Calibration
 
     //Incremented angle used for calibrating wheels
     private static double calibrationAngle = 0.0;
-
-    public static final double LENGTH = 16.75; //inches btw the wheels
-
     
     /**
      * Initialize calibration code
