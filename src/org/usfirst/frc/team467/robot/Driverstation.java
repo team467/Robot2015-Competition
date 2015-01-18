@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public class Driverstation
 {
-
+    // TODO: Refactor this class into a DriverStation467 class. Current name is too similar
+	// to the WPI Lib DriverStation class
+	
     //Singleton instance variable
     private static Driverstation instance;
 
