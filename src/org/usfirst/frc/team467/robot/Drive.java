@@ -44,6 +44,9 @@ public class Drive extends RobotDrive
     private static final double SPEED_MAX_MODIFIER = 0.8;
     private static final double SPEED_MAX_CHANGE = 0.2;
     
+    // Speed to use for Strafe and Revolve Drive
+    private static final double SPEED_STRAFE = 0.4;
+    
     // Private constructor
     private Drive(Talon frontLeftMotor, Talon backLeftMotor,
             	  Talon frontRightMotor, Talon backRightMotor)
@@ -280,10 +283,7 @@ public class Drive extends RobotDrive
 
         double[] driveValues = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
 
-        //TODO: 
-        //angle to steer at
         fourWheelSteer(driveValues[0], driveValues[0], driveValues[0], driveValues[0]);
-        //speed to drive at
         fourWheelDrive(driveValues[1], driveValues[1], driveValues[1], driveValues[1]);
     }
 
@@ -321,6 +321,7 @@ public class Drive extends RobotDrive
             }
         }
 
+        // TODO: is there a better way of doing this rather than returning an array?
         double[] product =
         {
             finalAngle, finalSpeed
@@ -446,12 +447,12 @@ public class Drive extends RobotDrive
      * @param direction
      * @param speed
      */
-    public void strafeDrive(Direction direction, double speed)
+    public void strafeDrive(Direction direction)
     {
     	// Angle in radians
     	double angle = (direction == Direction.RIGHT) ? (-Math.PI / 2) : (Math.PI / 2);
     	
-        wrapAroundDrive(speed, speed, speed, speed,
+        wrapAroundDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE,
         		angle, angle, angle, angle);
     }
     

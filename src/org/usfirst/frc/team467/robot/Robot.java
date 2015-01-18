@@ -24,8 +24,6 @@ public class Robot extends IterativeRobot
     private Driverstation driverstation;
 
     private Drive drive;
-    private OpsCalibrate opsCalibrate;
-    private ButtonCalibrate buttonCalibrate;
     
     //CameraServer cameraServer;
 
@@ -39,8 +37,6 @@ public class Robot extends IterativeRobot
         driverstation = Driverstation.getInstance();
         
         drive = Drive.getInstance();
-        opsCalibrate = OpsCalibrate.getInstance();
-        buttonCalibrate = ButtonCalibrate.getInstance();
         
 //        cameraServer = CameraServer.getInstance();
 //        cameraServer.setQuality(50);
@@ -90,9 +86,7 @@ public class Robot extends IterativeRobot
     {
     }
 
-    // this is a static variable to select the wheel to calibrate.
-    int calibrateWheelSelect = 0;
-
+    
     /**
      * This function is called periodically during operator control
      */
@@ -101,25 +95,19 @@ public class Robot extends IterativeRobot
         // Read driverstation inputs
         driverstation.readInputs();        
         
-        // Use driver's stick        
-        Joystick467 joyLeft = driverstation.getDriveJoystick();
-        
-        //updates the buttons
-        buttonCalibrate.updateButtons(joyLeft);
-
-        if (buttonCalibrate.getCalibrate())
+        if (driverstation.getCalibrate())
         {
             System.out.println("CALIBRATE");
-            updateCalibrateControl(joyLeft);
+            Calibration.updateCalibrate();
         }
         else // drive mode, not calibrate
         {
             // operates using the updated buttons
-            updateDriveAndNavigate();
+            updateDrive();
         }
     }
 
-    private void updateDriveAndNavigate()
+    private void updateDrive()
     {
         ///
         /// Update Drive
@@ -145,7 +133,7 @@ public class Robot extends IterativeRobot
     			{
     				direction = Direction.RIGHT;
     			}
-    			drive.strafeDrive(direction, 0.3);
+    			drive.strafeDrive(direction);
     		}
     		break;
         
@@ -177,14 +165,5 @@ public class Robot extends IterativeRobot
   		  	      false /* not field aligned */ );
     			break;
     	}
-    }
-    
-    /**
-     * Update steering calibration control
-     */
-    private void updateCalibrateControl(Joystick467 joy)
-    {
-        calibrateWheelSelect = opsCalibrate.getWheel(joy, calibrateWheelSelect);
-        Calibration.updateSteeringCalibrate(calibrateWheelSelect, joy);
     }
 }
