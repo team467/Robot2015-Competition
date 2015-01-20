@@ -460,20 +460,29 @@ public class Drive extends RobotDrive
                 -leftAngleConditional * direction, -rightAngleConditional * direction);
     }
     
-    // TODO
     /**
+     * Slide slowly sideways
      * @param direction
      * @param speed
      */
     public void strafeDrive(Direction direction, double speed)
     {
-    	// Angle in radians
-    	double angle = (direction == Direction.RIGHT) ? (-Math.PI / 2) : (Math.PI / 2);
+    	// Angle in -1 to 1
+    	double angle = (direction == Direction.RIGHT) ? -0.5 : 0.5;
     	
-        wrapAroundDrive(speed, speed, speed, speed,
-        		angle, angle, angle, angle);
+    	fourWheelSteer(angle, angle, angle, angle);
+    	
+    	//TODO Pause here
+    	
+    	fourWheelDrive(speed, speed, speed, speed);
+//        wrapAroundDrive(speed, speed, speed, speed,
+//        		angle, angle, angle, angle);
     }
     
+    /**
+     * Revolves robot around a radius (FRONT_RADIUS)
+     * @param direction
+     */
     public void revolveDrive(Direction direction)
     {
     	final double FRONT_RADIUS = 65;
@@ -481,8 +490,8 @@ public class Drive extends RobotDrive
     	final double BACK_SPEED = 0.4;
     	final double FRONT_SPEED = BACK_SPEED * (FRONT_RADIUS / BACK_RADIUS);
     	// Angles converted from radians to degrees
-    	double frontAngle = (Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH));// * 360 / (Math.PI * 2));
-    	double backAngle = (Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH));// * 360 / (Math.PI * 2));
+    	double frontAngle = Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH);// * 360 / (Math.PI * 2));
+    	double backAngle = Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH);// * 360 / (Math.PI * 2));
     	//System.out.println("Front Angle=" + frontAngle + ", Back Angle=" + backAngle);
     	
     	// Back Left wheel is reversed! ??
@@ -544,13 +553,13 @@ public class Drive extends RobotDrive
      */
     private double wrapAroundDifference(double currentAngle, double targetAngle)
     {
-        double diff = Math.abs(currentAngle - targetAngle);
-        if (diff > 1.0)
+        double difference = Math.abs(currentAngle - targetAngle);
+        if (difference > 1.0)
         {
-            diff = 2.0 - diff;
+            difference = 2.0 - difference;
         }
         
-        return diff;
+        return difference;
     }
 
     /**
