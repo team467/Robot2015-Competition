@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public class Driverstation
 {
-
+    // TODO: Refactor this class into a DriverStation467 class. Current name is too similar
+	// to the WPI Lib DriverStation class
+	
     //Singleton instance variable
     private static Driverstation instance;
 
@@ -88,16 +90,15 @@ public class Driverstation
     public DriveMode getDriveMode()
     {
     	DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
-    	Joystick467 drivestick = Driverstation.getInstance().getDriveJoystick();
     	
-    	if (drivestick.buttonDown(3)) drivemode = DriveMode.CAR;
-    	// if (drivestick.buttonDown(5)) drivemode = DriveMode.CRAB_FA;
-    	if (drivestick.buttonDown(2)) drivemode = DriveMode.TURN;
+    	if (getDriveJoystick().buttonDown(3)) drivemode = DriveMode.CAR;
+    	// if (getDriveJoystick().buttonDown(5)) drivemode = DriveMode.CRAB_FA;
+    	if (getDriveJoystick().buttonDown(2)) drivemode = DriveMode.TURN;
     	
-    	int pov = drivestick.getPOV();
+    	int pov = getDriveJoystick().getPOV();
         if (pov != -1 && pov != 0 && pov != 180) drivemode = DriveMode.STRAFE;
         
-        if (drivestick.buttonDown(5) || drivestick.buttonDown(6)) drivemode = DriveMode.REVOLVE;
+        if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6)) drivemode = DriveMode.REVOLVE;
     	
     	return drivemode;
     } 
@@ -108,7 +109,7 @@ public class Driverstation
      */
     public boolean getSlow()
     {
-        return Driverstation.getInstance().getDriveJoystick().buttonDown(Joystick467.TRIGGER);
+        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
     }    
     
     /**
@@ -117,6 +118,36 @@ public class Driverstation
      */
     public boolean getTurbo()
     {
-        return Driverstation.getInstance().getDriveJoystick().buttonDown(7);
+        return getDriveJoystick().buttonDown(7);
     }
+    
+    // Calibration functions. Calibration is a separate use mode - so the buttons used
+    // here can overlap with those used for the regular drive modes
+    
+    /**
+     * 
+     * @return true if calibration mode selected
+     */
+    public boolean getCalibrate()
+    {
+        return getDriveJoystick().getFlap();
+    }
+    
+    /**
+     * 
+     * @return true if button to confirm calibration selection is pressed
+     */
+    public boolean getCalibrateConfirmSelection()
+    {
+        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
+    }
+    
+    /**
+     * 
+     * @return true if button to enable calibration slow turn mode is pressed
+     */
+    public boolean getCalibrateSlowTurn()
+    {
+        return getDriveJoystick().buttonDown(4);
+    }        
 }

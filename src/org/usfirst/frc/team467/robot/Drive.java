@@ -26,8 +26,6 @@ public class Drive extends RobotDrive
     // TODO - can we calculate the turnAngle based on Robot Dimensions from RobotMap
     private static double turnAngle = 0.183;
     
-    private static double rotations = 0;
-    
     // (Used in car drive).
     private static final double ROBOT_RATIO = (2 * RobotMap.WIDTH) / RobotMap.LENGTH;
 
@@ -45,6 +43,9 @@ public class Drive extends RobotDrive
     private static final double SPEED_TURBO_MODIFIER = 2.0;
     private static final double SPEED_MAX_MODIFIER = 0.8;
     private static final double SPEED_MAX_CHANGE = 0.2;
+    
+    // Speed to use for Strafe and Revolve Drive
+    private static final double SPEED_STRAFE = 0.4;
     
     // Private constructor
     private Drive(Talon frontLeftMotor, Talon backLeftMotor,
@@ -282,23 +283,10 @@ public class Drive extends RobotDrive
 
         double[] driveValues = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
 
-        //TODO: 
-        //angle to steer at
         fourWheelSteer(driveValues[0], driveValues[0], driveValues[0], driveValues[0]);
-        //speed to drive at
         fourWheelDrive(driveValues[1], driveValues[1], driveValues[1], driveValues[1]);
     }
-    
-    /**
-     * @param frontLeftSpeed
-     * @param frontRightSpeed
-     * @param backLeftSpeed
-     * @param backRightSpeed
-     * @param frontLeftAngle
-     * @param frontRightAngle
-     * @param backLeftAngle
-     * @param backRightAngle
-     */
+
     public void wrapAroundDrive(double frontLeftSpeed, double frontRightSpeed,
             double backLeftSpeed, double backRightSpeed,
             double frontLeftAngle, double frontRightAngle,
@@ -340,6 +328,7 @@ public class Drive extends RobotDrive
             }
         }
 
+        // TODO: is there a better way of doing this rather than returning an array?
         double[] product =
         {
             finalAngle, finalSpeed
@@ -460,29 +449,20 @@ public class Drive extends RobotDrive
                 -leftAngleConditional * direction, -rightAngleConditional * direction);
     }
     
+    // TODO
     /**
-     * Slide slowly sideways
      * @param direction
      * @param speed
      */
-    public void strafeDrive(Direction direction, double speed)
+    public void strafeDrive(Direction direction)
     {
-    	// Angle in -1 to 1
-    	double angle = (direction == Direction.RIGHT) ? -0.5 : 0.5;
+    	// Angle in radians
+    	double angle = (direction == Direction.RIGHT) ? (-Math.PI / 2) : (Math.PI / 2);
     	
-    	fourWheelSteer(angle, angle, angle, angle);
-    	
-    	//TODO Pause here
-    	
-    	fourWheelDrive(speed, speed, speed, speed);
-//        wrapAroundDrive(speed, speed, speed, speed,
-//        		angle, angle, angle, angle);
+        wrapAroundDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE,
+        		angle, angle, angle, angle);
     }
     
-    /**
-     * Revolves robot around a radius (FRONT_RADIUS)
-     * @param direction
-     */
     public void revolveDrive(Direction direction)
     {
     	final double FRONT_RADIUS = 65;
@@ -490,8 +470,8 @@ public class Drive extends RobotDrive
     	final double BACK_SPEED = 0.4;
     	final double FRONT_SPEED = BACK_SPEED * (FRONT_RADIUS / BACK_RADIUS);
     	// Angles converted from radians to degrees
-    	double frontAngle = Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH);// * 360 / (Math.PI * 2));
-    	double backAngle = Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH);// * 360 / (Math.PI * 2));
+    	double frontAngle = (Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH));// * 360 / (Math.PI * 2));
+    	double backAngle = (Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH));// * 360 / (Math.PI * 2));
     	//System.out.println("Front Angle=" + frontAngle + ", Back Angle=" + backAngle);
     	
     	// Back Left wheel is reversed! ??
@@ -544,22 +524,19 @@ public class Drive extends RobotDrive
     /**
      * Function to determine the wrapped around difference from the joystick
      * angle to the steering angle.
-     * 
-     * TODO Go the long way if rotations > 1
      *
-     * @param currentAngle The first angle to check against
-     * @param targetAngle The second angle to check against
+     * @param value1 The first angle to check against
+     * @param value2 The second angle to check against
      * @return The normalized wrap around difference
      */
-    private double wrapAroundDifference(double currentAngle, double targetAngle)
+    private double wrapAroundDifference(double value1, double value2)
     {
-        double difference = Math.abs(currentAngle - targetAngle);
-        if (difference > 1.0)
+        double diff = Math.abs(value1 - value2);
+        if (diff > 1.0)
         {
-            difference = 2.0 - difference;
+            diff = 2.0 - diff;
         }
-        
-        return difference;
+        return diff;
     }
 
     /**
