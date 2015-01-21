@@ -304,14 +304,7 @@ public class Drive extends RobotDrive
         fourWheelSteer(frontLeft[0], frontRight[0], backLeft[0], backRight[0]);
         fourWheelDrive(frontLeft[1], frontRight[1], backLeft[1], backLeft[1]);
     }
-    
-    /**
-     * 
-     * @param mapConstant
-     * @param targetAngle
-     * @param targetSpeed
-     * @return product
-     */
+
     private double[] wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
     {
         double finalAngle = targetAngle;
