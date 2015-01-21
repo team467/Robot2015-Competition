@@ -153,7 +153,13 @@ public class Drive extends RobotDrive
             m_safetyHelper.feed();
         }
     }
-
+    
+    /**
+     * @param frontLeft
+     * @param frontRight
+     * @param backLeft
+     * @param backRight
+     */
     private void fourWheelSteer(double frontLeft, double frontRight, double backLeft, double backRight)
     {
         //set the angles to steer
@@ -192,7 +198,10 @@ public class Drive extends RobotDrive
         }
         return returnMotor;
     }
-
+    
+    /**
+     * @param speed
+     */
     public void turnDrive(double speed)
     {
         // Set angles in "turn in place" position
@@ -286,7 +295,18 @@ public class Drive extends RobotDrive
         fourWheelSteer(driveValues[0], driveValues[0], driveValues[0], driveValues[0]);
         fourWheelDrive(driveValues[1], driveValues[1], driveValues[1], driveValues[1]);
     }
-
+    
+    /**
+     * 
+     * @param frontLeftSpeed
+     * @param frontRightSpeed
+     * @param backLeftSpeed
+     * @param backRightSpeed
+     * @param frontLeftAngle
+     * @param frontRightAngle
+     * @param backLeftAngle
+     * @param backRightAngle
+     */
     public void wrapAroundDrive(double frontLeftSpeed, double frontRightSpeed,
             double backLeftSpeed, double backRightSpeed,
             double frontLeftAngle, double frontRightAngle,
@@ -304,7 +324,14 @@ public class Drive extends RobotDrive
         fourWheelSteer(frontLeft[0], frontRight[0], backLeft[0], backRight[0]);
         fourWheelDrive(frontLeft[1], frontRight[1], backLeft[1], backLeft[1]);
     }
-
+    
+    /**
+     * 
+     * @param mapConstant
+     * @param targetAngle
+     * @param targetSpeed
+     * @return product
+     */
     private double[] wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
     {
         double finalAngle = targetAngle;
@@ -452,10 +479,19 @@ public class Drive extends RobotDrive
     	// Angle in radians
     	double angle = (direction == Direction.RIGHT) ? (-Math.PI / 2) : (Math.PI / 2);
     	
-        wrapAroundDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE,
-        		angle, angle, angle, angle);
+    	stop();
+    	fourWheelSteer(angle, angle, angle, angle);
+    	
+    	//TODO: Pause
+    	
+    	fourWheelDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE);
+//        wrapAroundDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE,
+//        		angle, angle, angle, angle);
     }
     
+    /**
+     * @param direction
+     */
     public void revolveDrive(Direction direction)
     {
     	final double FRONT_RADIUS = 65;
@@ -558,7 +594,10 @@ public class Drive extends RobotDrive
 
         fourWheelDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
     }
-
+    
+    /**
+     * Stops the motors
+     */
     public void stop()
     {
         drive(0, null);
