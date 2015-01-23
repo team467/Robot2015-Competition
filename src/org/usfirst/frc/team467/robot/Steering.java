@@ -46,8 +46,7 @@ public class Steering
      * @param sensor - analog sensor channel
      * @param center - sensor reading when wheels point forward
      */
-    Steering(double p, double i, double d,
-             int motor, int sensor, double center)
+    Steering(PID pid, int motor, int sensor, double center)
     {
         // Make steering motor
         steeringMotor = new Talon(motor);        
@@ -59,7 +58,7 @@ public class Steering
         steeringCenter = center;
 
         // Make PID Controller
-        steeringPID = new PIDController(p, i, d, new SteeringPIDSource(), steeringMotor);
+        steeringPID = new PIDController(pid.p, pid.i, pid.d, new SteeringPIDSource(), steeringMotor);
 
         // Set PID Controller settings        
         
@@ -76,7 +75,7 @@ public class Steering
      */
     public double getSensorValue()
     {
-        // Only one of thes return lines should be uncommented. 
+        // Only one of these return lines should be uncommented. 
     	// Change to using the other one if we need to invert steering
         return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
         //return steeringSensor.getAverageValue();

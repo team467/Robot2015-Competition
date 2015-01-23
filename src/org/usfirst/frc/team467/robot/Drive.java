@@ -59,8 +59,7 @@ public class Drive extends RobotDrive
         // takes the arctan of width over length, stores in diagonalAngle
         // theta is the diagonalAngle of the diagonal
         // Length is the wide side
-        // TODO - refactor this code - don't need to calculate this continually
-        // - it's a fixed value
+        // TODO - refactor this code to use the regular Java math objects
         double diagonalAngle = arctanIntegral((RobotMap.LENGTH / RobotMap.WIDTH), 10);
 
         //converts the angle to be between 1 and -1
@@ -76,9 +75,7 @@ public class Drive extends RobotDrive
             double steeringCenter = data.getDouble(RobotMap.STEERING_KEYS[i], 0.0);
             
             // Create Steering Object
-            steering[i] = new Steering(RobotMap.PIDvalues[i][0],
-                    RobotMap.PIDvalues[i][1],
-                    RobotMap.PIDvalues[i][2],
+            steering[i] = new Steering(RobotMap.PIDvalues[i],
                     RobotMap.STEERING_MOTOR_CHANNELS[i],
                     RobotMap.STEERING_SENSOR_CHANNELS[i],
                     steeringCenter);
@@ -290,10 +287,10 @@ public class Drive extends RobotDrive
         // Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
 
-        double[] driveValues = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
+        WheelCorrection corrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
 
-        fourWheelSteer(driveValues[0], driveValues[0], driveValues[0], driveValues[0]);
-        fourWheelDrive(driveValues[1], driveValues[1], driveValues[1], driveValues[1]);
+        fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
+        fourWheelDrive(corrected.speed, corrected.speed, corrected.speed, corrected.speed);
     }
     
     /**
@@ -312,17 +309,29 @@ public class Drive extends RobotDrive
             double frontLeftAngle, double frontRightAngle,
             double backLeftAngle, double backRightAngle)
     {
-        double[] frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, frontLeftAngle, frontLeftSpeed);
-        double[] frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, frontRightAngle, frontRightSpeed);
-        double[] backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, backLeftAngle, backRightSpeed);
-        double[] backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, backRightAngle, backRightSpeed);
+        WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, frontLeftAngle, frontLeftSpeed);
+        WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, frontRightAngle, frontRightSpeed);
+        WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, backLeftAngle, backRightSpeed);
+        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, backRightAngle, backRightSpeed);
 
 //        System.out.println("[DRIVE] FRONTLEFT" + steering[RobotMap.FRONT_LEFT].getSteeringAngle());
 //        System.out.println("[DRIVE] FRONTRIGHT" + steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
 //        System.out.println("[DRIVE] BACKLEFT" + steering[RobotMap.BACK_LEFT].getSteeringAngle());
 //        System.out.println("[DRIVE] BACKRIGHT" + steering[RobotMap.BACK_RIGHT].getSteeringAngle());
-        fourWheelSteer(frontLeft[0], frontRight[0], backLeft[0], backRight[0]);
-        fourWheelDrive(frontLeft[1], frontRight[1], backLeft[1], backLeft[1]);
+        fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
+        fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backLeft.speed);
+    }
+    
+    private class WheelCorrection 
+    {	
+    	public double speed;
+    	public double angle;
+    	
+    	public WheelCorrection(double angleIn, double speedIn)
+    	{
+    		angle = angleIn;
+    		speed = speedIn;
+    	}
     }
     
     /**
@@ -332,29 +341,21 @@ public class Drive extends RobotDrive
      * @param targetSpeed
      * @return product
      */
-    private double[] wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
+    private WheelCorrection wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
     {
-        double finalAngle = targetAngle;
-        double finalSpeed = targetSpeed;
+        WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
 
         if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > 0.5)
         {
-            finalSpeed *= -1;
-            finalAngle -= 1.0;
+            corrected.speed *= -1;
+            corrected.angle -= 1.0;
 
-            if (finalAngle < -1.0)
+            if (corrected.angle < -1.0)
             {
-                finalAngle += 2.0;
+                corrected.angle += 2.0;
             }
         }
-
-        // TODO: is there a better way of doing this rather than returning an array?
-        double[] product =
-        {
-            finalAngle, finalSpeed
-        };
-
-        return product;
+        return corrected;
     }
 
     /**
