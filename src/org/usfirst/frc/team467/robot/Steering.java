@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Steering
 {
-    
-    private static final boolean PID_OUTPUT_INVERT = true;
     // Sensor used to determine angle
     private AnalogInput steeringSensor;
 
@@ -49,7 +47,7 @@ public class Steering
     Steering(PID pid, int motor, int sensor, double center)
     {
         // Make steering motor
-        steeringMotor = new Talon(motor);        
+        steeringMotor = new Talon(motor); 
         
         // Make steering sensor
         steeringSensor = new AnalogInput(sensor);
@@ -75,10 +73,7 @@ public class Steering
      */
     public double getSensorValue()
     {
-        // Only one of these return lines should be uncommented. 
-    	// Change to using the other one if we need to invert steering
-        return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
-        //return steeringSensor.getAverageValue();
+    	return (steeringSensor.getAverageValue());
     }
     
     /**
@@ -136,13 +131,6 @@ public class Steering
         }        
         double output = (sensor) / (RobotMap.STEERING_RANGE / 2);
 
-        // Invert necessary in the code when the values from the sensors
-        // are the opposite sign of the angle needed to command the wheels
-        // TODO - is this necessary?
-        if (PID_OUTPUT_INVERT)
-        {
-            output *= -1;
-        }
         return output;
     }
 
@@ -169,9 +157,6 @@ public class Steering
     {
         double setPoint;
         
-        // TODO - why is this next line necessary?
-        
-        angle *= -1;
         // wrap around values to be between 1 and -1
         if (angle < -1.0)
         {
