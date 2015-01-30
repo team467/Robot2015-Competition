@@ -33,11 +33,7 @@ public class Robot extends IterativeRobot
     
     int session;
     Image frame;
-    
-    /**
-     * Rectangle to be rendered in
-     */
-    NIVision.Rect rect;
+   
     CameraServer cameraServer;
     
     /**
@@ -66,7 +62,6 @@ public class Robot extends IterativeRobot
         session = NIVision.IMAQdxOpenCamera("cam0",
                 NIVision.IMAQdxCameraControlMode.CameraControlModeController);
         NIVision.IMAQdxConfigureGrab(session);
-        rect = new NIVision.Rect(100, 100, 500, 500);
         
         time = System.currentTimeMillis();
 
@@ -143,9 +138,14 @@ public class Robot extends IterativeRobot
 
     private void renderImage()
     {
+    	/**
+         * Rectangle to be rendered in
+         */
+        NIVision.Rect rect = new NIVision.Rect(100, 100, 500, 500);
+    	ShapeMode shape = ShapeMode.SHAPE_OVAL;
     	NIVision.IMAQdxGrab(session, frame, 1);
         NIVision.imaqDrawShapeOnImage(frame, frame, rect,
-                DrawMode.DRAW_VALUE, ShapeMode.SHAPE_OVAL, 0.0f);
+                DrawMode.DRAW_VALUE, shape, 0.0f);
         
         CameraServer.getInstance().setImage(frame);
 		
