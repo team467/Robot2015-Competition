@@ -335,25 +335,35 @@ public class Drive extends RobotDrive
     }
     
     /**
-     * 
-     * @param mapConstant
+     * Only used for steering
+     * @param mapConstant - which wheel pod by channel
      * @param targetAngle
      * @param targetSpeed
-     * @return product
+     * @return corrected
      */
     private WheelCorrection wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
-
+        
+        // if difference from current angle and target angle > quarter rotation
         if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > 0.5)
         {
+        	//reverse
             corrected.speed *= -1;
+            
+            //half rotation counterclockwise
             corrected.angle -= 1.0;
 
             if (corrected.angle < -1.0)
             {
                 corrected.angle += 2.0;
             }
+        }
+        // If outside Range
+        if (Math.abs(steering[mapConstant].getSteeringAngle()) < Steering.RANGE)
+        {
+        	// TODO
+        	//corrected.angle = ;
         }
         return corrected;
     }
@@ -555,14 +565,14 @@ public class Drive extends RobotDrive
      * Function to determine the wrapped around difference from the joystick
      * angle to the steering angle.
      *
-     * @param value1 The first angle to check against
-     * @param value2 The second angle to check against
+     * @param value1 - The first angle to check against
+     * @param value2 - The second angle to check against
      * @return The normalized wrap around difference
      */
     private double wrapAroundDifference(double value1, double value2)
     {
         double diff = Math.abs(value1 - value2);
-        if (diff > 1.0)
+        while (diff > 1.0)
         {
             diff = 2.0 - diff;
         }
