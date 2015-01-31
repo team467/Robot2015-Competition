@@ -512,7 +512,8 @@ public class Drive extends RobotDrive
     	double BLAngle = steering[2].getSensorValue();
     	double BRAngle = steering[3].getSensorValue();
     	
-    	for (double i = 0.5; i >= -1; i -= 0.5){
+    	// Go counterclockwise incrementally
+    	for (double i = -0.5; i >= -1; i -= 0.5){
     		steering[0].setAngle(i);
     		steering[1].setAngle(i);
     		steering[2].setAngle(i);
