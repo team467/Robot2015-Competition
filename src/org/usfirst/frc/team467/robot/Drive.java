@@ -345,31 +345,17 @@ public class Drive extends RobotDrive
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
         
-        boolean inRange = true;
-        double currentAngle = steering[mapConstant].getSteeringAngle();
-//		double diff = currentAngle - targetAngle;
-        
-        // if difference from current angle and target angle > quarter rotation
-        if (wrapAroundDifference(currentAngle, targetAngle) > 0.5 && inRange)
+        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > 0.5)
         {
-        	//reverse
+        	// shortest path to desired angle is to reverse speed and adjust angle - 180
             corrected.speed *= -1;
-            
-            //half rotation counterclockwise
-            corrected.angle -= 1.0;
 
+            corrected.angle -= 1.0;
             if (corrected.angle < -1.0)
             {
                 corrected.angle += 2.0;
             }
         }
-        // If outside Range
-//        if (Math.abs(steering[mapConstant].getSteeringAngle()) < Steering.RANGE)
-//        {
-//        	inRange = false;
-//        	// TODO
-//        	//corrected.angle = ;
-//        }
         return corrected;
     }
 
