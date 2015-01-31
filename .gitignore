@@ -2,3 +2,10 @@
 /dist/
 /build/
 sysProps.xml
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
