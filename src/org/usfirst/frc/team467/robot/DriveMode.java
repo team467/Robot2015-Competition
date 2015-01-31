@@ -7,5 +7,6 @@ public enum DriveMode
 	CRAB_NO_FA, // Crab Drive - No Field Aligment
 	TURN, 		// Turn in Place
 	STRAFE, 	// Strafe Drive
-	REVOLVE;	// Revolve Drive  (rotate around a center outside robot)
+	REVOLVE,	// Revolve Drive  (rotate around a center outside robot)
+	REWIND;		// Unwind the wheelpods
 }

@@ -159,6 +159,13 @@ public class Robot extends IterativeRobot
     	
     	switch (driverstation.getDriveMode())
     	{
+    		case REWIND:
+    			if (driverstation.getDriveJoystick().buttonDown(7))
+    			{
+    				drive.rewindDrive();
+    			}
+    			break;
+    		
     		case REVOLVE:
     		{
     			Direction direction = Direction.LEFT;

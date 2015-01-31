@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Steering
 {
+	public static int RANGE;
+	
     // Sensor used to determine angle
     private AnalogInput steeringSensor;
 
@@ -47,15 +49,15 @@ public class Steering
     /**
      * Constructor for steering subsystem
      *
-     * @param p - P parameter to use in PID
-     * @param i - I parameter to use in PID
-     * @param d - D parameter to use in PID
+     * @param pid - From the PIDvalues array
      * @param motor - motor channel
      * @param sensor - analog sensor channel
      * @param center - sensor reading when wheels point forward
      */
     Steering(PID pid, int motor, int sensor, double center)
     {
+    	RANGE = 2;
+    	
         // Make steering motor
         steeringMotor = new Talon(motor); 
         
@@ -158,25 +160,38 @@ public class Steering
         System.out.print(" S: " + steeringPID.getSetpoint());
         System.out.println();
     }
-
+    
     /**
      * Set angle of front steering. -1.0 = 180 degrees Left, 0.0 = center, 1.0 = 180 degrees right
      * @param angle - any value between -1 and 1
      */
     public void setAngle(double angle)
     {
+    	final double MIN_ROTATION = -1.0;
+    	final double MAX_ROTATION = 1.0;
+    	final double FULL_ROTATION = MAX_ROTATION - MIN_ROTATION;
+    	
+    	// steeringMotor.getPosition();
         double setPoint;
         
-        // wrap around values to be between 1 and -1
-        if (angle < -1.0)
-        {
-            angle += 2.0;
-        }
-        if (angle > 1.0)
-        {
-            angle -= 2.0;
-        }
-
+        // Assumed to already be from -1 to 1
+//        double currentAngle = getSteeringAngle();
+        
+//        double diff = currentAngle - angle;
+        
+        	// normalize values to be in range
+            while (angle < MIN_ROTATION) // Too far counterclockwise
+            {
+            	// clockwise
+                angle += FULL_ROTATION;
+            }
+            
+            while (angle > MAX_ROTATION) // Too far clockwise
+            {
+            	// counterclockwise
+                angle -= FULL_ROTATION;
+            }
+            
         // Calculate desired setpoint for PID based on known center position
         setPoint = steeringCenter + (angle * (RobotMap.STEERING_RANGE / 2));
 

@@ -109,6 +109,8 @@ public class Driverstation
         if (pov != -1 && pov != 0 && pov != 180) drivemode = DriveMode.STRAFE;
         
         if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6)) drivemode = DriveMode.REVOLVE;
+        
+        if (getDriveJoystick().buttonDown(6)) drivemode = DriveMode.REWIND;
     	
     	return drivemode;
     } 

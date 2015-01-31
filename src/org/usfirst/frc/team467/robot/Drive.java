@@ -345,8 +345,12 @@ public class Drive extends RobotDrive
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
         
+        boolean inRange = true;
+        double currentAngle = steering[mapConstant].getSteeringAngle();
+//		double diff = currentAngle - targetAngle;
+        
         // if difference from current angle and target angle > quarter rotation
-        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > 0.5)
+        if (wrapAroundDifference(currentAngle, targetAngle) > 0.5 && inRange)
         {
         	//reverse
             corrected.speed *= -1;
@@ -360,11 +364,12 @@ public class Drive extends RobotDrive
             }
         }
         // If outside Range
-        if (Math.abs(steering[mapConstant].getSteeringAngle()) < Steering.RANGE)
-        {
-        	// TODO
-        	//corrected.angle = ;
-        }
+//        if (Math.abs(steering[mapConstant].getSteeringAngle()) < Steering.RANGE)
+//        {
+//        	inRange = false;
+//        	// TODO
+//        	//corrected.angle = ;
+//        }
         return corrected;
     }
 
@@ -500,7 +505,22 @@ public class Drive extends RobotDrive
 //        		angle, angle, angle, angle);
     }
     
-    /**
+    public void rewindDrive()
+    {
+    	double FLAngle = steering[0].getSensorValue();
+    	double FRAngle = steering[1].getSensorValue();
+    	double BLAngle = steering[2].getSensorValue();
+    	double BRAngle = steering[3].getSensorValue();
+    	
+    	for (double i = 0.5; i >= -1; i -= 0.5){
+    		steering[0].setAngle(i);
+    		steering[1].setAngle(i);
+    		steering[2].setAngle(i);
+    		steering[3].setAngle(i);
+    	}
+	}
+
+	/**
      * @param direction
      */
     public void revolveDrive(Direction direction)
