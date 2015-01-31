@@ -61,7 +61,7 @@ public class Driverstation
     }
 
     /**
-     * Gets left joystick instance.
+     * Gets joystick instance used by driver.
      *
      * @return
      */
@@ -71,7 +71,7 @@ public class Driverstation
     }
 
     /**
-     * Gets right joystick instance.
+     * Gets  joystick instance used by navigator.
      *
      * @return
      */
@@ -80,6 +80,16 @@ public class Driverstation
         return JoystickRight;
     }
 
+    /**
+     * Gets joystick instance used for calibration.
+     *
+     * @return
+     */
+    public Joystick467 getCalibrationJoystick()
+    {
+        return JoystickLeft;
+    }
+    
     // All button mappings are accessed through the functions below
     
     /**
@@ -130,7 +140,7 @@ public class Driverstation
      */
     public boolean getCalibrate()
     {
-        return getDriveJoystick().getFlap();
+        return getCalibrationJoystick().getFlap();
     }
     
     /**
@@ -139,7 +149,7 @@ public class Driverstation
      */
     public boolean getCalibrateConfirmSelection()
     {
-        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
+        return getCalibrationJoystick().buttonDown(Joystick467.TRIGGER);
     }
     
     /**
@@ -148,6 +158,6 @@ public class Driverstation
      */
     public boolean getCalibrateSlowTurn()
     {
-        return getDriveJoystick().buttonDown(4);
+        return getCalibrationJoystick().buttonDown(4);
     }        
 }

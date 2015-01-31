@@ -10,12 +10,12 @@ package org.usfirst.frc.team467.robot;
  */
 public class Calibration
 {
-    //Creates objects
+    // Creates objects
 
     private static Drive drive;
     private static DataStorage data;
 
-    //Incremented angle used for calibrating wheels
+    // Incremented angle used for calibrating wheels
     private static double calibrationAngle = 0.0;
     
     /**
@@ -23,7 +23,7 @@ public class Calibration
      */
     public static void init()
     {
-        //makes the objects
+        // makes the objects
         drive = Drive.getInstance();
         data = DataStorage.getInstance();
     }
@@ -33,9 +33,9 @@ public class Calibration
      *
      * @param motorId The id of the motor to calibrate
      */
-    public static void updateSteeringCalibrate(int motorId, Joystick467 joy)
+    public static void updateSteeringCalibrate(int motorId)
     {
-        calibrationAngle = getCalibrationAngle(joy, calibrationAngle);
+        calibrationAngle = getCalibrationAngle(calibrationAngle);
         
         if (calibrationAngle > 1.0)
         {
@@ -54,14 +54,14 @@ public class Calibration
         {
             double currentAngle = drive.getSteeringAngle(motorId);
 
-            //Write data to robot
+            // Write data to robot
             data.putDouble(RobotMap.STEERING_KEYS[motorId], currentAngle);
             data.save();
 
-            //Set new steering center
+            // Set new steering center
             drive.setSteeringCenter(motorId, currentAngle);
 
-            //Reset calibration angle
+            // Reset calibration angle
             calibrationAngle = 0.0;
         }
     }
@@ -72,11 +72,13 @@ public class Calibration
      * @param prevSelectedWheel previously selected wheel
      * @return int val of which wheel to select
      */
-    public static int getWheel(Joystick467 joy, int prevSelectedWheel)
+    public static int getWheel(int prevSelectedWheel)
     {
-        double stickAngle = joy.getStickAngle();
-        //Branch into motor being calibrated
-        if (joy.getStickDistance() > 0.5)
+    	Joystick467 joystick = Driverstation.getInstance().getCalibrationJoystick();
+        double stickAngle = joystick.getStickAngle();
+        
+        // Select motor being calibrated
+        if (joystick.getStickDistance() > 0.5)
         {
             if (stickAngle < 0)
             {
@@ -104,7 +106,7 @@ public class Calibration
                 }
             }
         }
-        //no new selected, return previous wheel selected
+        // No new selected, return previous wheel selected
         return prevSelectedWheel;
     }
     
@@ -114,15 +116,15 @@ public class Calibration
      * @param prevCalibrationAngle previous angle to update
      * @return angle for setting the angle
      */
-    private static double getCalibrationAngle(Joystick467 joy, double prevCalibrationAngle)
+    private static double getCalibrationAngle(double prevCalibrationAngle)
     {
         
         // If slow pressed on stick is pressed, slow down wheel calibration.
         double rateMultiplier = (Driverstation.getInstance().getCalibrateSlowTurn()) ? getCalibrationSlowTurnRate() : 1;
 
-        //Drive motor based on twist angle
-        //Increase wheel angle by a small amount based on joystick twist
-        prevCalibrationAngle += (joy.getTwist() / 100.0) * rateMultiplier;
+        // Drive motor based on twist angle
+        // Increase wheel angle by a small amount based on joystick twist
+        prevCalibrationAngle += (Driverstation.getInstance().getCalibrationJoystick().getTwist() / 100.0) * rateMultiplier;
         
         return prevCalibrationAngle;        
     }
@@ -136,7 +138,7 @@ public class Calibration
         return 0.4;
     }
     
-    // this is a static variable to select the wheel to calibrate.
+    // This is a static variable to define the wheel being calibrated.
     private static int calibrateWheelSelect = 0;
 
     /**
@@ -144,9 +146,8 @@ public class Calibration
      */
     public static void updateCalibrate()
     {
-    	Joystick467 joy = Driverstation.getInstance().getDriveJoystick();
-        calibrateWheelSelect = Calibration.getWheel(joy, calibrateWheelSelect);
-        updateSteeringCalibrate(calibrateWheelSelect, joy);
+        calibrateWheelSelect = Calibration.getWheel(calibrateWheelSelect);
+        updateSteeringCalibrate(calibrateWheelSelect);
     }
     
 }
