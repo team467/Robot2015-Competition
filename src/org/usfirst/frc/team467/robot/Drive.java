@@ -351,7 +351,7 @@ public class Drive extends RobotDrive
             corrected.speed *= -1;
 
             corrected.angle -= 1.0;
-            if (corrected.angle < -1.0)
+            while (corrected.angle < -1.0)
             {
                 corrected.angle += 2.0;
             }
