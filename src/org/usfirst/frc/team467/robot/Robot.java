@@ -6,8 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package org.usfirst.frc.team467.robot;
 
-import LoggingMain;
-
 import org.apache.log4j.Logger;
 
 import com.ni.vision.NIVision;
@@ -61,16 +59,16 @@ public class Robot extends IterativeRobot
         
         drive = Drive.getInstance();
         
-        cameraServer = CameraServer.getInstance();
-        cameraServer.setQuality(50);
-        cameraServer.startAutomaticCapture("cam0");
-        
-        frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-        // the camera name (ex "cam0") can be found through the roborio web interface
-        session = NIVision.IMAQdxOpenCamera("cam0",
-                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(session);
+//        cameraServer = CameraServer.getInstance();
+//        cameraServer.setQuality(50);
+//        cameraServer.startAutomaticCapture("cam0");
+//        
+//        frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+//
+//        // the camera name (ex "cam0") can be found through the roborio web interface
+//        session = NIVision.IMAQdxOpenCamera("cam0",
+//                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+//        NIVision.IMAQdxConfigureGrab(session);
         
         time = System.currentTimeMillis();
    
@@ -80,6 +78,7 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
     	LOGGER.info("Robot disabled");
+    	LOGGER.debug("Robot disabled");
     }
 
     /**
@@ -94,7 +93,7 @@ public class Robot extends IterativeRobot
      */
     public void teleopInit()
     {
-    	NIVision.IMAQdxStartAcquisition(session);
+//    	NIVision.IMAQdxStartAcquisition(session);
     }
 
     /**
