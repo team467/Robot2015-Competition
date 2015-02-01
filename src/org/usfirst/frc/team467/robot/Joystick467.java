@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Joystick467
 {
-
     private Joystick joystick;
     private boolean[] buttons = new boolean[12];        // array of current button states
     private boolean[] prevButtons = new boolean[12];    // array of previous button states, involved in edge detection.
@@ -32,9 +31,6 @@ public class Joystick467
     private static final int TWIST_AXIS = 2;
     private static final int FLAP_AXIS = 3;
     private static final int POV_INDEX = 0;
-    
-    //private static final int HAT_AXIS_X = 4;
-    //private static final int HAT_AXIS_Y = 5;
 
     /**
      * Create a new joystick on a given channel
@@ -54,8 +50,6 @@ public class Joystick467
     {
         return joystick;
     }
-    
-    
 
     /**
      * Read all inputs from the underlying joystick object.
@@ -63,13 +57,13 @@ public class Joystick467
     public void readInputs()
     {
         // read all buttons
-        for (int i = 1; i <= 12; i++)
+        for (int i = 0; i < 12; i++)
         {
-            prevButtons[i - 1] = buttons[i - 1];
-            buttons[i - 1] = joystick.getRawButton(i);
+            prevButtons[i] = buttons[i];
+            buttons[i] = joystick.getRawButton(i+1);
         }
 
-        //Read Joystick Axes
+        // Read Joystick Axes
         flap = joystick.getRawAxis(FLAP_AXIS) < 0.0;
         stickY = accelerateJoystickInput(joystick.getRawAxis(AXIS_Y));
         stickX = accelerateJoystickInput(joystick.getRawAxis(AXIS_X));
@@ -86,7 +80,6 @@ public class Joystick467
      */
     public boolean buttonDown(int button)
     {
-//        return buttons[button - 1] && prevButtons[button - 1];
         return joystick.getRawButton(button);
     }
         

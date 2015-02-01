@@ -48,8 +48,7 @@ public class DriverStation467
 
     /**
      * Read all Robot Inputs. Typically, this is called once per iteration of
-     * the main event loop. Any soft filtering of inputs to remove noise or
-     * implement non-linear acceleration is also done here.
+     * the main event loop. 
      */
     public void readInputs()
     {
@@ -68,7 +67,7 @@ public class DriverStation467
     }
 
     /**
-     * Gets  joystick instance used by navigator.
+     * Get joystick instance used by navigator.
      *
      * @return
      */
@@ -78,7 +77,7 @@ public class DriverStation467
     }
 
     /**
-     * Gets joystick instance used for calibration.
+     * Get joystick instance used for calibration.
      *
      * @return
      */

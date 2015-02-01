@@ -47,7 +47,7 @@ public class Robot extends IterativeRobot
      */
     public void robotInit()
     {
-        //Make robot objects
+        // Make robot objects
         driverstation = DriverStation467.getInstance();
         
         drive = Drive.getInstance();
@@ -64,8 +64,7 @@ public class Robot extends IterativeRobot
         NIVision.IMAQdxConfigureGrab(session);
         
         time = System.currentTimeMillis();
-
-//        
+   
         Calibration.init();        
     }
 
@@ -78,8 +77,6 @@ public class Robot extends IterativeRobot
      */
     public void autonomousInit()
     {
-        // Read driverstation inputs
-        driverstation.readInputs();
     }
 
     /**
@@ -110,7 +107,6 @@ public class Robot extends IterativeRobot
     public void autonomousPeriodic()
     {
     }
-
     
     /**
      * This function is called periodically during operator control
@@ -151,12 +147,12 @@ public class Robot extends IterativeRobot
 		
 	}
 
-	private void updateDrive()
+	/**
+	 * called once per iteration to perform any necessary updates to the drive
+	 * system.
+	 */
+    private void updateDrive()
     {
-        ///
-        /// Update Drive
-        ///
-    	
     	switch (driverstation.getDriveMode())
     	{
     		case REWIND:
