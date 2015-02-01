@@ -6,6 +6,10 @@
 /*----------------------------------------------------------------------------*/
 package org.usfirst.frc.team467.robot;
 
+import LoggingMain;
+
+import org.apache.log4j.Logger;
+
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
@@ -24,7 +28,9 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot
 {
-    public static final boolean SINGLE_STICK_DRIVE = false;
+	private static final Logger LOGGER = Logger.getLogger(Robot.class);
+
+	public static final boolean SINGLE_STICK_DRIVE = false;
 
     //Robot objects
     private DriverStation467 driverstation;
@@ -47,6 +53,9 @@ public class Robot extends IterativeRobot
      */
     public void robotInit()
     {
+    	// Initialize logging framework.
+    	Logging.init();
+    	
         // Make robot objects
         driverstation = DriverStation467.getInstance();
         
@@ -70,6 +79,7 @@ public class Robot extends IterativeRobot
 
     public void disabledInit()
     {
+    	LOGGER.info("Robot disabled");
     }
 
     /**

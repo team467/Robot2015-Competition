@@ -9,3 +9,5 @@ sysProps.xml
 *.war
 *.ear
 
+# Allow this logging jar file
+!log4j*.jar
