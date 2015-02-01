@@ -137,7 +137,7 @@ public class Robot extends IterativeRobot
         }
         
         
-        renderImage();
+//        renderImage();
         
     }
 
@@ -154,21 +154,18 @@ public class Robot extends IterativeRobot
         
         CameraServer.getInstance().setImage(frame);
 		
-	}
+    }
 
-	/**
-	 * called once per iteration to perform any necessary updates to the drive
-	 * system.
-	 */
+    /**
+     * called once per iteration to perform any necessary updates to the drive
+     * system.
+     */
     private void updateDrive()
     {
     	switch (driverstation.getDriveMode())
     	{
     		case REWIND:
-    			if (driverstation.getDriveJoystick().buttonDown(7))
-    			{
-    				drive.rewindDrive();
-    			}
+    			drive.rewindDrive();
     			break;
     		
     		case REVOLVE:
