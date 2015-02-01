@@ -50,7 +50,7 @@ public class Calibration
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
 
         // Write and set new center if trigger is pressed
-        if (Driverstation.getInstance().getCalibrateConfirmSelection())
+        if (DriverStation467.getInstance().getCalibrateConfirmSelection())
         {
             double currentAngle = drive.getSteeringAngle(motorId);
 
@@ -74,7 +74,7 @@ public class Calibration
      */
     public static int getWheel(int prevSelectedWheel)
     {
-    	Joystick467 joystick = Driverstation.getInstance().getCalibrationJoystick();
+    	Joystick467 joystick = DriverStation467.getInstance().getCalibrationJoystick();
         double stickAngle = joystick.getStickAngle();
         
         // Select motor being calibrated
@@ -120,11 +120,11 @@ public class Calibration
     {
         
         // If slow pressed on stick is pressed, slow down wheel calibration.
-        double rateMultiplier = (Driverstation.getInstance().getCalibrateSlowTurn()) ? getCalibrationSlowTurnRate() : 1;
+        double rateMultiplier = (DriverStation467.getInstance().getCalibrateSlowTurn()) ? getCalibrationSlowTurnRate() : 1;
 
         // Drive motor based on twist angle
         // Increase wheel angle by a small amount based on joystick twist
-        prevCalibrationAngle += (Driverstation.getInstance().getCalibrationJoystick().getTwist() / 100.0) * rateMultiplier;
+        prevCalibrationAngle += (DriverStation467.getInstance().getCalibrationJoystick().getTwist() / 100.0) * rateMultiplier;
         
         return prevCalibrationAngle;        
     }

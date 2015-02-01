@@ -27,7 +27,7 @@ public class Robot extends IterativeRobot
     public static final boolean SINGLE_STICK_DRIVE = false;
 
     //Robot objects
-    private Driverstation driverstation;
+    private DriverStation467 driverstation;
 
     private Drive drive;
     
@@ -48,7 +48,7 @@ public class Robot extends IterativeRobot
     public void robotInit()
     {
         //Make robot objects
-        driverstation = Driverstation.getInstance();
+        driverstation = DriverStation467.getInstance();
         
         drive = Drive.getInstance();
         

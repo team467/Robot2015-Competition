@@ -243,11 +243,11 @@ public class Drive extends RobotDrive
     {
     	// Apply speed modifiers first
     	
-        if (Driverstation.getInstance().getSlow())
+        if (DriverStation467.getInstance().getSlow())
         {
             speed *= SPEED_SLOW_MODIFIER;
         } 
-        else if (Driverstation.getInstance().getTurbo())
+        else if (DriverStation467.getInstance().getTurbo())
 		{
 			speed *= SPEED_TURBO_MODIFIER;
 		}

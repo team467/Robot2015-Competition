@@ -3,31 +3,28 @@ package org.usfirst.frc.team467.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
- * Singleton class to handle driverstation I/O on Team467 2014 Robot
+ * Singleton class to handle driverstation I/O on Team467 Robot
  *
  * @author Team467
  */
-public class Driverstation
-{
-    // TODO: Refactor this class into a DriverStation467 class. Current name is too similar
-	// to the WPI Lib DriverStation class
-	
+public class DriverStation467
+{	
     //Singleton instance variable
-    private static Driverstation instance;
+    private static DriverStation467 instance;
 
     //Driverstation objects
     private DriverStation driverstation;
-
+    
     //Joystick objects
-    private Joystick467 JoystickLeft;
-    private Joystick467 JoystickRight;
+    private Joystick467 joystick1;
+    private Joystick467 joystick2;
 
     //Singleton so constructor is private
-    private Driverstation()
+    private DriverStation467()
     {
         driverstation = DriverStation.getInstance();
-        JoystickLeft = new Joystick467(0);
-        JoystickRight = new Joystick467(1);
+        joystick1 = new Joystick467(0);
+        joystick2 = new Joystick467(1);
     }
 
     /**
@@ -35,11 +32,11 @@ public class Driverstation
      *
      * @return
      */
-    public static Driverstation getInstance()
+    public static DriverStation467 getInstance()
     {
         if (instance == null)
         {
-            instance = new Driverstation();
+            instance = new DriverStation467();
         }
         return instance;
     }
@@ -56,8 +53,8 @@ public class Driverstation
      */
     public void readInputs()
     {
-        JoystickLeft.readInputs();
-        JoystickRight.readInputs();
+        joystick1.readInputs();
+        joystick2.readInputs();
     }
 
     /**
@@ -67,7 +64,7 @@ public class Driverstation
      */
     public Joystick467 getDriveJoystick()
     {
-        return JoystickLeft;
+        return joystick1;
     }
 
     /**
@@ -77,7 +74,7 @@ public class Driverstation
      */
     public Joystick467 getNavJoystick()
     {
-        return JoystickRight;
+        return joystick2;
     }
 
     /**
@@ -87,7 +84,7 @@ public class Driverstation
      */
     public Joystick467 getCalibrationJoystick()
     {
-        return JoystickLeft;
+        return joystick1;
     }
     
     // All button mappings are accessed through the functions below
