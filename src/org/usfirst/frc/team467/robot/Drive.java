@@ -416,9 +416,6 @@ public class Drive extends RobotDrive
      */
     public void carDrive(double turnAngle, double speed)
     {
-        // Dampen speed.
-        speed = limitSpeed(speed);
-
         // 2pi, for convenience.
         double PI2 = Math.PI * 2;
 
@@ -471,24 +468,19 @@ public class Drive extends RobotDrive
                 -leftAngleConditional * direction, -rightAngleConditional * direction);
     }
     
-    // TODO
     /**
+     * Drive left or right at a fixed speed.
+     * 
      * @param direction
      * @param speed
      */
     public void strafeDrive(Direction direction)
     {
     	// Angle in radians
-    	double angle = (direction == Direction.RIGHT) ? (-Math.PI / 2) : (Math.PI / 2);
+    	double angle = (direction == Direction.RIGHT) ? -0.5 : 0.5;
     	
-    	stop();
-    	fourWheelSteer(angle, angle, angle, angle);
-    	
-    	//TODO: Pause
-    	
+    	fourWheelSteer(angle, angle, angle, angle);    	
     	fourWheelDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE);
-//        wrapAroundDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE,
-//        		angle, angle, angle, angle);
     }
     
     public void rewindDrive()
@@ -521,19 +513,15 @@ public class Drive extends RobotDrive
     	double backAngle = (Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH));// * 360 / (Math.PI * 2));
     	//System.out.println("Front Angle=" + frontAngle + ", Back Angle=" + backAngle);
     	
-    	// Back Left wheel is reversed! ??
     	if (direction == Direction.LEFT)
     	{
     		fourWheelDrive(-FRONT_SPEED, FRONT_SPEED, -BACK_SPEED, BACK_SPEED);
-    		fourWheelSteer(-frontAngle, frontAngle, -backAngle, backAngle);
-//    		wrapAroundDrive(-SPEED, SPEED, -SPEED, SPEED,
-//            		-frontAngle, frontAngle, -backAngle, backAngle);
-    	} else {
+    	} 
+    	else 
+    	{
     		fourWheelDrive(FRONT_SPEED, -FRONT_SPEED, BACK_SPEED, -BACK_SPEED);
-    		fourWheelSteer(-frontAngle, frontAngle, -backAngle, backAngle);
-//    		wrapAroundDrive(SPEED, -SPEED, SPEED, -SPEED,
-//            		-frontAngle, frontAngle, -backAngle, backAngle);
     	}
+		fourWheelSteer(-frontAngle, frontAngle, -backAngle, backAngle);
     }
 
     /**
