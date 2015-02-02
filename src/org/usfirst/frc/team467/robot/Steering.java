@@ -54,8 +54,6 @@ public class Steering
      */
     Steering(PID pid, int motor, int sensor, double center)
     {
-    	RANGE = 2;
-    	
         // Make steering motor
         steeringMotor = new Talon(motor); 
         
