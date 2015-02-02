@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Steering
 {
-	public static int RANGE;
-	
     // Sensor used to determine angle
     private AnalogInput steeringSensor;
 
@@ -171,26 +169,23 @@ public class Steering
     	final double MAX_ROTATION = 1.0;
     	final double FULL_ROTATION = MAX_ROTATION - MIN_ROTATION;
     	
-    	// steeringMotor.getPosition();
         double setPoint;
         
-        	// normalize values to be in range
-            while (angle < MIN_ROTATION) // Too far counterclockwise
-            {
-            	// clockwise
-                angle += FULL_ROTATION;
-            }
+        // normalize values to be in range of MIN_ROTATION to MAX_ROTATION
+        while (angle < MIN_ROTATION) 
+        {
+            angle += FULL_ROTATION;
+        }
             
-            while (angle > MAX_ROTATION) // Too far clockwise
-            {
-            	// counterclockwise
-                angle -= FULL_ROTATION;
-            }
+        while (angle > MAX_ROTATION) 
+        {
+            angle -= FULL_ROTATION;
+        }
             
         // Calculate desired setpoint for PID based on known center position
         setPoint = steeringCenter + (angle * (RobotMap.STEERING_RANGE / 2));
 
-        //Normalize setPoint into the 0 to RobotMap.STEERING_RANGE range
+        // Normalize setPoint into the 0 to RobotMap.STEERING_RANGE range
         if (setPoint < 0.0)
         {
             setPoint += RobotMap.STEERING_RANGE;
