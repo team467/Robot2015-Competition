@@ -14,17 +14,14 @@ public class Drive extends RobotDrive
     //Single instance of this class
     private static Drive instance = null;
 
-    private static final int TANGENT_RESOLUTION = 200;
-
     //Steering objects
     private Steering[] steering;
 
     //Data storage object
     private DataStorage data;
 
-    // Angle to turn at when rotating in place
-    // TODO - can we calculate the turnAngle based on Robot Dimensions from RobotMap
-    private static double turnAngle = 0.183;
+    // Angle to turn at when rotating in place - initialized in constructor
+    private static double turnAngle;
     
     // (Used in car drive).
     private static final double ROBOT_RATIO = (2 * RobotMap.WIDTH) / RobotMap.LENGTH;
@@ -56,16 +53,11 @@ public class Drive extends RobotDrive
         // Make objects
         data = DataStorage.getInstance();
         
-        // takes the arctan of width over length, stores in diagonalAngle
-        // theta is the diagonalAngle of the diagonal
+        // takes the arctan of width over length, normalizes to be between 1 and -1
         // Length is the wide side
-        // TODO - refactor this code to use the regular Java math objects
-        double diagonalAngle = arctanIntegral((RobotMap.LENGTH / RobotMap.WIDTH), 10);
+        turnAngle = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH) / Math.PI;
 
-        //converts the angle to be between 1 and -1
-        turnAngle = diagonalAngle / (Math.PI);
-
-        //Make steering array
+        // Make steering array
         steering = new Steering[4];
 
         // Make all steering objects
@@ -166,35 +158,35 @@ public class Drive extends RobotDrive
         steering[RobotMap.BACK_RIGHT].setAngle(backRight);
     }
 
-    /**
-     * Get the Talon drive motor object for the specified motor (use RobotMap
-     * constants)
-     *
-     * @param motor The motor to get
-     * @return One of the four Talon drive motors
-     */
-    private Talon getDriveMotor(int motor)
-    {
-        Talon returnMotor;
-        switch (motor)
-        {
-            case RobotMap.FRONT_LEFT:
-                returnMotor = (Talon) m_frontLeftMotor;
-                break;
-            case RobotMap.FRONT_RIGHT:
-                returnMotor = (Talon) m_frontRightMotor;
-                break;
-            case RobotMap.BACK_LEFT:
-                returnMotor = (Talon) m_rearLeftMotor;
-                break;
-            case RobotMap.BACK_RIGHT:
-                returnMotor = (Talon) m_rearRightMotor;
-                break;
-            default:
-                returnMotor = null;
-        }
-        return returnMotor;
-    }
+//    /**
+//     * Get the Talon drive motor object for the specified motor (use RobotMap
+//     * constants)
+//     *
+//     * @param motor The motor to get
+//     * @return One of the four Talon drive motors
+//     */
+//    private Talon getDriveMotor(int motor)
+//    {
+//        Talon returnMotor;
+//        switch (motor)
+//        {
+//            case RobotMap.FRONT_LEFT:
+//                returnMotor = (Talon) m_frontLeftMotor;
+//                break;
+//            case RobotMap.FRONT_RIGHT:
+//                returnMotor = (Talon) m_frontRightMotor;
+//                break;
+//            case RobotMap.BACK_LEFT:
+//                returnMotor = (Talon) m_rearLeftMotor;
+//                break;
+//            case RobotMap.BACK_RIGHT:
+//                returnMotor = (Talon) m_rearRightMotor;
+//                break;
+//            default:
+//                returnMotor = null;
+//        }
+//        return returnMotor;
+//    }
     
     /**
      * @param speed
@@ -375,38 +367,12 @@ public class Drive extends RobotDrive
     }
 
     /**
-     * An integral approximation of the inverse tangent function, implemented
-     * using Riemann sums. Used in car drive.
-     *
-     * @param x the x in arctan(x)
-     * @param resolution the accuracy of the approximation. the higher this is,
-     * the better the approximation.
-     * @return arctan(x)
-     */
-    public double arctanIntegral(double x, int resolution)
-    {
-        double sum = 0;
-        double slope = x / resolution;
-
-        for (int n = 0; n <= resolution; n++)
-        {
-            double slice = slope * n;
-
-            sum += 1 / (1 + slice * slice);
-        }
-
-        return sum * slope;
-    }
-
-    /**
      * Yo dog, I heard you like to drive, so I put a car in yo car so you can
      * drive while you drive.
      *
      * Drives the robot similarly to a car. Essentially works by angling the
      * wheels so they are tangent to a circular path, and driving the wheels at
      * the appropriate speed so they do not drag.
-     *
-     * TODO: Make a method that isn't slow as balls.
      *
      * See RobotMain for controls.
      *
@@ -439,8 +405,7 @@ public class Drive extends RobotDrive
         //   will all intersect at the same point. This ensures that all the wheels will
         //   follow a circular path.
         double innerTurnAngle = absTurnAngle / 2;
-        // TODO: Replace arctanIntegral with real Java Math functions
-        double outerTurnAngle = (Math.PI / 2 - arctanIntegral(Math.tan((Math.PI - turnAngleRadians) / 2) + ROBOT_RATIO, TANGENT_RESOLUTION)) / PI2;
+        double outerTurnAngle = (Math.PI / 2 - Math.atan(Math.tan((Math.PI - turnAngleRadians) / 2) + ROBOT_RATIO)) / PI2;
 
         // Conditional operators for left and right angles, addressing the direction
         //   of the turn.
@@ -485,10 +450,10 @@ public class Drive extends RobotDrive
     
     public void rewindDrive()
     {
-    	double FLAngle = steering[0].getSensorValue();
-    	double FRAngle = steering[1].getSensorValue();
-    	double BLAngle = steering[2].getSensorValue();
-    	double BRAngle = steering[3].getSensorValue();
+//    	double FLAngle = steering[0].getSensorValue();
+//    	double FRAngle = steering[1].getSensorValue();
+//    	double BLAngle = steering[2].getSensorValue();
+//    	double BRAngle = steering[3].getSensorValue();
     	
     	// Go counterclockwise incrementally
     	for (double i = -0.5; i >= -1; i -= 0.5){
@@ -509,9 +474,9 @@ public class Drive extends RobotDrive
     	final double BACK_SPEED = 0.4;
     	final double FRONT_SPEED = BACK_SPEED * (FRONT_RADIUS / BACK_RADIUS);
     	// Angles converted from radians to degrees
-    	double frontAngle = (Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH));// * 360 / (Math.PI * 2));
-    	double backAngle = (Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH));// * 360 / (Math.PI * 2));
-    	//System.out.println("Front Angle=" + frontAngle + ", Back Angle=" + backAngle);
+    	double frontAngle = (Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH)); // * 360 / (Math.PI * 2));
+    	double backAngle = (Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH));   // * 360 / (Math.PI * 2));
+//    	 System.out.println("Front Angle=" + frontAngle + ", Back Angle=" + backAngle);
     	
     	if (direction == Direction.LEFT)
     	{
