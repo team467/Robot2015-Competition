@@ -67,7 +67,6 @@ public class Steering
         steeringPID = new PIDController(pid.p, pid.i, pid.d, new SteeringPIDSource(), steeringMotor);
 
         // Set PID Controller settings        
-        
         steeringPID.setInputRange(0.0, RobotMap.STEERING_RANGE);
         steeringPID.setSetpoint(steeringCenter);
         steeringPID.setContinuous(true);
@@ -119,7 +118,7 @@ public class Steering
     }
 
     /**
-     * Get the sensor angle normalized to a -1.0 to 1.0 range
+     * Get the sensor angle normalized to a -PI to +PI range
      * Implements the steering center point to give an angle accurate to the 
      * robot's alignment.
      *
@@ -129,15 +128,15 @@ public class Steering
     {
         double sensor = getSensorValue() - steeringCenter;
 
-        if (sensor < (-RobotMap.STEERING_RANGE / 2))
+        if (sensor < (-RobotMap.STEERING_RANGE / (2 * Math.PI)))
         {
             sensor += RobotMap.STEERING_RANGE;
         }
-        if (sensor > (RobotMap.STEERING_RANGE / 2))
+        if (sensor > (RobotMap.STEERING_RANGE / (2 * Math.PI)))
         {
             sensor -= RobotMap.STEERING_RANGE;
         }        
-        double output = (sensor) / (RobotMap.STEERING_RANGE / 2);
+        double output = (sensor) / (RobotMap.STEERING_RANGE / (2 * Math.PI));
 
         return output;
     }
@@ -158,37 +157,33 @@ public class Steering
     }
     
     /**
-     * Set angle of front steering. -1.0 = 180 degrees Left, 0.0 = center, 1.0 = 180 degrees right
-     * @param angle - any value between -1 and 1
+     * Set angle of front steering. A value of 0.0 corresponds to normally forward position.
+     * @param angle - any value between -PI and +PI
      */
     public void setAngle(double angle)
-    {
-    	final double MIN_ROTATION = -1.0;
-    	final double MAX_ROTATION = 1.0;
-    	final double FULL_ROTATION = MAX_ROTATION - MIN_ROTATION;
-    	
+    {	
         double setPoint;
         
         // normalize values to be in range of MIN_ROTATION to MAX_ROTATION
-        while (angle < MIN_ROTATION) 
+        while (angle < -Math.PI) 
         {
-            angle += FULL_ROTATION;
+            angle += 2 * Math.PI;
         }
             
-        while (angle > MAX_ROTATION) 
+        while (angle > Math.PI) 
         {
-            angle -= FULL_ROTATION;
+            angle -= 2 * Math.PI;
         }
             
         // Calculate desired setpoint for PID based on known center position
-        setPoint = steeringCenter + (angle * (RobotMap.STEERING_RANGE / 2));
+        setPoint = steeringCenter + (angle/Math.PI * (RobotMap.STEERING_RANGE / 2));
 
         // Normalize setPoint into the 0 to RobotMap.STEERING_RANGE range
         if (setPoint < 0.0)
         {
             setPoint += RobotMap.STEERING_RANGE;
         }
-        if (setPoint >= RobotMap.STEERING_RANGE)
+        else if (setPoint >= RobotMap.STEERING_RANGE)
         {
             setPoint -= RobotMap.STEERING_RANGE;
         }

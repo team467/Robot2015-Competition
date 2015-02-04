@@ -97,7 +97,6 @@ public class DriverStation467
     {
     	DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
     	
-    	if (getDriveJoystick().buttonDown(3)) drivemode = DriveMode.CAR;
     	// if (getDriveJoystick().buttonDown(5)) drivemode = DriveMode.CRAB_FA;
     	if (getDriveJoystick().buttonDown(2)) drivemode = DriveMode.TURN;
     	

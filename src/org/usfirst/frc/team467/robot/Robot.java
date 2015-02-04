@@ -127,12 +127,12 @@ public class Robot extends IterativeRobot
         
         if (driverstation.getCalibrate())
         {
-            System.out.println("CALIBRATE");
+        	// Calibrate Mode
             Calibration.updateCalibrate();
         }
-        else // drive mode, not calibrate
+        else 
         {
-            // operates using the updated buttons
+            // Drive Mode
             updateDrive();
         }
         
@@ -192,11 +192,6 @@ public class Robot extends IterativeRobot
         
     		case TURN:
     			drive.turnDrive(-driverstation.getDriveJoystick().getTwist());
-    			break;
-        
-    		case CAR:
-    			drive.carDrive(driverstation.getDriveJoystick().getTwist(), 
-        		 		   driverstation.getDriveJoystick().getStickY());
     			break;
         
     		case CRAB_FA:

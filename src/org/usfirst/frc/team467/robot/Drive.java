@@ -53,9 +53,9 @@ public class Drive extends RobotDrive
         // Make objects
         data = DataStorage.getInstance();
         
-        // takes the arctan of width over length, normalizes to be between 1 and -1
+        // takes the arctan of width over length in radians
         // Length is the wide side
-        turnAngle = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH) / Math.PI;
+        turnAngle = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH);
 
         // Make steering array
         steering = new Steering[4];
@@ -200,7 +200,7 @@ public class Drive extends RobotDrive
         //
         //  Back Left - \ / - Back Right
         //  
-        if (wrapAroundDifference(turnAngle, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= 0.5)
+        if (wrapAroundDifference(turnAngle, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= Math.PI/2)
         {
             // Front facing angles
             fourWheelSteer(turnAngle, -turnAngle, -turnAngle, turnAngle);
@@ -208,7 +208,8 @@ public class Drive extends RobotDrive
         else
         {
             // Rear facing angles
-            fourWheelSteer(turnAngle - 1.0, -turnAngle + 1.0, -turnAngle + 1.0, turnAngle - 1.0);
+            fourWheelSteer(turnAngle - Math.PI, -turnAngle + Math.PI, 
+            			  -turnAngle + Math.PI, turnAngle - Math.PI);
 
             // Reverse direction
             speed = -speed;
@@ -274,10 +275,10 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        double gyroAngle = 0; // if gyro exists use gyro.getAngle()
+        double gyroAngle = 0;  // if gyro exists use gyro.getAngle()
 
         // Calculate the wheel angle necessary to drive in the required direction.
-        double steeringAngle = (fieldAlign) ? angle - gyroAngle : angle;
+        double steeringAngle = (fieldAlign) ? angle - gyroAngle / (2 * Math.PI) : angle;
 
         WheelCorrection corrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
 
@@ -337,15 +338,15 @@ public class Drive extends RobotDrive
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
         
-        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > 0.5)
+        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > Math.PI/2)
         {
         	// shortest path to desired angle is to reverse speed and adjust angle - 180
             corrected.speed *= -1;
 
-            corrected.angle -= 1.0;
-            if (corrected.angle < -1.0)
+            corrected.angle -= Math.PI;
+            if (corrected.angle < -Math.PI)
             {
-                corrected.angle += 2.0;
+                corrected.angle += 2 * Math.PI;
             }
         }
         return corrected;
@@ -360,79 +361,12 @@ public class Drive extends RobotDrive
      */
     public void individualSteeringDrive(double angle, double speed, int steeringId)
     {
-        //Set steering angle
+        // Set steering angle
         steering[steeringId].setAngle(angle);
 
         this.drive(limitSpeed(speed), null);
     }
 
-    /**
-     * Yo dog, I heard you like to drive, so I put a car in yo car so you can
-     * drive while you drive.
-     *
-     * Drives the robot similarly to a car. Essentially works by angling the
-     * wheels so they are tangent to a circular path, and driving the wheels at
-     * the appropriate speed so they do not drag.
-     *
-     * See RobotMain for controls.
-     *
-     * @param turnAngle Angle to turn at, from -1.0 to 1.0. Negative values
-     * drive left, positive values drive right.
-     * @param speed Speed to drive at. Negative values drive backwards.
-     */
-    public void carDrive(double turnAngle, double speed)
-    {
-        // 2pi, for convenience.
-        double PI2 = Math.PI * 2;
-
-        // Dampen the turning angle, ensuring the inner wheels will not turn
-        //   more than 45 degrees.
-        double dampenedTurningAngle = turnAngle / 2.5;
-
-        // Convert turning angle for use with outerTurnAngle algorithm.
-        // Note: To convert from robot angles to radians, multiply
-        //   by 2pi.
-        double absTurnAngle = Math.abs(dampenedTurningAngle);
-        double turnAngleRadians = absTurnAngle * PI2;
-
-        // The direction of the turn.
-        //   If left, direction = -1
-        //   If right, direction = 1
-        //   If straight forward or backward, direction = 0
-        int direction = (int) (dampenedTurningAngle / absTurnAngle);
-
-        // Calculate wheel angles such that perpendicular lines drawn from the wheels
-        //   will all intersect at the same point. This ensures that all the wheels will
-        //   follow a circular path.
-        double innerTurnAngle = absTurnAngle / 2;
-        double outerTurnAngle = (Math.PI / 2 - Math.atan(Math.tan((Math.PI - turnAngleRadians) / 2) + ROBOT_RATIO)) / PI2;
-
-        // Conditional operators for left and right angles, addressing the direction
-        //   of the turn.
-        // If turning right, that is, (direction = 1.0), the right wheels will be the 
-        //   inner wheels, and the left wheels will be the outer wheels. However, 
-        //   for left turns this is reversed.
-        double rightAngleConditional = ((direction > 0) ? innerTurnAngle : outerTurnAngle);
-        double leftAngleConditional = ((direction > 0) ? outerTurnAngle : innerTurnAngle);
-
-        // Calculate the speed for the inner wheels to drive at. This is guaranteed to be smaller
-        //   than the speed of the outer wheels.
-        double sinRt2 = ROBOT_RATIO * Math.sin(turnAngleRadians);
-        double innerSpeed = speed / Math.sqrt(sinRt2 * sinRt2 + ROBOT_RATIO * Math.sin(2 * turnAngleRadians) + 1);
-
-        // Conditional operators for left and right turns.
-        double leftSpeedConditional = -((direction > 0) ? speed : innerSpeed);
-        double rightSpeedConditional = -((direction > 0) ? innerSpeed : speed);
-
-        // Drive the wheels, and set angles. Note that the back wheels turn in the opposite direction, hence
-        //   the inverts. Multiplying by the direction corrects for left and right turning,
-        //   and ensures that if driving straight, all turning angles will absolutely be zero.
-        wrapAroundDrive(leftSpeedConditional, rightSpeedConditional,
-                leftSpeedConditional, rightSpeedConditional,
-                leftAngleConditional * direction, rightAngleConditional * direction,
-                -leftAngleConditional * direction, -rightAngleConditional * direction);
-    }
-    
     /**
      * Drive left or right at a fixed speed.
      * 
@@ -442,7 +376,7 @@ public class Drive extends RobotDrive
     public void strafeDrive(Direction direction)
     {
     	// Angle in radians
-    	double angle = (direction == Direction.RIGHT) ? -0.5 : 0.5;
+    	double angle = (direction == Direction.RIGHT) ? Math.PI/2 : -Math.PI/2;
     	
     	fourWheelSteer(angle, angle, angle, angle);    	
     	fourWheelDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE);
@@ -473,12 +407,12 @@ public class Drive extends RobotDrive
     	final double BACK_RADIUS = FRONT_RADIUS + RobotMap.LENGTH;
     	final double BACK_SPEED = 0.4;
     	final double FRONT_SPEED = BACK_SPEED * (FRONT_RADIUS / BACK_RADIUS);
-    	// Angles converted from radians to degrees
-    	double frontAngle = (Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH)); // * 360 / (Math.PI * 2));
-    	double backAngle = (Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH));   // * 360 / (Math.PI * 2));
+
+    	double frontAngle = (Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH)); 
+    	double backAngle = (Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH));   
 //    	 System.out.println("Front Angle=" + frontAngle + ", Back Angle=" + backAngle);
     	
-    	if (direction == Direction.LEFT)
+    	if (direction == Direction.RIGHT)
     	{
     		fourWheelDrive(-FRONT_SPEED, FRONT_SPEED, -BACK_SPEED, BACK_SPEED);
     	} 
@@ -532,9 +466,9 @@ public class Drive extends RobotDrive
     private double wrapAroundDifference(double value1, double value2)
     {
         double diff = Math.abs(value1 - value2);
-        while (diff > 1.0)
+        while (diff > Math.PI)
         {
-            diff = 2.0 - diff;
+            diff = (2.0 * Math.PI) - diff;
         }
         return diff;
     }

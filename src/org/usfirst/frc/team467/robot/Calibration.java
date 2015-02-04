@@ -37,13 +37,13 @@ public class Calibration
     {
         calibrationAngle = getCalibrationAngle(calibrationAngle);
         
-        if (calibrationAngle > 1.0)
+        if (calibrationAngle > Math.PI)
         {
-            calibrationAngle -= 2.0;
+            calibrationAngle -= 2.0 * Math.PI;
         }
-        if (calibrationAngle < -1.0)
+        if (calibrationAngle < -Math.PI)
         {
-            calibrationAngle += 2.0;
+            calibrationAngle += 2.0 * Math.PI;
         }
 
         // Drive specified steering motor with no speed to allow only steering        
@@ -68,7 +68,6 @@ public class Calibration
     
     /**
      * Gets the wheel selected by the stick.
-     * @param joy stick to use to select
      * @param prevSelectedWheel previously selected wheel
      * @return int val of which wheel to select
      */
@@ -82,7 +81,7 @@ public class Calibration
         {
             if (stickAngle < 0)
             {
-                if (stickAngle < -0.5)
+                if (stickAngle < -Math.PI/2)
                 {
                     return RobotMap.BACK_LEFT;
                 }
@@ -95,7 +94,7 @@ public class Calibration
             {
                 if (stickAngle > 0)
                 {
-                    if (stickAngle > 0.5)
+                    if (stickAngle > Math.PI/2)
                     {
                         return RobotMap.BACK_RIGHT;
                     }
@@ -112,7 +111,6 @@ public class Calibration
     
     /**
      * Gets the angle to set the calibrating wheel.
-     * @param joy joystick to get the angle from
      * @param prevCalibrationAngle previous angle to update
      * @return angle for setting the angle
      */

@@ -165,7 +165,7 @@ public class Joystick467
     /**
      * Calculate the angle of this joystick.
      *
-     * @return Joystick Angle in range -1.0 to 1.0
+     * @return Joystick Angle in range -PI to PI
      */
     public double getStickAngle()
     {
@@ -179,10 +179,10 @@ public class Joystick467
         if (stickY == 0.0)
         {
             // In Y deadzone avoid divide by zero error
-            return (stickX > 0.0) ? 0.5 : -0.5;
+            return (stickX > 0.0) ? Math.PI/2 : -Math.PI/2;
         }
 
-        // Return value in range -1.0 to 1.0
+        // Return value in range -PI to PI
         double stickAngle = Math.atan(stickX / -stickY);
 
         if (stickY > 0)
@@ -190,7 +190,7 @@ public class Joystick467
             stickAngle += (stickX > 0) ? Math.PI : -Math.PI;
         }
 
-        return (stickAngle / (Math.PI));
+        return (stickAngle);
     }
 
     /**
