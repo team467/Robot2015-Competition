@@ -330,7 +330,7 @@ public class Drive extends RobotDrive
     /**
      * Only used for steering
      * @param mapConstant - which wheel pod by channel
-     * @param targetAngle
+     * @param targetAngle - in radians
      * @param targetSpeed
      * @return corrected
      */
@@ -338,15 +338,15 @@ public class Drive extends RobotDrive
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
         
-        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > Math.PI/2)
+        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > Steering.FULL_REVOLUTION / 4)
         {
         	// shortest path to desired angle is to reverse speed and adjust angle - 180
             corrected.speed *= -1;
 
-            corrected.angle -= Math.PI;
-            if (corrected.angle < -Math.PI)
+            corrected.angle -= Steering.FULL_REVOLUTION / 2;
+            if (corrected.angle < -Steering.FULL_REVOLUTION / 2)
             {
-                corrected.angle += 2 * Math.PI;
+                corrected.angle += Steering.FULL_REVOLUTION;
             }
         }
         return corrected;
