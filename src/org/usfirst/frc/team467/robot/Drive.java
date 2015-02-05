@@ -22,9 +22,6 @@ public class Drive extends RobotDrive
 
     // Angle to turn at when rotating in place - initialized in constructor
     private static double turnAngle;
-    
-    // (Used in car drive).
-    private static final double ROBOT_RATIO = (2 * RobotMap.WIDTH) / RobotMap.LENGTH;
 
     // Magic number copied from WPI code
     private static final byte SYNC_GROUP = (byte) 0x80;
@@ -375,7 +372,6 @@ public class Drive extends RobotDrive
      */
     public void strafeDrive(Direction direction)
     {
-    	// Angle in radians
     	double angle = (direction == Direction.RIGHT) ? Math.PI/2 : -Math.PI/2;
     	
     	fourWheelSteer(angle, angle, angle, angle);    	
