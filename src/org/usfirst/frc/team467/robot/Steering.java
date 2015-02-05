@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Steering
 {
-	public static final double FULL_REVOLUTION = 2 * Math.PI;
+//	public static final double TwoPi = 2 * Math.PI;
 	
     // Sensor used to determine angle
     private AnalogInput steeringSensor;
@@ -130,15 +130,15 @@ public class Steering
     {
         double sensor = getSensorValue() - steeringCenter;
 
-        if (sensor < (-RobotMap.STEERING_RANGE / FULL_REVOLUTION))
+        if (sensor < (-RobotMap.STEERING_RANGE / (Math.PI * 2)))
         {
             sensor += RobotMap.STEERING_RANGE;
         }
-        if (sensor > (RobotMap.STEERING_RANGE / FULL_REVOLUTION))
+        if (sensor > (RobotMap.STEERING_RANGE / (Math.PI * 2)))
         {
             sensor -= RobotMap.STEERING_RANGE;
         }        
-        double output = (sensor) / (RobotMap.STEERING_RANGE / FULL_REVOLUTION);
+        double output = (sensor) / (RobotMap.STEERING_RANGE / (Math.PI * 2));
 
         return output;
     }
@@ -167,14 +167,14 @@ public class Steering
         double setPoint;
         
         // normalize values to be in range of MIN_ROTATION to MAX_ROTATION
-        while (angle < -FULL_REVOLUTION / 2) 
+        while (angle < -(Math.PI)) 
         {
-            angle += FULL_REVOLUTION;
+            angle += Math.PI * 2;
         }
             
-        while (angle > FULL_REVOLUTION / 2) 
+        while (angle > Math.PI) 
         {
-            angle -= FULL_REVOLUTION;
+            angle -= Math.PI * 2;
         }
             
         // Calculate desired setpoint for PID based on known center position
