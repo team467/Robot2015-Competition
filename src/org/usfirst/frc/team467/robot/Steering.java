@@ -130,15 +130,15 @@ public class Steering
     {
         double sensor = getSensorValue() - steeringCenter;
 
-        if (sensor < (-RobotMap.STEERING_RANGE / (Math.PI * 2)))
+        if (sensor < (-RobotMap.STEERING_RANGE / 2))
         {
             sensor += RobotMap.STEERING_RANGE;
         }
-        if (sensor > (RobotMap.STEERING_RANGE / (Math.PI * 2)))
+        if (sensor > (RobotMap.STEERING_RANGE / 2))
         {
             sensor -= RobotMap.STEERING_RANGE;
         }        
-        double output = (sensor) / (RobotMap.STEERING_RANGE / (Math.PI * 2));
+        double output = (sensor) / (RobotMap.STEERING_RANGE / 2);
 
         return output;
     }
