@@ -22,9 +22,6 @@ public class Drive extends RobotDrive
 
     // Angle to turn at when rotating in place - initialized in constructor
     private static double turnAngle;
-    
-    // (Used in car drive).
-    private static final double ROBOT_RATIO = (2 * RobotMap.WIDTH) / RobotMap.LENGTH;
 
     // Magic number copied from WPI code
     private static final byte SYNC_GROUP = (byte) 0x80;
@@ -330,7 +327,7 @@ public class Drive extends RobotDrive
     /**
      * Only used for steering
      * @param mapConstant - which wheel pod by channel
-     * @param targetAngle
+     * @param targetAngle - in radians
      * @param targetSpeed
      * @return corrected
      */
@@ -338,7 +335,7 @@ public class Drive extends RobotDrive
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
         
-        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > Math.PI/2)
+        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > Math.PI / 2)
         {
         	// shortest path to desired angle is to reverse speed and adjust angle - 180
             corrected.speed *= -1;
@@ -346,7 +343,7 @@ public class Drive extends RobotDrive
             corrected.angle -= Math.PI;
             if (corrected.angle < -Math.PI)
             {
-                corrected.angle += 2 * Math.PI;
+                corrected.angle += Math.PI * 2;
             }
         }
         return corrected;
@@ -375,7 +372,6 @@ public class Drive extends RobotDrive
      */
     public void strafeDrive(Direction direction)
     {
-    	// Angle in radians
     	double angle = (direction == Direction.RIGHT) ? Math.PI/2 : -Math.PI/2;
     	
     	fourWheelSteer(angle, angle, angle, angle);    	
