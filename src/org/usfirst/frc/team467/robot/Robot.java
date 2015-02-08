@@ -32,6 +32,7 @@ public class Robot extends IterativeRobot
 
     //Robot objects
     private DriverStation467 driverstation;
+    private Driverstation2015 driverstation2015;
 
     private Drive drive;
     
@@ -56,6 +57,7 @@ public class Robot extends IterativeRobot
     	
         // Make robot objects
         driverstation = DriverStation467.getInstance();
+        driverstation2015 = Driverstation2015.getInstance();
         
         drive = Drive.getInstance();
         
@@ -108,6 +110,8 @@ public class Robot extends IterativeRobot
      */
     public void testPeriodic()
     {
+    	driverstation2015.readInputs();
+    	driverstation2015.printPressedButtons();
     }
 
     /**
