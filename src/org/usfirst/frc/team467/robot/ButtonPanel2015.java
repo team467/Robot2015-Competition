@@ -10,6 +10,8 @@ public class ButtonPanel2015 {
 	// array of button states
 	//NOTE: button indexes begin at 1, therefore 0 is ignored
 	boolean[] buttons = new boolean[17];
+	//NOTE: LED indexes begin at 1, therefore 0 is ignored
+	private boolean[] ledStates = new boolean[7];
 	
 	//CONSTANTS:
 	
@@ -31,13 +33,15 @@ public class ButtonPanel2015 {
 	public static int JOY_LEFT = 13;
 	public static int JOY_RIGHT = 16;
 	
+	 
+	
 	/**
 	 * ButtonPanel for the 2015 driverstation
 	 * 
 	 * @param port
 	 */
 	public ButtonPanel2015(int port) {
-		buttonPanel = new Joystick(port);
+		buttonPanel = new Joystick(port);		
 	}
 
 	/**
@@ -48,7 +52,32 @@ public class ButtonPanel2015 {
 		//starts at 1 because buttons are 1 based
 		for (int i = 1; i < buttons.length; i++) {
 			buttons[i] = buttonPanel.getRawButton(i);
+		}		
+	}
+	
+	/**
+	 * Updates the LEDs to be in the proper states, then resets them.
+	 * Must be called each loop.
+	 */
+	public void updateLEDs()
+	{
+		for (int i = 1; i < ledStates.length; i++) {
+			buttonPanel.setOutput(i, ledStates[i]);
 		}
+		//reset all LEDs
+		for (int i = 1; i < ledStates.length; i++) {
+			ledStates[i] = false;
+		}
+	}
+	
+	/**
+	 * Sets the LED index to on or off.
+	 * @param index
+	 * @param light
+	 */
+	public void setLED(int index, boolean light)
+	{
+		ledStates[index] = light;		
 	}
 	
 	/**
@@ -71,6 +100,16 @@ public class ButtonPanel2015 {
 			System.out.print(i + " ");
 		}
 		System.out.println();
+	}
+	
+	/**
+	 * Turns on all digital outputs on the button panel.
+	 */
+	public void setAllLEDsOn()
+	{
+		for (int i = 1; i < ledStates.length; i++) {
+			buttonPanel.setOutput(i, true);
+		}
 	}
 
 }

@@ -37,7 +37,7 @@ public class Lifter {
 	 * Private constructor
 	 */
 	private Lifter() {
-		lifterMotor = new Talon(3);// TODO determine PWM channel to run lifter
+		lifterMotor = new Talon(9);// TODO determine PWM channel to run lifter
 									// motor
 		topStop = new DigitalInput(0);// TODO determine Dig IO channel
 		topSlow = new DigitalInput(1);// TODO determine Dig IO channel
@@ -82,7 +82,7 @@ public class Lifter {
 	}
 
 	/**
-	 * 
+	 * Sets the method to go about lifting.
 	 * @param liftType
 	 */
 	public void setLift(LiftTypes liftType) {
@@ -161,6 +161,15 @@ public class Lifter {
 			lifterMotor.set(0);
 			currentLiftDirection = LifterDirection.STOP;
 		}
+	}
+	
+	/**
+	 * Gets the lift zone of the lifter.
+	 * @return
+	 */
+	public LifterZoneTypes getLiftZone()
+	{
+		return this.currentZone;
 	}
 }
 

@@ -34,6 +34,12 @@ public class Driverstation2015 {
 	public static int CLAW_CLOSED = ButtonPanel2015.JOY_RIGHT;
 	public static int ELEVATOR_UP = ButtonPanel2015.JOY_UP;
 	public static int ELEVATOR_DOWN = ButtonPanel2015.JOY_DOWN;
+	
+	//LED Ids
+	public static int LED_LIFTER_TOP_STOP = 1;
+	public static int LED_LIFTER_TOP_SLOW = 2;
+	public static int LED_LIFTER_BOTTOM_SLOW = 3;
+	public static int LED_LIFTER_BOTTOM_STOP = 4;
 
 	/**
 	 * Singleton instance of the object.
@@ -61,6 +67,31 @@ public class Driverstation2015 {
 	public void readInputs() {
 		driverJoy.readInputs();
 		buttonPanel.readInputs();
+	}
+	
+	/**
+	 * Updates the states of the LEDs
+	 */
+	public void updateLEDs()
+	{
+		LifterZoneTypes zone = lifter.getLiftZone();
+		if(zone == LifterZoneTypes.SLOW_ZONE_TOP)
+			buttonPanel.setLED(LED_LIFTER_TOP_SLOW, true);
+		else if(zone == LifterZoneTypes.SLOW_ZONE_BOTTOM)
+			buttonPanel.setLED(LED_LIFTER_BOTTOM_SLOW, true);
+		else if(zone == LifterZoneTypes.STOP_ZONE_BOTTOM)
+			buttonPanel.setLED(LED_LIFTER_BOTTOM_STOP, true);
+		else if(zone == LifterZoneTypes.STOP_ZONE_TOP)
+			buttonPanel.setLED(LED_LIFTER_TOP_STOP, true);
+		buttonPanel.updateLEDs();
+	}
+	
+	/**
+	 * Turns on all LEDs.
+	 */
+	public void testLEDs()
+	{
+		buttonPanel.setAllLEDsOn();
 	}
 
 	/**
