@@ -171,6 +171,19 @@ public class Drive extends RobotDrive
         steering[RobotMap.BACK_RIGHT].setAngle(0);
     }
 
+    /**
+     * When we need to update without changing the steering
+     */
+    private void fourWheelNoSteer()
+    {
+		LOGGER.debug("fourWheelNoSteer value=" + steering[RobotMap.FRONT_RIGHT].getSensorValue());
+		LOGGER.debug("fourWheelNoSteer angle=" + steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
+    	for (Steering wheelpod : steering) {
+    		// TODO Figure out negative angle.
+    		wheelpod.setAngle(-wheelpod.getSteeringAngle());
+    	}
+    }
+
 //    /**
 //     * Get the Talon drive motor object for the specified motor (use RobotMap
 //     * constants)
@@ -288,12 +301,20 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        double gyroAngle = 0;  // if gyro exists use gyro.getAngle()
+    	// If joystick is near center, don't move or steer. We're done.
+    	if (speed < 0.1) {
+    		LOGGER.debug("speed=" + speed);
+    		fourWheelNoSteer();
+            fourWheelDrive(0.0, 0.0, 0.0, 0.0);
+            return;
+    	}
+    	
+    	double gyroAngle = 0;  // if gyro exists use gyro.getAngle()
 
         // Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle / (2 * Math.PI) : angle;
         
-        // 
+        
         WheelCorrection corrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
 
         fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
@@ -442,6 +463,7 @@ public class Drive extends RobotDrive
 	private WheelCorrection wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
 	{
 	    WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
+	    // TODO
 	    
 //	    if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > Math.PI / 2)
 //	    {

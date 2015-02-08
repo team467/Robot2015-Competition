@@ -27,8 +27,8 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 public class Robot extends IterativeRobot
 {
 	private static final Logger LOGGER = Logger.getLogger(Robot.class);
-
-	public static final boolean SINGLE_STICK_DRIVE = false;
+	
+	private static final double MIN_DRIVE_SPEED = 0.05;
 
     //Robot objects
     private DriverStation467 driverstation;
@@ -203,6 +203,11 @@ public class Robot extends IterativeRobot
     			break;
         
     		case CRAB_NO_FA:
+    			if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
+    			{
+    				drive.crabDrive(0, driverstation.getDriveJoystick().getStickDistance(), 
+    		  		  	      		   false /* not field aligned */ );
+    			}
     			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
         		  	      driverstation.getDriveJoystick().getStickDistance(), 
         		  	      false /* not field aligned */ );
@@ -210,6 +215,11 @@ public class Robot extends IterativeRobot
         
     		default:  //should never enter here
     			System.err.println("Button State not calculated correctly");
+    			if (driverstation.getDriveJoystick().getStickDistance() < 0.02)
+    			{
+    				drive.crabDrive(0, driverstation.getDriveJoystick().getStickDistance(), 
+    		  		  	      		   false /* not field aligned */ );
+    			}
     			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
   		  	      driverstation.getDriveJoystick().getStickDistance(), 
   		  	      false /* not field aligned */ );
