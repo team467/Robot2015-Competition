@@ -6,6 +6,8 @@ public class Driverstation2015 {
 
 	Joystick467 driverJoy = null;
 	ButtonPanel2015 buttonPanel = null;
+	
+	Lifter lifter = null;
 
 	// CAL/AUTO
 	public static int AUTO_CAL_BUTTON = ButtonPanel2015.COVERED_SWITCH;
@@ -50,6 +52,7 @@ public class Driverstation2015 {
 	private Driverstation2015() {
 		driverJoy = new Joystick467(0);
 		buttonPanel = new ButtonPanel2015(1);
+		lifter = Lifter.getInstance();
 	}
 
 	/**
@@ -61,19 +64,26 @@ public class Driverstation2015 {
 	}
 
 	/**
-	 * Gets the speed to drive the lifter motor.
+	 * Gets the Lift type to lift the Lifter
 	 * 
 	 * @return
 	 */
-	public double getLiftSpeed() {
+	public LiftTypes getLiftType() {
 		double driveSpeed = 0;
 		if (buttonPanel.isButtonDown(ELEVATOR_UP))
-			driveSpeed = 0.4;// TODO determine sign
+			if(buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON))
+				return LiftTypes.LIFT_UP_FAST;
+			else
+				return LiftTypes.LIFT_UP_SLOW;
 		else if (buttonPanel.isButtonDown(ELEVATOR_DOWN))
-			driveSpeed = -0.4;// TODO determine sign
-		if (buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON))
-			driveSpeed *= 2;
-		return driveSpeed;
+			if(buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON))
+				return LiftTypes.LIFT_DOWN_FAST;
+			else
+				return LiftTypes.LIFT_DOWN_SLOW;
+		else
+			return LiftTypes.NO_LIFT;
+			
+		
 	}
 
 	/**
