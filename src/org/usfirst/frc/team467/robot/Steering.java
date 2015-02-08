@@ -73,7 +73,6 @@ public class Steering
 
         // Set steering center
         steeringCenter = center;
-        steeringCenter = 2142; // TODO Remove after calibration works
 
         // Make PID Controller
         steeringPID = new PIDController(pid.p, pid.i, pid.d, new SteeringPIDSource(), steeringMotor);
