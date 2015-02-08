@@ -4,6 +4,8 @@
  */
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
+
 import edu.wpi.first.wpilibj.*;
 
 /**
@@ -11,7 +13,11 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Drive extends RobotDrive
 {
-    //Single instance of this class
+	// For future logging needs
+	@SuppressWarnings("unused")
+	private static final Logger LOGGER = Logger.getLogger(Drive.class);
+
+	//Single instance of this class
     private static Drive instance = null;
 
     //Steering objects
@@ -129,10 +135,15 @@ public class Drive extends RobotDrive
         {
             throw new NullPointerException("Null motor provided");
         }
-        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed), SYNC_GROUP);
-        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed), SYNC_GROUP);
-        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed), SYNC_GROUP);
-        m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed), SYNC_GROUP);
+//        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed), SYNC_GROUP);
+//        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed), SYNC_GROUP);
+//        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed), SYNC_GROUP);
+//        m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed), SYNC_GROUP);
+
+        m_frontLeftMotor.set(0, SYNC_GROUP);
+        m_frontRightMotor.set(0, SYNC_GROUP);
+        m_rearLeftMotor.set(0, SYNC_GROUP);
+        m_rearRightMotor.set(0, SYNC_GROUP);
 
         if (m_safetyHelper != null)
         {
@@ -149,10 +160,15 @@ public class Drive extends RobotDrive
     private void fourWheelSteer(double frontLeft, double frontRight, double backLeft, double backRight)
     {
         //set the angles to steer
-        steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
+//        steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
+//        steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
+//        steering[RobotMap.BACK_LEFT].setAngle(backLeft);
+//        steering[RobotMap.BACK_RIGHT].setAngle(backRight);
+        
+        steering[RobotMap.FRONT_LEFT].setAngle(0);
         steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
-        steering[RobotMap.BACK_LEFT].setAngle(backLeft);
-        steering[RobotMap.BACK_RIGHT].setAngle(backRight);
+        steering[RobotMap.BACK_LEFT].setAngle(0);
+        steering[RobotMap.BACK_RIGHT].setAngle(0);
     }
 
 //    /**
@@ -276,79 +292,43 @@ public class Drive extends RobotDrive
 
         // Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle / (2 * Math.PI) : angle;
-
+        
+        // 
         WheelCorrection corrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
 
         fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
         fourWheelDrive(corrected.speed, corrected.speed, corrected.speed, corrected.speed);
     }
     
-    /**
-     * 
-     * @param frontLeftSpeed
-     * @param frontRightSpeed
-     * @param backLeftSpeed
-     * @param backRightSpeed
-     * @param frontLeftAngle
-     * @param frontRightAngle
-     * @param backLeftAngle
-     * @param backRightAngle
-     */
-    public void wrapAroundDrive(double frontLeftSpeed, double frontRightSpeed,
-            double backLeftSpeed, double backRightSpeed,
-            double frontLeftAngle, double frontRightAngle,
-            double backLeftAngle, double backRightAngle)
-    {
-        WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, frontLeftAngle, frontLeftSpeed);
-        WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, frontRightAngle, frontRightSpeed);
-        WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, backLeftAngle, backRightSpeed);
-        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, backRightAngle, backRightSpeed);
-
-//        System.out.println("[DRIVE] FRONTLEFT" + steering[RobotMap.FRONT_LEFT].getSteeringAngle());
-//        System.out.println("[DRIVE] FRONTRIGHT" + steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
-//        System.out.println("[DRIVE] BACKLEFT" + steering[RobotMap.BACK_LEFT].getSteeringAngle());
-//        System.out.println("[DRIVE] BACKRIGHT" + steering[RobotMap.BACK_RIGHT].getSteeringAngle());
-        fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
-        fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backLeft.speed);
-    }
+//    /**
+//     * 
+//     * @param frontLeftSpeed
+//     * @param frontRightSpeed
+//     * @param backLeftSpeed
+//     * @param backRightSpeed
+//     * @param frontLeftAngle
+//     * @param frontRightAngle
+//     * @param backLeftAngle
+//     * @param backRightAngle
+//     */
+//    public void wrapAroundDrive(double frontLeftSpeed, double frontRightSpeed,
+//            double backLeftSpeed, double backRightSpeed,
+//            double frontLeftAngle, double frontRightAngle,
+//            double backLeftAngle, double backRightAngle)
+//    {
+//        WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, frontLeftAngle, frontLeftSpeed);
+//        WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, frontRightAngle, frontRightSpeed);
+//        WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, backLeftAngle, backRightSpeed);
+//        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, backRightAngle, backRightSpeed);
+//
+////        System.out.println("[DRIVE] FRONTLEFT" + steering[RobotMap.FRONT_LEFT].getSteeringAngle());
+////        System.out.println("[DRIVE] FRONTRIGHT" + steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
+////        System.out.println("[DRIVE] BACKLEFT" + steering[RobotMap.BACK_LEFT].getSteeringAngle());
+////        System.out.println("[DRIVE] BACKRIGHT" + steering[RobotMap.BACK_RIGHT].getSteeringAngle());
+//        fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
+//        fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backLeft.speed);
+//    }
     
-    private class WheelCorrection 
-    {	
-    	public double speed;
-    	public double angle;
-    	
-    	public WheelCorrection(double angleIn, double speedIn)
-    	{
-    		angle = angleIn;
-    		speed = speedIn;
-    	}
-    }
-    
-    /**
-     * Only used for steering
-     * @param mapConstant - which wheel pod by channel
-     * @param targetAngle - in radians
-     * @param targetSpeed
-     * @return corrected
-     */
-    private WheelCorrection wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
-    {
-        WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
-        
-        if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > Math.PI / 2)
-        {
-        	// shortest path to desired angle is to reverse speed and adjust angle - 180
-            corrected.speed *= -1;
-
-            corrected.angle -= Math.PI;
-            if (corrected.angle < -Math.PI)
-            {
-                corrected.angle += Math.PI * 2;
-            }
-        }
-        return corrected;
-    }
-
     /**
      * Individually controls a specific steering motor
      *
@@ -468,6 +448,30 @@ public class Drive extends RobotDrive
         }
         return diff;
     }
+	/**
+	 * Only used for steering
+	 * @param mapConstant - which wheel pod by channel
+	 * @param targetAngle - in radians
+	 * @param targetSpeed
+	 * @return corrected
+	 */
+	private WheelCorrection wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
+	{
+	    WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
+	    
+//	    if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > Math.PI / 2)
+//	    {
+//	    	// shortest path to desired angle is to reverse speed and adjust angle - 180
+//	        corrected.speed *= -1;
+//	
+//	        corrected.angle -= Math.PI;
+//	        if (corrected.angle < -Math.PI)
+//	        {
+//	            corrected.angle += Math.PI * 2;
+//	        }
+//	    }
+	    return corrected;
+	}
 
     /**
      * New drive function. Allows for wheel correction using speed based on a
@@ -538,4 +542,15 @@ public class Drive extends RobotDrive
         return steering[steeringId].getSteeringAngle();
     }
 
+}
+
+class WheelCorrection {	
+	public double speed;
+	public double angle;
+	
+	public WheelCorrection(double angleIn, double speedIn)
+	{
+		angle = angleIn;
+		speed = speedIn;
+	}
 }

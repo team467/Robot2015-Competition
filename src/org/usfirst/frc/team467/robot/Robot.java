@@ -133,15 +133,16 @@ public class Robot extends IterativeRobot
         else 
         {
             // Drive Mode
+        	LOGGER.debug("teleopPeriodic(); drive mode");
             updateDrive();
         }
         
-        
-//        renderImage();
-        
+//        renderImage();  
     }
 
-    private void renderImage()
+    // Unused for now until we start using camera.
+    @SuppressWarnings("unused")
+	private void renderImage()
     {
     	/**
          * Rectangle to be rendered in

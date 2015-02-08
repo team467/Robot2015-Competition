@@ -1,5 +1,7 @@
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
+
 import edu.wpi.first.wpilibj.*;
 
 /**
@@ -20,7 +22,12 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Steering
 {
+	private static final Logger LOGGER = Logger.getLogger(Steering.class);
 //	public static final double TwoPi = 2 * Math.PI;
+	
+	private final double LEVELS_PER_ROTATION = 305;
+	
+	private static final double MAX_TURNS = 3.0;
 	
     // Sensor used to determine angle
     private AnalogInput steeringSensor;
@@ -31,8 +38,10 @@ public class Steering
     // Steering motor
     private Talon steeringMotor;
 
-    // Center point of this steering motor. This is the value read from the sensor
-    // when the wheels are in the normal forward position
+    /** 
+     * Center point of this steering motor. This is the value read from the sensor
+     * when the wheels are in the normal (zero turn) forward position
+     */
     private double steeringCenter;
 
     /**
@@ -64,6 +73,7 @@ public class Steering
 
         // Set steering center
         steeringCenter = center;
+        steeringCenter = 2102; // TODO Remove after calibration works
 
         // Make PID Controller
         steeringPID = new PIDController(pid.p, pid.i, pid.d, new SteeringPIDSource(), steeringMotor);
@@ -71,7 +81,7 @@ public class Steering
         // Set PID Controller settings        
         steeringPID.setInputRange(0.0, RobotMap.STEERING_RANGE);
         steeringPID.setSetpoint(steeringCenter);
-        steeringPID.setContinuous(true);
+        steeringPID.setContinuous(false);
         steeringPID.enable();
     }
 
@@ -82,6 +92,12 @@ public class Steering
      */
     public double getSensorValue()
     {
+//        if (steeringSensor.getChannel() == RobotMap.FRONT_RIGHT)
+//        {
+//        	LOGGER.debug(String.format("getSensorValue(chan=%d) getValue=%d getAverageValue=%d",
+//    			steeringSensor.getChannel(), steeringSensor.getValue(), steeringSensor.getAverageValue()));
+//        }
+        
     	return (steeringSensor.getAverageValue());
     }
     
@@ -130,18 +146,37 @@ public class Steering
     {
         double sensor = getSensorValue() - steeringCenter;
 
-        if (sensor < (-RobotMap.STEERING_RANGE / 2))
+        double output = sensor * (Math.PI * 2) / LEVELS_PER_ROTATION;
+        
+        if (steeringMotor.getChannel() == RobotMap.FRONT_RIGHT)
         {
-            sensor += RobotMap.STEERING_RANGE;
+        	LOGGER.debug(String.format("getSteeringAngle() sensor=%f output=%f", sensor, output));
         }
-        if (sensor > (RobotMap.STEERING_RANGE / 2))
-        {
-            sensor -= RobotMap.STEERING_RANGE;
-        }        
-        double output = (sensor) / (RobotMap.STEERING_RANGE / 2);
-
+        
         return output;
     }
+    
+    public double getMaxTurns()
+    {
+    	return MAX_TURNS;
+    }
+    
+//    public double getSteeringAngle()
+//    {
+//        double sensor = getSensorValue() - steeringCenter;
+//
+//        if (sensor < (-RobotMap.STEERING_RANGE / (Math.PI * 2)))
+//        {
+//            sensor += RobotMap.STEERING_RANGE;
+//        }
+//        if (sensor > (RobotMap.STEERING_RANGE / (Math.PI * 2)))
+//        {
+//            sensor -= RobotMap.STEERING_RANGE;
+//        }        
+//        double output = (sensor) / (RobotMap.STEERING_RANGE / (Math.PI * 2));
+//
+//        return output;
+//    }
 
     /**
      * Print steering parameters
@@ -160,38 +195,53 @@ public class Steering
     
     /**
      * Set angle of front steering. A value of 0.0 corresponds to normally forward position.
-     * @param angle - any value between -PI and +PI
+     * @param requestedAngle - any value between -PI and +PI
      */
-    public void setAngle(double angle)
-    {	
-        double setPoint;
+    public void setAngle(double requestedAngle)
+    {
+    	// Flipped the angle
+    	requestedAngle *= -1;
+       
+    	// Current angle in full radians (i.e.-6pi to 6pi)
+        final double sensorAngle = getSteeringAngle();
         
-        // normalize values to be in range of MIN_ROTATION to MAX_ROTATION
-        while (angle < -(Math.PI)) 
-        {
-            angle += Math.PI * 2;
-        }
+        // Translates input angle to closest full rotation to sensor angle
+        double outputAngle = requestedAngle + sensorAngle - (sensorAngle % (Math.PI * 2));
+        
+        // Limit range to -6PI to +6PI
+        outputAngle = limitRange(outputAngle);
             
-        while (angle > Math.PI) 
-        {
-            angle -= Math.PI * 2;
-        }
-            
-        // Calculate desired setpoint for PID based on known center position
-        setPoint = steeringCenter + (angle/Math.PI * (RobotMap.STEERING_RANGE / 2));
-
-        // Normalize setPoint into the 0 to RobotMap.STEERING_RANGE range
-        if (setPoint < 0.0)
-        {
-            setPoint += RobotMap.STEERING_RANGE;
-        }
-        else if (setPoint >= RobotMap.STEERING_RANGE)
-        {
-            setPoint -= RobotMap.STEERING_RANGE;
-        }
+        // Calculate desired setpoint for PID based on known center position and requested angle
+        int setPoint = (int)(steeringCenter + (outputAngle * LEVELS_PER_ROTATION / (Math.PI * 2)));
+        
+        // DEBUG set to steeringCenter for test.
+//        setPoint = 1500;
 
         steeringPID.setSetpoint(setPoint);
+        if (steeringSensor.getChannel() == RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL)
+        {
+        	LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f setPoint=%d sensorValue=%f",
+        			requestedAngle, outputAngle, setPoint, getSensorValue()));
+        }
     }
+    
+    /**
+     * Limit range to -6PI to +6PI
+     * 
+     * @param angle
+     * @return
+     */
+	private double limitRange(double angle) {
+        while (angle > Math.PI * 2 * MAX_TURNS)
+        {
+        	angle -= Math.PI * 2;
+        }
+        while (angle < Math.PI * 2 * -MAX_TURNS)
+        {
+        	angle += Math.PI * 2;
+        }
+		return angle;
+	}
 
     /**
      * Change the center point of this steering motor
@@ -201,4 +251,5 @@ public class Steering
     {
         steeringCenter = center;
     }
+    
 }
