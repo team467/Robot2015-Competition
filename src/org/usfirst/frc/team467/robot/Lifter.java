@@ -37,7 +37,7 @@ public class Lifter {
 	 * Private constructor
 	 */
 	private Lifter() {
-		lifterMotor = new Talon(9);// TODO determine PWM channel to run lifter
+//		lifterMotor = new Talon(5);// TODO determine PWM channel to run lifter
 									// motor
 		topStop = new DigitalInput(0);// TODO determine Dig IO channel
 		topSlow = new DigitalInput(1);// TODO determine Dig IO channel

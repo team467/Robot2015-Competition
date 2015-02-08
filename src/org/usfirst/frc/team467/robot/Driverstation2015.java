@@ -122,7 +122,7 @@ public class Driverstation2015 {
 	 * 
 	 * @return moves speed for the gripper between -1.0 and 1.0
 	 */
-	public double getGripperMoveSpeed() {
+	public double getClawMoveType() {
 		double driveSpeed = 0;
 		if (buttonPanel.isButtonDown(CLAW_OPEN))
 			driveSpeed = 0.4;// TODO determine sign

@@ -16,6 +16,8 @@ import com.ni.vision.NIVision.ShapeMode;
 import edu.wpi.first.wpilibj.CameraServer;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Talon;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -45,6 +47,8 @@ public class Robot extends IterativeRobot
      * Time in milliseconds
      */
     double time;
+    
+    Talon testTalon = null;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -73,6 +77,7 @@ public class Robot extends IterativeRobot
 //        NIVision.IMAQdxConfigureGrab(session);
         
         time = System.currentTimeMillis();
+        testTalon = new Talon(9);
    
         Calibration.init();        
     }
@@ -97,12 +102,13 @@ public class Robot extends IterativeRobot
     {
 //    	NIVision.IMAQdxStartAcquisition(session);
     }
-
+    
     /**
      * This function is run when test mode is first enabled
      */
     public void testInit()
     {
+    	
     }
 
     /**
@@ -110,9 +116,11 @@ public class Robot extends IterativeRobot
      */
     public void testPeriodic()
     {
-    	driverstation2015.readInputs();
-    	driverstation2015.testLEDs();
-    	driverstation2015.printButtonPanelPressedButtons();
+    	testTalon.set(1);    	
+    	System.out.println(PowerDistroBoard467.getInstance().getCurrent(12));
+//    	driverstation2015.readInputs();
+//    	driverstation2015.testLEDs();
+//    	driverstation2015.printButtonPanelPressedButtons();
     }
 
     /**
