@@ -1,7 +1,5 @@
 package org.usfirst.frc.team467.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-
 public class Driverstation2015 {
 
 	private static Driverstation2015 driverstation2015 = null;
