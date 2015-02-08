@@ -111,7 +111,7 @@ public class Robot extends IterativeRobot
     public void testPeriodic()
     {
     	driverstation2015.readInputs();
-    	driverstation2015.printPressedButtons();
+    	driverstation2015.printButtonPanelPressedButtons();
     }
 
     /**

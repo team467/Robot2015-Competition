@@ -79,9 +79,9 @@ public class Driverstation2015 {
 	}
 
 	/**
-	 * Gets the speed to drive the gripper motor.
+	 * Gets the speed to drive the gripper motor in PWM, between -1.0 and 1.0.
 	 * 
-	 * @return
+	 * @return moves speed for the gripper between -1.0 and 1.0
 	 */
 	public double getGripperMoveSpeed() {
 		double driveSpeed = 0;
@@ -95,7 +95,7 @@ public class Driverstation2015 {
 	}
 
 	/**
-	 * Gets if the driverstation should be in auto mode.
+	 * Gets if the driverstation switch is in Auto selector mode.
 	 * 
 	 * @return
 	 */
@@ -104,7 +104,7 @@ public class Driverstation2015 {
 	}
 
 	/**
-	 * Gets if the driverstation should be in calibrate mode.
+	 * Gets if the driverstation switch is in calibrate selector mode.
 	 * 
 	 * @return
 	 */
@@ -115,40 +115,57 @@ public class Driverstation2015 {
 	/**
 	 * Gets the type of autonomous to use.
 	 * 
-	 * @return
+	 * @return Autonomous mode or DRIVE_ONLY if for some reason no position on
+	 *         the switch is selected, or NULL if not in autonomous mode.
 	 */
 	public AutoType getAutoType() {
-		if (buttonPanel.isButtonDown(AUTO_DRIVE_ONLY))
-			return AutoType.DRIVE_ONLY;
-		else if (buttonPanel.isButtonDown(AUTO_GRAB_BOTH))
-			return AutoType.GRAB_BOTH;
-		else if (buttonPanel.isButtonDown(AUTO_GRAB_CONTAINER_PUSH_TOTE))
-			return AutoType.GRAB_CONTAINER_PUSH_TOTE;
-		else if (buttonPanel.isButtonDown(AUTO_PUSH_TOTE))
-			return AutoType.PUSH_TOTE;
+		if (isAutonomousMode()) {
+			if (buttonPanel.isButtonDown(AUTO_DRIVE_ONLY))
+				return AutoType.DRIVE_ONLY;
+			else if (buttonPanel.isButtonDown(AUTO_GRAB_BOTH))
+				return AutoType.GRAB_BOTH;
+			else if (buttonPanel.isButtonDown(AUTO_GRAB_CONTAINER_PUSH_TOTE))
+				return AutoType.GRAB_CONTAINER_PUSH_TOTE;
+			else if (buttonPanel.isButtonDown(AUTO_PUSH_TOTE))
+				return AutoType.PUSH_TOTE;
+			else
+				return AutoType.DRIVE_ONLY;
+		}
 		else
-			return AutoType.DRIVE_ONLY;
+		{
+			return null;
+		}
 	}
 
 	/**
 	 * Gets the wheel to calibrate.
 	 * 
-	 * @return - Steering motor IDs from RobotMap
+	 * @return - Steering motor IDs from RobotMap or -1 if no wheel is selected, or
+	 *  -9999 if not in calibrate mode
 	 */
-	public int getCalibrateWheel()
-	{
-//		if(isCalibrateMode())
-//			if(buttonPanel.isButtonDown(CAL_STD_DRIVE_1))
-//			{
-//				
-//			}
-		return 0; //TODO implement... ha
+	public int getCalibrateWheel() {
+		if (isCalibrateMode()) {
+			if (buttonPanel.isButtonDown(CAL_BL))
+				return RobotMap.BACK_LEFT;
+			else if (buttonPanel.isButtonDown(CAL_BR))
+				return RobotMap.BACK_RIGHT;
+			else if (buttonPanel.isButtonDown(CAL_FL))
+				return RobotMap.FRONT_LEFT;
+			else if (buttonPanel.isButtonDown(CAL_FR))
+				return RobotMap.FRONT_RIGHT;
+			else
+				// no wheel selected
+				return -1;
+		} else {
+			// not in calibrate mode
+			return -9999;
+		}
 	}
 
 	/**
 	 * Prints all pressed buttons to the console
 	 */
-	public void printPressedButtons() {
+	public void printButtonPanelPressedButtons() {
 		buttonPanel.printPressedButtons();
 	}
 
