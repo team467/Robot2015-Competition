@@ -105,7 +105,7 @@ public class DriverStation467
         
         if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6)) drivemode = DriveMode.REVOLVE;
         
-        if (getDriveJoystick().buttonDown(7)) drivemode = DriveMode.REWIND;
+        if(getDriveJoystick().buttonDown(1)) drivemode = DriveMode.UNWIND;
     	
     	return drivemode;
     } 

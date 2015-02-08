@@ -78,7 +78,6 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
     	LOGGER.info("Robot disabled");
-    	LOGGER.debug("Robot disabled");
     }
 
     /**
@@ -133,7 +132,6 @@ public class Robot extends IterativeRobot
         else 
         {
             // Drive Mode
-        	LOGGER.debug("teleopPeriodic(); drive mode");
             updateDrive();
         }
         
@@ -165,8 +163,11 @@ public class Robot extends IterativeRobot
     {
     	switch (driverstation.getDriveMode())
     	{
-    		case REWIND:
-    			drive.rewindDrive();
+    		case UNWIND:
+    			for (Steering wheelpod : Drive.getInstance().steering)
+    			{
+    				wheelpod.setAbsoluteAngle(0);
+    			}
     			break;
     		
     		case REVOLVE:

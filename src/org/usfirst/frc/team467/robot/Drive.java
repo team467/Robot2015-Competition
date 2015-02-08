@@ -21,7 +21,7 @@ public class Drive extends RobotDrive
     private static Drive instance = null;
 
     //Steering objects
-    private Steering[] steering;
+    public Steering[] steering;
 
     //Data storage object
     private DataStorage data;
@@ -357,22 +357,6 @@ public class Drive extends RobotDrive
     	fourWheelSteer(angle, angle, angle, angle);    	
     	fourWheelDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE);
     }
-    
-    public void rewindDrive()
-    {
-//    	double FLAngle = steering[0].getSensorValue();
-//    	double FRAngle = steering[1].getSensorValue();
-//    	double BLAngle = steering[2].getSensorValue();
-//    	double BRAngle = steering[3].getSensorValue();
-    	
-    	// Go counterclockwise incrementally
-    	for (double i = -0.5; i >= -1; i -= 0.5){
-    		steering[0].setAngle(i);
-    		steering[1].setAngle(i);
-    		steering[2].setAngle(i);
-    		steering[3].setAngle(i);
-    	}
-	}
 
 	/**
      * @param direction

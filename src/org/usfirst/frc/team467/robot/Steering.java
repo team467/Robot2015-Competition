@@ -73,7 +73,7 @@ public class Steering
 
         // Set steering center
         steeringCenter = center;
-        steeringCenter = 2102; // TODO Remove after calibration works
+        steeringCenter = 2142; // TODO Remove after calibration works
 
         // Make PID Controller
         steeringPID = new PIDController(pid.p, pid.i, pid.d, new SteeringPIDSource(), steeringMotor);
@@ -150,7 +150,7 @@ public class Steering
         
         if (steeringMotor.getChannel() == RobotMap.FRONT_RIGHT)
         {
-        	LOGGER.debug(String.format("getSteeringAngle() sensor=%f output=%f", sensor, output));
+        	LOGGER.trace(String.format("getSteeringAngle() sensor=%f output=%f", sensor, output));
         }
         
         return output;
@@ -197,25 +197,46 @@ public class Steering
      * Set angle of front steering. A value of 0.0 corresponds to normally forward position.
      * @param requestedAngle - any value between -PI and +PI
      */
-    public void setAngle(double requestedAngle)
+    public void setAngle(final double requestedAngle)
     {
-    	// Flipped the angle
-    	requestedAngle *= -1;
        
     	// Current angle in full radians (i.e.-6pi to 6pi)
         final double sensorAngle = getSteeringAngle();
         
         // Translates input angle to closest full rotation to sensor angle
-        double outputAngle = requestedAngle + sensorAngle - (sensorAngle % (Math.PI * 2));
-        
+        // TODO Flip the angle, why do we need this?
+        double outputAngle = -requestedAngle;
+    	while ((outputAngle - sensorAngle) > Math.PI) {
+    		outputAngle -= Math.PI*2;
+    	}
+    	while ((outputAngle - sensorAngle) < -Math.PI) {
+    		outputAngle += Math.PI*2;
+    	}
+
+    	
         // Limit range to -6PI to +6PI
         outputAngle = limitRange(outputAngle);
             
         // Calculate desired setpoint for PID based on known center position and requested angle
         int setPoint = (int)(steeringCenter + (outputAngle * LEVELS_PER_ROTATION / (Math.PI * 2)));
+
+        steeringPID.setSetpoint(setPoint);
+        if (steeringSensor.getChannel() == RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL)
+        {
+        	LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f setPoint=%d sensorValue=%f",
+        			requestedAngle, outputAngle, setPoint, getSensorValue()));
+        }
+    }
+    
+    public void setAbsoluteAngle(double requestedAngle)
+    {
+    	// Flipped the angle
+    	double outputAngle = requestedAngle * -1;
         
-        // DEBUG set to steeringCenter for test.
-//        setPoint = 1500;
+        outputAngle = limitRange(outputAngle);
+        
+        // Calculate desired setpoint for PID based on known center position and requested angle
+        int setPoint = (int)(steeringCenter + (outputAngle * LEVELS_PER_ROTATION / (Math.PI * 2)));
 
         steeringPID.setSetpoint(setPoint);
         if (steeringSensor.getChannel() == RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL)
