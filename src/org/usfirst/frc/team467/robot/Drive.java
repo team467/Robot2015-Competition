@@ -444,7 +444,7 @@ public class Drive extends RobotDrive
      * @param value2 - The second angle to check against
      * @return The normalized wrap around difference
      */
-    private double wrapAroundDifference(double value1, double value2)
+    static double wrapAroundDifference(double value1, double value2)
     {
         double diff = Math.abs(value1 - value2);
         while (diff > Math.PI)
