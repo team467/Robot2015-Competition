@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.*;
  */
 public class Drive extends RobotDrive
 {
-	// For future logging needs
-	@SuppressWarnings("unused")
 	private static final Logger LOGGER = Logger.getLogger(Drive.class);
 
 	//Single instance of this class
@@ -177,7 +175,7 @@ public class Drive extends RobotDrive
     private void fourWheelNoSteer()
     {
 		LOGGER.debug("fourWheelNoSteer value=" + steering[RobotMap.FRONT_RIGHT].getSensorValue());
-		LOGGER.debug("fourWheelNoSteer angle=" + steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
+		LOGGER.trace("fourWheelNoSteer angle=" + steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
     	for (Steering wheelpod : steering) {
     		// TODO Figure out negative angle.
     		wheelpod.setAngle(-wheelpod.getSteeringAngle());
@@ -315,7 +313,7 @@ public class Drive extends RobotDrive
         double steeringAngle = (fieldAlign) ? angle - gyroAngle / (2 * Math.PI) : angle;
         
         
-        WheelCorrection corrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, steeringAngle, speed);
+        WheelCorrection corrected = wrapAroundCorrect(RobotMap.FRONT_RIGHT, steeringAngle, speed);
 
         fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
         fourWheelDrive(corrected.speed, corrected.speed, corrected.speed, corrected.speed);
@@ -451,31 +449,36 @@ public class Drive extends RobotDrive
         {
             diff = (2.0 * Math.PI) - diff;
         }
+        LOGGER.debug(String.format("wrapAroundDifference v1=%f v2=%f diff=%f",
+        		value1, value2, diff));
         return diff;
     }
 	/**
 	 * Only used for steering
-	 * @param mapConstant - which wheel pod by channel
+	 * @param steeringIndex - which wheel pod
 	 * @param targetAngle - in radians
 	 * @param targetSpeed
 	 * @return corrected
 	 */
-	private WheelCorrection wrapAroundCorrect(int mapConstant, double targetAngle, double targetSpeed)
+	private WheelCorrection wrapAroundCorrect(int steeringIndex, double targetAngle, double targetSpeed)
 	{
 	    WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
-	    // TODO
 	    
-//	    if (wrapAroundDifference(steering[mapConstant].getSteeringAngle(), targetAngle) > Math.PI / 2)
-//	    {
-//	    	// shortest path to desired angle is to reverse speed and adjust angle - 180
-//	        corrected.speed *= -1;
-//	
-//	        corrected.angle -= Math.PI;
-//	        if (corrected.angle < -Math.PI)
-//	        {
-//	            corrected.angle += Math.PI * 2;
-//	        }
-//	    }
+	    if (steering[steeringIndex].shouldWrapAround())
+	    {
+	    	double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);
+		    if (wrapAroundDifference(normalizedSteeringAngle, targetAngle) > Math.PI / 2)
+		    {
+		    	// shortest path to desired angle is to reverse speed and adjust angle -PI
+		        corrected.speed *= -1;
+		
+		        corrected.angle -= Math.PI;
+//		        if (corrected.angle < -Math.PI)
+//		        {
+//		            corrected.angle += Math.PI * 2;
+//		        }
+		    }
+	    }
 	    return corrected;
 	}
 

@@ -149,7 +149,7 @@ public class Steering
         
         if (steeringMotor.getChannel() == RobotMap.FRONT_RIGHT)
         {
-        	LOGGER.trace(String.format("getSteeringAngle() sensor=%f output=%f", sensor, output));
+        	LOGGER.debug(String.format("getSteeringAngle() sensor=%f center=%f output=%f", sensor, steeringCenter, output));
         }
         
         return output;
@@ -271,5 +271,10 @@ public class Steering
     {
         steeringCenter = center;
     }
+
+	public boolean shouldWrapAround()
+	{
+		return (Math.abs(getSteeringAngle()) < 5*Math.PI);
+	}
     
 }
