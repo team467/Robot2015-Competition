@@ -16,18 +16,7 @@ public class DriveTest {
         assertNotEquals(0.0, Drive.wrapAroundDifference(Math.PI/2,   Math.PI + Math.PI/2), MAX_DELTA);
         assertEquals   (0.0, Drive.wrapAroundDifference(Math.PI/2, 2*Math.PI + Math.PI/2), MAX_DELTA);
         assertNotEquals(0.0, Drive.wrapAroundDifference(Math.PI/2, 3*Math.PI + Math.PI/2), MAX_DELTA);
-//        assertEquals   (0.0, Drive.wrapAroundDifference(Math.PI/2, 4*Math.PI + Math.PI/2), MAX_DELTA);
+        assertEquals   (0.0, Drive.wrapAroundDifference(Math.PI/2, 4*Math.PI + Math.PI/2), MAX_DELTA);
         assertNotEquals(0.0, Drive.wrapAroundDifference(Math.PI/2, 5*Math.PI + Math.PI/2), MAX_DELTA);
     }
 }
-
-
-//private double wrapAroundDifference(double value1, double value2)
-//{
-//    double diff = Math.abs(value1 - value2);
-//    while (diff > Math.PI)
-//    {
-//        diff = (2.0 * Math.PI) - diff;
-//    }
-//    return diff;
-//}

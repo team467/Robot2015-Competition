@@ -90,14 +90,8 @@ public class Steering
      * @return The sensor value, read from 0 to RobotMap.STEERING_RANGE
      */
     public double getSensorValue()
-    {
-//        if (steeringSensor.getChannel() == RobotMap.FRONT_RIGHT)
-//        {
-//        	LOGGER.debug(String.format("getSensorValue(chan=%d) getValue=%d getAverageValue=%d",
-//    			steeringSensor.getChannel(), steeringSensor.getValue(), steeringSensor.getAverageValue()));
-//        }
-        
-    	return (steeringSensor.getAverageValue());
+    {   
+    	return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
     }
     
     /**
@@ -204,7 +198,7 @@ public class Steering
         
         // Translates input angle to closest full rotation to sensor angle
         // TODO Flip the angle, why do we need this?
-        double outputAngle = -requestedAngle;
+        double outputAngle = requestedAngle;
     	while ((outputAngle - sensorAngle) > Math.PI) {
     		outputAngle -= Math.PI*2;
     	}

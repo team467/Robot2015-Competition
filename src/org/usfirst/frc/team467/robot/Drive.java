@@ -444,7 +444,7 @@ public class Drive extends RobotDrive
      */
     static double wrapAroundDifference(double value1, double value2)
     {
-        double diff = Math.abs(value1 - value2);
+        double diff = Math.abs(value1 - value2) % (2*Math.PI);
         while (diff > Math.PI)
         {
             diff = (2.0 * Math.PI) - diff;
@@ -479,6 +479,7 @@ public class Drive extends RobotDrive
 //		        }
 		    }
 	    }
+	    LOGGER.debug(corrected);
 	    return corrected;
 	}
 
@@ -561,5 +562,10 @@ class WheelCorrection {
 	{
 		angle = angleIn;
 		speed = speedIn;
+	}
+
+	@Override
+	public String toString() {
+		return "WheelCorrection [speed=" + speed + ", angle=" + angle + "]";
 	}
 }
