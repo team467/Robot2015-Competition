@@ -3,25 +3,24 @@ package org.usfirst.frc.team467.robot;
 import edu.wpi.first.wpilibj.*;
 
 /**
- * Class to control steering mechanism on Team467 Robot
- * Uses WPI PID controller
+ * Class to control steering mechanism on Team467 Robot Uses WPI PID controller
  *
- * There are 2 adjustments that may be necessary in this code to adjust for electronics or 
- * mechanical issues. 
+ * There are 2 adjustments that may be necessary in this code to adjust for
+ * electronics or mechanical issues.
  * 
- * 1. If the steering motors are driving in the wrong direction (due to wiring or gearing changes)
- * 		- invert the sign of the steering PID - defined in RobotMap.java
+ * 1. If the steering motors are driving in the wrong direction (due to wiring
+ * or gearing changes) - invert the sign of the steering PID - defined in
+ * RobotMap.java
  * 
- * 2. If the steering sensors are reading in the wrong direction
- * 	    - invert the value read from the sensor by changing the value returned from 
- * 		  getSensorValue() to be (RobotMap.STEERING_RANGE - steeringSensor.getAverageValue())
+ * 2. If the steering sensors are reading in the wrong direction - invert the
+ * value read from the sensor by changing the value returned from
+ * getSensorValue() to be (RobotMap.STEERING_RANGE -
+ * steeringSensor.getAverageValue())
  *
  * @author Team467
  */
 public class Steering
 {
-//	public static final double TwoPi = 2 * Math.PI;
-	
     // Sensor used to determine angle
     private AnalogInput steeringSensor;
 
@@ -31,7 +30,8 @@ public class Steering
     // Steering motor
     private Talon steeringMotor;
 
-    // Center point of this steering motor. This is the value read from the sensor
+    // Center point of this steering motor. This is the value read from the
+    // sensor
     // when the wheels are in the normal forward position
     private double steeringCenter;
 
@@ -49,16 +49,20 @@ public class Steering
     /**
      * Constructor for steering subsystem
      *
-     * @param pid - From the PIDvalues array
-     * @param motor - motor channel
-     * @param sensor - analog sensor channel
-     * @param center - sensor reading when wheels point forward
+     * @param pid
+     *            - From the PIDvalues array
+     * @param motor
+     *            - motor channel
+     * @param sensor
+     *            - analog sensor channel
+     * @param center
+     *            - sensor reading when wheels point forward
      */
     Steering(PID pid, int motor, int sensor, double center)
     {
         // Make steering motor
-        steeringMotor = new Talon(motor); 
-        
+        steeringMotor = new Talon(motor);
+
         // Make steering sensor
         steeringSensor = new AnalogInput(sensor);
 
@@ -68,7 +72,7 @@ public class Steering
         // Make PID Controller
         steeringPID = new PIDController(pid.p, pid.i, pid.d, new SteeringPIDSource(), steeringMotor);
 
-        // Set PID Controller settings        
+        // Set PID Controller settings
         steeringPID.setInputRange(0.0, RobotMap.STEERING_RANGE);
         steeringPID.setSetpoint(steeringCenter);
         steeringPID.setContinuous(true);
@@ -82,9 +86,9 @@ public class Steering
      */
     public double getSensorValue()
     {
-    	return (steeringSensor.getAverageValue());
+        return (steeringSensor.getAverageValue());
     }
-    
+
     /**
      * Enables the PID for the steering.
      */
@@ -92,7 +96,7 @@ public class Steering
     {
         steeringPID.enable();
     }
-    
+
     /**
      * Disables the PID for the steering.
      */
@@ -112,6 +116,7 @@ public class Steering
 
     /**
      * Get the Talon motor of this steering object
+     * 
      * @return
      */
     public Talon getMotor()
@@ -120,9 +125,8 @@ public class Steering
     }
 
     /**
-     * Get the sensor angle normalized to a -PI to +PI range
-     * Implements the steering center point to give an angle accurate to the 
-     * robot's alignment.
+     * Get the sensor angle normalized to a -PI to +PI range Implements the
+     * steering center point to give an angle accurate to the robot's alignment.
      *
      * @return - steering angle
      */
@@ -137,7 +141,7 @@ public class Steering
         if (sensor > (RobotMap.STEERING_RANGE / 2))
         {
             sensor -= RobotMap.STEERING_RANGE;
-        }        
+        }
         double output = (sensor) / (RobotMap.STEERING_RANGE / 2);
 
         return output;
@@ -157,28 +161,31 @@ public class Steering
         System.out.print(" S: " + steeringPID.getSetpoint());
         System.out.println();
     }
-    
+
     /**
-     * Set angle of front steering. A value of 0.0 corresponds to normally forward position.
-     * @param angle - any value between -PI and +PI
+     * Set angle of front steering. A value of 0.0 corresponds to normally
+     * forward position.
+     * 
+     * @param angle
+     *            - any value between -PI and +PI
      */
     public void setAngle(double angle)
-    {	
+    {
         double setPoint;
-        
+
         // normalize values to be in range of MIN_ROTATION to MAX_ROTATION
-        while (angle < -(Math.PI)) 
+        while (angle < -(Math.PI))
         {
             angle += Math.PI * 2;
         }
-            
-        while (angle > Math.PI) 
+
+        while (angle > Math.PI)
         {
             angle -= Math.PI * 2;
         }
-            
+
         // Calculate desired setpoint for PID based on known center position
-        setPoint = steeringCenter + (angle/Math.PI * (RobotMap.STEERING_RANGE / 2));
+        setPoint = steeringCenter + (angle / Math.PI * (RobotMap.STEERING_RANGE / 2));
 
         // Normalize setPoint into the 0 to RobotMap.STEERING_RANGE range
         if (setPoint < 0.0)
@@ -195,6 +202,7 @@ public class Steering
 
     /**
      * Change the center point of this steering motor
+     * 
      * @param center
      */
     public void setCenter(double center)

@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Joystick467
 {
     private Joystick joystick;
-    private boolean[] buttons = new boolean[12];        // array of current button states
-    private boolean[] prevButtons = new boolean[12];    // array of previous button states, involved in edge detection.
+    private boolean[] buttons = new boolean[12];     // array of current button states
+    private boolean[] prevButtons = new boolean[12]; // array of previous button states, involved in edge detection.
     private double stickX = 0.0;
     private double stickY = 0.0;
     private int pov = 0;
@@ -44,7 +44,8 @@ public class Joystick467
 
     /**
      * Returns the jaw joystick object inside Joystick467
-     * @return 
+     * 
+     * @return
      */
     public Joystick getJoystick()
     {
@@ -60,7 +61,7 @@ public class Joystick467
         for (int i = 0; i < 12; i++)
         {
             prevButtons[i] = buttons[i];
-            buttons[i] = joystick.getRawButton(i+1);
+            buttons[i] = joystick.getRawButton(i + 1);
         }
 
         // Read Joystick Axes
@@ -82,7 +83,6 @@ public class Joystick467
     {
         return joystick.getRawButton(button);
     }
-        
 
     /**
      * Check if a specific button has just been pressed. (Ignores holding.)
@@ -105,29 +105,29 @@ public class Joystick467
     {
         return !buttons[button - 1] && prevButtons[button - 1];
     }
-    
+
     /**
      * Gets the X position of the stick. Left to right ranges from -1.0 to 1.0,
      * with 0.0 in the middle. This value is accelerated.
      * 
-     * @return 
+     * @return
      */
     public double getStickX()
     {
         return stickX;
     }
-    
+
     /**
      * Gets the Y position of the stick. Up to down ranges from -1.0 to 1.0,
      * with 0.0 in the middle. This value is accelerated.
      * 
-     * @return 
+     * @return
      */
     public double getStickY()
     {
         return stickY;
     }
-    
+
     /**
      * 
      * @return the angle of the POV in degrees, or -1 if the POV is not pressed.
@@ -136,11 +136,11 @@ public class Joystick467
     {
         return pov;
     }
-    
+
     /**
      * 
      * 
-     * @return 
+     * @return
      */
     public boolean getFlap()
     {
@@ -179,7 +179,7 @@ public class Joystick467
         if (stickY == 0.0)
         {
             // In Y deadzone avoid divide by zero error
-            return (stickX > 0.0) ? Math.PI/2 : -Math.PI/2;
+            return (stickX > 0.0) ? Math.PI / 2 : -Math.PI / 2;
         }
 
         // Return value in range -PI to PI
