@@ -266,11 +266,5 @@ public class Steering
     {
         steeringCenter = center;
     }
-
-	public boolean approachingMaxTurns()
-	{
-		// Approaching means within 3/4 turn.
-		return (Math.abs(getSteeringAngle()) > 4.5*Math.PI);
-	}
     
 }

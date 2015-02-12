@@ -463,23 +463,16 @@ public class Drive extends RobotDrive
 	private WheelCorrection wrapAroundCorrect(int steeringIndex, double targetAngle, double targetSpeed)
 	{
 	    WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
-	    
-	    if (!steering[steeringIndex].approachingMaxTurns())
+    
+    	double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);
+	    if (wrapAroundDifference(normalizedSteeringAngle, targetAngle) > Math.PI / 2)
 	    {
-	    	double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);
-		    if (wrapAroundDifference(normalizedSteeringAngle, targetAngle) > Math.PI / 2)
-		    {
-		    	// shortest path to desired angle is to reverse speed and adjust angle -PI
-		        corrected.speed *= -1;
-		
-		        corrected.angle -= Math.PI;
-//		        if (corrected.angle < -Math.PI)
-//		        {
-//		            corrected.angle += Math.PI * 2;
-//		        }
-		    }
+	    	// shortest path to desired angle is to reverse speed and adjust angle -PI
+	        corrected.speed *= -1;
+	
+	        corrected.angle -= Math.PI;
+		    LOGGER.debug(corrected);
 	    }
-	    LOGGER.debug(corrected);
 	    return corrected;
 	}
 
