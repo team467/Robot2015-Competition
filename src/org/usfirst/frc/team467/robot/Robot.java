@@ -16,6 +16,8 @@ import com.ni.vision.NIVision.ShapeMode;
 import edu.wpi.first.wpilibj.CameraServer;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Talon;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -53,7 +55,7 @@ public class Robot extends IterativeRobot
     {
         // Initialize logging framework.
         Logging.init();
-
+        
         // Make robot objects
         driverstation = DriverStation467.getInstance();
 
@@ -94,12 +96,13 @@ public class Robot extends IterativeRobot
     {
 //    	NIVision.IMAQdxStartAcquisition(session);
     }
-
+    
     /**
      * This function is run when test mode is first enabled
      */
     public void testInit()
     {
+    	
     }
 
     /**
@@ -148,7 +151,8 @@ public class Robot extends IterativeRobot
         NIVision.Rect rect = new NIVision.Rect(100, 100, 500, 500);
         ShapeMode shape = ShapeMode.SHAPE_OVAL;
         NIVision.IMAQdxGrab(session, frame, 1);
-        NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, shape, 0.0f);
+        NIVision.imaqDrawShapeOnImage(frame, frame, rect,
+                DrawMode.DRAW_VALUE, shape, 0.0f);
 
         CameraServer.getInstance().setImage(frame);
 

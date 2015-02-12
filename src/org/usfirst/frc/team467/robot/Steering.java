@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.*;
  * Class to control steering mechanism on Team467 Robot
  * Uses WPI PID controller
  *
- * There are 2 adjustments that may be necessary in this code to adjust for electronics or
- * mechanical issues.
+ * There are 2 adjustments that may be necessary in this code to adjust for
+ * electronics or mechanical issues.
  * 
  * 1. If the steering motors are driving in the wrong direction (due to wiring or gearing changes)
  * - invert the sign of the steering PID - defined in RobotMap.java
@@ -134,9 +134,8 @@ public class Steering
     }
 
     /**
-     * Get the sensor angle normalized to a -PI to +PI range
-     * Implements the steering center point to give an angle accurate to the
-     * robot's alignment.
+     * Get the sensor angle normalized to a -PI to +PI range Implements the
+     * steering center point to give an angle accurate to the robot's alignment.
      *
      * @return - steering angle
      */

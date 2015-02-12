@@ -221,7 +221,7 @@ public class Drive extends RobotDrive
         //
         // Back Left - \ / - Back Right
         //
-        if (wrapAroundDifference(turnAngle, steering[RobotMap.FRONT_LEFT].getSteeringAngle()) <= Math.PI / 2)
+        if (wrapAroundDifference(turnAngle, steering[RobotMap.FRONT_RIGHT].getSteeringAngle()) <= Math.PI / 2)
         {
             // Front facing angles
             fourWheelSteer(turnAngle, -turnAngle, -turnAngle, turnAngle);
@@ -311,7 +311,7 @@ public class Drive extends RobotDrive
             return;
         }
 
-        double gyroAngle = 0;  // if gyro exists use gyro.getAngle()
+        double gyroAngle = 0; // if gyro exists use gyro.getAngle()
 
         // Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle / (2 * Math.PI) : angle;
@@ -411,10 +411,8 @@ public class Drive extends RobotDrive
     /**
      * Individually controls a specific driving motor
      *
-     * @param speed
-     *            Speed to drive at
-     * @param steeringId
-     *            Id of driving motor to drive
+     * @param speed Speed to drive at
+     * @param steeringId Id of driving motor to drive
      */
     public void individualWheelDrive(double speed, int steeringId)
     {
@@ -529,11 +527,8 @@ public class Drive extends RobotDrive
     /**
      * Set the steering center to a new value
      *
-     * @param steeringMotor
-     *            The id of the steering motor (0 = FL, 1 = FR, 2 =
-     *            BL, 3 = BR)
-     * @param value
-     *            The new center value
+     * @param steeringMotor The id of the steering motor (0 = FL, 1 = FR, 2 = BL, 3 = BR)
+     * @param value The new center value
      */
     public void setSteeringCenter(int steeringMotor, double value)
     {

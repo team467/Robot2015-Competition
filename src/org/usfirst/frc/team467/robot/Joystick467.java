@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Joystick467
 {
     private Joystick joystick;
-    private boolean[] buttons = new boolean[12];        // array of current button states
-    private boolean[] prevButtons = new boolean[12];    // array of previous button states, involved in edge detection.
+    private boolean[] buttons = new boolean[12];     // array of current button states
+    private boolean[] prevButtons = new boolean[12]; // array of previous button states, involved in edge detection.
     private double stickX = 0.0;
     private double stickY = 0.0;
     private int pov = 0;

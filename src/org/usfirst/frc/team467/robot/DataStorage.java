@@ -227,7 +227,7 @@ public class DataStorage
     }
 
     /**
-     * Put an array of doubles into the preferences table with the given key
+     * Put an array of doubles into the preferences table with the given keys
      * This doesn't actually store the values as an array, but rather individually
      * matches a key to each one based on the given key and stores each double as
      * it's own value.

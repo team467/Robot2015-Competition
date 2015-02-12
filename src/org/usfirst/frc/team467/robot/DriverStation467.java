@@ -89,8 +89,8 @@ public class DriverStation467
     // All button mappings are accessed through the functions below
 
     /**
-     * returns the current drive mode. Modes lower in the function will override those higher up.
-     * only 1 mode can be active at any time
+     * returns the current drive mode. Modes lower in the function will override
+     * those higher up. only 1 mode can be active at any time
      * 
      * @return currently active drive mode.
      */

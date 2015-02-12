@@ -20,7 +20,7 @@ public class RobotMap
     // Length is the short side, wide is the long side
     // Based on 2012 robot's geometry. Change for newer robots!
     public static final double LENGTH = 16.75; // inches btw the wheels
-    public static final double WIDTH = 25.0; // inches btw the wheels
+    public static final double WIDTH = 25.0;   // inches btw the wheels
 
     // Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
