@@ -28,7 +28,7 @@ public class Robot extends IterativeRobot
 {
 	private static final Logger LOGGER = Logger.getLogger(Robot.class);
 	
-	private static final double MIN_DRIVE_SPEED = 0.05;
+	private static final double MIN_DRIVE_SPEED = 0.1;
 
     //Robot objects
     private DriverStation467 driverstation;
@@ -205,24 +205,30 @@ public class Robot extends IterativeRobot
     		case CRAB_NO_FA:
     			if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
     			{
-    				drive.crabDrive(0, driverstation.getDriveJoystick().getStickDistance(), 
-    		  		  	      		   false /* not field aligned */ );
+    				double currentAngle = drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle();
+    				drive.crabDrive(currentAngle,
+    						driverstation.getDriveJoystick().getStickDistance(), 
+    		  		  	    false /* not field aligned */ );
+    			} else {
+    				drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
+    						driverstation.getDriveJoystick().getStickDistance(), 
+    						false /* not field aligned */ );
     			}
-    			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
-        		  	      driverstation.getDriveJoystick().getStickDistance(), 
-        		  	      false /* not field aligned */ );
     			break;
         
     		default:  //should never enter here
-    			System.err.println("Button State not calculated correctly");
-    			if (driverstation.getDriveJoystick().getStickDistance() < 0.02)
+    			LOGGER.error("Button State not calculated correctly");
+    			if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
     			{
-    				drive.crabDrive(0, driverstation.getDriveJoystick().getStickDistance(), 
-    		  		  	      		   false /* not field aligned */ );
+    				double currentAngle = drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle();
+    				drive.crabDrive(currentAngle,
+    						driverstation.getDriveJoystick().getStickDistance(), 
+    						false /* not field aligned */ );
+    			} else {
+	    			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
+	    					driverstation.getDriveJoystick().getStickDistance(), 
+	    					false /* not field aligned */ );
     			}
-    			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
-  		  	      driverstation.getDriveJoystick().getStickDistance(), 
-  		  	      false /* not field aligned */ );
     			break;
     	}
     }

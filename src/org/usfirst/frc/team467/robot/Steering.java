@@ -141,9 +141,10 @@ public class Steering
 
         double output = sensor * (Math.PI * 2) / LEVELS_PER_ROTATION;
         
-        if (steeringMotor.getChannel() == RobotMap.FRONT_RIGHT)
+//        if (steeringMotor.getChannel() == RobotMap.FRONT_RIGHT)
         {
-        	LOGGER.debug(String.format("getSteeringAngle() sensor=%f center=%f output=%f", sensor, steeringCenter, output));
+        	LOGGER.trace(String.format("getSteeringAngle() channel=%d sensor=%6.3f center=%4.0f output=%f",
+        			steeringMotor.getChannel(), sensor, steeringCenter, output));
         }
         
         return output;
@@ -266,9 +267,10 @@ public class Steering
         steeringCenter = center;
     }
 
-	public boolean shouldWrapAround()
+	public boolean approachingMaxTurns()
 	{
-		return (Math.abs(getSteeringAngle()) < 5*Math.PI);
+		// Approaching means within 3/4 turn.
+		return (Math.abs(getSteeringAngle()) > 4.5*Math.PI);
 	}
     
 }

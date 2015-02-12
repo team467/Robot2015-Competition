@@ -464,7 +464,7 @@ public class Drive extends RobotDrive
 	{
 	    WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
 	    
-	    if (steering[steeringIndex].shouldWrapAround())
+	    if (!steering[steeringIndex].approachingMaxTurns())
 	    {
 	    	double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);
 		    if (wrapAroundDifference(normalizedSteeringAngle, targetAngle) > Math.PI / 2)

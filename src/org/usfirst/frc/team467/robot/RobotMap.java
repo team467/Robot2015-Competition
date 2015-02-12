@@ -79,7 +79,7 @@ public class RobotMap
     public static final PID [] PIDvalues =
     {
         new PID (-0.003, 0.0, 0.0), // Front Left PID values
-        new PID (-0.012, 0.0, 0.0), // Front Right PID values
+        new PID (-0.015, 0.0, 0.0), // Front Right PID values
         new PID (-0.003, 0.0, 0.0), // Back Left PID values
         new PID (-0.003, 0.0, 0.0), // Back Right PID values
     };
