@@ -8,18 +8,18 @@ import edu.wpi.first.wpilibj.DriverStation;
  * @author Team467
  */
 public class DriverStation467
-{	
-    //Singleton instance variable
+{
+    // Singleton instance variable
     private static DriverStation467 instance;
 
-    //Driverstation objects
+    // Driverstation objects
     private DriverStation driverstation;
-    
-    //Joystick objects
+
+    // Joystick objects
     private Joystick467 joystick1;
     private Joystick467 joystick2;
 
-    //Singleton so constructor is private
+    // Singleton so constructor is private
     private DriverStation467()
     {
         driverstation = DriverStation.getInstance();
@@ -48,7 +48,7 @@ public class DriverStation467
 
     /**
      * Read all Robot Inputs. Typically, this is called once per iteration of
-     * the main event loop. 
+     * the main event loop.
      */
     public void readInputs()
     {
@@ -85,31 +85,36 @@ public class DriverStation467
     {
         return joystick1;
     }
-    
+
     // All button mappings are accessed through the functions below
-    
+
     /**
      * returns the current drive mode. Modes lower in the function will override those higher up.
      * only 1 mode can be active at any time
-     * @return currently active drive mode. 
+     * 
+     * @return currently active drive mode.
      */
     public DriveMode getDriveMode()
     {
-    	DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
-    	
-    	// if (getDriveJoystick().buttonDown(5)) drivemode = DriveMode.CRAB_FA;
-    	if (getDriveJoystick().buttonDown(2)) drivemode = DriveMode.TURN;
-    	
-    	int pov = getDriveJoystick().getPOV();
-        if (pov != -1 && pov != 0 && pov != 180) drivemode = DriveMode.STRAFE;
-        
-        if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6)) drivemode = DriveMode.REVOLVE;
-        
-        if(getDriveJoystick().buttonDown(7)) drivemode = DriveMode.UNWIND;
-    	
-    	return drivemode;
-    } 
-    
+        DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
+
+        // if (getDriveJoystick().buttonDown(5)) drivemode = DriveMode.CRAB_FA;
+        if (getDriveJoystick().buttonDown(2))
+            drivemode = DriveMode.TURN;
+
+        int pov = getDriveJoystick().getPOV();
+        if (pov != -1 && pov != 0 && pov != 180)
+            drivemode = DriveMode.STRAFE;
+
+        if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6))
+            drivemode = DriveMode.REVOLVE;
+
+        if (getDriveJoystick().buttonDown(7))
+            drivemode = DriveMode.UNWIND;
+
+        return drivemode;
+    }
+
     /**
      * 
      * @return true if button required to enable slow driving mode are pressed
@@ -117,8 +122,8 @@ public class DriverStation467
     public boolean getSlow()
     {
         return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
-    }    
-    
+    }
+
     /**
      * 
      * @return true if button required to enable turbo driving mode are pressed
@@ -127,10 +132,10 @@ public class DriverStation467
     {
         return getDriveJoystick().buttonDown(7);
     }
-    
+
     // Calibration functions. Calibration is a separate use mode - so the buttons used
     // here can overlap with those used for the regular drive modes
-    
+
     /**
      * 
      * @return true if calibration mode selected
@@ -139,7 +144,7 @@ public class DriverStation467
     {
         return getCalibrationJoystick().getFlap();
     }
-    
+
     /**
      * 
      * @return true if button to confirm calibration selection is pressed
@@ -148,7 +153,7 @@ public class DriverStation467
     {
         return getCalibrationJoystick().buttonDown(Joystick467.TRIGGER);
     }
-    
+
     /**
      * 
      * @return true if button to enable calibration slow turn mode is pressed
@@ -156,5 +161,5 @@ public class DriverStation467
     public boolean getCalibrateSlowTurn()
     {
         return getCalibrationJoystick().buttonDown(4);
-    }        
+    }
 }

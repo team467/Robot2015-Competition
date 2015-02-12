@@ -8,11 +8,11 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Team467 This class contains only static variables and functions, and
- * simply acts as a container for all the calibration code.
+ *         simply acts as a container for all the calibration code.
  */
 public class Calibration
 {
-	private static final Logger LOGGER = Logger.getLogger(Calibration.class);
+    private static final Logger LOGGER = Logger.getLogger(Calibration.class);
     // Creates objects
 
     private static Drive drive;
@@ -20,7 +20,7 @@ public class Calibration
 
     // Incremented angle used for calibrating wheels
     private static double calibrationAngle = 0.0;
-    
+
     /**
      * Initialize calibration code
      */
@@ -34,13 +34,14 @@ public class Calibration
     /**
      * Updates steering calibration
      *
-     * @param motorId The id of the motor to calibrate
+     * @param motorId
+     *            The id of the motor to calibrate
      */
     public static void updateSteeringCalibrate(int motorId)
     {
-    	LOGGER.debug("Calibrating");
+        LOGGER.debug("Calibrating");
         calibrationAngle = getCalibrationAngle(calibrationAngle);
-        
+
         if (calibrationAngle > Math.PI)
         {
             calibrationAngle -= 2.0 * Math.PI;
@@ -50,7 +51,7 @@ public class Calibration
             calibrationAngle += 2.0 * Math.PI;
         }
 
-        // Drive specified steering motor with no speed to allow only steering        
+        // Drive specified steering motor with no speed to allow only steering
         drive.individualSteeringDrive(calibrationAngle, 0, motorId);
 
         // Write and set new center if trigger is pressed
@@ -69,23 +70,25 @@ public class Calibration
             calibrationAngle = 0.0;
         }
     }
-    
+
     /**
      * Gets the wheel selected by the stick.
-     * @param prevSelectedWheel previously selected wheel
+     * 
+     * @param prevSelectedWheel
+     *            previously selected wheel
      * @return int val of which wheel to select
      */
     public static int getWheel(int prevSelectedWheel)
     {
-    	Joystick467 joystick = DriverStation467.getInstance().getCalibrationJoystick();
+        Joystick467 joystick = DriverStation467.getInstance().getCalibrationJoystick();
         double stickAngle = joystick.getStickAngle();
-        
+
         // Select motor being calibrated
         if (joystick.getStickDistance() > 0.5)
         {
             if (stickAngle < 0)
             {
-                if (stickAngle < -Math.PI/2)
+                if (stickAngle < -Math.PI / 2)
                 {
                     return RobotMap.BACK_LEFT;
                 }
@@ -98,7 +101,7 @@ public class Calibration
             {
                 if (stickAngle > 0)
                 {
-                    if (stickAngle > Math.PI/2)
+                    if (stickAngle > Math.PI / 2)
                     {
                         return RobotMap.BACK_RIGHT;
                     }
@@ -112,34 +115,37 @@ public class Calibration
         // No new selected, return previous wheel selected
         return prevSelectedWheel;
     }
-    
+
     /**
      * Gets the angle to set the calibrating wheel.
-     * @param prevCalibrationAngle previous angle to update
+     * 
+     * @param prevCalibrationAngle
+     *            previous angle to update
      * @return angle for setting the angle
      */
     private static double getCalibrationAngle(double prevCalibrationAngle)
     {
-        
+
         // If slow pressed on stick is pressed, slow down wheel calibration.
         double rateMultiplier = (DriverStation467.getInstance().getCalibrateSlowTurn()) ? getCalibrationSlowTurnRate() : 1;
 
         // Drive motor based on twist angle
         // Increase wheel angle by a small amount based on joystick twist
         prevCalibrationAngle += (DriverStation467.getInstance().getCalibrationJoystick().getTwist() / 100.0) * rateMultiplier;
-        
-        return prevCalibrationAngle;        
+
+        return prevCalibrationAngle;
     }
-    
+
     /**
      * rate of turn slow down modifier
-     * @return 
+     * 
+     * @return
      */
     private static double getCalibrationSlowTurnRate()
     {
         return 0.4;
     }
-    
+
     // This is a static variable to define the wheel being calibrated.
     private static int calibrateWheelSelect = 0;
 
@@ -150,7 +156,7 @@ public class Calibration
     {
         calibrateWheelSelect = Calibration.getWheel(calibrateWheelSelect);
         updateSteeringCalibrate(calibrateWheelSelect);
-    	LOGGER.info("Calibration Updated");
+        LOGGER.info("Calibration Updated");
     }
-    
+
 }

@@ -17,11 +17,11 @@ package org.usfirst.frc.team467.robot;
 public class RobotMap
 {
     // Robot Dimensions
-	// Length is the short side, wide is the long side
+    // Length is the short side, wide is the long side
     // Based on 2012 robot's geometry. Change for newer robots!
-    public static final double LENGTH = 16.75; //inches btw the wheels
-    public static final double WIDTH = 25.0; //inches btw the wheels
-	
+    public static final double LENGTH = 16.75; // inches btw the wheels
+    public static final double WIDTH = 25.0; // inches btw the wheels
+
     // Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
     public static final int FRONT_RIGHT = 1;
@@ -49,38 +49,41 @@ public class RobotMap
     // Steering motor constant array
     public static final int[] STEERING_MOTOR_CHANNELS =
     {
-        RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
-        RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
-        RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
-        RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL
+            RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
+            RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
+            RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
+            RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL
     };
 
     // Steering sensor constant array
     public static final int[] STEERING_SENSOR_CHANNELS =
     {
-        RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
-        RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
-        RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
-        RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL
+            RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
+            RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
+            RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
+            RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL
     };
 
     // Data keys (names used when saving centers to robot)
     public static final String[] STEERING_KEYS = new String[]
     {
-        "FrontLeft", "FrontRight", "BackLeft", "BackRight"
+            "FrontLeft",
+            "FrontRight",
+            "BackLeft",
+            "BackRight"
     };
 
     /**
      * Number of increments on the steering sensor (12-bit A/D)
      */
     public static final double STEERING_RANGE = 4095;
-    
-    // PID array 
-    public static final PID [] PIDvalues =
+
+    // PID array
+    public static final PID[] PIDvalues =
     {
-        new PID (-0.003, 0.0, 0.0), // Front Left PID values
-        new PID (-0.015, 0.0, 0.0), // Front Right PID values
-        new PID (-0.003, 0.0, 0.0), // Back Left PID values
-        new PID (-0.003, 0.0, 0.0), // Back Right PID values
+            new PID(-0.003, 0.0, 0.0), // Front Left PID values
+            new PID(-0.015, 0.0, 0.0), // Front Right PID values
+            new PID(-0.003, 0.0, 0.0), // Back Left PID values
+            new PID(-0.003, 0.0, 0.0), // Back Right PID values
     };
 }
