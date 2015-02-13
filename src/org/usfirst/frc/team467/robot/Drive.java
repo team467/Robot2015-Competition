@@ -46,6 +46,13 @@ public class Drive extends RobotDrive
 
     // Speed to use for Strafe and Revolve Drive
     private static final double SPEED_STRAFE = 0.4;
+    
+    private static final double REVOLVE_FRONT_RADIUS = 65;
+    private static final double REVOLVE_BACK_RADIUS = REVOLVE_FRONT_RADIUS + RobotMap.LENGTH;
+    private static final double REVOLVE_BACK_SPEED = 0.4;
+    private static final double REVOLVE_FRONT_SPEED = REVOLVE_BACK_SPEED * (REVOLVE_FRONT_RADIUS / REVOLVE_BACK_RADIUS);
+    private static final double REVOLVE_FRONT_ANGLE = (Math.atan((2 * REVOLVE_FRONT_RADIUS) / RobotMap.WIDTH));
+    private static final double REVOLVE_BACK_ANGLE = (Math.atan((2 * REVOLVE_BACK_RADIUS) / RobotMap.WIDTH));
 
     // Private constructor
     private Drive(Talon frontLeftMotor, Talon backLeftMotor, Talon frontRightMotor, Talon backRightMotor)
@@ -333,18 +340,10 @@ public class Drive extends RobotDrive
      */
     public void revolveDrive(Direction direction)
     {
-        final double FRONT_RADIUS = 65;
-        final double BACK_RADIUS = FRONT_RADIUS + RobotMap.LENGTH;
-        final double BACK_SPEED = 0.4;
-        final double FRONT_SPEED = BACK_SPEED * (FRONT_RADIUS / BACK_RADIUS);
-
-        double frontAngle = (Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH));
-        double backAngle = (Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH));
-        
-        WheelCorrection flCorrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, -frontAngle, FRONT_SPEED);
-        WheelCorrection frCorrected = wrapAroundCorrect(RobotMap.FRONT_RIGHT, frontAngle, FRONT_SPEED);
-        WheelCorrection blCorrected = wrapAroundCorrect(RobotMap.BACK_LEFT, -backAngle, BACK_SPEED);
-        WheelCorrection brCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, backAngle, BACK_SPEED);
+        WheelCorrection flCorrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, -REVOLVE_FRONT_ANGLE, REVOLVE_FRONT_SPEED);
+        WheelCorrection frCorrected = wrapAroundCorrect(RobotMap.FRONT_RIGHT, REVOLVE_FRONT_ANGLE, REVOLVE_FRONT_SPEED);
+        WheelCorrection blCorrected = wrapAroundCorrect(RobotMap.BACK_LEFT, -REVOLVE_BACK_ANGLE, REVOLVE_BACK_SPEED);
+        WheelCorrection brCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, REVOLVE_BACK_ANGLE, REVOLVE_BACK_SPEED);
 
         if (direction == Direction.RIGHT)
         {
