@@ -355,9 +355,11 @@ public class Drive extends RobotDrive
     public void strafeDrive(Direction direction)
     {
         double angle = (direction == Direction.RIGHT) ? Math.PI / 2 : -Math.PI / 2;
-
-        fourWheelSteer(angle, angle, angle, angle);
-        fourWheelDrive(SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE, SPEED_STRAFE);
+        double speed = SPEED_STRAFE;
+        
+        WheelCorrection corrected = wrapAroundCorrect(RobotMap.FRONT_RIGHT, angle, speed);
+        fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
+        fourWheelDrive(corrected.speed, corrected.speed, corrected.speed, corrected.speed);
     }
 
     /**
