@@ -109,7 +109,7 @@ public class DriverStation467
         if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6))
             drivemode = DriveMode.REVOLVE;
 
-        if (getDriveJoystick().buttonDown(7))
+        if (getDriveJoystick().buttonDown(8))
             drivemode = DriveMode.UNWIND;
 
         return drivemode;
@@ -121,7 +121,7 @@ public class DriverStation467
      */
     public boolean getSlow()
     {
-        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
+        return getDriveJoystick().buttonDown(7);
     }
 
     /**
@@ -130,7 +130,7 @@ public class DriverStation467
      */
     public boolean getTurbo()
     {
-        return getDriveJoystick().buttonDown(7);
+        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
     }
 
     // Calibration functions. Calibration is a separate use mode - so the buttons used

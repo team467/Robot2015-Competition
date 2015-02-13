@@ -37,7 +37,7 @@ public class Drive extends RobotDrive
     private static final boolean BACK_RIGHT_DRIVE_INVERT = true;
 
     // Speed modifier constants
-    private static final double SPEED_SLOW_MODIFIER = 1.0 / 3.0;
+    private static final double SPEED_SLOW_MODIFIER = 0.5;
     private static final double SPEED_TURBO_MODIFIER = 2.0;
     private static final double SPEED_MAX_MODIFIER = 0.8;
     private static final double SPEED_MAX_CHANGE = 0.2;
@@ -130,12 +130,12 @@ public class Drive extends RobotDrive
             throw new NullPointerException("Null motor provided");
         }
 //        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed), SYNC_GROUP);
-//        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed), SYNC_GROUP);
+        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed), SYNC_GROUP);
 //        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed), SYNC_GROUP);
 //        m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed), SYNC_GROUP);
 
         m_frontLeftMotor.set(0, SYNC_GROUP);
-        m_frontRightMotor.set(0, SYNC_GROUP);
+//        m_frontRightMotor.set(0, SYNC_GROUP);
         m_rearLeftMotor.set(0, SYNC_GROUP);
         m_rearRightMotor.set(0, SYNC_GROUP);
 
