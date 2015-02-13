@@ -165,6 +165,8 @@ public class Robot extends IterativeRobot {
 	 * This function is run when autonomous control mode is first enabled
 	 */
 	public void autonomousInit() {
+		int ticks = 0;
+		autonomousPeriodic(ticks);
 		
 	}
 
@@ -190,8 +192,9 @@ public class Robot extends IterativeRobot {
 	/**
 	 * This function is called periodically during autonomous
 	 */
-	public void autonomousPeriodic() {
+	public void autonomousPeriodic(int ticks) {
 		LOGGER.debug("Autonomous");
+		ticks = ticks + 1;
 		
 		
 	}

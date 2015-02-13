@@ -349,6 +349,7 @@ public class Autonomous {
 	/**
 	 * Private constructor to setup the Autonomous
 	 */
+	
 	private Autonomous() {
 		drive = Drive.getInstance();
 	}
