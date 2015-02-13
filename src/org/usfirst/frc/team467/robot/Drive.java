@@ -25,7 +25,9 @@ public class Drive extends RobotDrive
     private DataStorage data;
 
     // Angle to turn at when rotating in place - initialized in constructor
-    private static double turnAngle;
+    // takes the arctan of width over length in radians
+    // Length is the wide side
+    private static double turnAngle = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH);
 
     // Magic number copied from WPI code
     private static final byte SYNC_GROUP = (byte) 0x80;
@@ -52,10 +54,6 @@ public class Drive extends RobotDrive
 
         // Make objects
         data = DataStorage.getInstance();
-
-        // takes the arctan of width over length in radians
-        // Length is the wide side
-        turnAngle = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH);
 
         // Make steering array
         steering = new Steering[4];
@@ -165,48 +163,16 @@ public class Drive extends RobotDrive
         steering[RobotMap.BACK_RIGHT].setAngle(0);
     }
 
-//    /**
-//     * Get the Talon drive motor object for the specified motor (use RobotMap
-//     * constants)
-//     *
-//     * @param motor The motor to get
-//     * @return One of the four Talon drive motors
-//     */
-//    private Talon getDriveMotor(int motor)
-//    {
-//        Talon returnMotor;
-//        switch (motor)
-//        {
-//            case RobotMap.FRONT_LEFT:
-//                returnMotor = (Talon) m_frontLeftMotor;
-//                break;
-//            case RobotMap.FRONT_RIGHT:
-//                returnMotor = (Talon) m_frontRightMotor;
-//                break;
-//            case RobotMap.BACK_LEFT:
-//                returnMotor = (Talon) m_rearLeftMotor;
-//                break;
-//            case RobotMap.BACK_RIGHT:
-//                returnMotor = (Talon) m_rearRightMotor;
-//                break;
-//            default:
-//                returnMotor = null;
-//        }
-//        return returnMotor;
-//    }
-
     /**
+     *   Set angles in "turn in place" position
+     *   Wrap around will check whether the closest angle is facing forward or backward
+     *  
+     *   Front Left- / \ - Front Right<br>
+     *   Back Left - \ / - Back Right
      * @param speed
      */
     public void turnDrive(double speed)
     {
-        // Set angles in "turn in place" position
-        // Wrap around will check whether the closest angle is facing forward or backward
-        //
-        // Front Left- / \ - Front Right
-        //
-        // Back Left - \ / - Back Right
-        //
         if (wrapAroundDifference(turnAngle, steering[RobotMap.FRONT_RIGHT].getSteeringAngle()) <= Math.PI / 2)
         {
             // Front facing angles
