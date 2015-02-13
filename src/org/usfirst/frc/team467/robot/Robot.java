@@ -205,21 +205,22 @@ public class Robot extends IterativeRobot
                 break;
 
             case CRAB_NO_FA:
-                if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
+                if (driverstation.getDriveJoystick().isInDeadzone())
                 {
+                    // If in joystick deadzone, don't steer, leave wheel at current angle.
                     double currentAngle = drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle();
                     drive.crabDrive(currentAngle, driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
                 }
                 else
                 {
-                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
-                            .getStickDistance(), false /* not field aligned */);
+                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
+                            driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
                 }
                 break;
 
             default:  // should never enter here
                 LOGGER.error("Button State not calculated correctly");
-                if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
+                if (driverstation.getDriveJoystick().isInDeadzone())
                 {
                     double currentAngle = drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle();
                     drive.crabDrive(currentAngle, driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
