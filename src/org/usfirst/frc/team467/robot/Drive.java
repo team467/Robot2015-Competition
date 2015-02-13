@@ -374,17 +374,21 @@ public class Drive extends RobotDrive
 
         double frontAngle = (Math.atan((2 * FRONT_RADIUS) / RobotMap.WIDTH));
         double backAngle = (Math.atan((2 * BACK_RADIUS) / RobotMap.WIDTH));
-//    	 System.out.println("Front Angle=" + frontAngle + ", Back Angle=" + backAngle);
+        
+        WheelCorrection flCorrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, -frontAngle, FRONT_SPEED);
+        WheelCorrection frCorrected = wrapAroundCorrect(RobotMap.FRONT_RIGHT, frontAngle, FRONT_SPEED);
+        WheelCorrection blCorrected = wrapAroundCorrect(RobotMap.BACK_LEFT, -backAngle, BACK_SPEED);
+        WheelCorrection brCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, backAngle, BACK_SPEED);
 
         if (direction == Direction.RIGHT)
         {
-            fourWheelDrive(-FRONT_SPEED, FRONT_SPEED, -BACK_SPEED, BACK_SPEED);
+            fourWheelDrive(-flCorrected.speed, frCorrected.speed, -blCorrected.speed, brCorrected.speed);
         }
         else
         {
-            fourWheelDrive(FRONT_SPEED, -FRONT_SPEED, BACK_SPEED, -BACK_SPEED);
+            fourWheelDrive(flCorrected.speed, -frCorrected.speed, blCorrected.speed, -brCorrected.speed);
         }
-        fourWheelSteer(-frontAngle, frontAngle, -backAngle, backAngle);
+        fourWheelSteer(flCorrected.angle, frCorrected.angle, blCorrected.angle, brCorrected.angle);
     }
 
     /**
