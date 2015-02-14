@@ -25,7 +25,7 @@ public class Steering
     private static final Logger LOGGER = Logger.getLogger(Steering.class);
 //	public static final double TwoPi = 2 * Math.PI;
 
-    private final double LEVELS_PER_ROTATION = 305;
+    private final double LEVELS_PER_ROTATION = 610;
 
     private static final double MAX_TURNS = 3.0;
 
