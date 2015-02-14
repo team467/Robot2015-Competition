@@ -3,7 +3,7 @@ package org.usfirst.frc.team467.robot;
 import org.apache.log4j.Logger;
 
 import edu.wpi.first.wpilibj.*;
-
+import edu.wpi.first.wpilibj.smartdashboard.*;
 /**
  * Class to control steering mechanism on Team467 Robot
  * Uses WPI PID controller
@@ -147,7 +147,22 @@ public class Steering
         double output = sensor * (Math.PI * 2) / LEVELS_PER_ROTATION;
         LOGGER.trace(String.format("getSteeringAngle() channel=%d sensor=%6.3f center=%4.0f output=%f", steeringMotor.getChannel(),
                 sensor, steeringCenter, output));
-
+        if (steeringSensor.getChannel() == RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL)
+        {
+            SmartDashboard.putNumber("Front-Left Angle", output);
+        }
+        else if (steeringSensor.getChannel() == RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL)
+        {
+            SmartDashboard.putNumber("Front-Right Angle", output);
+        }
+        else if (steeringSensor.getChannel() == RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL)
+        {
+            SmartDashboard.putNumber("Back-Left Angle", output);
+        }
+        else if (steeringSensor.getChannel() == RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL)
+        {
+            SmartDashboard.putNumber("Back-Right Angle", output);
+        }
         return output;
     }
 

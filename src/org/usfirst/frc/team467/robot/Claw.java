@@ -40,7 +40,7 @@ public class Claw
      */
     private Claw()
     {
-        clawMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
+//        clawMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
         board = PowerDistroBoard467.getInstance();
     }
 
