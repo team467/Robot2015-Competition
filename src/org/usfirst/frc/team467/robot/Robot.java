@@ -28,27 +28,24 @@ import edu.wpi.first.wpilibj.Talon;
  */
 public class Robot extends IterativeRobot
 {
-	private static final Logger LOGGER = Logger.getLogger(Robot.class);
+    private static final Logger LOGGER = Logger.getLogger(Robot.class);
 
-	public static final boolean SINGLE_STICK_DRIVE = false;
+    private static final double MIN_DRIVE_SPEED = 0.1;
 
-    //Robot objects
+    // Robot objects
     private DriverStation467 driverstation;
-    private Driverstation2015 driverstation2015;
 
     private Drive drive;
-    
+
     int session;
     Image frame;
-   
+
     CameraServer cameraServer;
-    
+
     /**
      * Time in milliseconds
      */
     double time;
-    
-    Talon testTalon = null;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -56,15 +53,14 @@ public class Robot extends IterativeRobot
      */
     public void robotInit()
     {
-    	// Initialize logging framework.
-    	Logging.init();
-    	
+        // Initialize logging framework.
+        Logging.init();
+        
         // Make robot objects
         driverstation = DriverStation467.getInstance();
-        driverstation2015 = Driverstation2015.getInstance();
-        
+
         drive = Drive.getInstance();
-        
+
 //        cameraServer = CameraServer.getInstance();
 //        cameraServer.setQuality(50);
 //        cameraServer.startAutomaticCapture("cam0");
@@ -75,17 +71,15 @@ public class Robot extends IterativeRobot
 //        session = NIVision.IMAQdxOpenCamera("cam0",
 //                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 //        NIVision.IMAQdxConfigureGrab(session);
-        
+
         time = System.currentTimeMillis();
-        testTalon = new Talon(9);
-   
-        Calibration.init();        
+
+        Calibration.init();
     }
 
     public void disabledInit()
     {
-    	LOGGER.info("Robot disabled");
-    	LOGGER.debug("Robot disabled");
+        LOGGER.info("Robot disabled");
     }
 
     /**
@@ -116,11 +110,6 @@ public class Robot extends IterativeRobot
      */
     public void testPeriodic()
     {
-    	testTalon.set(1);    	
-    	System.out.println(PowerDistroBoard467.getInstance().getCurrent(12));
-//    	driverstation2015.readInputs();
-//    	driverstation2015.testLEDs();
-//    	driverstation2015.printButtonPanelPressedButtons();
     }
 
     /**
@@ -129,44 +118,44 @@ public class Robot extends IterativeRobot
     public void autonomousPeriodic()
     {
     }
-    
+
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic()
     {
         // Read driverstation inputs
-        driverstation.readInputs();        
-        
+        driverstation.readInputs();
+
         if (driverstation.getCalibrate())
         {
-        	// Calibrate Mode
+            // Calibrate Mode
             Calibration.updateCalibrate();
         }
-        else 
+        else
         {
             // Drive Mode
             updateDrive();
         }
-        
-        
-//        renderImage();
-        
+
+//        renderImage();  
     }
 
+    // Unused for now until we start using camera.
+    @SuppressWarnings("unused")
     private void renderImage()
     {
-    	/**
+        /**
          * Rectangle to be rendered in
          */
         NIVision.Rect rect = new NIVision.Rect(100, 100, 500, 500);
-    	ShapeMode shape = ShapeMode.SHAPE_OVAL;
-    	NIVision.IMAQdxGrab(session, frame, 1);
+        ShapeMode shape = ShapeMode.SHAPE_OVAL;
+        NIVision.IMAQdxGrab(session, frame, 1);
         NIVision.imaqDrawShapeOnImage(frame, frame, rect,
                 DrawMode.DRAW_VALUE, shape, 0.0f);
-        
+
         CameraServer.getInstance().setImage(frame);
-		
+
     }
 
     /**
@@ -175,56 +164,73 @@ public class Robot extends IterativeRobot
      */
     private void updateDrive()
     {
-    	switch (driverstation.getDriveMode())
-    	{
-    		case REWIND:
-    			drive.rewindDrive();
-    			break;
-    		
-    		case REVOLVE:
-    		{
-    			Direction direction = Direction.LEFT;
-    			if (driverstation.getDriveJoystick().buttonDown(6))
-    			{
-    				direction = Direction.RIGHT;
-    			}
-    			drive.revolveDrive(direction);
-    		}
-    		break;
-    	
-    		case STRAFE:
-    		{
-    			Direction direction = Direction.LEFT;
-    			if (driverstation.getDriveJoystick().getPOV() < 180) 
-    			{
-    				direction = Direction.RIGHT;
-    			}
-    			drive.strafeDrive(direction);
-    		}
-    		break;
-        
-    		case TURN:
-    			drive.turnDrive(-driverstation.getDriveJoystick().getTwist());
-    			break;
-        
-    		case CRAB_FA:
-    			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), 
-        				    driverstation.getDriveJoystick().getStickDistance(), 
-        				    true /* field aligned */ );
-    			break;
-        
-    		case CRAB_NO_FA:
-    			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
-        		  	      driverstation.getDriveJoystick().getStickDistance(), 
-        		  	      false /* not field aligned */ );
-    			break;
-        
-    		default:  //should never enter here
-    			System.err.println("Button State not calculated correctly");
-    			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
-  		  	      driverstation.getDriveJoystick().getStickDistance(), 
-  		  	      false /* not field aligned */ );
-    			break;
-    	}
+        switch (driverstation.getDriveMode())
+        {
+            case UNWIND:
+                for (Steering wheelpod : Drive.getInstance().steering)
+                {
+                    wheelpod.setAbsoluteAngle(0);
+                }
+                break;
+
+            case REVOLVE:
+            {
+                Direction direction = Direction.LEFT;
+                if (driverstation.getDriveJoystick().buttonDown(6))
+                {
+                    direction = Direction.RIGHT;
+                }
+                drive.revolveDrive(direction);
+            }
+                break;
+
+            case STRAFE:
+            {
+                Direction direction = Direction.LEFT;
+                if (driverstation.getDriveJoystick().getPOV() < 180)
+                {
+                    direction = Direction.RIGHT;
+                }
+                drive.strafeDrive(direction);
+            }
+                break;
+
+            case TURN:
+                drive.turnDrive(-driverstation.getDriveJoystick().getTwist());
+                break;
+
+            case CRAB_FA:
+                drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
+                        .getStickDistance(), true /* field aligned */);
+                break;
+
+            case CRAB_NO_FA:
+                if (driverstation.getDriveJoystick().isInDeadzone())
+                {
+                    // If in joystick deadzone, don't steer, leave wheel at current angle.
+                    double currentAngle = drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle();
+                    drive.crabDrive(currentAngle, driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
+                }
+                else
+                {
+                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
+                            driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
+                }
+                break;
+
+            default:  // should never enter here
+                LOGGER.error("Button State not calculated correctly");
+                if (driverstation.getDriveJoystick().isInDeadzone())
+                {
+                    double currentAngle = drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle();
+                    drive.crabDrive(currentAngle, driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
+                }
+                else
+                {
+                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
+                            .getStickDistance(), false /* not field aligned */);
+                }
+                break;
+        }
     }
 }

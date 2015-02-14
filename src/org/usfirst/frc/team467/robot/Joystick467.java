@@ -161,6 +161,11 @@ public class Joystick467
     {
         return Math.sqrt(stickX * stickX + stickY * stickY);
     }
+    
+    public boolean isInDeadzone()
+    {
+        return (Math.abs(stickX) < DEADZONE) && (Math.abs(stickY) < DEADZONE);
+    }
 
     /**
      * Calculate the angle of this joystick.
@@ -171,7 +176,7 @@ public class Joystick467
     {
         // This shouldn't be necessary, deadzone filtering should already
         // be performed - however it doesn't hurt to make sure.
-        if ((Math.abs(stickX) < DEADZONE) && (Math.abs(stickY) < DEADZONE))
+        if (isInDeadzone())
         {
             return 0.0;
         }

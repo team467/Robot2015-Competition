@@ -11,9 +11,11 @@ public class Logging
     {
         setupDefaultLogging();
 
-        // Enable extra logging for classes you want to debug..
-        // Logger.getLogger(Steering.class).setLevel(Level.DEBUG);
+        // Enable extra logging for classes you want to debug
         Logger.getLogger(Robot.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Steering.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Calibration.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Drive.class).setLevel(Level.DEBUG);
     }
 
     private static void setupDefaultLogging()

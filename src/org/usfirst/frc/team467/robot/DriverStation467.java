@@ -96,8 +96,7 @@ public class DriverStation467
      */
     public DriveMode getDriveMode()
     {
-        DriveMode drivemode = DriveMode.CRAB_NO_FA; // default is regular crab
-                                                    // drive
+        DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
 
         // if (getDriveJoystick().buttonDown(5)) drivemode = DriveMode.CRAB_FA;
         if (getDriveJoystick().buttonDown(2))
@@ -110,8 +109,8 @@ public class DriverStation467
         if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6))
             drivemode = DriveMode.REVOLVE;
 
-        if (getDriveJoystick().buttonDown(7))
-            drivemode = DriveMode.REWIND;
+        if (getDriveJoystick().buttonDown(8))
+            drivemode = DriveMode.UNWIND;
 
         return drivemode;
     }
@@ -122,7 +121,7 @@ public class DriverStation467
      */
     public boolean getSlow()
     {
-        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
+        return getDriveJoystick().buttonDown(7);
     }
 
     /**
@@ -131,11 +130,10 @@ public class DriverStation467
      */
     public boolean getTurbo()
     {
-        return getDriveJoystick().buttonDown(7);
+        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
     }
 
-    // Calibration functions. Calibration is a separate use mode - so the
-    // buttons used
+    // Calibration functions. Calibration is a separate use mode - so the buttons used
     // here can overlap with those used for the regular drive modes
 
     /**

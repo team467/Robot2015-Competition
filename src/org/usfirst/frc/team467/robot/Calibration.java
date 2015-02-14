@@ -4,12 +4,15 @@
  */
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Team467 This class contains only static variables and functions, and
  *         simply acts as a container for all the calibration code.
  */
 public class Calibration
 {
+    private static final Logger LOGGER = Logger.getLogger(Calibration.class);
     // Creates objects
 
     private static Drive drive;
@@ -36,6 +39,7 @@ public class Calibration
      */
     public static void updateSteeringCalibrate(int motorId)
     {
+        LOGGER.debug("Calibrating");
         calibrationAngle = getCalibrationAngle(calibrationAngle);
 
         if (calibrationAngle > Math.PI)
@@ -152,6 +156,7 @@ public class Calibration
     {
         calibrateWheelSelect = Calibration.getWheel(calibrateWheelSelect);
         updateSteeringCalibrate(calibrateWheelSelect);
+        LOGGER.info("Calibration Updated");
     }
 
 }

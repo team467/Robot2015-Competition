@@ -84,14 +84,16 @@ public class RobotMap
             "BackRight"
     };
 
-    // Number of increments on the steering sensor
-    public static final double STEERING_RANGE = 4047;
+    /**
+     * Number of increments on the steering sensor (12-bit A/D)
+     */
+    public static final double STEERING_RANGE = 4095;
 
     // PID array
     public static final PID[] PIDvalues =
     {
             new PID(-0.003, 0.0, 0.0), // Front Left PID values
-            new PID(-0.003, 0.0, 0.0), // Front Right PID values
+            new PID(-0.015, 0.0, 0.0), // Front Right PID values
             new PID(-0.003, 0.0, 0.0), // Back Left PID values
             new PID(-0.003, 0.0, 0.0), // Back Right PID values
     };
