@@ -159,15 +159,15 @@ public class Drive extends RobotDrive
     private void fourWheelSteer(double frontLeft, double frontRight, double backLeft, double backRight)
     {
         // set the angles to steer
-//        steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
-//        steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
-//        steering[RobotMap.BACK_LEFT].setAngle(backLeft);
-//        steering[RobotMap.BACK_RIGHT].setAngle(backRight);
-
-        steering[RobotMap.FRONT_LEFT].setAngle(0);
+        steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
         steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
-        steering[RobotMap.BACK_LEFT].setAngle(0);
-        steering[RobotMap.BACK_RIGHT].setAngle(0);
+        steering[RobotMap.BACK_LEFT].setAngle(backLeft);
+        steering[RobotMap.BACK_RIGHT].setAngle(backRight);
+
+//        steering[RobotMap.FRONT_LEFT].setAngle(0);
+//        steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
+//        steering[RobotMap.BACK_LEFT].setAngle(0);
+//        steering[RobotMap.BACK_RIGHT].setAngle(0);
     }
 
     /**
@@ -271,35 +271,6 @@ public class Drive extends RobotDrive
         fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
         fourWheelDrive(corrected.speed, corrected.speed, corrected.speed, corrected.speed);
     }
-
-//    /**
-//     * 
-//     * @param frontLeftSpeed
-//     * @param frontRightSpeed
-//     * @param backLeftSpeed
-//     * @param backRightSpeed
-//     * @param frontLeftAngle
-//     * @param frontRightAngle
-//     * @param backLeftAngle
-//     * @param backRightAngle
-//     */
-//    public void wrapAroundDrive(double frontLeftSpeed, double frontRightSpeed,
-//            double backLeftSpeed, double backRightSpeed,
-//            double frontLeftAngle, double frontRightAngle,
-//            double backLeftAngle, double backRightAngle)
-//    {
-//        WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, frontLeftAngle, frontLeftSpeed);
-//        WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, frontRightAngle, frontRightSpeed);
-//        WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, backLeftAngle, backRightSpeed);
-//        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, backRightAngle, backRightSpeed);
-//
-////        System.out.println("[DRIVE] FRONTLEFT" + steering[RobotMap.FRONT_LEFT].getSteeringAngle());
-////        System.out.println("[DRIVE] FRONTRIGHT" + steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
-////        System.out.println("[DRIVE] BACKLEFT" + steering[RobotMap.BACK_LEFT].getSteeringAngle());
-////        System.out.println("[DRIVE] BACKRIGHT" + steering[RobotMap.BACK_RIGHT].getSteeringAngle());
-//        fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
-//        fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backLeft.speed);
-//    }
 
     /**
      * Individually controls a specific steering motor

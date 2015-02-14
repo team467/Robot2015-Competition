@@ -144,12 +144,8 @@ public class Steering
         double sensor = getSensorValue() - steeringCenter;
 
         double output = sensor * (Math.PI * 2) / LEVELS_PER_ROTATION;
-
-//        if (steeringMotor.getChannel() == RobotMap.FRONT_RIGHT)
-        {
-            LOGGER.trace(String.format("getSteeringAngle() channel=%d sensor=%6.3f center=%4.0f output=%f",
+        LOGGER.trace(String.format("getSteeringAngle() channel=%d sensor=%6.3f center=%4.0f output=%f",
                     steeringMotor.getChannel(), sensor, steeringCenter, output));
-        }
 
         return output;
     }
@@ -158,23 +154,6 @@ public class Steering
     {
         return MAX_TURNS;
     }
-
-//    public double getSteeringAngle()
-//    {
-//        double sensor = getSensorValue() - steeringCenter;
-//
-//        if (sensor < (-RobotMap.STEERING_RANGE / (Math.PI * 2)))
-//        {
-//            sensor += RobotMap.STEERING_RANGE;
-//        }
-//        if (sensor > (RobotMap.STEERING_RANGE / (Math.PI * 2)))
-//        {
-//            sensor -= RobotMap.STEERING_RANGE;
-//        }        
-//        double output = (sensor) / (RobotMap.STEERING_RANGE / (Math.PI * 2));
-//
-//        return output;
-//    }
 
     /**
      * Print steering parameters
@@ -203,8 +182,7 @@ public class Steering
         // Current angle in full radians (i.e.-6pi to 6pi)
         final double sensorAngle = getSteeringAngle();
 
-        // Translates input angle to closest full rotation to sensor angle
-        // TODO Flip the angle, why do we need this?
+        // Translates input angle to closest full rotation to sensor angle        
         double outputAngle = requestedAngle;
         while ((outputAngle - sensorAngle) > Math.PI)
         {
