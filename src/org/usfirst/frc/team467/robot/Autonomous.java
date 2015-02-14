@@ -98,14 +98,6 @@ public class Autonomous {
 
 	public void cameraSetup() {
 
-		frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-		// the camera name (ex "cam0") can be found through the roborio web
-		// interface
-		session = NIVision.IMAQdxOpenCamera("cam0",
-				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-		NIVision.IMAQdxConfigureGrab(session);
-
 		// create images
 		frame = NIVision.imaqCreateImage(ImageType.IMAGE_RGB, 0);
 		binaryFrame = NIVision.imaqCreateImage(ImageType.IMAGE_U8, 0);

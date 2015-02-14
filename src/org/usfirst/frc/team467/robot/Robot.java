@@ -17,6 +17,7 @@ import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ImageType;
 import com.ni.vision.NIVision.ParticleReport;
+import com.ni.vision.NIVision.Point;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
@@ -125,78 +126,56 @@ public class Robot extends IterativeRobot {
 		driverstation = DriverStation467.getInstance();
 
 		drive = Drive.getInstance();
-		try {
-			cameraServer = CameraServer.getInstance();
-		} catch (Exception ex) {
-			useCamera = false;
-		}
-		// cameraServer.setQuality(50);
-		// cameraServer.startAutomaticCapture("cam0");
-		//
-		// frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		//
-		// // the camera name (ex "cam0") can be found through the roborio web
-		// interface
-		// session = NIVision.IMAQdxOpenCamera("cam0",
-		// NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-		// NIVision.IMAQdxConfigureGrab(session);
+		initCamera();
 
 		time = System.currentTimeMillis();
 
 		Calibration.init();
 	}
 
+    private void initCamera()
+    {
+        try {
+			cameraServer = CameraServer.getInstance();
+		} catch (Exception ex) {
+			useCamera = false;
+		}
+		 cameraServer.setQuality(50);
+		
+		 frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		
+		 // the camera name (ex "cam0") can be found through the roborio web interface
+		 session = NIVision.IMAQdxOpenCamera("cam0",
+		 NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+		 NIVision.IMAQdxConfigureGrab(session);
+    }
+
 	public void disabledInit() {
 		LOGGER.info("Robot disabled");
-		LOGGER.debug("Robot disabled");
-		
+
 	}
 
-	
-	
-	
-	
-	
-	public void disabledPeriodic() {
+	public void disabledPeriodic()
+	{
+	    renderImage();
 	}
-		
-
-	/**
-	 * This function is run when autonomous control mode is first enabled
-	 */
+	
 	public void autonomousInit() {
-		int ticks = 0;
-		autonomousPeriodic(ticks);
 		
 	}
 
-	/**
-	 * This function is run when operator control mode is first enabled
-	 */
 	public void teleopInit() {
-		// NIVision.IMAQdxStartAcquisition(session);
+	    
 	}
 
-	/**
-	 * This function is run when test mode is first enabled
-	 */
 	public void testInit() {
 	}
 
-	/**
-	 * This function is called periodically test mode
-	 */
 	public void testPeriodic() {
 	}
 
-	/**
-	 * This function is called periodically during autonomous
-	 */
-	public void autonomousPeriodic(int ticks) {
+	public void autonomousPeriodic() {
 		LOGGER.debug("Autonomous");
-		ticks = ticks + 1;
-		
-		
 	}
 
 	// read file in from disk. For this example to run you need to copy
@@ -224,21 +203,24 @@ public class Robot extends IterativeRobot {
 	}
 
 	private void renderImage() {
+	    NIVision.Point start = new Point(0, 0);
+	    NIVision.Point end = new Point(640, 480);
 		/**
 		 * Rectangle to be rendered in
 		 */
-		NIVision.Rect rect = new NIVision.Rect(100, 100, 500, 500);
+		NIVision.Rect rect = new NIVision.Rect(0, 0, 480, 640);
 		ShapeMode shape = ShapeMode.SHAPE_OVAL;
 		NIVision.IMAQdxGrab(session, frame, 1);
 		NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE,
 				shape, 0.0f);
+		NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, start, end, 0.0f);
 
 		cameraServer.setImage(frame);
 
 	}
 
 	/**
-	 * called once per iteration to perform any necessary updates to the drive
+	 * Called once per iteration to perform any necessary updates to the drive
 	 * system.
 	 */
 	private void updateDrive() {
