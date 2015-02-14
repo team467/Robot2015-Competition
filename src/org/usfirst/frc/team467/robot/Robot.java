@@ -226,37 +226,39 @@ public class Robot extends IterativeRobot
     {
         int viewWidth = 640;
         int viewHeight = 480;
+        
         int topMargin = 20;
         int sideMargin = 20;
-        int rectHeight = 10;
+        int rectHeight = 15;
         int rectWidth = 100;
 
-        // Cross hair points
+        
+        NIVision.IMAQdxGrab(session, frame, 1);
+        
+        // Cross Hairs
         NIVision.Point vertStart = new Point(viewWidth / 2, viewHeight / 2 - 5);
         NIVision.Point vertEnd = new Point(viewWidth / 2, viewHeight / 2 + 5);
 
         NIVision.Point horizStart = new Point(viewWidth / 2 - 5, viewHeight / 2);
         NIVision.Point horizEnd = new Point(viewWidth / 2 + 5, viewHeight / 2);
 
+        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, vertStart, vertEnd, 0.0f);
+        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, horizStart, horizEnd, 0.0f);
+        
+        // Angle Monitors
+        ShapeMode shape = ShapeMode.SHAPE_RECT;
         NIVision.Rect flRect = new NIVision.Rect(topMargin, sideMargin, rectHeight, rectWidth);
         NIVision.Rect frRect = new NIVision.Rect(topMargin, viewWidth - (sideMargin + rectWidth), rectHeight, rectWidth);
         NIVision.Rect blRect = new NIVision.Rect(viewHeight - (topMargin + rectHeight), sideMargin, rectHeight, rectWidth);
         NIVision.Rect brRect = new NIVision.Rect(viewHeight - (topMargin + rectHeight), viewWidth - (sideMargin + rectWidth), 10, 100);
 
-        
-        ShapeMode shape = ShapeMode.SHAPE_RECT;
-        NIVision.IMAQdxGrab(session, frame, 1);
-        
-        // Cross Hairs
-        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, vertStart, vertEnd, 0.0f);
-        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, horizStart, horizEnd, 0.0f);
-        
-        // Angle Monitors
         NIVision.imaqDrawShapeOnImage(frame, frame, flRect, DrawMode.DRAW_VALUE, shape, 0.0f);
         NIVision.imaqDrawShapeOnImage(frame, frame, frRect, DrawMode.DRAW_VALUE, shape, 0.0f);
         NIVision.imaqDrawShapeOnImage(frame, frame, blRect, DrawMode.DRAW_VALUE, shape, 0.0f);
         NIVision.imaqDrawShapeOnImage(frame, frame, brRect, DrawMode.DRAW_VALUE, shape, 0.0f);
 
+        NIVision.Rect flBar = new NIVision.Rect(topMargin, sideMargin + (int)(drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle() * (100 / (Math.PI * 6))), rectHeight, 3);
+        NIVision.imaqDrawShapeOnImage(frame, frame, flBar, DrawMode.PAINT_VALUE, shape, 0.0f);
 
         cameraServer.setImage(frame);
     }
