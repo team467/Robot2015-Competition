@@ -161,7 +161,7 @@ public class Joystick467
     {
         return Math.sqrt(stickX * stickX + stickY * stickY);
     }
-    
+
     public boolean isInDeadzone()
     {
         return (Math.abs(stickX) < DEADZONE) && (Math.abs(stickY) < DEADZONE);
