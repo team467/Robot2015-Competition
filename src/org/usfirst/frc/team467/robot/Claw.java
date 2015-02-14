@@ -7,6 +7,7 @@ public class Claw
     private static Claw claw = null;
 
     private Talon clawMotor = null;
+    private PowerDistroBoard467 pdb = null;
 
     private final double OPEN_SPEED_SLOW = 0.4;
     private final double OPEN_SPEED_FAST = 0.8;
@@ -32,7 +33,8 @@ public class Claw
      */
     private Claw()
     {
-        // clawMotor = new Talon(6);
+        clawMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
+    	pdb = PowerDistroBoard467.getInstance();
     }
 
     /**

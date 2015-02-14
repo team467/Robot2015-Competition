@@ -39,13 +39,11 @@ public class Lifter
      */
     private Lifter()
     {
-        // lifterMotor = new Talon(5);      // TODO determine PWM channel to run
-        // lifter
-        // motor
-        topStop = new DigitalInput(0);      // TODO determine Dig IO channel
-        topSlow = new DigitalInput(1);      // TODO determine Dig IO channel
-        bottomSlow = new DigitalInput(2);   // TODO determine Dig IO channel
-        bottomStop = new DigitalInput(3);   // TODO determine Dig IO channel
+        lifterMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);         
+        topStop = new DigitalInput(RobotMap.SWITCH_UP_STOP);
+        topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);      
+        bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);   
+        bottomStop = new DigitalInput(RobotMap.SWITCH_DOWN_STOP);   
 
         currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
     }
