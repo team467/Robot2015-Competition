@@ -95,7 +95,8 @@ public class Steering
      */
     public double getSensorValue()
     {
-        return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
+        // return RobotMap.STEERING_RANGE - steeringSensor.getAverageValue();
+        return steeringSensor.getAverageValue();
     }
 
     /**
@@ -134,7 +135,7 @@ public class Steering
     }
 
     /**
-     * Get the sensor angle normalized to a -PI to +PI range Implements the
+     * Get the sensor angle. Implements the
      * steering center point to give an angle accurate to the robot's alignment.
      *
      * @return - steering angle
@@ -144,8 +145,8 @@ public class Steering
         double sensor = getSensorValue() - steeringCenter;
 
         double output = sensor * (Math.PI * 2) / LEVELS_PER_ROTATION;
-        LOGGER.trace(String.format("getSteeringAngle() channel=%d sensor=%6.3f center=%4.0f output=%f",
-                    steeringMotor.getChannel(), sensor, steeringCenter, output));
+        LOGGER.trace(String.format("getSteeringAngle() channel=%d sensor=%6.3f center=%4.0f output=%f", steeringMotor.getChannel(),
+                sensor, steeringCenter, output));
 
         return output;
     }
@@ -182,7 +183,7 @@ public class Steering
         // Current angle in full radians (i.e.-6pi to 6pi)
         final double sensorAngle = getSteeringAngle();
 
-        // Translates input angle to closest full rotation to sensor angle        
+        // Translates input angle to closest full rotation to sensor angle
         double outputAngle = requestedAngle;
         while ((outputAngle - sensorAngle) > Math.PI)
         {
@@ -200,7 +201,7 @@ public class Steering
         int setPoint = (int) (steeringCenter + (outputAngle * LEVELS_PER_ROTATION / (Math.PI * 2)));
 
         steeringPID.setSetpoint(setPoint);
-        if (steeringSensor.getChannel() == RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL)
+        if (steeringSensor.getChannel() == RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL)
         {
             LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f setPoint=%d sensorValue=%f", requestedAngle,
                     outputAngle, setPoint, getSensorValue()));
@@ -209,8 +210,7 @@ public class Steering
 
     public void setAbsoluteAngle(double requestedAngle)
     {
-        // Flipped the angle
-        double outputAngle = requestedAngle * -1;
+        double outputAngle = requestedAngle;
 
         outputAngle = limitRange(outputAngle);
 
@@ -218,7 +218,7 @@ public class Steering
         int setPoint = (int) (steeringCenter + (outputAngle * LEVELS_PER_ROTATION / (Math.PI * 2)));
 
         steeringPID.setSetpoint(setPoint);
-        if (steeringSensor.getChannel() == RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL)
+        if (steeringSensor.getChannel() == RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL)
         {
             LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f setPoint=%d sensorValue=%f", requestedAngle,
                     outputAngle, setPoint, getSensorValue()));

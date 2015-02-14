@@ -55,7 +55,7 @@ public class Robot extends IterativeRobot
     {
         // Initialize logging framework.
         Logging.init();
-        
+
         // Make robot objects
         driverstation = DriverStation467.getInstance();
 
@@ -96,13 +96,13 @@ public class Robot extends IterativeRobot
     {
 //    	NIVision.IMAQdxStartAcquisition(session);
     }
-    
+
     /**
      * This function is run when test mode is first enabled
      */
     public void testInit()
     {
-    	
+
     }
 
     /**
@@ -117,6 +117,11 @@ public class Robot extends IterativeRobot
      */
     public void autonomousPeriodic()
     {
+    }
+
+    public void disabledPeriodic()
+    {
+        LOGGER.debug("BR: " + drive.steering[RobotMap.BACK_RIGHT].getSensorValue());
     }
 
     /**
@@ -151,8 +156,7 @@ public class Robot extends IterativeRobot
         NIVision.Rect rect = new NIVision.Rect(100, 100, 500, 500);
         ShapeMode shape = ShapeMode.SHAPE_OVAL;
         NIVision.IMAQdxGrab(session, frame, 1);
-        NIVision.imaqDrawShapeOnImage(frame, frame, rect,
-                DrawMode.DRAW_VALUE, shape, 0.0f);
+        NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, shape, 0.0f);
 
         CameraServer.getInstance().setImage(frame);
 
@@ -208,13 +212,13 @@ public class Robot extends IterativeRobot
                 if (driverstation.getDriveJoystick().isInDeadzone())
                 {
                     // If in joystick deadzone, don't steer, leave wheel at current angle.
-                    double currentAngle = drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle();
+                    double currentAngle = drive.steering[RobotMap.BACK_RIGHT].getSteeringAngle();
                     drive.crabDrive(currentAngle, driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
                 }
                 else
                 {
-                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
-                            driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
+                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
+                            .getStickDistance(), false /* not field aligned */);
                 }
                 break;
 

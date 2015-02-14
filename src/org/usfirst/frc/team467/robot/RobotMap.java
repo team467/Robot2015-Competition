@@ -16,22 +16,10 @@ package org.usfirst.frc.team467.robot;
  */
 public class RobotMap
 {
-	
-	// Game Piece Motor IDs - Talon, RoboRio
-	public static final int LIFTER_MOTOR_CHANNEL = 5;
-	public static final int CLAW_MOTOR_CHANNEL = 6;
-	
-	//Game Piece Digital Inputs - RoboRio
-	public static final int SWITCH_UP_STOP = 0;
-	public static final int SWITCH_UP_SLOW = 1;
-	public static final int SWITCH_DOWN_STOP = 2;
-	public static final int SWITCH_DOWN_SLOW = 3;
-		
-    // Robot Dimensions
-    // Length is front to back, Width side to side
-    // Measured on 2015 robot
-    public static final double LENGTH = 31.5; // inches btw the wheels
-    public static final double WIDTH = 18.5;  // inches btw the wheels
+
+    //
+    // Array IDs
+    //
 
     // Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
@@ -39,23 +27,58 @@ public class RobotMap
     public static final int BACK_LEFT = 2;
     public static final int BACK_RIGHT = 3;
 
+    //
+    // PWM IDs
+    //
+
+    // Steering motors - Talon, roboRio
+    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 0;
+    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 1;
+    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 2;
+    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 3;
+
+    // Game Piece Motor IDs - PWMTalon, RoboRio
+    public static final int LIFTER_MOTOR_CHANNEL = 4;
+    public static final int CLAW_MOTOR_CHANNEL = 5;
+
+    //
+    // CAN IDs
+    //
+
     // Drive motors - CAN, CANTalons
     public static final int FRONT_RIGHT_MOTOR_CHANNEL = 1;
-    public static final int FRONT_LEFT_MOTOR_CHANNEL = 2;    
+    public static final int FRONT_LEFT_MOTOR_CHANNEL = 2;
     public static final int BACK_LEFT_MOTOR_CHANNEL = 3;
     public static final int BACK_RIGHT_MOTOR_CHANNEL = 4;
 
-    // Steering motors - Talon, roboRio
-    public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 1;
-    public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 2;
-    public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 3;
-    public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 4;
+    //
+    // Digital Inputs
+    //
+
+    // Game Piece Digital Inputs - RoboRio
+    public static final int SWITCH_UP_STOP = 0;
+    public static final int SWITCH_UP_SLOW = 1;
+    public static final int SWITCH_DOWN_STOP = 2;
+    public static final int SWITCH_DOWN_SLOW = 3;
+
+    //
+    // Analog Inputs
+    //
 
     // Steering sensors - roboRio
     public static final int FRONT_LEFT_STEERING_SENSOR_CHANNEL = 0;
     public static final int FRONT_RIGHT_STEERING_SENSOR_CHANNEL = 1;
     public static final int BACK_LEFT_STEERING_SENSOR_CHANNEL = 2;
     public static final int BACK_RIGHT_STEERING_SENSOR_CHANNEL = 3;
+
+    //
+    // Robot Dimensions
+    //
+
+    // Length is front to back, Width side to side
+    // Measured on 2015 robot
+    public static final double LENGTH = 31.5; // inches btw the wheels
+    public static final double WIDTH = 18.5;  // inches btw the wheels
 
     // Steering motor constant array
     public static final int[] STEERING_MOTOR_CHANNELS =
