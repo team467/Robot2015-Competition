@@ -23,7 +23,7 @@ public class Lifter
 
     public static final double SLOW_SPEED_DOWN = -SLOW_SPEED_UP;
     public static final double FAST_SPEED_DOWN = -FAST_SPEED_UP;
-    
+
     // TODO Replace with practical value
     private static final double MAX_CURRENT = 5;
 
@@ -44,13 +44,13 @@ public class Lifter
      */
     private Lifter()
     {
-        lifterMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);         
+        lifterMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
         topStop = new DigitalInput(RobotMap.SWITCH_UP_STOP);
-        topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);      
-        bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);   
-        bottomStop = new DigitalInput(RobotMap.SWITCH_DOWN_STOP);   
+        topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);
+        bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);
+        bottomStop = new DigitalInput(RobotMap.SWITCH_DOWN_STOP);
 
-		board = PowerDistroBoard467.getInstance();
+        board = PowerDistroBoard467.getInstance();
         currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
     }
 

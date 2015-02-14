@@ -16,17 +16,17 @@ package org.usfirst.frc.team467.robot;
  */
 public class RobotMap
 {
-	
-	// Game Piece Motor IDs - Talon, RoboRio
-	public static final int LIFTER_MOTOR_CHANNEL = 5;
-	public static final int CLAW_MOTOR_CHANNEL = 6;
-	
-	//Game Piece Digital Inputs - RoboRio
-	public static final int SWITCH_UP_STOP = 0;
-	public static final int SWITCH_UP_SLOW = 1;
-	public static final int SWITCH_DOWN_STOP = 2;
-	public static final int SWITCH_DOWN_SLOW = 3;
-		
+
+    // Game Piece Motor IDs - Talon, RoboRio
+    public static final int LIFTER_MOTOR_CHANNEL = 5;
+    public static final int CLAW_MOTOR_CHANNEL = 6;
+
+    // Game Piece Digital Inputs - RoboRio
+    public static final int SWITCH_UP_STOP = 0;
+    public static final int SWITCH_UP_SLOW = 1;
+    public static final int SWITCH_DOWN_STOP = 2;
+    public static final int SWITCH_DOWN_SLOW = 3;
+
     // Robot Dimensions
     // Length is front to back, Width side to side
     // Measured on 2015 robot
@@ -41,7 +41,7 @@ public class RobotMap
 
     // Drive motors - CAN, CANTalons
     public static final int FRONT_RIGHT_MOTOR_CHANNEL = 1;
-    public static final int FRONT_LEFT_MOTOR_CHANNEL = 2;    
+    public static final int FRONT_LEFT_MOTOR_CHANNEL = 2;
     public static final int BACK_LEFT_MOTOR_CHANNEL = 3;
     public static final int BACK_RIGHT_MOTOR_CHANNEL = 4;
 

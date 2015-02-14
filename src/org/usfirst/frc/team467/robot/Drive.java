@@ -46,7 +46,7 @@ public class Drive extends RobotDrive
 
     // Speed to use for Strafe and Revolve Drive
     private static final double SPEED_STRAFE = 0.4;
-    
+
     private static final double REVOLVE_FRONT_RADIUS = 65;
     private static final double REVOLVE_BACK_RADIUS = REVOLVE_FRONT_RADIUS + RobotMap.LENGTH;
     private static final double REVOLVE_BACK_SPEED = 0.4;
@@ -171,11 +171,12 @@ public class Drive extends RobotDrive
     }
 
     /**
-     *   Set angles in "turn in place" position
-     *   Wrap around will check whether the closest angle is facing forward or backward
-     *  
-     *   Front Left- / \ - Front Right<br>
-     *   Back Left - \ / - Back Right
+     * Set angles in "turn in place" position
+     * Wrap around will check whether the closest angle is facing forward or backward
+     * 
+     * Front Left- / \ - Front Right<br>
+     * Back Left - \ / - Back Right
+     * 
      * @param speed
      */
     public void turnDrive(double speed)
@@ -300,7 +301,7 @@ public class Drive extends RobotDrive
     {
         double angle = (direction == Direction.RIGHT) ? Math.PI / 2 : -Math.PI / 2;
         double speed = SPEED_STRAFE;
-        
+
         WheelCorrection corrected = wrapAroundCorrect(RobotMap.FRONT_RIGHT, angle, speed);
         fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
         fourWheelDrive(corrected.speed, corrected.speed, corrected.speed, corrected.speed);
@@ -330,8 +331,10 @@ public class Drive extends RobotDrive
     /**
      * Individually controls a specific driving motor
      *
-     * @param speed Speed to drive at
-     * @param steeringId Id of driving motor to drive
+     * @param speed
+     *            Speed to drive at
+     * @param steeringId
+     *            Id of driving motor to drive
      */
     public void individualWheelDrive(double speed, int steeringId)
     {
@@ -446,8 +449,10 @@ public class Drive extends RobotDrive
     /**
      * Set the steering center to a new value
      *
-     * @param steeringMotor The id of the steering motor (0 = FL, 1 = FR, 2 = BL, 3 = BR)
-     * @param value The new center value
+     * @param steeringMotor
+     *            The id of the steering motor (0 = FL, 1 = FR, 2 = BL, 3 = BR)
+     * @param value
+     *            The new center value
      */
     public void setSteeringCenter(int steeringMotor, double value)
     {

@@ -3,11 +3,11 @@ package org.usfirst.frc.team467.robot;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class PowerDistroBoard467
-{    
+{
     private static PowerDistroBoard467 board = null;
-    
+
     private final int LIFTER_MOTOR_CHANNEL = 4;
-    
+
     private final int CLAW_MOTOR_CHANNEL = 5;
 
     private PowerDistributionPanel pdp = null;
@@ -54,12 +54,12 @@ public class PowerDistroBoard467
     {
         return pdp.getCurrent(channel);
     }
-    
+
     public double getLifterCurrent()
     {
         return getCurrent(LIFTER_MOTOR_CHANNEL);
     }
-    
+
     public double getClawCurrent()
     {
         return getCurrent(CLAW_MOTOR_CHANNEL);

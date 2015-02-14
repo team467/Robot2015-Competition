@@ -144,8 +144,8 @@ public class Steering
         double sensor = getSensorValue() - steeringCenter;
 
         double output = sensor * (Math.PI * 2) / LEVELS_PER_ROTATION;
-        LOGGER.trace(String.format("getSteeringAngle() channel=%d sensor=%6.3f center=%4.0f output=%f",
-                    steeringMotor.getChannel(), sensor, steeringCenter, output));
+        LOGGER.trace(String.format("getSteeringAngle() channel=%d sensor=%6.3f center=%4.0f output=%f", steeringMotor.getChannel(),
+                sensor, steeringCenter, output));
 
         return output;
     }
@@ -182,7 +182,7 @@ public class Steering
         // Current angle in full radians (i.e.-6pi to 6pi)
         final double sensorAngle = getSteeringAngle();
 
-        // Translates input angle to closest full rotation to sensor angle        
+        // Translates input angle to closest full rotation to sensor angle
         double outputAngle = requestedAngle;
         while ((outputAngle - sensorAngle) > Math.PI)
         {
