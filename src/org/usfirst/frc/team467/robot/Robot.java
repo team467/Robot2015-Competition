@@ -16,7 +16,6 @@ import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ImageType;
-import com.ni.vision.NIVision.ParticleReport;
 import com.ni.vision.NIVision.Point;
 import com.ni.vision.NIVision.ShapeMode;
 
@@ -24,6 +23,8 @@ import edu.wpi.first.wpilibj.CameraServer;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Talon;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,10 +33,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-public class Robot extends IterativeRobot {
-	private static final Logger LOGGER = Logger.getLogger(Robot.class);
+public class Robot extends IterativeRobot
+{
+    private static final Logger LOGGER = Logger.getLogger(Robot.class);
 
-	public static final boolean SINGLE_STICK_DRIVE = false;
+    private static final double MIN_DRIVE_SPEED = 0.1;
 
 	// Robot objects
 	private DriverStation467 driverstation;
@@ -122,13 +124,16 @@ public class Robot extends IterativeRobot {
 		// Initialize logging framework.
 		Logging.init();
 
+    /**
+     * Time in milliseconds
+     */
+    double time = System.currentTimeMillis();
+
 		// Make robot objects
 		driverstation = DriverStation467.getInstance();
 
 		drive = Drive.getInstance();
 		initCamera();
-
-		time = System.currentTimeMillis();
 
 		Calibration.init();
 	}
@@ -155,13 +160,14 @@ public class Robot extends IterativeRobot {
 
 	}
 
+
 	public void disabledPeriodic()
 	{
 	    renderImage();
 	}
 	
 	public void autonomousInit() {
-		
+
 	}
 
 	public void teleopInit() {
@@ -219,64 +225,79 @@ public class Robot extends IterativeRobot {
 
 	}
 
-	/**
-	 * Called once per iteration to perform any necessary updates to the drive
-	 * system.
-	 */
-	private void updateDrive() {
-		switch (driverstation.getDriveMode()) {
-		case REWIND:
-			drive.rewindDrive();
-			break;
+    /**
+     * called once per iteration to perform any necessary updates to the drive
+     * system.
+     */
+    private void updateDrive()
+    {
+        switch (driverstation.getDriveMode())
+        {
+            case UNWIND:
+                for (Steering wheelpod : Drive.getInstance().steering)
+                {
+                    wheelpod.setAbsoluteAngle(0);
+                }
+                break;
 
-		case REVOLVE: {
-			Direction direction = Direction.LEFT;
-			if (driverstation.getDriveJoystick().buttonDown(6)) {
-				direction = Direction.RIGHT;
-			}
-			drive.revolveDrive(direction);
-		}
-			break;
+            case REVOLVE:
+            {
+                Direction direction = Direction.LEFT;
+                if (driverstation.getDriveJoystick().buttonDown(6))
+                {
+                    direction = Direction.RIGHT;
+                }
+                drive.revolveDrive(direction);
+            }
+                break;
 
-		case STRAFE: {
-			Direction direction = Direction.LEFT;
-			if (driverstation.getDriveJoystick().getPOV() < 180) {
-				direction = Direction.RIGHT;
-			}
-			drive.strafeDrive(direction);
-		}
-			break;
+            case STRAFE:
+            {
+                Direction direction = Direction.LEFT;
+                if (driverstation.getDriveJoystick().getPOV() < 180)
+                {
+                    direction = Direction.RIGHT;
+                }
+                drive.strafeDrive(direction);
+            }
+                break;
 
-		case TURN:
-			drive.turnDrive(-driverstation.getDriveJoystick().getTwist());
-			break;
+            case TURN:
+                drive.turnDrive(-driverstation.getDriveJoystick().getTwist());
+                break;
 
-		case CRAB_FA:
-			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
-					driverstation.getDriveJoystick().getStickDistance(), true /*
-																			 * field
-																			 * aligned
-																			 */);
-			break;
+            case CRAB_FA:
+                drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
+                        .getStickDistance(), true /* field aligned */);
+                break;
 
-		case CRAB_NO_FA:
-			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
-					driverstation.getDriveJoystick().getStickDistance(), false /*
-																				 * not
-																				 * field
-																				 * aligned
-																				 */);
-			break;
+            case CRAB_NO_FA:
+                if (driverstation.getDriveJoystick().isInDeadzone())
+                {
+                    // If in joystick deadzone, don't steer, leave wheel at current angle.
+                    double currentAngle = drive.steering[RobotMap.BACK_RIGHT].getSteeringAngle();
+                    drive.crabDrive(currentAngle, driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
+                }
+                else
+                {
+                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
+                            .getStickDistance(), false /* not field aligned */);
+                }
+                break;
 
-		default: // should never enter here
-			System.err.println("Button State not calculated correctly");
-			drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(),
-					driverstation.getDriveJoystick().getStickDistance(), false /*
-																				 * not
-																				 * field
-																				 * aligned
-																				 */);
-			break;
-		}
-	}
+            default:  // should never enter here
+                LOGGER.error("Button State not calculated correctly");
+                if (driverstation.getDriveJoystick().isInDeadzone())
+                {
+                    double currentAngle = drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle();
+                    drive.crabDrive(currentAngle, driverstation.getDriveJoystick().getStickDistance(), false /* not field aligned */);
+                }
+                else
+                {
+                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
+                            .getStickDistance(), false /* not field aligned */);
+                }
+                break;
+        }
+    }
 }

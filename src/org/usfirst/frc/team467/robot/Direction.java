@@ -1,6 +1,6 @@
 package org.usfirst.frc.team467.robot;
 
-public enum Direction 
+public enum Direction
 {
-	LEFT, RIGHT, FRONT, BACK;
+    LEFT, RIGHT, FRONT, BACK;
 }

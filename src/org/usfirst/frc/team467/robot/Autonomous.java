@@ -401,7 +401,6 @@ public class Autonomous {
 		
 		}
 	}
-
 }
 
 /**
@@ -411,5 +410,5 @@ public class Autonomous {
  *
  */
 enum AutoType {
-	DRIVE_ONLY, GRAB_ITEM, PUSH_TOTE, GRAB_CONTAINER_PUSH_TOTE, GRAB_BOTH
+	DRIVE_ONLY, GRAB_ITEM, PUSH_TOTE, GRAB_CONTAINER_PUSH_TOTE, GRAB_BOTH;
 }
