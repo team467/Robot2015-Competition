@@ -16,11 +16,16 @@ public class Lifter
     private LifterZoneTypes currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
     private LifterDirection currentLiftDirection = LifterDirection.STOP;
 
+    private PowerDistroBoard467 board = null;
+
     public static final double SLOW_SPEED_UP = 0.4;
     public static final double FAST_SPEED_UP = 0.8;
 
     public static final double SLOW_SPEED_DOWN = -SLOW_SPEED_UP;
     public static final double FAST_SPEED_DOWN = -FAST_SPEED_UP;
+    
+    // TODO Replace with practical value
+    private static final double MAX_CURRENT = 5;
 
     /**
      * Gets the singleton instance of the elevator
@@ -46,7 +51,9 @@ public class Lifter
         topSlow = new DigitalInput(1);      // TODO determine Dig IO channel
         bottomSlow = new DigitalInput(2);   // TODO determine Dig IO channel
         bottomStop = new DigitalInput(3);   // TODO determine Dig IO channel
-
+        
+        board = PowerDistroBoard467.getInstance();
+        
         currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
     }
 
@@ -96,6 +103,12 @@ public class Lifter
      */
     public void setLift(LiftTypes liftType)
     {
+        double current = board.getLifterCurrent();
+        if (current > MAX_CURRENT)
+        {
+            lifterMotor.set(0.0);
+            return;
+        }
         if (liftType == LiftTypes.NO_LIFT)
         {
             lifterMotor.set(0.0);
