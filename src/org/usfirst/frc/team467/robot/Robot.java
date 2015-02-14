@@ -122,6 +122,9 @@ public class Robot extends IterativeRobot
     public void disabledPeriodic()
     {
         LOGGER.debug("BR: " + drive.steering[RobotMap.BACK_RIGHT].getSensorValue());
+        LOGGER.debug("BL: " + drive.steering[RobotMap.BACK_LEFT].getSensorValue());
+        LOGGER.debug("FR: " + drive.steering[RobotMap.FRONT_RIGHT].getSensorValue());
+        LOGGER.debug("FL: " + drive.steering[RobotMap.FRONT_LEFT].getSensorValue());
     }
 
     /**

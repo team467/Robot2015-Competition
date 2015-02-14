@@ -134,14 +134,14 @@ public class Drive extends RobotDrive
         {
             throw new NullPointerException("Null motor provided");
         }
-//        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed), SYNC_GROUP);
-//        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed), SYNC_GROUP);
-//        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed), SYNC_GROUP);
+        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed), SYNC_GROUP);
+        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed), SYNC_GROUP);
+        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed), SYNC_GROUP);
         m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed), SYNC_GROUP);
 
-        m_frontLeftMotor.set(0, SYNC_GROUP);
-        m_frontRightMotor.set(0, SYNC_GROUP);
-        m_rearLeftMotor.set(0, SYNC_GROUP);
+//        m_frontLeftMotor.set(0, SYNC_GROUP);
+//        m_frontRightMotor.set(0, SYNC_GROUP);
+//        m_rearLeftMotor.set(0, SYNC_GROUP);
 //        m_rearRightMotor.set(0, SYNC_GROUP);
 
         if (m_safetyHelper != null)
@@ -164,9 +164,9 @@ public class Drive extends RobotDrive
 //        steering[RobotMap.BACK_LEFT].setAngle(backLeft);
 //        steering[RobotMap.BACK_RIGHT].setAngle(backRight);
 
-        steering[RobotMap.FRONT_LEFT].setAngle(0);
-        steering[RobotMap.FRONT_RIGHT].setAngle(0);
-        steering[RobotMap.BACK_LEFT].setAngle(0);
+        steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
+        steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
+        steering[RobotMap.BACK_LEFT].setAngle(backLeft);
         steering[RobotMap.BACK_RIGHT].setAngle(backRight);
     }
 
@@ -397,8 +397,7 @@ public class Drive extends RobotDrive
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
 
-        double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);
-        LOGGER.debug("NormSteerAng: " + normalizedSteeringAngle + " TrgtAng: " + targetAngle);
+        double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);        
         if (wrapAroundDifference(normalizedSteeringAngle, targetAngle) > Math.PI / 2)
         {
             // shortest path to desired angle is to reverse speed and adjust angle -PI

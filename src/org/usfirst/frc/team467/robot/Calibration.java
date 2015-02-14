@@ -62,6 +62,7 @@ public class Calibration
             // Write data to robot
             data.putDouble(RobotMap.STEERING_KEYS[motorId], currentAngle);
             data.save();
+            LOGGER.debug("SAVED VALUE -> WHEEL: " + motorId + "Ang: " + currentAngle);
 
             // Set new steering center
             drive.setSteeringCenter(motorId, currentAngle);
@@ -156,7 +157,7 @@ public class Calibration
     {
         calibrateWheelSelect = Calibration.getWheel(calibrateWheelSelect);
         updateSteeringCalibrate(calibrateWheelSelect);
-        LOGGER.info("Calibration Updated");
+        LOGGER.info("Calibration Updated, Wheel Int: " + calibrateWheelSelect);
     }
 
 }
