@@ -136,7 +136,7 @@ public class Robot extends IterativeRobot
         driverstation = DriverStation467.getInstance();
 
         drive = Drive.getInstance();
-        initCamera();
+//        initCamera();
 
         Calibration.init();
     }
@@ -168,7 +168,7 @@ public class Robot extends IterativeRobot
 
     public void disabledPeriodic()
     {
-        renderImage();
+//        renderImage();
     }
 
     public void autonomousInit()
