@@ -16,7 +16,10 @@ import edu.wpi.first.wpilibj.CameraServer;
 public class Dashboard
 {
     static Dashboard instance;
-    Drive drive;
+    Steering flSteering;
+    Steering frSteering;
+    Steering blSteering;
+    Steering brSteering;
     
     Image frame;
     CameraServer cameraServer;
@@ -25,7 +28,12 @@ public class Dashboard
     private Dashboard()
     {
         initCamera();
-        drive = Drive.getInstance();
+        Drive drive = Drive.getInstance();
+        flSteering = drive.steering[RobotMap.FRONT_LEFT];
+        frSteering = drive.steering[RobotMap.FRONT_RIGHT];
+        blSteering = drive.steering[RobotMap.BACK_LEFT];
+        brSteering = drive.steering[RobotMap.BACK_RIGHT];
+
     }
     
     public static Dashboard getInstance()
@@ -48,6 +56,7 @@ public class Dashboard
         session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
         NIVision.IMAQdxConfigureGrab(session);
     }
+    
     public void renderImage()
     {
         int viewWidth = 640;
@@ -94,9 +103,24 @@ public class Dashboard
         NIVision.imaqDrawShapeOnImage(frame, frame, blRect, DrawMode.DRAW_VALUE, shape, 0.0f);
         NIVision.imaqDrawShapeOnImage(frame, frame, brRect, DrawMode.DRAW_VALUE, shape, 0.0f);
 
-        double flSteeringAngle = drive.steering[RobotMap.FRONT_LEFT].getSteeringAngle();
+        double flSteeringAngle = flSteering.getSteeringAngle();
+        double frSteeringAngle = frSteering.getSteeringAngle();
+        double blSteeringAngle = blSteering.getSteeringAngle();
+        double brSteeringAngle = brSteering.getSteeringAngle();
+
         int flSteeringPosition = (int)(flSteeringAngle * (100 / (Math.PI * 12)) + 50);
+        int frSteeringPosition = (int)(frSteeringAngle * (100 / (Math.PI * 12)) + 50);
+        int blSteeringPosition = (int)(blSteeringAngle * (100 / (Math.PI * 12)) + 50);
+        int brSteeringPosition = (int)(brSteeringAngle * (100 / (Math.PI * 12)) + 50);
+
         NIVision.Rect flBar = new NIVision.Rect(topMargin, leftMargin + flSteeringPosition, rectHeight, barWidth);
+        NIVision.Rect frBar = new NIVision.Rect(topMargin, rightMargin + frSteeringPosition, rectHeight, barWidth);
+        NIVision.Rect blBar = new NIVision.Rect(bottomMargin, leftMargin + blSteeringPosition, rectHeight, barWidth);
+        NIVision.Rect brBar = new NIVision.Rect(bottomMargin, rightMargin + brSteeringPosition, rectHeight, barWidth);
+
         NIVision.imaqDrawShapeOnImage(frame, frame, flBar, DrawMode.PAINT_VALUE, shape, 0.0f);
+        NIVision.imaqDrawShapeOnImage(frame, frame, frBar, DrawMode.PAINT_VALUE, shape, 0.0f);
+        NIVision.imaqDrawShapeOnImage(frame, frame, blBar, DrawMode.PAINT_VALUE, shape, 0.0f);
+        NIVision.imaqDrawShapeOnImage(frame, frame, brBar, DrawMode.PAINT_VALUE, shape, 0.0f);
     }
 }
