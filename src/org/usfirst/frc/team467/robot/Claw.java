@@ -1,17 +1,21 @@
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
+
 import edu.wpi.first.wpilibj.Talon;
 
 public class Claw
 {
+    private static final Logger LOGGER = Logger.getLogger(Lifter.class);
+
     private static Claw claw = null;
 
     private Talon clawMotor = null;
 
     PowerDistroBoard467 board = null;
 
-    private final double OPEN_SPEED_SLOW = 0.4;
-    private final double OPEN_SPEED_FAST = 0.8;
+    private final double OPEN_SPEED_SLOW = -0.4;
+    private final double OPEN_SPEED_FAST = -0.8;
     private final double CLOSE_SPEED_SLOW = -OPEN_SPEED_SLOW;
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;
 
@@ -40,8 +44,72 @@ public class Claw
      */
     private Claw()
     {
-        clawMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
+        clawMotor = new Talon(RobotMap.CLAW_MOTOR_CHANNEL);
         board = PowerDistroBoard467.getInstance();
+    }
+
+    /**
+     * Basic move without current or limit switching
+     * 
+     * @param clawDir
+     * @param turbo
+     */
+    public void basicMoveClaw(ClawMoveDirection clawDir, boolean turbo)
+    {
+        LOGGER.debug("CLAW CURRENT: " + board.getClawCurrent());
+        switch (clawDir)
+        {
+            case CLOSE:
+                LOGGER.debug("CLOSE");
+                clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
+                break;
+
+            case OPEN:
+                LOGGER.debug("OPEN");
+                clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
+                break;
+
+            case STOP:
+                clawMotor.set(0);
+                break;
+        }
+    }
+
+    public void moveClawNew(ClawMoveDirection clawDir, boolean turbo)
+    {
+        LOGGER.debug("CLAW CURRENT: " + board.getClawCurrent());
+        switch (clawDir)
+        {
+            case CLOSE:
+                LOGGER.debug("CLOSE");
+                isClosed = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                if (!isClosed)
+                {
+                    clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
+                }
+                else
+                {
+                    clawMotor.set(0);
+                }
+                break;
+
+            case OPEN:
+                LOGGER.debug("OPEN");
+                isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                if (!isFullyOpen)
+                {
+                    clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
+                }
+                else
+                {
+                    clawMotor.set(0);
+                }
+                break;
+
+            case STOP:
+                clawMotor.set(0);
+                break;
+        }
     }
 
     /**
@@ -127,6 +195,11 @@ public class Claw
         return isFullyOpen;
     }
 
+}
+
+enum ClawMoveDirection
+{
+    OPEN, CLOSE, STOP
 }
 
 /**

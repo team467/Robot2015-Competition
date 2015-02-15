@@ -17,22 +17,22 @@ public class ButtonPanel2015
     // CONSTANTS:
 
     // DIAL (FROM LEFT):
-    public static int DIAL_POS_1 = 6;
-    public static int DIAL_POS_2 = 5;
-    public static int DIAL_POS_3 = 4;
-    public static int DIAL_POS_4 = 3;
-    public static int DIAL_POS_5 = 1;
-    public static int DIAL_POS_6 = 2;
+    public static int DIAL_POS_1 = 1;
+    public static int DIAL_POS_2 = 2;
+    public static int DIAL_POS_3 = 5;
+    public static int DIAL_POS_4 = 4;
+    public static int DIAL_POS_5 = 3;
+    public static int DIAL_POS_6 = 6;
 
     // AUTO SWITCH (ON is UP):
     public static int COVERED_SWITCH = 9;
 
     // JOYSTICK:
-    public static int JOY_TOP_BUTTON = 15;
-    public static int JOY_UP = 12;
-    public static int JOY_DOWN = 14;
+    public static int JOY_TOP_BUTTON = 16;
+    public static int JOY_UP = 14;
+    public static int JOY_DOWN = 12;
     public static int JOY_LEFT = 13;
-    public static int JOY_RIGHT = 16;
+    public static int JOY_RIGHT = 15;
 
     /**
      * ButtonPanel for the 2015 driverstation

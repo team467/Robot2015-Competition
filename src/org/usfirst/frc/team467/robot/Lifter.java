@@ -1,10 +1,14 @@
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 
 public class Lifter
 {
+    private static final Logger LOGGER = Logger.getLogger(Lifter.class);
+    
     private static Lifter elevator = null;
 
     private Talon lifterMotor = null;
@@ -18,8 +22,8 @@ public class Lifter
 
     private PowerDistroBoard467 board = null;
 
-    public static final double SLOW_SPEED_UP = 0.4;
-    public static final double FAST_SPEED_UP = 0.8;
+    public static final double SLOW_SPEED_UP = -0.4;
+    public static final double FAST_SPEED_UP = -0.8;
 
     public static final double SLOW_SPEED_DOWN = -SLOW_SPEED_UP;
     public static final double FAST_SPEED_DOWN = -FAST_SPEED_UP;
@@ -58,16 +62,43 @@ public class Lifter
      * Lifter implementation that has no turbo speed or limit switch stops.
      * @param lifterDirection
      */
-    public void basicDriveLifter(LifterDirection lifterDirection)
+    public void basicDriveLifter(LifterDirection lifterDirection, boolean turbo)
     {
+        LOGGER.debug("LIFT CURRENT: " + board.getLifterCurrent());
         switch(lifterDirection)
         {
-            case UP:
-                lifterMotor.set(SLOW_SPEED_UP);
+            case UP:         
+                LOGGER.debug("UP");
+                lifterMotor.set((turbo)?FAST_SPEED_UP : SLOW_SPEED_UP);
                 break;
                 
             case DOWN:
-                lifterMotor.set(SLOW_SPEED_DOWN);
+                LOGGER.debug("DOWN");
+                lifterMotor.set((turbo)?FAST_SPEED_DOWN:SLOW_SPEED_DOWN);
+                break;
+                
+            default:
+                lifterMotor.set(0);
+                break;
+        }
+    }
+    
+    /**
+     * Lifter implementation that has no turbo speed or limit switch stops.
+     * @param lifterDirection
+     */
+    public void driveLifter(LifterDirection lifterDirection, boolean turbo)
+    {
+        switch(lifterDirection)
+        {
+            case UP:         
+                LOGGER.debug("UP");
+                lifterMotor.set((turbo)?FAST_SPEED_UP : SLOW_SPEED_UP);
+                break;
+                
+            case DOWN:
+                LOGGER.debug("DOWN");
+                lifterMotor.set((turbo)?FAST_SPEED_DOWN:SLOW_SPEED_DOWN);
                 break;
                 
             default:

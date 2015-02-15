@@ -16,6 +16,8 @@ public class Logging
         Logger.getLogger(Steering.class).setLevel(Level.DEBUG);
         Logger.getLogger(Calibration.class).setLevel(Level.DEBUG);
         Logger.getLogger(Drive.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Lifter.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Claw.class).setLevel(Level.DEBUG);
     }
 
     private static void setupDefaultLogging()

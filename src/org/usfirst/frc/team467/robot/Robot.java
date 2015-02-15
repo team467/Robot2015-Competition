@@ -16,6 +16,7 @@ import com.ni.vision.NIVision.ShapeMode;
 import edu.wpi.first.wpilibj.CameraServer;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Talon;
 
@@ -33,10 +34,11 @@ public class Robot extends IterativeRobot
     private static final double MIN_DRIVE_SPEED = 0.1;
 
     // Robot objects
-    private DriverStation467 driverstation;
+    private DriverStation2015 driverstation;
 
     private Drive drive;
     private Lifter lifter;
+    private Claw claw;
 
     int session;
     Image frame;
@@ -58,10 +60,11 @@ public class Robot extends IterativeRobot
         Logging.init();
 
         // Make robot objects
-        driverstation = DriverStation467.getInstance();
+        driverstation = DriverStation2015.getInstance();
 
         drive = Drive.getInstance();
         lifter = Lifter.getInstance();
+        claw = Claw.getInstance();
 
 //        cameraServer = CameraServer.getInstance();
 //        cameraServer.setQuality(50);
@@ -247,12 +250,8 @@ public class Robot extends IterativeRobot
      * Called from teleopPeriodic to drive the lifter and claw.
      */
     private void updateNavigator()
-    {
-        if(driverstation.getNavJoystick().getStickY() > 0.5)
-            lifter.basicDriveLifter(LifterDirection.DOWN);
-        else if(driverstation.getNavJoystick().getStickY() < -0.5)
-            lifter.basicDriveLifter(LifterDirection.UP);
-        else
-            lifter.basicDriveLifter(LifterDirection.STOP);
+    {        
+        lifter.basicDriveLifter(driverstation.getLiftDirection(), driverstation.getMoveTurbo());       
+        claw.basicMoveClaw(driverstation.getClawDirection(), driverstation.getMoveTurbo());        
     }
 }

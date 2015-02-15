@@ -221,5 +221,156 @@ public class DriverStation2015
     {
         buttonPanel.printPressedButtons();
     }
+    
+
+    /**
+     * Gets joystick instance used by driver.
+     *
+     * @return
+     */
+    public Joystick467 getDriveJoystick()
+    {
+        return driverJoy;
+    }
+    
+    /**
+     * Get joystick instance used for calibration.
+     *
+     * @return
+     */
+    public Joystick467 getCalibrationJoystick()
+    {
+        return driverJoy;
+    }
+
+    // All button mappings are accessed through the functions below
+
+    /**
+     * returns the current drive mode. Modes lower in the function will override
+     * those higher up. only 1 mode can be active at any time
+     * 
+     * @return currently active drive mode.
+     */
+    public DriveMode getDriveMode()
+    {
+        DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
+
+        // if (getDriveJoystick().buttonDown(5)) drivemode = DriveMode.CRAB_FA;
+        if (getDriveJoystick().buttonDown(2))
+            drivemode = DriveMode.TURN;
+
+        int pov = getDriveJoystick().getPOV();
+        if (pov != -1 && pov != 0 && pov != 180)
+            drivemode = DriveMode.STRAFE;
+
+        if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6))
+            drivemode = DriveMode.REVOLVE;
+
+        if (getDriveJoystick().buttonDown(11))
+            drivemode = DriveMode.UNWIND;
+
+        return drivemode;
+    }
+
+    /**
+     * 
+     * @return true if button required to enable slow driving mode are pressed
+     */
+    public boolean getSlow()
+    {
+        return getDriveJoystick().buttonDown(7);
+    }
+
+    /**
+     * 
+     * @return true if button required to enable turbo driving mode are pressed
+     */
+    public boolean getTurbo()
+    {
+        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
+    }
+
+    // Calibration functions. Calibration is a separate use mode - so the buttons used
+    // here can overlap with those used for the regular drive modes
+
+    /**
+     * 
+     * @return true if calibration mode selected
+     */
+    public boolean getCalibrate()
+    {
+        return getCalibrationJoystick().getFlap();
+    }
+
+    /**
+     * 
+     * @return true if button to confirm calibration selection is pressed
+     */
+    public boolean getCalibrateConfirmSelection()
+    {
+        return getCalibrationJoystick().buttonDown(Joystick467.TRIGGER);
+    }
+
+    /**
+     * 
+     * @return true if button to enable calibration slow turn mode is pressed
+     */
+    public boolean getCalibrateSlowTurn()
+    {
+        return getCalibrationJoystick().buttonDown(4);
+    }
+    
+    /**
+     * Direction to drive the claw.
+     * @return
+     */
+    public ClawMoveDirection getClawDirection()
+    {
+        if(buttonPanel.isButtonDown(CLAW_OPEN))
+        {
+            return ClawMoveDirection.OPEN;
+        }
+        else if(buttonPanel.isButtonDown(CLAW_CLOSED))
+        {
+            return ClawMoveDirection.CLOSE;
+        }
+        else
+        {
+            return ClawMoveDirection.STOP;
+        }
+    }
+    
+    /**
+     * Gets the lifter direction for lifting.
+     * @return
+     */
+    public LifterDirection getLiftDirection()
+    {
+        if(buttonPanel.isButtonDown(ELEVATOR_DOWN))
+        {
+            return LifterDirection.DOWN;
+        }
+        else if(buttonPanel.isButtonDown(ELEVATOR_UP))
+        {
+            return LifterDirection.UP;
+        }
+        else
+        {
+            return LifterDirection.STOP;
+        }
+    }
+    
+    /**
+     * Checks to see if turbo from the nav is pressed.
+     * @return
+     */
+    public boolean getMoveTurbo()
+    {
+        return buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON);
+    }
+    
+    
 
 }
+
+
