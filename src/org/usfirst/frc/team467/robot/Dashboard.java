@@ -1,5 +1,6 @@
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.Robot.Scores;
 
 import com.ni.vision.NIVision;
@@ -15,25 +16,28 @@ import edu.wpi.first.wpilibj.CameraServer;
 
 public class Dashboard
 {
+    private static final Logger LOGGER = Logger.getLogger(Dashboard.class);
     static Dashboard instance;
     Steering flSteering;
     Steering frSteering;
     Steering blSteering;
     Steering brSteering;
     
+    private boolean cameraExists = true;
+
     Image frame;
     CameraServer cameraServer;
     int session;
 
     private Dashboard()
     {
-        initCamera();
         Drive drive = Drive.getInstance();
         flSteering = drive.steering[RobotMap.FRONT_LEFT];
         frSteering = drive.steering[RobotMap.FRONT_RIGHT];
         blSteering = drive.steering[RobotMap.BACK_LEFT];
         brSteering = drive.steering[RobotMap.BACK_RIGHT];
-
+        
+        initCamera();
     }
     
     public static Dashboard getInstance()
@@ -45,29 +49,46 @@ public class Dashboard
         return instance;
     }
     
+    public boolean cameraExists()
+    {
+        return cameraExists;
+    }
+
     private void initCamera()
     {
-        cameraServer = CameraServer.getInstance();
-        cameraServer.setQuality(50);
+        try
+        {
+            cameraExists = true;
+            cameraServer = CameraServer.getInstance();
+            cameraServer.setQuality(50);
 
-        frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+            frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
-        // the camera name (ex "cam0") can be found through the roborio web interface
-        session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(session);
+            // the camera name (ex "cam0") can be found through the roborio web interface
+            session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+            NIVision.IMAQdxConfigureGrab(session);
+        }
+        catch (Exception e)
+        {
+            LOGGER.info("No Camera Detected: " + e.getMessage());
+            cameraExists = false;
+        }
     }
     
     public void renderImage()
     {
-        int viewWidth = 640;
-        int viewHeight = 480;
+        if (cameraExists)
+        {
+            int viewWidth = 640;
+            int viewHeight = 480;
+            
+            NIVision.IMAQdxGrab(session, frame, 1);
+            
+            drawCrossHairs(viewWidth, viewHeight);
+            drawAngleMonitors(viewWidth, viewHeight);
         
-        NIVision.IMAQdxGrab(session, frame, 1);
-        
-        drawCrossHairs(viewWidth, viewHeight);
-        drawAngleMonitors(viewWidth, viewHeight);
-    
-        cameraServer.setImage(frame);
+            cameraServer.setImage(frame);
+        }
     }
     private void drawCrossHairs(int viewWidth, int viewHeight)
     {
