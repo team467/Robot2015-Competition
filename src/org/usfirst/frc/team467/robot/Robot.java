@@ -36,6 +36,7 @@ public class Robot extends IterativeRobot
     private DriverStation467 driverstation;
 
     private Drive drive;
+    private Lifter lifter;
 
     int session;
     Image frame;
@@ -60,6 +61,7 @@ public class Robot extends IterativeRobot
         driverstation = DriverStation467.getInstance();
 
         drive = Drive.getInstance();
+        lifter = Lifter.getInstance();
 
 //        cameraServer = CameraServer.getInstance();
 //        cameraServer.setQuality(50);
@@ -144,6 +146,7 @@ public class Robot extends IterativeRobot
         {
             // Drive Mode
             updateDrive();
+            updateNavigator();
         }
 
 //        renderImage();  
@@ -238,5 +241,18 @@ public class Robot extends IterativeRobot
                 }
                 break;
         }
+    }
+    
+    /**
+     * Called from teleopPeriodic to drive the lifter and claw.
+     */
+    private void updateNavigator()
+    {
+        if(driverstation.getNavJoystick().getStickY() > 0.5)
+            lifter.basicDriveLifter(LifterDirection.DOWN);
+        else if(driverstation.getNavJoystick().getStickY() < -0.5)
+            lifter.basicDriveLifter(LifterDirection.UP);
+        else
+            lifter.basicDriveLifter(LifterDirection.STOP);
     }
 }
