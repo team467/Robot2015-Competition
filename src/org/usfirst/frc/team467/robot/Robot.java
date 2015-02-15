@@ -187,8 +187,8 @@ public class Robot extends IterativeRobot
 
     private void drawAngleMonitors(int viewWidth, int viewHeight)
     {
-        final int barWidth = 10;
-        final int rectHeight = 15;
+        final int barWidth = 15;
+        final int rectHeight = 20;
         final int rectWidth = 100 + barWidth;
 
         final int topMargin = 20;
@@ -206,8 +206,10 @@ public class Robot extends IterativeRobot
         NIVision.imaqDrawShapeOnImage(frame, frame, frRect, DrawMode.DRAW_VALUE, shape, 0.0f);
         NIVision.imaqDrawShapeOnImage(frame, frame, blRect, DrawMode.DRAW_VALUE, shape, 0.0f);
         NIVision.imaqDrawShapeOnImage(frame, frame, brRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-    
-        NIVision.Rect flBar = new NIVision.Rect(topMargin, leftMargin + (int)(drive.steering[RobotMap.FRONT_LEFT].getSteeringAngle() * (100 / (Math.PI * 6))), rectHeight, barWidth);
+
+        double flSteeringAngle = drive.steering[RobotMap.FRONT_LEFT].getSteeringAngle();
+        int flSteeringPosition = (int)(flSteeringAngle * (100 / (Math.PI * 12)) + 50);
+        NIVision.Rect flBar = new NIVision.Rect(topMargin, leftMargin + flSteeringPosition, rectHeight, barWidth);
         NIVision.imaqDrawShapeOnImage(frame, frame, flBar, DrawMode.PAINT_VALUE, shape, 0.0f);
     }
 
