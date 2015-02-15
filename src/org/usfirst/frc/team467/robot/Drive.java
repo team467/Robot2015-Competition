@@ -27,7 +27,7 @@ public class Drive extends RobotDrive
     // Angle to turn at when rotating in place - initialized in constructor
     // takes the arctan of width over length in radians
     // Length is the wide side
-    private static double turnAngle = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH);
+    private static final double TURN_IN_PLACE_ANGLE = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH);
 
     // Magic number copied from WPI code
     private static final byte SYNC_GROUP = (byte) 0x80;
@@ -134,14 +134,14 @@ public class Drive extends RobotDrive
         {
             throw new NullPointerException("Null motor provided");
         }
-//        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed), SYNC_GROUP);
-//        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed), SYNC_GROUP);
-//        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed), SYNC_GROUP);
+        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed), SYNC_GROUP);
+        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed), SYNC_GROUP);
+        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed), SYNC_GROUP);
         m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed), SYNC_GROUP);
 
-        m_frontLeftMotor.set(0, SYNC_GROUP);
-        m_frontRightMotor.set(0, SYNC_GROUP);
-        m_rearLeftMotor.set(0, SYNC_GROUP);
+//        m_frontLeftMotor.set(0, SYNC_GROUP);
+//        m_frontRightMotor.set(0, SYNC_GROUP);
+//        m_rearLeftMotor.set(0, SYNC_GROUP);
 //        m_rearRightMotor.set(0, SYNC_GROUP);
 
         if (m_safetyHelper != null)
@@ -164,12 +164,12 @@ public class Drive extends RobotDrive
 //        steering[RobotMap.BACK_LEFT].setAngle(backLeft);
 //        steering[RobotMap.BACK_RIGHT].setAngle(backRight);
 
-        steering[RobotMap.FRONT_LEFT].setAngle(0);
-        steering[RobotMap.FRONT_RIGHT].setAngle(0);
-        steering[RobotMap.BACK_LEFT].setAngle(0);
+        steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
+        steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
+        steering[RobotMap.BACK_LEFT].setAngle(backLeft);
         steering[RobotMap.BACK_RIGHT].setAngle(backRight);
     }
-
+    
     /**
      * Set angles in "turn in place" position
      * Wrap around will check whether the closest angle is facing forward or backward
@@ -181,28 +181,13 @@ public class Drive extends RobotDrive
      */
     public void turnDrive(double speed)
     {
-        if (wrapAroundDifference(turnAngle, steering[RobotMap.FRONT_RIGHT].getSteeringAngle()) <= Math.PI / 2)
-        {
-            // Front facing angles
-            fourWheelSteer(turnAngle, -turnAngle, -turnAngle, turnAngle);
-        }
-        else
-        {
-            // Rear facing angles
-            fourWheelSteer(turnAngle - Math.PI, -turnAngle + Math.PI, -turnAngle + Math.PI, turnAngle - Math.PI);
-
-            // Reverse direction
-            speed = -speed;
-        }
-
-        // Drive motors with left side motors inverted
-        this.drive(limitSpeed(speed), new boolean[]
-        {
-                true,
-                false,
-                true,
-                false
-        });
+        WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, TURN_IN_PLACE_ANGLE, speed);
+        WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, -TURN_IN_PLACE_ANGLE, speed);
+        WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, -TURN_IN_PLACE_ANGLE, speed);
+        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);
+        
+        this.fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
+        this.fourWheelDrive(-frontLeft.speed, frontRight.speed, -backLeft.speed, backRight.speed);
     }
 
     private double lastSpeed = 0.0;
@@ -289,6 +274,21 @@ public class Drive extends RobotDrive
         steering[steeringId].setAngle(angle);
 
         this.drive(limitSpeed(speed), null);
+    }
+    
+    /**
+     * Does not drive drive motors and keeps steering angle at previous position.
+     */
+    public void noDrive()
+    {
+        this.fourWheelDrive(0, 0, 0, 0);//no drive for you!
+        
+        //maintain current angles
+        this.steering[RobotMap.BACK_LEFT].setAngle(steering[RobotMap.BACK_LEFT].getSteeringAngle());
+        this.steering[RobotMap.BACK_RIGHT].setAngle(steering[RobotMap.BACK_RIGHT].getSteeringAngle());
+        this.steering[RobotMap.FRONT_LEFT].setAngle(steering[RobotMap.FRONT_LEFT].getSteeringAngle());
+        this.steering[RobotMap.FRONT_RIGHT].setAngle(steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
+        
     }
 
     /**
@@ -397,8 +397,7 @@ public class Drive extends RobotDrive
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
 
-        double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);
-        LOGGER.debug("NormSteerAng: " + normalizedSteeringAngle + " TrgtAng: " + targetAngle);
+        double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);        
         if (wrapAroundDifference(normalizedSteeringAngle, targetAngle) > Math.PI / 2)
         {
             // shortest path to desired angle is to reverse speed and adjust angle -PI

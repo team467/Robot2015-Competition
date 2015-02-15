@@ -218,7 +218,22 @@ public class Steering
         steeringPID.setSetpoint(setPoint);
         if (steeringSensor.getChannel() == RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL)
         {
-            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f setPoint=%d sensorValue=%f", requestedAngle,
+            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f BRsetPoint=%d BRsensorValue=%f", requestedAngle,
+                    outputAngle, setPoint, getSensorValue()));
+        }
+        else if(steeringSensor.getChannel() == RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL)
+        {
+            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f BLsetPoint=%d BLsensorValue=%f", requestedAngle,
+                    outputAngle, setPoint, getSensorValue()));
+        }
+        else if(steeringSensor.getChannel() == RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL)
+        {
+            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f FRsetPoint=%d FRsensorValue=%f", requestedAngle,
+                    outputAngle, setPoint, getSensorValue()));
+        }
+        else if(steeringSensor.getChannel() == RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL)
+        {
+            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f FLsetPoint=%d FLsensorValue=%f", requestedAngle,
                     outputAngle, setPoint, getSensorValue()));
         }
     }
@@ -235,7 +250,22 @@ public class Steering
         steeringPID.setSetpoint(setPoint);
         if (steeringSensor.getChannel() == RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL)
         {
-            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f setPoint=%d sensorValue=%f", requestedAngle,
+            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f BRsetPoint=%d BRsensorValue=%f", requestedAngle,
+                    outputAngle, setPoint, getSensorValue()));
+        }
+        else if(steeringSensor.getChannel() == RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL)
+        {
+            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f BLsetPoint=%d BLsensorValue=%f", requestedAngle,
+                    outputAngle, setPoint, getSensorValue()));
+        }
+        else if(steeringSensor.getChannel() == RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL)
+        {
+            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f FLsetPoint=%d FLsensorValue=%f", requestedAngle,
+                    outputAngle, setPoint, getSensorValue()));
+        }
+        else if(steeringSensor.getChannel() == RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL)
+        {
+            LOGGER.debug(String.format("setAngle() requestedAngle=%f outputAngle=%f FRsetPoint=%d FRsensorValue=%f", requestedAngle,
                     outputAngle, setPoint, getSensorValue()));
         }
     }
