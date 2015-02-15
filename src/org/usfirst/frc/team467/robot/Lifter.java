@@ -48,11 +48,11 @@ public class Lifter
      */
     private Lifter()
     {
-        lifterMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
-        topStop = new DigitalInput(RobotMap.SWITCH_UP_STOP);
-        topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);
-        bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);
-        bottomStop = new DigitalInput(RobotMap.SWITCH_DOWN_STOP);
+//        lifterMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
+//        topStop = new DigitalInput(RobotMap.SWITCH_UP_STOP);
+//        topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);
+//        bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);
+//        bottomStop = new DigitalInput(RobotMap.SWITCH_DOWN_STOP);
 
         board = PowerDistroBoard467.getInstance();
         currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
