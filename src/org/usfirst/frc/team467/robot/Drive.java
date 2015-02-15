@@ -169,45 +169,6 @@ public class Drive extends RobotDrive
         steering[RobotMap.BACK_LEFT].setAngle(backLeft);
         steering[RobotMap.BACK_RIGHT].setAngle(backRight);
     }
-
-    /**
-     * Set angles in "turn in place" position
-     * Wrap around will check whether the closest angle is facing forward or backward
-     * 
-     * Front Left- / \ - Front Right<br>
-     * Back Left - \ / - Back Right
-     * 
-     * @param speed
-     */
-    public void turnDriveOld(double speed)
-    {
-        if (wrapAroundDifference(TURN_IN_PLACE_ANGLE, steering[RobotMap.FRONT_RIGHT].getSteeringAngle()) <= Math.PI / 2)
-        {
-            // log "turnDriveA"
-            LOGGER.debug("turnDriveA");
-            // Front facing angles
-            fourWheelSteer(TURN_IN_PLACE_ANGLE, -TURN_IN_PLACE_ANGLE, -TURN_IN_PLACE_ANGLE, TURN_IN_PLACE_ANGLE);
-        }
-        else
-        {
-            // log "turnDriveB"
-            LOGGER.debug("turnDriveB");
-            // Rear facing angles
-            fourWheelSteer(TURN_IN_PLACE_ANGLE - Math.PI, -TURN_IN_PLACE_ANGLE + Math.PI, -TURN_IN_PLACE_ANGLE + Math.PI, TURN_IN_PLACE_ANGLE - Math.PI);
-
-            // Reverse direction
-            speed = -speed;
-        }
-
-        // Drive motors with left side motors inverted
-        this.drive(limitSpeed(speed), new boolean[]
-        {
-                true,
-                false,
-                true,
-                false
-        });
-    }
     
     /**
      * Set angles in "turn in place" position
@@ -313,6 +274,21 @@ public class Drive extends RobotDrive
         steering[steeringId].setAngle(angle);
 
         this.drive(limitSpeed(speed), null);
+    }
+    
+    /**
+     * Does not drive drive motors and keeps steering angle at previous position.
+     */
+    public void noDrive()
+    {
+        this.fourWheelDrive(0, 0, 0, 0);//no drive for you!
+        
+        //maintain current angles
+        this.steering[RobotMap.BACK_LEFT].setAngle(steering[RobotMap.BACK_LEFT].getSteeringAngle());
+        this.steering[RobotMap.BACK_RIGHT].setAngle(steering[RobotMap.BACK_RIGHT].getSteeringAngle());
+        this.steering[RobotMap.FRONT_LEFT].setAngle(steering[RobotMap.FRONT_LEFT].getSteeringAngle());
+        this.steering[RobotMap.FRONT_RIGHT].setAngle(steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
+        
     }
 
     /**
