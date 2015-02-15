@@ -181,13 +181,13 @@ public class Drive extends RobotDrive
      */
     public void turnDrive(double speed)
     {
-        WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, TURN_IN_PLACE_ANGLE, speed);
+        WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, TURN_IN_PLACE_ANGLE, -speed);
         WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, -TURN_IN_PLACE_ANGLE, speed);
-        WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, -TURN_IN_PLACE_ANGLE, speed);
+        WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, -TURN_IN_PLACE_ANGLE, -speed);
         WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);
         
         this.fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
-        this.fourWheelDrive(-frontLeft.speed, frontRight.speed, -backLeft.speed, backRight.speed);
+        this.fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backRight.speed);
     }
 
     private double lastSpeed = 0.0;

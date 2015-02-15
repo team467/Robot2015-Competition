@@ -53,6 +53,143 @@ public class Lifter
         board = PowerDistroBoard467.getInstance();
         currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
     }
+    
+    /**
+     * Lifter implementation that has no turbo speed or limit switch stops.
+     * @param lifterDirection
+     */
+    public void basicDriveLifter(LifterDirection lifterDirection)
+    {
+        switch(lifterDirection)
+        {
+            case UP:
+                lifterMotor.set(SLOW_SPEED_UP);
+                break;
+                
+            case DOWN:
+                lifterMotor.set(SLOW_SPEED_DOWN);
+                break;
+                
+            default:
+                lifterMotor.set(0);
+                break;
+        }
+    }
+
+    /**
+     * Sets the lift direction and updates the 
+     * @param lifterDirection
+     * @param turbo
+     */
+    public void setLiftNew(LifterDirection lifterDirection, boolean turbo)
+    {        
+        switch(currentZone)
+        {
+            case STOP_ZONE_TOP:                                   
+                switch(lifterDirection)
+                {
+                    case DOWN:
+                        if(!topStop.get())
+                            currentZone = LifterZoneTypes.SLOW_ZONE_TOP;                        
+                        lifterMotor.set(SLOW_SPEED_DOWN);
+                        break;
+                        
+                    default://no drive
+                        lifterMotor.set(0);
+                        break;
+                }
+                break;
+                
+            case SLOW_ZONE_TOP:
+                switch (lifterDirection)
+                {
+                    case UP:
+                        if(topStop.get())
+                            currentZone = LifterZoneTypes.STOP_ZONE_TOP;
+                        lifterMotor.set(SLOW_SPEED_UP);
+                        break;
+                        
+                    case DOWN:
+                        if(topSlow.get())                            
+                            currentZone = LifterZoneTypes.FAST_ZONE;
+                        lifterMotor.set((turbo)? FAST_SPEED_DOWN: SLOW_SPEED_DOWN);                        
+                        break;
+
+                    default: //no drive
+                        lifterMotor.set(0);
+                        break;
+                }                                  
+                break;
+                
+            case FAST_ZONE:
+                
+                if (topSlow.get() && currentLiftDirection == LifterDirection.UP)
+                    currentZone = LifterZoneTypes.SLOW_ZONE_TOP;
+                else if (bottomSlow.get() && currentLiftDirection == LifterDirection.DOWN)
+                    currentZone = LifterZoneTypes.STOP_ZONE_BOTTOM;
+                switch(lifterDirection)
+                {
+                                        
+                    case UP:                        
+                        if(topSlow.get())
+                            currentZone = LifterZoneTypes.SLOW_ZONE_TOP;
+                        lifterMotor.set((turbo)? FAST_SPEED_UP: SLOW_SPEED_UP);
+                        break;
+                        
+                    case DOWN:
+                        if(bottomSlow.get())
+                            currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
+                        lifterMotor.set((turbo)? FAST_SPEED_DOWN: SLOW_SPEED_DOWN);
+                        break;
+                        
+                    default://no drive
+                        lifterMotor.set(0);
+                        break;
+                }
+                break;
+                
+            case SLOW_ZONE_BOTTOM:
+                if (bottomStop.get() && currentLiftDirection == LifterDirection.DOWN)
+                    currentZone = LifterZoneTypes.STOP_ZONE_BOTTOM;
+                else if (bottomSlow.get() && currentLiftDirection == LifterDirection.UP)
+                    currentZone = LifterZoneTypes.FAST_ZONE;
+                switch (lifterDirection)
+                {
+                    case UP:
+                        if(bottomSlow.get())
+                            currentZone = LifterZoneTypes.FAST_ZONE;
+                        lifterMotor.set((turbo)? FAST_SPEED_UP: SLOW_SPEED_UP);
+                        break;
+                        
+                    case DOWN:
+                        if(bottomStop.get())
+                            currentZone = LifterZoneTypes.STOP_ZONE_BOTTOM;
+                        lifterMotor.set(SLOW_SPEED_DOWN);
+                        break;
+
+                    default: //no drive
+                        lifterMotor.set(0);
+                        break;
+                }
+                break;
+                
+            case STOP_ZONE_BOTTOM:
+                if (!bottomStop.get() && currentLiftDirection == LifterDirection.UP)
+                    currentZone = LifterZoneTypes.SLOW_ZONE_TOP;
+                //drive
+                switch(lifterDirection)
+                {
+                    case UP:
+                        lifterMotor.set(SLOW_SPEED_UP);
+                        break;
+                        
+                    default://no drive
+                        lifterMotor.set(0);
+                        break;
+                }
+                break;                
+        }        
+    }   
 
     /**
      * Updates the logic of the lifter to set current state.
