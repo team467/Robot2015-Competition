@@ -136,7 +136,7 @@ public class Robot extends IterativeRobot
         driverstation = DriverStation467.getInstance();
 
         drive = Drive.getInstance();
-//        initCamera();
+        initCamera();
 
         Calibration.init();
     }
@@ -156,8 +156,49 @@ public class Robot extends IterativeRobot
         frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
         // the camera name (ex "cam0") can be found through the roborio web interface
-        session = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+        session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
         NIVision.IMAQdxConfigureGrab(session);
+    }
+
+    private void renderImage()
+    {
+        int viewWidth = 640;
+        int viewHeight = 480;
+        
+        int topMargin = 20;
+        int sideMargin = 20;
+        int rectHeight = 15;
+        int rectWidth = 100;
+    
+        
+        NIVision.IMAQdxGrab(session, frame, 1);
+        
+        // Cross Hairs
+        NIVision.Point vertStart = new Point(viewWidth / 2, viewHeight / 2 - 5);
+        NIVision.Point vertEnd = new Point(viewWidth / 2, viewHeight / 2 + 5);
+    
+        NIVision.Point horizStart = new Point(viewWidth / 2 - 5, viewHeight / 2);
+        NIVision.Point horizEnd = new Point(viewWidth / 2 + 5, viewHeight / 2);
+    
+        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, vertStart, vertEnd, 0.0f);
+        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, horizStart, horizEnd, 0.0f);
+        
+        // Angle Monitors
+        ShapeMode shape = ShapeMode.SHAPE_RECT;
+        NIVision.Rect flRect = new NIVision.Rect(topMargin, sideMargin, rectHeight, rectWidth);
+        NIVision.Rect frRect = new NIVision.Rect(topMargin, viewWidth - (sideMargin + rectWidth), rectHeight, rectWidth);
+        NIVision.Rect blRect = new NIVision.Rect(viewHeight - (topMargin + rectHeight), sideMargin, rectHeight, rectWidth);
+        NIVision.Rect brRect = new NIVision.Rect(viewHeight - (topMargin + rectHeight), viewWidth - (sideMargin + rectWidth), 10, 100);
+    
+        NIVision.imaqDrawShapeOnImage(frame, frame, flRect, DrawMode.DRAW_VALUE, shape, 0.0f);
+        NIVision.imaqDrawShapeOnImage(frame, frame, frRect, DrawMode.DRAW_VALUE, shape, 0.0f);
+        NIVision.imaqDrawShapeOnImage(frame, frame, blRect, DrawMode.DRAW_VALUE, shape, 0.0f);
+        NIVision.imaqDrawShapeOnImage(frame, frame, brRect, DrawMode.DRAW_VALUE, shape, 0.0f);
+    
+        NIVision.Rect flBar = new NIVision.Rect(topMargin, sideMargin + (int)(drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle() * (100 / (Math.PI * 6))), rectHeight, 3);
+        NIVision.imaqDrawShapeOnImage(frame, frame, flBar, DrawMode.PAINT_VALUE, shape, 0.0f);
+    
+        cameraServer.setImage(frame);
     }
 
     public void disabledInit()
@@ -168,7 +209,7 @@ public class Robot extends IterativeRobot
 
     public void disabledPeriodic()
     {
-//        renderImage();
+        renderImage();
     }
 
     public void autonomousInit()
@@ -178,7 +219,7 @@ public class Robot extends IterativeRobot
 
     public void teleopInit()
     {
-
+        
     }
 
     public void testInit()
@@ -218,49 +259,8 @@ public class Robot extends IterativeRobot
             updateDrive();
         }
 
-        // renderImage();
+         renderImage();
 
-    }
-
-    private void renderImage()
-    {
-        int viewWidth = 640;
-        int viewHeight = 480;
-        
-        int topMargin = 20;
-        int sideMargin = 20;
-        int rectHeight = 15;
-        int rectWidth = 100;
-
-        
-        NIVision.IMAQdxGrab(session, frame, 1);
-        
-        // Cross Hairs
-        NIVision.Point vertStart = new Point(viewWidth / 2, viewHeight / 2 - 5);
-        NIVision.Point vertEnd = new Point(viewWidth / 2, viewHeight / 2 + 5);
-
-        NIVision.Point horizStart = new Point(viewWidth / 2 - 5, viewHeight / 2);
-        NIVision.Point horizEnd = new Point(viewWidth / 2 + 5, viewHeight / 2);
-
-        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, vertStart, vertEnd, 0.0f);
-        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, horizStart, horizEnd, 0.0f);
-        
-        // Angle Monitors
-        ShapeMode shape = ShapeMode.SHAPE_RECT;
-        NIVision.Rect flRect = new NIVision.Rect(topMargin, sideMargin, rectHeight, rectWidth);
-        NIVision.Rect frRect = new NIVision.Rect(topMargin, viewWidth - (sideMargin + rectWidth), rectHeight, rectWidth);
-        NIVision.Rect blRect = new NIVision.Rect(viewHeight - (topMargin + rectHeight), sideMargin, rectHeight, rectWidth);
-        NIVision.Rect brRect = new NIVision.Rect(viewHeight - (topMargin + rectHeight), viewWidth - (sideMargin + rectWidth), 10, 100);
-
-        NIVision.imaqDrawShapeOnImage(frame, frame, flRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, frRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, blRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, brRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-
-        NIVision.Rect flBar = new NIVision.Rect(topMargin, sideMargin + (int)(drive.steering[RobotMap.FRONT_RIGHT].getSteeringAngle() * (100 / (Math.PI * 6))), rectHeight, 3);
-        NIVision.imaqDrawShapeOnImage(frame, frame, flBar, DrawMode.PAINT_VALUE, shape, 0.0f);
-
-        cameraServer.setImage(frame);
     }
 
     /**
