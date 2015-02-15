@@ -43,13 +43,8 @@ public class Robot extends IterativeRobot
     private DriverStation467 driverstation;
 
     private Drive drive;
-
-    int session;
-    Image frame;
-
-    CameraServer cameraServer = null;
-
-    boolean useCamera = true;
+    
+    private Dashboard dashboard;
 
     /**
      * Time in milliseconds
@@ -136,81 +131,9 @@ public class Robot extends IterativeRobot
         driverstation = DriverStation467.getInstance();
 
         drive = Drive.getInstance();
-        initCamera();
+        dashboard = Dashboard.getInstance();
 
         Calibration.init();
-    }
-
-    private void initCamera()
-    {
-        try
-        {
-            cameraServer = CameraServer.getInstance();
-        }
-        catch (Exception ex)
-        {
-            useCamera = false;
-        }
-        cameraServer.setQuality(50);
-
-        frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-        // the camera name (ex "cam0") can be found through the roborio web interface
-        session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(session);
-    }
-
-    private void renderImage()
-    {
-        int viewWidth = 640;
-        int viewHeight = 480;
-        
-        NIVision.IMAQdxGrab(session, frame, 1);
-        
-        drawCrossHairs(viewWidth, viewHeight);
-        drawAngleMonitors(viewWidth, viewHeight);
-    
-        cameraServer.setImage(frame);
-    }
-
-    private void drawCrossHairs(int viewWidth, int viewHeight)
-    {
-        NIVision.Point vertStart = new Point(viewWidth / 2, viewHeight / 2 - 5);
-        NIVision.Point vertEnd = new Point(viewWidth / 2, viewHeight / 2 + 5);
-    
-        NIVision.Point horizStart = new Point(viewWidth / 2 - 5, viewHeight / 2);
-        NIVision.Point horizEnd = new Point(viewWidth / 2 + 5, viewHeight / 2);
-    
-        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, vertStart, vertEnd, 0.0f);
-        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, horizStart, horizEnd, 0.0f);
-    }
-
-    private void drawAngleMonitors(int viewWidth, int viewHeight)
-    {
-        final int barWidth = 15;
-        final int rectHeight = 20;
-        final int rectWidth = 100 + barWidth;
-
-        final int topMargin = 20;
-        final int leftMargin = 20;
-        final int bottomMargin = viewHeight - (topMargin + rectHeight);
-        final int rightMargin = viewWidth - (leftMargin + rectWidth) - barWidth;
-        
-        ShapeMode shape = ShapeMode.SHAPE_RECT;
-        NIVision.Rect flRect = new NIVision.Rect(topMargin, leftMargin, rectHeight, rectWidth);
-        NIVision.Rect frRect = new NIVision.Rect(topMargin, rightMargin, rectHeight, rectWidth);
-        NIVision.Rect blRect = new NIVision.Rect(bottomMargin, leftMargin, rectHeight, rectWidth);
-        NIVision.Rect brRect = new NIVision.Rect(bottomMargin, rightMargin, rectHeight, rectWidth);
-    
-        NIVision.imaqDrawShapeOnImage(frame, frame, flRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, frRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, blRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, brRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-
-        double flSteeringAngle = drive.steering[RobotMap.FRONT_LEFT].getSteeringAngle();
-        int flSteeringPosition = (int)(flSteeringAngle * (100 / (Math.PI * 12)) + 50);
-        NIVision.Rect flBar = new NIVision.Rect(topMargin, leftMargin + flSteeringPosition, rectHeight, barWidth);
-        NIVision.imaqDrawShapeOnImage(frame, frame, flBar, DrawMode.PAINT_VALUE, shape, 0.0f);
     }
 
     public void disabledInit()
@@ -221,7 +144,7 @@ public class Robot extends IterativeRobot
 
     public void disabledPeriodic()
     {
-        renderImage();
+        dashboard.renderImage();
     }
 
     public void autonomousInit()
@@ -271,7 +194,7 @@ public class Robot extends IterativeRobot
             updateDrive();
         }
 
-         renderImage();
+         dashboard.renderImage();
 
     }
 
