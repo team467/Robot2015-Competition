@@ -27,7 +27,7 @@ public class Drive extends RobotDrive
     // Angle to turn at when rotating in place - initialized in constructor
     // takes the arctan of width over length in radians
     // Length is the wide side
-    private static double turnAngle = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH);
+    private static final double TURN_IN_PLACE_ANGLE = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH);
 
     // Magic number copied from WPI code
     private static final byte SYNC_GROUP = (byte) 0x80;
@@ -179,17 +179,21 @@ public class Drive extends RobotDrive
      * 
      * @param speed
      */
-    public void turnDrive(double speed)
+    public void turnDriveOld(double speed)
     {
-        if (wrapAroundDifference(turnAngle, steering[RobotMap.FRONT_RIGHT].getSteeringAngle()) <= Math.PI / 2)
+        if (wrapAroundDifference(TURN_IN_PLACE_ANGLE, steering[RobotMap.FRONT_RIGHT].getSteeringAngle()) <= Math.PI / 2)
         {
+            // log "turnDriveA"
+            LOGGER.debug("turnDriveA");
             // Front facing angles
-            fourWheelSteer(turnAngle, -turnAngle, -turnAngle, turnAngle);
+            fourWheelSteer(TURN_IN_PLACE_ANGLE, -TURN_IN_PLACE_ANGLE, -TURN_IN_PLACE_ANGLE, TURN_IN_PLACE_ANGLE);
         }
         else
         {
+            // log "turnDriveB"
+            LOGGER.debug("turnDriveB");
             // Rear facing angles
-            fourWheelSteer(turnAngle - Math.PI, -turnAngle + Math.PI, -turnAngle + Math.PI, turnAngle - Math.PI);
+            fourWheelSteer(TURN_IN_PLACE_ANGLE - Math.PI, -TURN_IN_PLACE_ANGLE + Math.PI, -TURN_IN_PLACE_ANGLE + Math.PI, TURN_IN_PLACE_ANGLE - Math.PI);
 
             // Reverse direction
             speed = -speed;
@@ -203,6 +207,26 @@ public class Drive extends RobotDrive
                 true,
                 false
         });
+    }
+    
+    /**
+     * Set angles in "turn in place" position
+     * Wrap around will check whether the closest angle is facing forward or backward
+     * 
+     * Front Left- / \ - Front Right<br>
+     * Back Left - \ / - Back Right
+     * 
+     * @param speed
+     */
+    public void turnDrive(double speed)
+    {
+        WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, TURN_IN_PLACE_ANGLE, speed);
+        WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, -TURN_IN_PLACE_ANGLE, speed);
+        WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, -TURN_IN_PLACE_ANGLE, speed);
+        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);
+        
+        this.fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
+        this.fourWheelDrive(-frontLeft.speed, frontRight.speed, -backLeft.speed, backRight.speed);
     }
 
     private double lastSpeed = 0.0;
