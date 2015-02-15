@@ -19,8 +19,8 @@ public class Claw
     private final double CLOSE_SPEED_SLOW = -OPEN_SPEED_SLOW;
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;
 
-    private final double MAX_CURRENT_GRIP = 2;
-    private final double MAX_CURRENT_UNGRIP = 2;
+    private final double MAX_CURRENT_GRIP = 6;
+    private final double MAX_CURRENT_UNGRIP = 4;
 
     private boolean isClosed = false;
     private boolean isFullyOpen = false;
@@ -82,10 +82,11 @@ public class Claw
         switch (clawDir)
         {
             case CLOSE:
-                LOGGER.debug("CLOSE");
-                isClosed = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                LOGGER.debug("CLOSE");                
                 if (!isClosed)
                 {
+                    isClosed = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                    isFullyOpen = false;
                     clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
                 }
                 else
@@ -95,10 +96,11 @@ public class Claw
                 break;
 
             case OPEN:
-                LOGGER.debug("OPEN");
-                isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                LOGGER.debug("OPEN");                
                 if (!isFullyOpen)
                 {
+                    isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                    isClosed = false;
                     clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
                 }
                 else
