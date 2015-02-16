@@ -3,8 +3,6 @@ package org.usfirst.frc.team467.robot;
 import java.util.Comparator;
 import java.util.Vector;
 
-import org.usfirst.frc.team467.robot.Robot.ParticleReport;
-import org.usfirst.frc.team467.robot.Robot.Scores;
 import org.apache.log4j.Logger;
 
 import com.ni.vision.NIVision;
