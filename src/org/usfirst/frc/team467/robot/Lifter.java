@@ -29,8 +29,8 @@ public class Lifter
     public static final double FAST_SPEED_DOWN = -FAST_SPEED_UP;
 
     // TODO Replace with practical value
-    private static final double MAX_CURRENT_DOWN = 5;
-    private static final double MAX_CURRENT_UP = 20;
+    private static final double MAX_CURRENT_DOWN = 10;
+    private static final double MAX_CURRENT_UP = 10;
 
     /**
      * Gets the singleton instance of the elevator
@@ -95,6 +95,7 @@ public class Lifter
      */
     public void driveLifter(LifterDirection lifterDirection, boolean turbo)
     {
+        LOGGER.debug("LIFT CURRENT: " + board.getLifterCurrent());
         switch (lifterDirection)
         {
             case UP:

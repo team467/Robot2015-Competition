@@ -186,7 +186,7 @@ public class Calibration
     {
         calibrateWheelSelect = Calibration.getWheelDial(calibrateWheelSelect);
         updateSteeringCalibrate(calibrateWheelSelect);
-        LOGGER.info("Calibration Updated, Wheel Int: " + calibrateWheelSelect);
+        LOGGER.info("Calibration Updated, Wheel: " + RobotMap.STEERING_KEYS[calibrateWheelSelect]);
     }
 
 }

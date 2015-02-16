@@ -37,10 +37,10 @@ public class DriverStation2015
     public static int ELEVATOR_DOWN = ButtonPanel2015.JOY_DOWN;
 
     // LED Ids
-    public static int LED_LIFTER_TOP_STOP = 1;
+    public static int LED_LIFTER_TOP_STOP = 5;
     public static int LED_LIFTER_TOP_SLOW = 2;
     public static int LED_LIFTER_BOTTOM_SLOW = 3;
-    public static int LED_LIFTER_BOTTOM_STOP = 5;
+    public static int LED_LIFTER_BOTTOM_STOP = 1;
     public static int LED_CLAW_STOPPED = 4;
 
     /**
