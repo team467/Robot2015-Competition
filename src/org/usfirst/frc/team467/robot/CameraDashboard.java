@@ -95,7 +95,6 @@ public class CameraDashboard extends Thread
 
     private void drawCrossHairs(int viewWidth, int viewHeight)
     {
-<<<<<<< HEAD:src/org/usfirst/frc/team467/robot/CameraDashboard.java
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
         
         NIVision.Rect vert1 = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 2, 80, 5);
@@ -109,16 +108,6 @@ public class CameraDashboard extends Thread
         
         NIVision.imaqDrawShapeOnImage(frame, frame, vert2, DrawMode.PAINT_VALUE, RECT, WHITE);
         NIVision.imaqDrawShapeOnImage(frame, frame, horiz2, DrawMode.PAINT_VALUE, RECT, WHITE);
-=======
-        NIVision.Point vertStart = new Point(viewWidth / 2, viewHeight / 2 - 5);
-        NIVision.Point vertEnd = new Point(viewWidth / 2, viewHeight / 2 + 5);
-
-        NIVision.Point horizStart = new Point(viewWidth / 2 - 5, viewHeight / 2);
-        NIVision.Point horizEnd = new Point(viewWidth / 2 + 5, viewHeight / 2);
-
-        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, vertStart, vertEnd, 0.0f);
-        NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_VALUE, horizStart, horizEnd, 0.0f);
->>>>>>> f72de0829676b6d840b9cd5f8f719e8388a37ae5:src/org/usfirst/frc/team467/robot/Dashboard.java
     }
 
     private void drawAngleMonitors(int viewWidth, int viewHeight)
@@ -132,41 +121,58 @@ public class CameraDashboard extends Thread
         final int bottomMargin = viewHeight - (topMargin + rectHeight);
         final int rightMargin = viewWidth - (leftMargin + rectWidth) - barWidth;
 
-<<<<<<< HEAD:src/org/usfirst/frc/team467/robot/CameraDashboard.java
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
         
-=======
-        ShapeMode shape = ShapeMode.SHAPE_RECT;
->>>>>>> f72de0829676b6d840b9cd5f8f719e8388a37ae5:src/org/usfirst/frc/team467/robot/Dashboard.java
         NIVision.Rect flRect = new NIVision.Rect(topMargin, leftMargin, rectHeight, rectWidth);
+        NIVision.Rect flRect2 = new NIVision.Rect(topMargin-1, leftMargin-1, rectHeight+2, rectWidth+2);
+        
         NIVision.Rect frRect = new NIVision.Rect(topMargin, rightMargin, rectHeight, rectWidth);
+        NIVision.Rect frRect2 = new NIVision.Rect(topMargin-1, rightMargin-1, rectHeight+2, rectWidth+2);
+        
         NIVision.Rect blRect = new NIVision.Rect(bottomMargin, leftMargin, rectHeight, rectWidth);
+        NIVision.Rect blRect2 = new NIVision.Rect(bottomMargin-1, leftMargin-1, rectHeight+2, rectWidth+2);
+        
         NIVision.Rect brRect = new NIVision.Rect(bottomMargin, rightMargin, rectHeight, rectWidth);
+        NIVision.Rect brRect2 = new NIVision.Rect(bottomMargin-1, rightMargin-1, rectHeight+2, rectWidth+2);
+        
+        NIVision.imaqDrawShapeOnImage(frame, frame, flRect, DrawMode.DRAW_VALUE, RECT, WHITE);
+        NIVision.imaqDrawShapeOnImage(frame, frame, flRect2, DrawMode.DRAW_VALUE, RECT, BLACK);
+        
+        NIVision.imaqDrawShapeOnImage(frame, frame, frRect, DrawMode.DRAW_VALUE, RECT, WHITE);
+        NIVision.imaqDrawShapeOnImage(frame, frame, frRect2, DrawMode.DRAW_VALUE, RECT, BLACK);
+        
+        NIVision.imaqDrawShapeOnImage(frame, frame, blRect, DrawMode.DRAW_VALUE, RECT, WHITE);
+        NIVision.imaqDrawShapeOnImage(frame, frame, blRect2, DrawMode.DRAW_VALUE, RECT, BLACK);
 
-        NIVision.imaqDrawShapeOnImage(frame, frame, flRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, frRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, blRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, brRect, DrawMode.DRAW_VALUE, shape, 0.0f);
-
+        NIVision.imaqDrawShapeOnImage(frame, frame, brRect, DrawMode.DRAW_VALUE, RECT, WHITE);
+        NIVision.imaqDrawShapeOnImage(frame, frame, brRect2, DrawMode.DRAW_VALUE, RECT, BLACK);
+        
         double flSteeringAngle = flSteering.getSteeringAngle();
         double frSteeringAngle = frSteering.getSteeringAngle();
         double blSteeringAngle = blSteering.getSteeringAngle();
         double brSteeringAngle = brSteering.getSteeringAngle();
+
         // Full Rotation * Max turns in 2 directions
         int flSteeringPosition = (int) (flSteeringAngle * (100 / ((2 * Math.PI) * (maxTurns * 2))) + 50);
         int frSteeringPosition = (int) (frSteeringAngle * (100 / ((2 * Math.PI) * (maxTurns * 2))) + 50);
         int blSteeringPosition = (int) (blSteeringAngle * (100 / ((2 * Math.PI) * (maxTurns * 2))) + 50);
         int brSteeringPosition = (int) (brSteeringAngle * (100 / ((2 * Math.PI) * (maxTurns * 2))) + 50);
 
+        float flColor = (Math.abs(flSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED;
+        float frColor = (Math.abs(frSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED; 
+        float blColor = (Math.abs(blSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED; 
+        float brColor = (Math.abs(brSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED; 
+
+        
         NIVision.Rect flBar = new NIVision.Rect(topMargin, leftMargin + flSteeringPosition, rectHeight, barWidth);
         NIVision.Rect frBar = new NIVision.Rect(topMargin, rightMargin + frSteeringPosition, rectHeight, barWidth);
         NIVision.Rect blBar = new NIVision.Rect(bottomMargin, leftMargin + blSteeringPosition, rectHeight, barWidth);
         NIVision.Rect brBar = new NIVision.Rect(bottomMargin, rightMargin + brSteeringPosition, rectHeight, barWidth);
 
-        NIVision.imaqDrawShapeOnImage(frame, frame, flBar, DrawMode.PAINT_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, frBar, DrawMode.PAINT_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, blBar, DrawMode.PAINT_VALUE, shape, 0.0f);
-        NIVision.imaqDrawShapeOnImage(frame, frame, brBar, DrawMode.PAINT_VALUE, shape, 0.0f);
+        NIVision.imaqDrawShapeOnImage(frame, frame, flBar, DrawMode.PAINT_VALUE, RECT, flColor);
+        NIVision.imaqDrawShapeOnImage(frame, frame, frBar, DrawMode.PAINT_VALUE, RECT, frColor);
+        NIVision.imaqDrawShapeOnImage(frame, frame, blBar, DrawMode.PAINT_VALUE, RECT, blColor);
+        NIVision.imaqDrawShapeOnImage(frame, frame, brBar, DrawMode.PAINT_VALUE, RECT, brColor);
     }
 
     @Override
@@ -178,7 +184,7 @@ public class CameraDashboard extends Thread
         while (true)
         {
             long startTime = System.currentTimeMillis();
-            LOGGER.debug("deltaTime=" + (startTime - lastTimeStamp));
+            LOGGER.debug("delta=" + (startTime - lastTimeStamp));
             
             lastTimeStamp = startTime;
 
