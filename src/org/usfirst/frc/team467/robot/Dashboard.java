@@ -128,7 +128,7 @@ public class Dashboard
         double frSteeringAngle = frSteering.getSteeringAngle();
         double blSteeringAngle = blSteering.getSteeringAngle();
         double brSteeringAngle = brSteering.getSteeringAngle();
-                                                        // 2PI = Full Rotation * Max turns in 2 directions 
+                                                              // Full Rotation * Max turns in 2 directions 
         int flSteeringPosition = (int)(flSteeringAngle * (100 / ((2 * Math.PI) * (Steering.MAX_TURNS * 2))) + 50);
         int frSteeringPosition = (int)(frSteeringAngle * (100 / ((2 * Math.PI) * (Steering.MAX_TURNS * 2))) + 50);
         int blSteeringPosition = (int)(blSteeringAngle * (100 / ((2 * Math.PI) * (Steering.MAX_TURNS * 2))) + 50);
