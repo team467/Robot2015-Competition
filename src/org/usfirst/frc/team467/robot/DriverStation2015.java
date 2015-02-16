@@ -10,8 +10,6 @@ public class DriverStation2015
     Joystick467 driverJoy = null;
     ButtonPanel2015 buttonPanel = null;
 
-    Lifter lifter = null;
-
     // CAL/AUTO
     public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
 
@@ -64,7 +62,6 @@ public class DriverStation2015
     {
         driverJoy = new Joystick467(0);
         buttonPanel = new ButtonPanel2015(1);
-        lifter = Lifter.getInstance();
     }
 
     /**
@@ -74,22 +71,6 @@ public class DriverStation2015
     {
         driverJoy.readInputs();
         buttonPanel.readInputs();
-    }
-
-    /**
-     * Updates the states of the LEDs
-     */
-    public void updateLEDs()
-    {
-        LifterZoneTypes zone = lifter.getLiftZone();
-        if (zone == LifterZoneTypes.SLOW_ZONE_TOP)
-            buttonPanel.setLED(LED_LIFTER_TOP_SLOW, true);
-        else if (zone == LifterZoneTypes.SLOW_ZONE_BOTTOM)
-            buttonPanel.setLED(LED_LIFTER_BOTTOM_SLOW, true);
-        else if (zone == LifterZoneTypes.STOP_ZONE_BOTTOM)
-            buttonPanel.setLED(LED_LIFTER_BOTTOM_STOP, true);
-        else if (zone == LifterZoneTypes.STOP_ZONE_TOP)
-            buttonPanel.setLED(LED_LIFTER_TOP_STOP, true);
         buttonPanel.updateLEDs();
     }
 
@@ -381,8 +362,18 @@ public class DriverStation2015
     public void setClawLED(boolean state)
     {
         System.out.println("SETTING LED_CLAW to " + state);
-        buttonPanel.setLED(LED_CLAW_STOPPED, state);
-        buttonPanel.updateLEDs();
+        buttonPanel.setLED(LED_CLAW_STOPPED, state);        
+    }
+    
+    /**
+     * Sets the state of the claw LED
+     * 
+     * @param state
+     */
+    public void setLifterLED(int led, boolean state)
+    {
+        System.out.println("SETTING LED "+ led + " to " + state);
+        buttonPanel.setLED(led, state);        
     }
 
 }
