@@ -11,8 +11,8 @@ public class Claw
     private static Claw claw = null;
 
     private Talon clawMotor = null;
-
     PowerDistroBoard467 board = null;
+    DriverStation2015 driverstation= null;
 
     private final double OPEN_SPEED_SLOW = -0.4;
     private final double OPEN_SPEED_FAST = -0.8;
@@ -20,7 +20,7 @@ public class Claw
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;
 
     private final double MAX_CURRENT_GRIP = 6;
-    private final double MAX_CURRENT_UNGRIP = 4;
+    private final double MAX_CURRENT_UNGRIP = 6;
 
     private boolean isClosed = false;
     private boolean isFullyOpen = false;
@@ -47,6 +47,7 @@ public class Claw
         clawMotor = new Talon(RobotMap.CLAW_MOTOR_CHANNEL);
 
         board = PowerDistroBoard467.getInstance();
+        driverstation = DriverStation2015.getInstance();
     }
 
     /**
@@ -82,7 +83,8 @@ public class Claw
         switch (clawDir)
         {
             case CLOSE:
-                LOGGER.debug("CLOSE");                
+                LOGGER.debug("CLOSE");
+                driverstation.setClawLED(isClosed);
                 if (!isClosed)
                 {
                     isClosed = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
@@ -90,13 +92,14 @@ public class Claw
                     clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
                 }
                 else
-                {
+                {                    
                     clawMotor.set(0);
                 }
                 break;
 
             case OPEN:
-                LOGGER.debug("OPEN");                
+                LOGGER.debug("OPEN");
+                driverstation.setClawLED(isFullyOpen);
                 if (!isFullyOpen)
                 {
                     isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
@@ -111,6 +114,7 @@ public class Claw
 
             case STOP:
                 clawMotor.set(0);
+                driverstation.setClawLED(isClosed || isFullyOpen);
                 break;
         }
     }

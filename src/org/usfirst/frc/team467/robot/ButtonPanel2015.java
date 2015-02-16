@@ -92,7 +92,7 @@ public class ButtonPanel2015
      */
     public boolean isButtonDown(int button)
     {
-        return buttons[button];
+        return buttonPanel.getRawButton(button);
     }
 
     /**
