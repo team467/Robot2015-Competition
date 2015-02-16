@@ -1,23 +1,23 @@
 package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
-import org.usfirst.frc.team467.robot.Robot.Scores;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ParticleFilterCriteria2;
-import com.ni.vision.NIVision.ParticleFilterOptions2;
-import com.ni.vision.NIVision.Point;
-import com.ni.vision.NIVision.Range;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
 
-public class Dashboard
+public class CameraDashboard extends Thread
 {
-    private static final Logger LOGGER = Logger.getLogger(Dashboard.class);
-    static Dashboard instance;
+    private static final Logger LOGGER = Logger.getLogger(CameraDashboard.class);
+    
+    final float BLACK = 0;
+    final float RED = 255;
+    final float WHITE = 255*256*256 + 255*256 + 255;
+
+    static CameraDashboard instance;
     Steering flSteering;
     Steering frSteering;
     Steering blSteering;
@@ -25,12 +25,14 @@ public class Dashboard
     final double maxTurns = Steering.getMaxTurns();
 
     private boolean cameraExists = true;
-
+    
+    private long lastTimeStamp = System.currentTimeMillis();
+    
     Image frame;
     CameraServer cameraServer;
     int session;
 
-    private Dashboard()
+    private CameraDashboard()
     {
         Drive drive = Drive.getInstance();
         flSteering = drive.steering[RobotMap.FRONT_LEFT];
@@ -41,11 +43,11 @@ public class Dashboard
         initCamera();
     }
 
-    public static Dashboard getInstance()
+    public static CameraDashboard getInstance()
     {
         if (instance == null)
         {
-            instance = new Dashboard();
+            instance = new CameraDashboard();
         }
         return instance;
     }
@@ -78,26 +80,22 @@ public class Dashboard
 
     public void renderImage()
     {
-        if (cameraExists)
-        {
-            int viewWidth = 640;
-            int viewHeight = 480;
+        LOGGER.debug("Rendering image");
 
-            NIVision.IMAQdxGrab(session, frame, 1);
+        int viewWidth = 640;
+        int viewHeight = 480;
 
-            drawCrossHairs(viewWidth, viewHeight);
-            drawAngleMonitors(viewWidth, viewHeight);
+        NIVision.IMAQdxGrab(session, frame, 1);
 
-            cameraServer.setImage(frame);
-        }
+        drawCrossHairs(viewWidth, viewHeight);
+        drawAngleMonitors(viewWidth, viewHeight);
+
+        cameraServer.setImage(frame);
     }
 
     private void drawCrossHairs(int viewWidth, int viewHeight)
     {
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
-        final float BLACK = 0;
-        final float RED = 255;
-        final float WHITE = 255*256*256 + 255*256 + 255;
         
         NIVision.Rect vert1 = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 2, 80, 5);
         NIVision.Rect vert2 = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 1, 80, 3);
@@ -124,9 +122,6 @@ public class Dashboard
         final int rightMargin = viewWidth - (leftMargin + rectWidth) - barWidth;
 
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
-        final float BLACK = 0;
-        final float RED = 255;
-        final float WHITE = 255*256*256 + 255*256 + 255;
         
         NIVision.Rect flRect = new NIVision.Rect(topMargin, leftMargin, rectHeight, rectWidth);
         NIVision.Rect flRect2 = new NIVision.Rect(topMargin-1, leftMargin-1, rectHeight+2, rectWidth+2);
@@ -178,5 +173,42 @@ public class Dashboard
         NIVision.imaqDrawShapeOnImage(frame, frame, frBar, DrawMode.PAINT_VALUE, RECT, frColor);
         NIVision.imaqDrawShapeOnImage(frame, frame, blBar, DrawMode.PAINT_VALUE, RECT, blColor);
         NIVision.imaqDrawShapeOnImage(frame, frame, brBar, DrawMode.PAINT_VALUE, RECT, brColor);
+    }
+
+    @Override
+    public void run()
+    {
+        final double UPDATE_FREQ = 5; // Updates per second
+        final long period = (long) (1000 / UPDATE_FREQ); // Update period in milliseconds
+        
+        while (true)
+        {
+            long startTime = System.currentTimeMillis();
+            LOGGER.debug("deltaTime=" + (startTime - lastTimeStamp));
+            
+            lastTimeStamp = startTime;
+
+            // Do the actual work.
+            if (cameraExists)
+            {
+                renderImage();
+            }
+
+            // Sleep until next scheduled render time.
+            long endTime = System.currentTimeMillis();
+            long deltaTime = endTime - startTime;
+            try
+            {
+                // only sample camera at a fixed interval
+                long sleepTime = (long)period - deltaTime;
+                if (sleepTime > 0) {
+                    Thread.sleep(sleepTime);
+                }
+            }
+            catch (InterruptedException e)
+            {
+                LOGGER.error(e.getMessage());
+            }
+        }
     }
 }
