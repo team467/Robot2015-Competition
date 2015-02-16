@@ -373,9 +373,9 @@ public class DriverStation2015
         return buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON);
     }
 
-    
     /**
      * Sets the state of the claw LED
+     * 
      * @param state
      */
     public void setClawLED(boolean state)
@@ -384,7 +384,5 @@ public class DriverStation2015
         buttonPanel.setLED(LED_CLAW_STOPPED, state);
         buttonPanel.updateLEDs();
     }
-    
-    
 
 }

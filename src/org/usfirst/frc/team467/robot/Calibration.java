@@ -40,15 +40,15 @@ public class Calibration
     public static void updateSteeringCalibrate(int motorId)
     {
         LOGGER.debug("Calibrating");
-        
-        //not a valid wheel ID
-        if(motorId < 0)
+
+        // not a valid wheel ID
+        if (motorId < 0)
         {
             LOGGER.debug("No Drive");
             drive.noDrive();
             return;
         }
-        
+
         calibrationAngle = getCalibrationAngle(calibrationAngle);
 
         if (calibrationAngle > Math.PI)
@@ -59,7 +59,7 @@ public class Calibration
         {
             calibrationAngle += 2.0 * Math.PI;
         }
-        
+
         LOGGER.debug("ANGLE: " + calibrationAngle);
 
         // Drive specified steering motor with no speed to allow only steering
@@ -85,12 +85,13 @@ public class Calibration
 
     /**
      * Gets the turn wheel for calibrate from the dial.
+     * 
      * @return
      */
     public static int getWheelDial(int prevSelectedWheel)
     {
         DriverStation2015 driverstation = DriverStation2015.getInstance();
-        if(driverstation.getCalibrate())
+        if (driverstation.getCalibrate())
         {
             return driverstation.getCalibrateWheel();
         }
@@ -99,7 +100,7 @@ public class Calibration
             return prevSelectedWheel;
         }
     }
-    
+
     /**
      * Gets the wheel selected by the stick.
      * 
@@ -183,7 +184,7 @@ public class Calibration
      */
     public static void updateCalibrate()
     {
-        calibrateWheelSelect = Calibration.getWheelDial(calibrateWheelSelect);        
+        calibrateWheelSelect = Calibration.getWheelDial(calibrateWheelSelect);
         updateSteeringCalibrate(calibrateWheelSelect);
         LOGGER.info("Calibration Updated, Wheel Int: " + calibrateWheelSelect);
     }

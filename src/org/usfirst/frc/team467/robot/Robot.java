@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot
     private DriverStation2015 driverstation;
 
     private Drive drive;
-    
+
     private Dashboard dashboard;
     private Lifter lifter;
     private Claw claw;
@@ -179,7 +179,7 @@ public class Robot extends IterativeRobot
 
     public void teleopInit()
     {
-        
+
     }
 
     public void testInit()
@@ -298,13 +298,13 @@ public class Robot extends IterativeRobot
                 break;
         }
     }
-    
+
     /**
      * Called from teleopPeriodic to drive the lifter and claw.
      */
     private void updateNavigator()
-    {        
-        lifter.driveLifter(driverstation.getLiftDirection(), driverstation.getMoveTurbo());       
-        claw.moveClawNew(driverstation.getClawDirection(), driverstation.getMoveTurbo());        
+    {
+        lifter.driveLifter(driverstation.getLiftDirection(), driverstation.getMoveTurbo());
+        claw.moveClawNew(driverstation.getClawDirection(), driverstation.getMoveTurbo());
     }
 }
