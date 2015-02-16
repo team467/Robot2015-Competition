@@ -220,7 +220,7 @@ public class Robot extends IterativeRobot
             updateNavigator();
         }
 
-         dashboard.renderImage();
+        dashboard.renderImage();
 
     }
 
@@ -273,7 +273,7 @@ public class Robot extends IterativeRobot
             case CRAB_NO_FA:
                 if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
                 {
-                    // If in joystick deadzone, don't steer, leave wheel at current angle.                                     
+                    // If in joystick deadzone, don't steer, leave wheel at current angle.
                     drive.noDrive();
                 }
                 else
