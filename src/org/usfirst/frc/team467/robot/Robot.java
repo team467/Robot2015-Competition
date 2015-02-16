@@ -242,7 +242,7 @@ public class Robot extends IterativeRobot
             case REVOLVE:
             {
                 Direction direction = Direction.LEFT;
-                if (driverstation.getDriveJoystick().buttonDown(6))
+                if (driverstation.getDriveJoystick().buttonDown(4))
                 {
                     direction = Direction.RIGHT;
                 }
@@ -253,7 +253,7 @@ public class Robot extends IterativeRobot
             case STRAFE:
             {
                 Direction direction = Direction.LEFT;
-                if (driverstation.getDriveJoystick().getPOV() < 180)
+                if (driverstation.getDriveJoystick().buttonDown(6))
                 {
                     direction = Direction.RIGHT;
                 }
