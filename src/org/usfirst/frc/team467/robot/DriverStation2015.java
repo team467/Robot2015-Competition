@@ -1,5 +1,7 @@
 package org.usfirst.frc.team467.robot;
 
+import com.sun.media.jfxmedia.logging.Logger;
+
 public class DriverStation2015
 {
 
@@ -11,15 +13,15 @@ public class DriverStation2015
     Lifter lifter = null;
 
     // CAL/AUTO
-    public static int AUTO_CAL_BUTTON = ButtonPanel2015.COVERED_SWITCH;
+    public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
 
     // KNOB - CAL
     public static int CAL_STD_DRIVE_1 = ButtonPanel2015.DIAL_POS_1;
     public static int CAL_STD_DRIVE_2 = ButtonPanel2015.DIAL_POS_2;
-    public static int CAL_FL = ButtonPanel2015.DIAL_POS_3;
-    public static int CAL_FR = ButtonPanel2015.DIAL_POS_4;
-    public static int CAL_BL = ButtonPanel2015.DIAL_POS_5;
-    public static int CAL_BR = ButtonPanel2015.DIAL_POS_6;
+    public static int CAL_FL = ButtonPanel2015.DIAL_POS_2;
+    public static int CAL_FR = ButtonPanel2015.DIAL_POS_5;
+    public static int CAL_BL = ButtonPanel2015.DIAL_POS_4;
+    public static int CAL_BR = ButtonPanel2015.DIAL_POS_3;
 
     // KNOB - AUTO
     public static int AUTO_DRIVE_ONLY = ButtonPanel2015.DIAL_POS_1;
@@ -40,7 +42,8 @@ public class DriverStation2015
     public static int LED_LIFTER_TOP_STOP = 1;
     public static int LED_LIFTER_TOP_SLOW = 2;
     public static int LED_LIFTER_BOTTOM_SLOW = 3;
-    public static int LED_LIFTER_BOTTOM_STOP = 4;
+    public static int LED_LIFTER_BOTTOM_STOP = 5;
+    public static int LED_CLAW_STOPPED = 4;
 
     /**
      * Singleton instance of the object.
@@ -145,7 +148,7 @@ public class DriverStation2015
      */
     public boolean isAutonomousMode()
     {
-        return buttonPanel.isButtonDown(AUTO_CAL_BUTTON);
+        return buttonPanel.isButtonDown(AUTO_CAL_SWITCH);
     }
 
     /**
@@ -193,7 +196,7 @@ public class DriverStation2015
      */
     public int getCalibrateWheel()
     {
-        if (isCalibrateMode())
+        if (DriverStation2015.getInstance().getCalibrate())
         {
             if (buttonPanel.isButtonDown(CAL_BL))
                 return RobotMap.BACK_LEFT;
@@ -298,7 +301,7 @@ public class DriverStation2015
      */
     public boolean getCalibrate()
     {
-        return getCalibrationJoystick().getFlap();
+        return buttonPanel.isButtonDown(AUTO_CAL_SWITCH);
     }
 
     /**
@@ -370,5 +373,19 @@ public class DriverStation2015
     {
         return buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON);
     }
+
+    
+    /**
+     * Sets the state of the claw LED
+     * @param state
+     */
+    public void setClawLED(boolean state)
+    {
+        System.out.println("SETTING LED_CLAW to " + state);
+        buttonPanel.setLED(LED_CLAW_STOPPED, state);
+        buttonPanel.updateLEDs();
+    }
+    
+    
 
 }

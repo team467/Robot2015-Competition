@@ -23,7 +23,7 @@ public class Lifter
     private PowerDistroBoard467 board = null;
 
     public static final double SLOW_SPEED_UP = -0.4;
-    public static final double FAST_SPEED_UP = -0.8;
+    public static final double FAST_SPEED_UP = -1.0;
 
     public static final double SLOW_SPEED_DOWN = -SLOW_SPEED_UP;
     public static final double FAST_SPEED_DOWN = -FAST_SPEED_UP;
@@ -48,7 +48,7 @@ public class Lifter
      */
     private Lifter()
     {
-//        lifterMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
+        lifterMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
 //        topStop = new DigitalInput(RobotMap.SWITCH_UP_STOP);
 //        topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);
 //        bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);

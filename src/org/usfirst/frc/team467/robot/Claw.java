@@ -11,16 +11,16 @@ public class Claw
     private static Claw claw = null;
 
     private Talon clawMotor = null;
-
     PowerDistroBoard467 board = null;
+    DriverStation2015 driverstation= null;
 
     private final double OPEN_SPEED_SLOW = -0.4;
     private final double OPEN_SPEED_FAST = -0.8;
     private final double CLOSE_SPEED_SLOW = -OPEN_SPEED_SLOW;
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;
 
-    private final double MAX_CURRENT_GRIP = 2;
-    private final double MAX_CURRENT_UNGRIP = 2;
+    private final double MAX_CURRENT_GRIP = 6;
+    private final double MAX_CURRENT_UNGRIP = 6;
 
     private boolean isClosed = false;
     private boolean isFullyOpen = false;
@@ -47,6 +47,7 @@ public class Claw
         clawMotor = new Talon(RobotMap.CLAW_MOTOR_CHANNEL);
 
         board = PowerDistroBoard467.getInstance();
+        driverstation = DriverStation2015.getInstance();
     }
 
     /**
@@ -83,22 +84,26 @@ public class Claw
         {
             case CLOSE:
                 LOGGER.debug("CLOSE");
-                isClosed = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                driverstation.setClawLED(isClosed);
                 if (!isClosed)
                 {
+                    isClosed = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                    isFullyOpen = false;
                     clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
                 }
                 else
-                {
+                {                    
                     clawMotor.set(0);
                 }
                 break;
 
             case OPEN:
                 LOGGER.debug("OPEN");
-                isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                driverstation.setClawLED(isFullyOpen);
                 if (!isFullyOpen)
                 {
+                    isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                    isClosed = false;
                     clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
                 }
                 else
@@ -109,6 +114,7 @@ public class Claw
 
             case STOP:
                 clawMotor.set(0);
+                driverstation.setClawLED(isClosed || isFullyOpen);
                 break;
         }
     }
