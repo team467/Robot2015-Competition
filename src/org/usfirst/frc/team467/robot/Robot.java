@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot
     private DriverStation2015 driverstation;
 
     private Drive drive;
-    
+
     private Dashboard dashboard;
     private Lifter lifter;
     private Claw claw;
@@ -179,7 +179,7 @@ public class Robot extends IterativeRobot
 
     public void teleopInit()
     {
-        
+
     }
 
     public void testInit()
@@ -220,7 +220,7 @@ public class Robot extends IterativeRobot
             updateNavigator();
         }
 
-         dashboard.renderImage();
+        dashboard.renderImage();
 
     }
 
@@ -273,7 +273,7 @@ public class Robot extends IterativeRobot
             case CRAB_NO_FA:
                 if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
                 {
-                    // If in joystick deadzone, don't steer, leave wheel at current angle.                                     
+                    // If in joystick deadzone, don't steer, leave wheel at current angle.
                     drive.noDrive();
                 }
                 else
@@ -298,13 +298,13 @@ public class Robot extends IterativeRobot
                 break;
         }
     }
-    
+
     /**
      * Called from teleopPeriodic to drive the lifter and claw.
      */
     private void updateNavigator()
-    {        
-        lifter.basicDriveLifter(driverstation.getLiftDirection(), driverstation.getMoveTurbo());       
-        claw.basicMoveClaw(driverstation.getClawDirection(), driverstation.getMoveTurbo());        
+    {
+        lifter.basicDriveLifter(driverstation.getLiftDirection(), driverstation.getMoveTurbo());
+        claw.basicMoveClaw(driverstation.getClawDirection(), driverstation.getMoveTurbo());
     }
 }

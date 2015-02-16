@@ -169,7 +169,7 @@ public class Drive extends RobotDrive
         steering[RobotMap.BACK_LEFT].setAngle(backLeft);
         steering[RobotMap.BACK_RIGHT].setAngle(backRight);
     }
-    
+
     /**
      * Set angles in "turn in place" position
      * Wrap around will check whether the closest angle is facing forward or backward
@@ -185,7 +185,7 @@ public class Drive extends RobotDrive
         WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, -TURN_IN_PLACE_ANGLE, speed);
         WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, -TURN_IN_PLACE_ANGLE, -speed);
         WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);
-        
+
         this.fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
         this.fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backRight.speed);
     }
@@ -275,20 +275,20 @@ public class Drive extends RobotDrive
 
         this.drive(limitSpeed(speed), null);
     }
-    
+
     /**
      * Does not drive drive motors and keeps steering angle at previous position.
      */
     public void noDrive()
     {
-        this.fourWheelDrive(0, 0, 0, 0);//no drive for you!
-        
-        //maintain current angles
+        this.fourWheelDrive(0, 0, 0, 0);// no drive for you!
+
+        // maintain current angles
         this.steering[RobotMap.BACK_LEFT].setAngle(steering[RobotMap.BACK_LEFT].getSteeringAngle());
         this.steering[RobotMap.BACK_RIGHT].setAngle(steering[RobotMap.BACK_RIGHT].getSteeringAngle());
         this.steering[RobotMap.FRONT_LEFT].setAngle(steering[RobotMap.FRONT_LEFT].getSteeringAngle());
         this.steering[RobotMap.FRONT_RIGHT].setAngle(steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
-        
+
     }
 
     /**
@@ -397,7 +397,7 @@ public class Drive extends RobotDrive
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
 
-        double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);        
+        double normalizedSteeringAngle = steering[steeringIndex].getSteeringAngle() % (Math.PI * 2);
         if (wrapAroundDifference(normalizedSteeringAngle, targetAngle) > Math.PI / 2)
         {
             // shortest path to desired angle is to reverse speed and adjust angle -PI

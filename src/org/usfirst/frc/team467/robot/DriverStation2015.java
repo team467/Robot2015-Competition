@@ -221,7 +221,6 @@ public class DriverStation2015
     {
         buttonPanel.printPressedButtons();
     }
-    
 
     /**
      * Gets joystick instance used by driver.
@@ -232,7 +231,7 @@ public class DriverStation2015
     {
         return driverJoy;
     }
-    
+
     /**
      * Get joystick instance used for calibration.
      *
@@ -319,18 +318,19 @@ public class DriverStation2015
     {
         return getCalibrationJoystick().buttonDown(4);
     }
-    
+
     /**
      * Direction to drive the claw.
+     * 
      * @return
      */
     public ClawMoveDirection getClawDirection()
     {
-        if(buttonPanel.isButtonDown(CLAW_OPEN))
+        if (buttonPanel.isButtonDown(CLAW_OPEN))
         {
             return ClawMoveDirection.OPEN;
         }
-        else if(buttonPanel.isButtonDown(CLAW_CLOSED))
+        else if (buttonPanel.isButtonDown(CLAW_CLOSED))
         {
             return ClawMoveDirection.CLOSE;
         }
@@ -339,18 +339,19 @@ public class DriverStation2015
             return ClawMoveDirection.STOP;
         }
     }
-    
+
     /**
      * Gets the lifter direction for lifting.
+     * 
      * @return
      */
     public LifterDirection getLiftDirection()
     {
-        if(buttonPanel.isButtonDown(ELEVATOR_DOWN))
+        if (buttonPanel.isButtonDown(ELEVATOR_DOWN))
         {
             return LifterDirection.DOWN;
         }
-        else if(buttonPanel.isButtonDown(ELEVATOR_UP))
+        else if (buttonPanel.isButtonDown(ELEVATOR_UP))
         {
             return LifterDirection.UP;
         }
@@ -359,18 +360,15 @@ public class DriverStation2015
             return LifterDirection.STOP;
         }
     }
-    
+
     /**
      * Checks to see if turbo from the nav is pressed.
+     * 
      * @return
      */
     public boolean getMoveTurbo()
     {
         return buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON);
     }
-    
-    
 
 }
-
-
