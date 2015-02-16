@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.usfirst.frc.team467.robot.Autonomous.AutoType;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
@@ -22,10 +23,8 @@ import com.ni.vision.NIVision.ShapeMode;
 import edu.wpi.first.wpilibj.CameraServer;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Talon;
 
@@ -46,6 +45,7 @@ public class Robot extends IterativeRobot
     private DriverStation2015 driverstation;
 
     private Drive drive;
+    private Autonomous autonomous;
 
     private Dashboard dashboard;
     private Lifter lifter;
@@ -139,6 +139,7 @@ public class Robot extends IterativeRobot
 
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
+        autonomous = Autonomous.getInstance();
 
         drive = Drive.getInstance();
         dashboard = Dashboard.getInstance();
@@ -174,7 +175,7 @@ public class Robot extends IterativeRobot
 
     public void autonomousInit()
     {
-
+        autonomous.initAutonomous();
     }
 
     public void teleopInit()
@@ -193,6 +194,7 @@ public class Robot extends IterativeRobot
     public void autonomousPeriodic()
     {
         LOGGER.debug("Autonomous");
+        autonomous.updateAutonomousPeriodic();
     }
 
     // read file in from disk. For this example to run you need to copy

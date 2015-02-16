@@ -9,7 +9,7 @@ public class Autonomous
     private Claw claw = null;
     private Lifter lifter = null;
 
-    private Type autonomousType = Type.DRIVE_ONLY;
+    private AutoType autonomousType = AutoType.DRIVE_ONLY;
 
     long autonomousStartTime = -999999;
 
@@ -41,7 +41,7 @@ public class Autonomous
      * 
      * @param autoType
      */
-    public void setAutoType(Type autoType)
+    public void setAutoType(AutoType autoType)
     {
         this.autonomousType = autoType;
     }
@@ -98,32 +98,31 @@ public class Autonomous
 
     long gripTimeElapsed = 0;
     long driveTimeOneElapsed = 0;
-    
-    
-    private void test(long timeSinceStart)
+
+    public void test(long timeSinceStart)
     {
-    if (timeSinceStart < 1000)
-    {
-        drive.crabDrive(0, 0.5, false);
+        if (timeSinceStart < 1000)
+        {
+            drive.crabDrive(0, 0.5, false);
+        }
+        else if (timeSinceStart < 2000)
+        {
+            drive.crabDrive(Math.PI/2, 0.5, false);
+        }
+        else if (timeSinceStart < 3000)
+        {
+            drive.crabDrive(Math.PI, 0.5, false);
+        }
+        else if (timeSinceStart < 4000)
+        {
+            drive.crabDrive(-Math.PI/2, 0.5, false);
+        }
+        else
+        {
+            drive.crabDrive(0, 0, false);
+        }
     }
-    else if (timeSinceStart < 2000)
-    {
-        drive.crabDrive(1.57079633, 0.5, false);
-    }
-    else if (timeSinceStart < 3000)
-    {
-        drive.crabDrive(3.14159265, 0.5, false);
-    }
-    else if (timeSinceStart < 4000)
-    {
-        drive.crabDrive(12.5663706, 0.5, false);
-    }
-    else if (timeSinceStart > 4000)
-    {
-        drive.crabDrive(0, 0,false);
-    }
-    }
-    
+
     private void grabItem(long timeSinceStart)
     {
         // Start behind an item (container or tote), and pick it up
@@ -210,7 +209,7 @@ public class Autonomous
      * @author kyle
      *
      */
-    enum Type
+    enum AutoType
     {
         TEST, DRIVE_ONLY, GRAB_ITEM, PUSH_TOTE, GRAB_CONTAINER_PUSH_TOTE, GRAB_BOTH
     }

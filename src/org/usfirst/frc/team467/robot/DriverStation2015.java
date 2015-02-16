@@ -1,5 +1,7 @@
 package org.usfirst.frc.team467.robot;
 
+import org.usfirst.frc.team467.robot.Autonomous.AutoType;
+
 import com.sun.media.jfxmedia.logging.Logger;
 
 public class DriverStation2015
