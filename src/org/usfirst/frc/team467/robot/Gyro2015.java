@@ -9,17 +9,33 @@ import edu.wpi.first.wpilibj.SerialPort;
  */
 public class Gyro2015
 {
-//    private final Gyro gyro;
+    private static Gyro2015 gyro2015 = null;
+
     private double trustedAngle = 0.0;
     private double currentAngle = 0.0;
     private double prevAngle = 0.0;
     private double deltaAngle = 0.0;
     private long prevTime = 0;
     private double deltaTime = 0.0;
+    
+    private double resetSubtractAngle = 0;
 
     private final int BAUD_RATE = 57600;
 
     private SerialPort sp = null;
+
+    /**
+     * Singleton instance of the Gyro
+     * @return
+     */
+    public static Gyro2015 getInstance()
+    {
+        if (gyro2015 == null)
+        {
+            gyro2015 = new Gyro2015(0);
+        }
+        return gyro2015;
+    }
 
     /**
      * 2015 Analog Gyro with filtering.
@@ -27,12 +43,13 @@ public class Gyro2015
      * @param port
      *            : Analog port gyro is connected to
      */
-    public Gyro2015(int port)
+    private Gyro2015(int port)
     {
         sp = new SerialPort(BAUD_RATE, SerialPort.Port.kUSB);
 
         prevTime = System.currentTimeMillis();
         prevAngle = getSerialPortAngle();
+        resetSubtractAngle = 0;
     }
 
     private double getSerialPortAngle()
@@ -57,7 +74,7 @@ public class Gyro2015
 
     private void update()
     {
-        currentAngle = getSerialPortAngle();
+        currentAngle = getSerialPortAngle() - resetSubtractAngle;
         deltaAngle = currentAngle - prevAngle;
         prevAngle = currentAngle;
 
@@ -69,6 +86,15 @@ public class Gyro2015
     public double getAngle()
     {
         return trustedAngle;
+    }
+    
+    /**
+     * Resets the angle of the gyro to 0.
+     */
+    public void reset()
+    {
+        resetSubtractAngle = currentAngle;
+        prevAngle = currentAngle;
     }
 
     /**

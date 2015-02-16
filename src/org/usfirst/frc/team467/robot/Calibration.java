@@ -178,7 +178,7 @@ public class Calibration
 
     // This is a static variable to define the wheel being calibrated.
     private static int calibrateWheelSelect = 0;
-
+ 
     /**
      * Update steering calibration control
      */
@@ -186,7 +186,10 @@ public class Calibration
     {
         calibrateWheelSelect = Calibration.getWheelDial(calibrateWheelSelect);
         updateSteeringCalibrate(calibrateWheelSelect);
-        LOGGER.info("Calibration Updated, Wheel: " + RobotMap.STEERING_KEYS[calibrateWheelSelect]);
+        if (calibrateWheelSelect >= 0)
+        {
+            LOGGER.info("Calibration Updated, Wheel: " + RobotMap.STEERING_KEYS[calibrateWheelSelect]);
+        }
     }
 
 }

@@ -9,6 +9,8 @@ public class DriverStation2015
 
     Joystick467 driverJoy = null;
     ButtonPanel2015 buttonPanel = null;
+    
+    public static int GYRO_RESET_BUTTON = 4;
 
     // CAL/AUTO
     public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
@@ -238,7 +240,7 @@ public class DriverStation2015
     {
         DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
 
-        if (getDriveJoystick().buttonDown(2))
+        if (getDriveJoystick().getFlap())
             drivemode = DriveMode.TURN;
 
         int pov = getDriveJoystick().getPOV();
@@ -282,6 +284,11 @@ public class DriverStation2015
     public boolean getCalibrate()
     {
         return buttonPanel.isButtonDown(AUTO_CAL_SWITCH);
+    }
+    
+    public boolean getGyroReset()
+    {
+        return driverJoy.buttonDown(GYRO_RESET_BUTTON);
     }
 
     /**

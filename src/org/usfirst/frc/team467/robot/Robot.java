@@ -20,12 +20,11 @@ import com.ni.vision.NIVision.Point;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Gyro;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Talon;
 
@@ -207,6 +206,7 @@ public class Robot extends IterativeRobot
     {
         // Read driverstation inputs
         driverstation.readInputs();
+        
 
         if (driverstation.getCalibrate())
         {
@@ -296,7 +296,7 @@ public class Robot extends IterativeRobot
                             .getStickDistance(), false /* not field aligned */);
                 }
                 break;
-        }
+        }        
     }
 
     /**
