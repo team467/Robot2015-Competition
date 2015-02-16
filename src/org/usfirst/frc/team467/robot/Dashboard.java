@@ -22,6 +22,7 @@ public class Dashboard
     Steering frSteering;
     Steering blSteering;
     Steering brSteering;
+    final double maxTurns = Steering.getMaxTurns();
     
     private boolean cameraExists = true;
 
@@ -129,10 +130,10 @@ public class Dashboard
         double blSteeringAngle = blSteering.getSteeringAngle();
         double brSteeringAngle = brSteering.getSteeringAngle();
                                                               // Full Rotation * Max turns in 2 directions 
-        int flSteeringPosition = (int)(flSteeringAngle * (100 / ((2 * Math.PI) * (Steering.MAX_TURNS * 2))) + 50);
-        int frSteeringPosition = (int)(frSteeringAngle * (100 / ((2 * Math.PI) * (Steering.MAX_TURNS * 2))) + 50);
-        int blSteeringPosition = (int)(blSteeringAngle * (100 / ((2 * Math.PI) * (Steering.MAX_TURNS * 2))) + 50);
-        int brSteeringPosition = (int)(brSteeringAngle * (100 / ((2 * Math.PI) * (Steering.MAX_TURNS * 2))) + 50);
+        int flSteeringPosition = (int)(flSteeringAngle * (100 / ((2 * Math.PI) * (maxTurns * 2))) + 50);
+        int frSteeringPosition = (int)(frSteeringAngle * (100 / ((2 * Math.PI) * (maxTurns * 2))) + 50);
+        int blSteeringPosition = (int)(blSteeringAngle * (100 / ((2 * Math.PI) * (maxTurns * 2))) + 50);
+        int brSteeringPosition = (int)(brSteeringAngle * (100 / ((2 * Math.PI) * (maxTurns * 2))) + 50);
 
         NIVision.Rect flBar = new NIVision.Rect(topMargin, leftMargin + flSteeringPosition, rectHeight, barWidth);
         NIVision.Rect frBar = new NIVision.Rect(topMargin, rightMargin + frSteeringPosition, rectHeight, barWidth);

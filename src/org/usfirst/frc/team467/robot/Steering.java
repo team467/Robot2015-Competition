@@ -27,7 +27,7 @@ public class Steering
 
     private final double LEVELS_PER_ROTATION = 610;
 
-    public static final double MAX_TURNS = 2.0;
+    private static final double MAX_TURNS = 2.0;
 
     // Sensor used to determine angle
     private AnalogInput steeringSensor;
@@ -166,7 +166,7 @@ public class Steering
         return output;
     }
 
-    public double getMaxTurns()
+    public static double getMaxTurns()
     {
         return MAX_TURNS;
     }
