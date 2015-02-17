@@ -21,7 +21,7 @@ public class Autonomous
     private Claw claw = null;
     private Lifter lifter = null;
 
-    private AutoType autonomousType = AutoType.GRAB_CONTAINER_PUSH_TOTE;
+    private AutoType autonomousType = AutoType.NO_AUTO;
 
     long autonomousStartTime = -999999;
 
@@ -64,6 +64,8 @@ public class Autonomous
     public void initAutonomous()
     {
         autonomousStartTime = -999999;
+        autonomousType = DriverStation2015.getInstance().getAutoType();
+        System.out.println("AUTO MODE " + autonomousType.toString());
     }
 
     /**
@@ -96,10 +98,7 @@ public class Autonomous
                 break;
             case PUSH_TOTE:
                 pushTote(timeSinceStart);
-                break;
-            case GRAB_CONTAINER_PUSH_TOTE:
-                grabContainerPushTote(timeSinceStart);
-                break;
+                break;            
             case GRAB_BOTH:
                 grabBoth(timeSinceStart);
                 break;
@@ -111,9 +110,17 @@ public class Autonomous
             case PUSH_BOTH:
                 pushBoth(timeSinceStart);
                 break;
+            case NO_AUTO:
+                noAuto();
+                break;
         }
     }
 
+    public void noAuto()
+    {
+        drive.noDrive();
+    }
+    
     long gripTimeElapsed = 0;
     long ungripTimeElapsed = 0;
     long lifterTimeElapsed = 0;
@@ -177,7 +184,7 @@ public class Autonomous
         // into the auto zone
         if (timeSinceStart < 3000) // in milleseconds
         {
-            drive.crabDrive(0, // angle to drive at in radians
+            drive.crabDrive(3*Math.PI/2, // angle to drive at in radians
                     0.5,  // speed to drive at in percent
                     false); // no field align
         }
@@ -208,86 +215,43 @@ public class Autonomous
         }
 
     }
-
-    private void grabContainerPushTote(long timeSinceStart)
-    {
-        // Pick up container, strafe over to tote,
-        // plow tote into AUTO zone while holding container
-        if (!claw.isClosed())
-        {
-            claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
-            gripTimeElapsed = System.currentTimeMillis() - autonomousStartTime;
-            // grip trash can
-        }
-        else if (timeSinceStart < 6000 + gripTimeElapsed)
-        {
-            lifter.setLift(LiftTypes.LIFT_UP_SLOW);
-
-        }
-        else if (timeSinceStart < 7000 + gripTimeElapsed)
-        {
-            lifter.setLift(LiftTypes.NO_LIFT);
-            drive.crabDrive(Math.PI / 2, 0.5, false);
-            // Strafe right (half speed, one second)
-        }
-        else if (timeSinceStart < 9000 + gripTimeElapsed)
-        {
-            drive.crabDrive(0, 0.5, false);
-            // ram forward (half speed, two seconds,
-            // (one to make up for backwards movement, two to get into auto zone)
-        }
-        else if (timeSinceStart < 10000 + gripTimeElapsed)
-        {
-            claw.moveClaw(ClawMoveTypes.UNGRIP_SLOW);
-            
-        }
-        else if (timeSinceStart < 11000 + gripTimeElapsed)
-        {
-            claw.moveClaw(ClawMoveTypes.STOP);
-            drive.crabDrive(0, 0, false);
-        }
-        else if (timeSinceStart < 12000 + gripTimeElapsed)
-        {
-            drive.crabDrive(Math.PI, 0.5, false);
-        }
-        else
-        {
-            drive.crabDrive(0, 0, false);
-        }
-        // TODO Change the times between events so they reflect actual measurements
-        // Currently using estimated values
-    }
+    
     private void grabAndPush(long timeSinceStart)
     {
-        if (timeSinceStart < 1000)
+        if (timeSinceStart < 500)
         {
             drive.crabDrive(Math.PI/2, 0.5, false);
+            //move right (one second, half speed) to bash past tote and position for lift
         }
-        else if (timeSinceStart < 6000)
+        else if (timeSinceStart < 1500)
         {
             lifter.setLift(LiftTypes.LIFT_DOWN_SLOW);
-            
+            //move lift/arms around bin (one seconds)
         }
-        else if (timeSinceStart < 7000 && !claw.isClosed())
+        else if (!claw.isClosed())
         {
             lifter.setLift(LiftTypes.NO_LIFT);
             claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
             gripTimeElapsed = System.currentTimeMillis() - timeSinceStart;
+            //stops lift, hugs bin
         }
-        else if (timeSinceStart < 8000 + gripTimeElapsed)
+        else if (timeSinceStart < 2500 + gripTimeElapsed)
         {
             lifter.setLift(LiftTypes.LIFT_UP_SLOW);
+            //lift bin upwards (one second)
         }
-        else if (timeSinceStart < 11000 + gripTimeElapsed)
+        else if (timeSinceStart < 4500 + gripTimeElapsed)
         {
             lifter.setLift(LiftTypes.NO_LIFT);
-            drive.crabDrive(Math.PI/2, 0.5, false);
+
+            drive.crabDrive(Math.PI / 2, 0.5, false);
         }
         else
         {
             drive.crabDrive(0, 0, false);
         }
     }
+
     private void pushBoth(long timeSinceStart)
     {
         if (timeSinceStart < 5000)
@@ -333,6 +297,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        PUSH_BOTH, GRAB_AND_PUSH, TEST, DRIVE_ONLY, GRAB_ITEM, PUSH_TOTE, GRAB_CONTAINER_PUSH_TOTE, GRAB_BOTH
+        NO_AUTO, PUSH_BOTH, GRAB_AND_PUSH, TEST, DRIVE_ONLY, GRAB_ITEM, PUSH_TOTE, GRAB_BOTH
     }
 }

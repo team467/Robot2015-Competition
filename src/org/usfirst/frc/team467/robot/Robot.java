@@ -10,8 +10,6 @@ package org.usfirst.frc.team467.robot;
 import java.util.Comparator;
 
 import org.apache.log4j.Logger;
-import org.usfirst.frc.team467.robot.Autonomous.AutoType;
-
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
