@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot
 
     private Drive drive;
 
-    private Dashboard dashboard;
+    private CameraDashboard cameraDashboard;
     private Lifter lifter;
     private Claw claw;
     private Gyro2015 gyro;
@@ -132,20 +132,20 @@ public class Robot extends IterativeRobot
         // Initialize logging framework.
         Logging.init();
 
-        /**
-         * Time in milliseconds
-         */
-        double time = System.currentTimeMillis();
-
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
 
         drive = Drive.getInstance();
-        dashboard = Dashboard.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
         gyro = Gyro2015.getInstance();
         gyro.reset();
+
+        // Initalize the camera dashboard and launch in separate thread.
+        cameraDashboard = CameraDashboard.getInstance();
+        if (cameraDashboard.cameraExists()) {
+            cameraDashboard.start();
+        }
 
 //        cameraServer = CameraServer.getInstance();
 //        cameraServer.setQuality(50);
@@ -158,8 +158,6 @@ public class Robot extends IterativeRobot
 //                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 //        NIVision.IMAQdxConfigureGrab(session);
 
-        time = System.currentTimeMillis();
-
         Calibration.init();
     }
 
@@ -171,7 +169,7 @@ public class Robot extends IterativeRobot
 
     public void disabledPeriodic()
     {
-        dashboard.renderImage();
+        
     }
 
     public void autonomousInit()
@@ -229,9 +227,6 @@ public class Robot extends IterativeRobot
             updateDrive();
             updateNavigator();
         }
-
-        dashboard.renderImage();
-
     }
 
     /**
