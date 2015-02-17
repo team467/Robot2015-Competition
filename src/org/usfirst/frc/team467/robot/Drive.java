@@ -139,21 +139,32 @@ public class Drive extends RobotDrive
     private void fourWheelDrive(double frontLeftSpeed, double frontRightSpeed, double backLeftSpeed, double backRightSpeed)
     {
         // If any of the motors doesn't exist then exit
-        if (m_rearLeftMotor == null || m_rearRightMotor == null || m_frontLeftMotor == null || m_rearLeftMotor == null)
+        if (m_rearLeftMotor == null || m_rearRightMotor == null || m_frontLeftMotor == null || m_frontRightMotor == null)
         {
             throw new NullPointerException("Null motor provided");
         }
+        
+        final double MAX_DRIVE_ANGLE = Math.PI / 25;
+        if (steering[RobotMap.FRONT_LEFT] .getAngleDelta() < MAX_DRIVE_ANGLE ||
+            steering[RobotMap.FRONT_RIGHT].getAngleDelta() < MAX_DRIVE_ANGLE ||
+            steering[RobotMap.BACK_LEFT]  .getAngleDelta() < MAX_DRIVE_ANGLE ||
+            steering[RobotMap.BACK_RIGHT] .getAngleDelta() < MAX_DRIVE_ANGLE)
+        {
+            LOGGER.debug("DRIVE");
+            m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed, RobotMap.FRONT_LEFT), SYNC_GROUP);
+            m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
+            m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
+            m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
+        } else
+        {
+            LOGGER.debug("NO DRIVE");
+            m_frontLeftMotor.set(0, SYNC_GROUP);
+            m_frontRightMotor.set(0, SYNC_GROUP);
+            m_rearLeftMotor.set(0, SYNC_GROUP);
+            m_rearRightMotor.set(0, SYNC_GROUP);
+        }
+
         LOGGER.debug("TURN DRIVE SPEEDS: FL:" + frontLeftSpeed + ", FR:" +  frontRightSpeed + ", BL:" + backLeftSpeed + ", BR:" + backRightSpeed);
-        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed, RobotMap.FRONT_LEFT), SYNC_GROUP);
-        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
-        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
-        m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
-
-//        m_frontLeftMotor.set(0, SYNC_GROUP);
-//        m_frontRightMotor.set(0, SYNC_GROUP);
-//        m_rearLeftMotor.set(0, SYNC_GROUP);
-//        m_rearRightMotor.set(0, SYNC_GROUP);
-
         if (m_safetyHelper != null)
         {
             m_safetyHelper.feed();
