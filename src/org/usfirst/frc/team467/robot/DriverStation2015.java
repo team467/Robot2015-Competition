@@ -240,8 +240,14 @@ public class DriverStation2015
      */
     public DriveMode getDriveMode()
     {
-        DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
+        boolean flap = getDriveJoystick().getFlap();
+        int pov = getDriveJoystick().getPOV();
 
+        DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
+        
+        if (flap) // If flap is down
+            drivemode = DriveMode.CRAB_FA;
+        
         if (getDriveJoystick().buttonDown(2))
             drivemode = DriveMode.TURN;
         
@@ -251,7 +257,6 @@ public class DriverStation2015
         if (getDriveJoystick().buttonDown(3) || getDriveJoystick().buttonDown(4))
             drivemode = DriveMode.REVOLVE;
 
-        int pov = getDriveJoystick().getPOV();
         if (pov == 0)
             drivemode = DriveMode.UNWIND;
 

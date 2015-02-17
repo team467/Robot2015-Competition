@@ -1,6 +1,5 @@
 package org.usfirst.frc.team467.robot;
 
-import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.SerialPort;
 
 /**

@@ -8,25 +8,15 @@
 package org.usfirst.frc.team467.robot;
 
 import java.util.Comparator;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
 import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ImageType;
-import com.ni.vision.NIVision.Point;
-import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Gyro;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Talon;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -271,8 +261,16 @@ public class Robot extends IterativeRobot
                 break;
 
             case CRAB_FA:
-                drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
-                        .getStickDistance(), true /* field aligned */);
+                if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
+                {
+                    // If in joystick deadzone, don't steer, leave wheel at current angle.
+                    drive.noDrive();
+                }
+                else
+                {
+                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
+                            .getStickDistance(), true /* field aligned */);
+                }
                 break;
 
             case CRAB_NO_FA:
