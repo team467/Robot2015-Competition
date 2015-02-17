@@ -238,21 +238,33 @@ public class Robot extends IterativeRobot
                 }
                 break;
 
-            case REVOLVE:
+            case REVOLVE_LARGE:
             {
                 Direction direction = Direction.LEFT;
                 if (driverstation.getDriveJoystick().buttonDown(4))
                 {
                     direction = Direction.RIGHT;
                 }
-                drive.revolveDrive(direction);
+                drive.revolveDriveLarge(direction);
+            }
+                break;
+                
+            case REVOLVE_SMALL:
+            {
+                Direction direction = Direction.LEFT;
+                if (driverstation.getDriveJoystick().buttonDown(6))
+                {
+                    direction = Direction.RIGHT;
+                }
+                drive.revolveDriveSmall(direction);
+                
             }
                 break;
 
             case STRAFE:
             {
                 Direction direction = Direction.LEFT;
-                if (driverstation.getDriveJoystick().buttonDown(6))
+                if (driverstation.getDriveJoystick().getPOV() == 90)
                 {
                     direction = Direction.RIGHT;
                 }
@@ -261,7 +273,7 @@ public class Robot extends IterativeRobot
                 break;
 
             case TURN:
-                drive.turnDrive(-driverstation.getDriveJoystick().getTwist());
+                drive.turnDrive(-driverstation.getDriveJoystick().getTwist()/2);
                 break;
 
             case CRAB_FA:

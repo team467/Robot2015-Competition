@@ -251,11 +251,14 @@ public class DriverStation2015
         if (getDriveJoystick().buttonDown(2))
             drivemode = DriveMode.TURN;
         
-        if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6))
+        if (pov == 270 || pov == 90)
             drivemode = DriveMode.STRAFE;
         
+        if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6))
+            drivemode = DriveMode.REVOLVE_SMALL;
+        
         if (getDriveJoystick().buttonDown(3) || getDriveJoystick().buttonDown(4))
-            drivemode = DriveMode.REVOLVE;
+            drivemode = DriveMode.REVOLVE_LARGE;
 
         if (pov == 0)
             drivemode = DriveMode.UNWIND;

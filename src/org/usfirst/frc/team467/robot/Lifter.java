@@ -29,8 +29,8 @@ public class Lifter
     public static final double FAST_SPEED_DOWN = -FAST_SPEED_UP;
 
     // TODO Replace with practical value
-    private static final double MAX_CURRENT_DOWN = 10;
-    private static final double MAX_CURRENT_UP = 10;
+    private static final double MAX_CURRENT_DOWN = 15;
+    private static final double MAX_CURRENT_UP = 25;
 
     /**
      * Gets the singleton instance of the elevator

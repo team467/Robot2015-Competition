@@ -48,12 +48,19 @@ public class Drive extends RobotDrive
     // Speed to use for Strafe and Revolve Drive
     private static final double SPEED_STRAFE = 0.4;
 
-    private static final double REVOLVE_FRONT_RADIUS = 65;
-    private static final double REVOLVE_BACK_RADIUS = REVOLVE_FRONT_RADIUS + RobotMap.LENGTH;
-    private static final double REVOLVE_BACK_SPEED = 0.4;
-    private static final double REVOLVE_FRONT_SPEED = REVOLVE_BACK_SPEED * (REVOLVE_FRONT_RADIUS / REVOLVE_BACK_RADIUS);
-    private static final double REVOLVE_FRONT_ANGLE = (Math.atan((2 * REVOLVE_FRONT_RADIUS) / RobotMap.WIDTH));
-    private static final double REVOLVE_BACK_ANGLE = (Math.atan((2 * REVOLVE_BACK_RADIUS) / RobotMap.WIDTH));
+    private static final double REVOLVE_LARGE_FRONT_RADIUS = 65;
+    private static final double REVOLVE_LARGE_BACK_RADIUS = REVOLVE_LARGE_FRONT_RADIUS + RobotMap.LENGTH;
+    private static final double REVOLVE_LARGE_BACK_SPEED = 0.4;
+    private static final double REVOLVE_LARGE_FRONT_SPEED = REVOLVE_LARGE_BACK_SPEED * (REVOLVE_LARGE_FRONT_RADIUS / REVOLVE_LARGE_BACK_RADIUS);
+    private static final double REVOLVE_LARGE_FRONT_ANGLE = (Math.atan((2 * REVOLVE_LARGE_FRONT_RADIUS) / RobotMap.WIDTH));
+    private static final double REVOLVE_LARGE_BACK_ANGLE = (Math.atan((2 * REVOLVE_LARGE_BACK_RADIUS) / RobotMap.WIDTH));
+    
+    private static final double REVOLVE_SMALL_FRONT_RADIUS = 25;
+    private static final double REVOLVE_SMALL_BACK_RADIUS = REVOLVE_SMALL_FRONT_RADIUS + RobotMap.LENGTH;
+    private static final double REVOLVE_SMALL_BACK_SPEED = 0.4;
+    private static final double REVOLVE_SMALL_FRONT_SPEED = REVOLVE_SMALL_BACK_SPEED * (REVOLVE_SMALL_FRONT_RADIUS / REVOLVE_SMALL_BACK_RADIUS);
+    private static final double REVOLVE_SMALL_FRONT_ANGLE = (Math.atan((2 * REVOLVE_SMALL_FRONT_RADIUS) / RobotMap.WIDTH));
+    private static final double REVOLVE_SMALL_BACK_ANGLE = (Math.atan((2 * REVOLVE_SMALL_BACK_RADIUS) / RobotMap.WIDTH));
 
     // Private constructor
     private Drive(CANTalon frontLeftMotor, CANTalon backLeftMotor, CANTalon frontRightMotor, CANTalon backRightMotor)
@@ -337,12 +344,12 @@ public class Drive extends RobotDrive
     /**
      * @param direction
      */
-    public void revolveDrive(Direction direction)
+    public void revolveDriveLarge(Direction direction)
     {
-        WheelCorrection flCorrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, -REVOLVE_FRONT_ANGLE, REVOLVE_FRONT_SPEED);
-        WheelCorrection frCorrected = wrapAroundCorrect(RobotMap.FRONT_RIGHT, REVOLVE_FRONT_ANGLE, REVOLVE_FRONT_SPEED);
-        WheelCorrection blCorrected = wrapAroundCorrect(RobotMap.BACK_LEFT, -REVOLVE_BACK_ANGLE, REVOLVE_BACK_SPEED);
-        WheelCorrection brCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, REVOLVE_BACK_ANGLE, REVOLVE_BACK_SPEED);
+        WheelCorrection flCorrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, -REVOLVE_LARGE_FRONT_ANGLE, REVOLVE_LARGE_FRONT_SPEED);
+        WheelCorrection frCorrected = wrapAroundCorrect(RobotMap.FRONT_RIGHT, REVOLVE_LARGE_FRONT_ANGLE, REVOLVE_LARGE_FRONT_SPEED);
+        WheelCorrection blCorrected = wrapAroundCorrect(RobotMap.BACK_LEFT, -REVOLVE_LARGE_BACK_ANGLE, REVOLVE_LARGE_BACK_SPEED);
+        WheelCorrection brCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, REVOLVE_LARGE_BACK_ANGLE, REVOLVE_LARGE_BACK_SPEED);
 
         if (direction == Direction.RIGHT)
         {
@@ -355,6 +362,27 @@ public class Drive extends RobotDrive
         fourWheelSteer(flCorrected.angle, frCorrected.angle, blCorrected.angle, brCorrected.angle);
     }
 
+    /**
+     * @param direction
+     */
+    public void revolveDriveSmall(Direction direction)
+    {
+        WheelCorrection flCorrected = wrapAroundCorrect(RobotMap.FRONT_LEFT, -REVOLVE_SMALL_FRONT_ANGLE, REVOLVE_SMALL_FRONT_SPEED);
+        WheelCorrection frCorrected = wrapAroundCorrect(RobotMap.FRONT_RIGHT, REVOLVE_SMALL_FRONT_ANGLE, REVOLVE_SMALL_FRONT_SPEED);
+        WheelCorrection blCorrected = wrapAroundCorrect(RobotMap.BACK_LEFT, -REVOLVE_SMALL_BACK_ANGLE, REVOLVE_SMALL_BACK_SPEED);
+        WheelCorrection brCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, REVOLVE_SMALL_BACK_ANGLE, REVOLVE_SMALL_BACK_SPEED);
+
+        if (direction == Direction.RIGHT)
+        {
+            fourWheelDrive(-flCorrected.speed, frCorrected.speed, -blCorrected.speed, brCorrected.speed);
+        }
+        else
+        {
+            fourWheelDrive(flCorrected.speed, -frCorrected.speed, blCorrected.speed, -brCorrected.speed);
+        }
+        fourWheelSteer(flCorrected.angle, frCorrected.angle, blCorrected.angle, brCorrected.angle);
+    }
+    
     /**
      * Individually controls a specific driving motor
      *
