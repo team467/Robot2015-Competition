@@ -245,7 +245,7 @@ public class DriverStation2015
 
         DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
         
-        if (flap) // If flap is down
+        if (flap) // If flap is up
             drivemode = DriveMode.CRAB_FA;
         
         if (getDriveJoystick().buttonDown(2))
