@@ -13,11 +13,11 @@ public class CameraDashboard extends Thread
 {
     private static final Logger LOGGER = Logger.getLogger(CameraDashboard.class);
     
-    final float BLACK = color(0, 0, 0);
-    final float RED = color(255, 0, 0);
-    final float GREEN = color(0, 255, 0);
-    final float BLUE = color(0, 0, 255);
-    final float WHITE = color(255, 255, 255);
+    private static final float BLACK = color(0, 0, 0);
+    private static final float RED = color(255, 0, 0);
+    private static final float GREEN = color(0, 255, 0);
+    private static final float BLUE = color(0, 0, 255);
+    private static final float WHITE = color(255, 255, 255);
 
     static CameraDashboard instance;
     Steering flSteering;
@@ -102,11 +102,11 @@ public class CameraDashboard extends Thread
      * @param r - The red value
      * @param g - The green value
      * @param b - The blue value
-     * @return The float for newPixelValue argument in NIVision.imaqDrawShapeOnImage()
+     * @return The float for newPixelValue argument in NIVision drawing functions
      */
-    public float color(int r, int g, int b)
+    private static float color(int r, int g, int b)
     {
-        // 24 bits, every 8 bits is a color channel
+        // 24 bits, 8 bits for each color channel
         return b*256*256 + g*256 + r;
     }
 
