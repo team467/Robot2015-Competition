@@ -49,6 +49,7 @@ public class Robot extends IterativeRobot
     private CameraDashboard cameraDashboard;
     private Lifter lifter;
     private Claw claw;
+    private Gyro2015 gyro;
 
     int session;
     Image frame;
@@ -137,6 +138,8 @@ public class Robot extends IterativeRobot
         drive = Drive.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
+        gyro = Gyro2015.getInstance();
+        gyro.reset();
 
         // Initalize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
@@ -203,8 +206,15 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic()
     {
         // Read driverstation inputs
-        driverstation.readInputs();
-        
+        driverstation.readInputs();        
+        gyro.update();               
+        if(driverstation.getGyroReset())
+        {
+            System.out.println("GYRO RESET");
+            gyro.reset();
+        }
+        System.out.println("GYRO ANGLE: " + gyro.getAngle());        
+                
 
         if (driverstation.getCalibrate())
         {
