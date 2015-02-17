@@ -105,6 +105,12 @@ public class Autonomous
                 break;
             case TEST:
                 test(timeSinceStart);
+            case GRAB_AND_PUSH:
+                grabAndPush(timeSinceStart);
+                break;
+            case PUSH_BOTH:
+                pushBoth(timeSinceStart);
+                break;
         }
     }
 
@@ -251,6 +257,44 @@ public class Autonomous
         // TODO Change the times between events so they reflect actual measurements
         // Currently using estimated values
     }
+    private void grabAndPush(long timeSinceStart)
+    {
+        if (timeSinceStart < 1000)
+        {
+            drive.crabDrive(Math.PI/2, 0.5, false);
+        }
+        else if (timeSinceStart < 6000)
+        {
+            lifter.setLift(LiftTypes.LIFT_DOWN_SLOW);
+            
+        }
+        else if (timeSinceStart < 7000 && !claw.isClosed())
+        {
+            lifter.setLift(LiftTypes.NO_LIFT);
+            claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
+            gripTimeElapsed = System.currentTimeMillis() - timeSinceStart;
+        }
+        else if (timeSinceStart < 8000 + gripTimeElapsed)
+        {
+            lifter.setLift(LiftTypes.LIFT_UP_SLOW);
+        }
+        else if (timeSinceStart < 11000 + gripTimeElapsed)
+        {
+            lifter.setLift(LiftTypes.NO_LIFT);
+            drive.crabDrive(Math.PI/2, 0.5, false);
+        }
+        else
+        {
+            drive.crabDrive(0, 0, false);
+        }
+    }
+    private void pushBoth(long timeSinceStart)
+    {
+        if (timeSinceStart < 5000)
+        {
+            drive.autoDrive(Direction.RIGHT);
+        }
+    }
 
     private void grabBoth(long timeSinceStart)
     {
@@ -289,6 +333,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        TEST, DRIVE_ONLY, GRAB_ITEM, PUSH_TOTE, GRAB_CONTAINER_PUSH_TOTE, GRAB_BOTH
+        PUSH_BOTH, GRAB_AND_PUSH, TEST, DRIVE_ONLY, GRAB_ITEM, PUSH_TOTE, GRAB_CONTAINER_PUSH_TOTE, GRAB_BOTH
     }
 }
