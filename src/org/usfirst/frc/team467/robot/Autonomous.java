@@ -21,7 +21,7 @@ public class Autonomous
     private Claw claw = null;
     private Lifter lifter = null;
 
-    private AutoType autonomousType = AutoType.DRIVE_ONLY;
+    private AutoType autonomousType = AutoType.GRAB_CONTAINER_PUSH_TOTE;
 
     long autonomousStartTime = -999999;
 
@@ -109,7 +109,8 @@ public class Autonomous
     }
 
     long gripTimeElapsed = 0;
-    long driveTimeOneElapsed = 0;
+    long ungripTimeElapsed = 0;
+    long lifterTimeElapsed = 0;
 
     public void test(long timeSinceStart)
     {
@@ -119,7 +120,7 @@ public class Autonomous
         }
         else if (timeSinceStart < 2000)
         {
-            drive.crabDrive(Math.PI/2, 0.5, false);
+            drive.crabDrive(Math.PI / 2, 0.5, false);
         }
         else if (timeSinceStart < 3000)
         {
@@ -127,7 +128,7 @@ public class Autonomous
         }
         else if (timeSinceStart < 4000)
         {
-            drive.crabDrive(-Math.PI/2, 0.5, false);
+            drive.crabDrive(-Math.PI / 2, 0.5, false);
         }
         else
         {
@@ -140,17 +141,17 @@ public class Autonomous
         // Start behind an item (container or tote), and pick it up
         // and carry it to the auto zone
 
-        while (!claw.isClosed())
+        if (!claw.isClosed())
         {
             // close motor around box
-            claw.moveClaw(ClawMoveTypes.GRIP_FAST);
+            claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
             gripTimeElapsed = System.currentTimeMillis() - autonomousStartTime;
         }
-        if (timeSinceStart < 500 + gripTimeElapsed)
+        else if (timeSinceStart < 500 + gripTimeElapsed)
         {
             lifter.setLift(LiftTypes.LIFT_UP_SLOW);
         }
-        if (timeSinceStart < 3500 + gripTimeElapsed) // in milleseconds
+        else if (timeSinceStart < 3500 + gripTimeElapsed) // in milleseconds
         {
             drive.crabDrive(0, // angle to drive at in radians
                     -0.4,  // speed to drive at in percent
@@ -189,7 +190,7 @@ public class Autonomous
         if (timeSinceStart < 2000) // in milleseconds
         {
             drive.crabDrive(0, // angle to drive at in radians
-                    0.4,  // speed to drive at in percent
+                    0.5,  // speed to drive at in percent
                     false); // no field align
         }
         else
@@ -206,6 +207,49 @@ public class Autonomous
     {
         // Pick up container, strafe over to tote,
         // plow tote into AUTO zone while holding container
+        if (!claw.isClosed())
+        {
+            claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
+            gripTimeElapsed = System.currentTimeMillis() - autonomousStartTime;
+            // grip trash can
+        }
+        else if (timeSinceStart < 6000 + gripTimeElapsed)
+        {
+            lifter.setLift(LiftTypes.LIFT_UP_SLOW);
+
+        }
+        else if (timeSinceStart < 7000 + gripTimeElapsed)
+        {
+            lifter.setLift(LiftTypes.NO_LIFT);
+            drive.crabDrive(Math.PI / 2, 0.5, false);
+            // Strafe right (half speed, one second)
+        }
+        else if (timeSinceStart < 9000 + gripTimeElapsed)
+        {
+            drive.crabDrive(0, 0.5, false);
+            // ram forward (half speed, two seconds,
+            // (one to make up for backwards movement, two to get into auto zone)
+        }
+        else if (timeSinceStart < 10000 + gripTimeElapsed)
+        {
+            claw.moveClaw(ClawMoveTypes.UNGRIP_SLOW);
+            
+        }
+        else if (timeSinceStart < 11000 + gripTimeElapsed)
+        {
+            claw.moveClaw(ClawMoveTypes.STOP);
+            drive.crabDrive(0, 0, false);
+        }
+        else if (timeSinceStart < 12000 + gripTimeElapsed)
+        {
+            drive.crabDrive(Math.PI, 0.5, false);
+        }
+        else
+        {
+            drive.crabDrive(0, 0, false);
+        }
+        // TODO Change the times between events so they reflect actual measurements
+        // Currently using estimated values
     }
 
     private void grabBoth(long timeSinceStart)
@@ -213,6 +257,28 @@ public class Autonomous
         // Pick up the container and stack it on the tote.
         // Then, pick up the tote and drive the robot and stack into
         // the AUTO zone.
+        if (!claw.isClosed())
+        {
+            claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
+            gripTimeElapsed = System.currentTimeMillis() - autonomousStartTime;
+        }
+        else if (timeSinceStart < gripTimeElapsed + 2000)
+        {
+            lifter.basicDriveLifter(LifterDirection.UP, false);
+        }
+        else if (timeSinceStart < gripTimeElapsed + 3000)
+        {
+            drive.crabDrive(Math.PI / 2, 0.5, false);
+        }
+        else if (timeSinceStart < gripTimeElapsed + 4000)
+        {
+            lifter.basicDriveLifter(LifterDirection.DOWN, false);
+        }
+        else if (timeSinceStart < gripTimeElapsed + 4000 + gripTimeElapsed)
+        {
+            claw.moveClaw(ClawMoveTypes.UNGRIP_SLOW);
+
+        }
     }
 
     /**

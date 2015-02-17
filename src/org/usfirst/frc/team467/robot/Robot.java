@@ -10,6 +10,7 @@ package org.usfirst.frc.team467.robot;
 import java.util.Comparator;
 
 import org.apache.log4j.Logger;
+import org.usfirst.frc.team467.robot.Autonomous.AutoType;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
@@ -35,6 +36,7 @@ public class Robot extends IterativeRobot
     private DriverStation2015 driverstation;
 
     private Drive drive;
+    private Autonomous autonomous;
 
     private CameraDashboard cameraDashboard;
     private Lifter lifter;
@@ -124,7 +126,7 @@ public class Robot extends IterativeRobot
 
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
-
+        autonomous = Autonomous.getInstance();
         drive = Drive.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
@@ -154,17 +156,18 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
         LOGGER.info("Robot disabled");
-
+        
     }
 
     public void disabledPeriodic()
     {
-        
+        gyro.update();
+        System.out.println("GYRO ANGLE: " + gyro.getAngle());
     }
 
     public void autonomousInit()
     {
-
+        autonomous.initAutonomous();
     }
 
     public void teleopInit()
@@ -183,6 +186,7 @@ public class Robot extends IterativeRobot
     public void autonomousPeriodic()
     {
         LOGGER.debug("Autonomous");
+        autonomous.updateAutonomousPeriodic();
     }
 
     // read file in from disk. For this example to run you need to copy

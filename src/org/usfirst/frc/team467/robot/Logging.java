@@ -13,11 +13,12 @@ public class Logging
 
         // Enable extra logging for classes you want to debug
         Logger.getLogger(Robot.class).setLevel(Level.DEBUG);
-        Logger.getLogger(Steering.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Steering.class).setLevel(Level.INFO);
         Logger.getLogger(Calibration.class).setLevel(Level.DEBUG);
         Logger.getLogger(Drive.class).setLevel(Level.DEBUG);
         Logger.getLogger(Lifter.class).setLevel(Level.DEBUG);
         Logger.getLogger(Claw.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
     }
 
     private static void setupDefaultLogging()

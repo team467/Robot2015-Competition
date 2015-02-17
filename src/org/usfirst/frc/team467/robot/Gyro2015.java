@@ -1,5 +1,8 @@
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
+
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.SerialPort;
 
 /**
@@ -8,6 +11,8 @@ import edu.wpi.first.wpilibj.SerialPort;
  */
 public class Gyro2015
 {
+    private static final Logger LOGGER = Logger.getLogger(Gyro2015.class);
+
     private static Gyro2015 gyro2015 = null;
 
     private double trustedAngle = 0.0;
@@ -43,31 +48,49 @@ public class Gyro2015
         sp = new SerialPort(BAUD_RATE, SerialPort.Port.kUSB);
     }
 
+    StringBuilder stringBuffer = new StringBuilder();
+
     private double getSerialPortAngle()
     {
         String data = sp.readString();
-        String[] valueArray = data.split("\n");
+        stringBuffer.append(data);       
+        int startIndex = 0;
+        int endIndex = 0;
 
-        if (valueArray.length > 0)
+        // if contains first \n, assign to startIndex
+        if ((startIndex = stringBuffer.indexOf("\n")) >= 0
+        // if startIndex is not the last index of the string
+                && stringBuffer.length() - 1 > startIndex
+                // if contains second \n, assign to endIndex
+                && (endIndex = stringBuffer.indexOf("\n", startIndex + 1)) >= 0)
         {
-            String value = valueArray[valueArray.length - 1];
+            String dataSubstring = stringBuffer.substring(startIndex, endIndex);
+            stringBuffer.delete(0, stringBuffer.length() - 1);
             try
             {
-                return Double.parseDouble(value);
+                double val = Double.parseDouble(dataSubstring);
+                LOGGER.debug("RAW DATA: " + data + " PARSED: " + val);
+                return val - resetSubtractAngle;
             }
             catch (Exception ex)
             {
-                // eat exception
+                LOGGER.debug("RAW DATA: " + stringBuffer.toString() + " PARSED: FAILED!!!!!!!!!!!!!!!!!");
+                return trustedAngle;
             }
         }
-        return trustedAngle;
+        else
+        {
+            LOGGER.debug("RAW DATA: " + stringBuffer.toString() + " PARSED: good data not found");
+            return trustedAngle;
+        }
+
     }
 
     public void update()
     {
-        trustedAngle = wrapAngle(getSerialPortAngle() - resetSubtractAngle);
+        trustedAngle = wrapAngle(getSerialPortAngle());
     }
-    
+
     public double getAngle()
     {
         return trustedAngle;
@@ -78,12 +101,11 @@ public class Gyro2015
         resetSubtractAngle = wrapAngle(trustedAngle + resetSubtractAngle);
     }
 
-    
     public double wrapAngle(double val)
     {
         double newVal = val % 360;
         return (newVal < 0) ? 360 + newVal : newVal;
-    }       
+    }
 
     @Override
     public String toString()
