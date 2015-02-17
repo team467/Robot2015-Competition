@@ -333,6 +333,18 @@ public class Drive extends RobotDrive
         fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
         fourWheelDrive(corrected.speed, corrected.speed, corrected.speed, corrected.speed);
     }
+    
+    public void autoDrive(Direction direction)
+    {
+        double angle = (direction == Direction.RIGHT) ? Math.PI / 2 : -Math.PI / 2;
+        double backSpeed = SPEED_STRAFE;
+        double frontSpeed = backSpeed + 0.1;
+        
+        WheelCorrection backCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, angle, backSpeed);
+        WheelCorrection frontCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, angle, frontSpeed);
+        fourWheelSteer(frontCorrected.angle, frontCorrected.angle, backCorrected.angle, backCorrected.angle);
+        fourWheelDrive(frontCorrected.speed, frontCorrected.speed, backCorrected.speed, backCorrected.speed);
+    }
 
     /**
      * @param direction
