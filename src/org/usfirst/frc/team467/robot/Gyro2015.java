@@ -45,43 +45,66 @@ public class Gyro2015
      */
     private Gyro2015(int port)
     {
-        sp = new SerialPort(BAUD_RATE, SerialPort.Port.kUSB);
+        try
+        {
+            sp = new SerialPort(BAUD_RATE, SerialPort.Port.kUSB);
+        }
+        catch (Exception ex)
+        {
+            // eaten
+        }
     }
 
     StringBuilder stringBuffer = new StringBuilder();
 
     private double getSerialPortAngle()
     {
-        String data = sp.readString();
-        stringBuffer.append(data);       
-        int startIndex = 0;
-        int endIndex = 0;
-
-        // if contains first \n, assign to startIndex
-        if ((startIndex = stringBuffer.indexOf("\n")) >= 0
-        // if startIndex is not the last index of the string
-                && stringBuffer.length() - 1 > startIndex
-                // if contains second \n, assign to endIndex
-                && (endIndex = stringBuffer.indexOf("\n", startIndex + 1)) >= 0)
+        //catch in case Serial Port not working.
+        if (sp == null)
         {
-            String dataSubstring = stringBuffer.substring(startIndex, endIndex);
-            stringBuffer.delete(0, stringBuffer.length() - 1);
             try
             {
-                double val = Double.parseDouble(dataSubstring);
-                LOGGER.debug("RAW DATA: " + data + " PARSED: " + val);
-                return val - resetSubtractAngle;
+                sp = new SerialPort(BAUD_RATE, SerialPort.Port.kUSB);
             }
             catch (Exception ex)
             {
-                LOGGER.debug("RAW DATA: " + stringBuffer.toString() + " PARSED: FAILED!!!!!!!!!!!!!!!!!");
-                return trustedAngle;
+                // eaten
             }
+            return trustedAngle;
         }
         else
         {
-            LOGGER.debug("RAW DATA: " + stringBuffer.toString() + " PARSED: good data not found");
-            return trustedAngle;
+            String data = sp.readString();
+            stringBuffer.append(data);
+            int startIndex = 0;
+            int endIndex = 0;
+
+            // if contains first \n, assign to startIndex
+            if ((startIndex = stringBuffer.indexOf("\n")) >= 0
+            // if startIndex is not the last index of the string
+                    && stringBuffer.length() - 1 > startIndex
+                    // if contains second \n, assign to endIndex
+                    && (endIndex = stringBuffer.indexOf("\n", startIndex + 1)) >= 0)
+            {
+                String dataSubstring = stringBuffer.substring(startIndex, endIndex);
+                stringBuffer.delete(0, stringBuffer.length() - 1);
+                try
+                {
+                    double val = Double.parseDouble(dataSubstring);
+                    LOGGER.debug("RAW DATA: " + data + " PARSED: " + val);
+                    return val - resetSubtractAngle;
+                }
+                catch (Exception ex)
+                {
+                    LOGGER.debug("RAW DATA: " + stringBuffer.toString() + " PARSED: FAILED!!!!!!!!!!!!!!!!!");
+                    return trustedAngle;
+                }
+            }
+            else
+            {
+                LOGGER.debug("RAW DATA: " + stringBuffer.toString() + " PARSED: good data not found");
+                return trustedAngle;
+            }
         }
 
     }
