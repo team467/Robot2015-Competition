@@ -356,7 +356,7 @@ public class Drive extends RobotDrive
     {
         double angle = (direction == Direction.RIGHT) ? Math.PI / 2 : -Math.PI / 2;
         double backSpeed = SPEED_STRAFE;
-        double frontSpeed = backSpeed + 0.1;
+        double frontSpeed = backSpeed + 0.22;
         
         WheelCorrection backCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, angle, backSpeed);
         WheelCorrection frontCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, angle, frontSpeed);

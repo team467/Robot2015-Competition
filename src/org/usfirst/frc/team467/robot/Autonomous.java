@@ -100,7 +100,7 @@ public class Autonomous
                 pushTote(timeSinceStart);
                 break;            
             case GRAB_BOTH:
-                grabBoth(timeSinceStart);
+                grabAndPushVariation(timeSinceStart);
                 break;
             case TEST:
                 test(timeSinceStart);
@@ -218,12 +218,12 @@ public class Autonomous
     
     private void grabAndPush(long timeSinceStart)
     {
-        if (timeSinceStart < 500)
+        if (timeSinceStart < 750)
         {
             drive.crabDrive(Math.PI/2, 0.5, false);
             //move right (one second, half speed) to bash past tote and position for lift
         }
-        else if (timeSinceStart < 1500)
+        else if (timeSinceStart < 2000)
         {
             lifter.setLift(LiftTypes.LIFT_DOWN_SLOW);
             //move lift/arms around bin (one seconds)
@@ -235,57 +235,62 @@ public class Autonomous
             gripTimeElapsed = System.currentTimeMillis() - timeSinceStart;
             //stops lift, hugs bin
         }
-        else if (timeSinceStart < 2500 + gripTimeElapsed)
+        else if (timeSinceStart < 2000 + gripTimeElapsed)
         {
             lifter.setLift(LiftTypes.LIFT_UP_SLOW);
             //lift bin upwards (one second)
         }
-        else if (timeSinceStart < 4500 + gripTimeElapsed)
+        else if (timeSinceStart < 3000 + gripTimeElapsed)
         {
             lifter.setLift(LiftTypes.NO_LIFT);
-
             drive.crabDrive(Math.PI / 2, 0.5, false);
         }
         else
         {
+            lifter.setLift(LiftTypes.NO_LIFT);
             drive.crabDrive(0, 0, false);
         }
     }
 
     private void pushBoth(long timeSinceStart)
     {
-        if (timeSinceStart < 5000)
+        if (timeSinceStart < 3000)
         {
             drive.autoDrive(Direction.RIGHT);
         }
     }
 
-    private void grabBoth(long timeSinceStart)
+    private void grabAndPushVariation(long timeSinceStart)
     {
-        // Pick up the container and stack it on the tote.
-        // Then, pick up the tote and drive the robot and stack into
-        // the AUTO zone.
-        if (!claw.isClosed())
+        //strafe right
+        //drive forward
+        //grip bin
+        //lift bin
+        //strafe right
+        if (timeSinceStart < 750)
+        {
+            drive.crabDrive(Math.PI/2, 0.5, false);
+        }
+        else if (timeSinceStart < 1750)
+        {
+            drive.crabDrive(0, 0.5, false);
+        }
+        else if (!claw.isClosed())
         {
             claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
-            gripTimeElapsed = System.currentTimeMillis() - autonomousStartTime;
+            gripTimeElapsed = System.currentTimeMillis() - timeSinceStart;
         }
         else if (timeSinceStart < gripTimeElapsed + 2000)
         {
-            lifter.basicDriveLifter(LifterDirection.UP, false);
-        }
-        else if (timeSinceStart < gripTimeElapsed + 3000)
-        {
-            drive.crabDrive(Math.PI / 2, 0.5, false);
+            lifter.setLift(LiftTypes.LIFT_UP_SLOW);
         }
         else if (timeSinceStart < gripTimeElapsed + 4000)
         {
-            lifter.basicDriveLifter(LifterDirection.DOWN, false);
+            drive.crabDrive(Math.PI/2, 0.5, false);
         }
-        else if (timeSinceStart < gripTimeElapsed + 4000 + gripTimeElapsed)
+        else
         {
-            claw.moveClaw(ClawMoveTypes.UNGRIP_SLOW);
-
+            drive.crabDrive(0, 0, false);
         }
     }
 
