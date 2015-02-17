@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.usfirst.frc.team467.robot.Autonomous.AutoType;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
@@ -21,6 +20,7 @@ import com.ni.vision.NIVision.Point;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Gyro;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -45,7 +45,6 @@ public class Robot extends IterativeRobot
     private DriverStation2015 driverstation;
 
     private Drive drive;
-    private Autonomous autonomous;
 
     private CameraDashboard cameraDashboard;
     private Lifter lifter;
@@ -134,7 +133,6 @@ public class Robot extends IterativeRobot
 
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
-        autonomous = Autonomous.getInstance();
 
         drive = Drive.getInstance();
         lifter = Lifter.getInstance();
@@ -173,7 +171,7 @@ public class Robot extends IterativeRobot
 
     public void autonomousInit()
     {
-        autonomous.initAutonomous();
+
     }
 
     public void teleopInit()
@@ -192,7 +190,6 @@ public class Robot extends IterativeRobot
     public void autonomousPeriodic()
     {
         LOGGER.debug("Autonomous");
-        autonomous.updateAutonomousPeriodic();
     }
 
     // read file in from disk. For this example to run you need to copy
@@ -207,6 +204,7 @@ public class Robot extends IterativeRobot
     {
         // Read driverstation inputs
         driverstation.readInputs();
+        
 
         if (driverstation.getCalibrate())
         {
@@ -239,7 +237,7 @@ public class Robot extends IterativeRobot
             case REVOLVE:
             {
                 Direction direction = Direction.LEFT;
-                if (driverstation.getDriveJoystick().buttonDown(6))
+                if (driverstation.getDriveJoystick().buttonDown(4))
                 {
                     direction = Direction.RIGHT;
                 }
@@ -250,7 +248,7 @@ public class Robot extends IterativeRobot
             case STRAFE:
             {
                 Direction direction = Direction.LEFT;
-                if (driverstation.getDriveJoystick().getPOV() < 180)
+                if (driverstation.getDriveJoystick().buttonDown(6))
                 {
                     direction = Direction.RIGHT;
                 }
@@ -293,7 +291,7 @@ public class Robot extends IterativeRobot
                             .getStickDistance(), false /* not field aligned */);
                 }
                 break;
-        }
+        }        
     }
 
     /**

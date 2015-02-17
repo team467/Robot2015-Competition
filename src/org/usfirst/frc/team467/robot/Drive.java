@@ -23,6 +23,7 @@ public class Drive extends RobotDrive
 
     // Data storage object
     private DataStorage data;
+    
 
     // Angle to turn at when rotating in place - initialized in constructor
     // takes the arctan of width over length in radians
@@ -134,10 +135,11 @@ public class Drive extends RobotDrive
         {
             throw new NullPointerException("Null motor provided");
         }
-        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed), SYNC_GROUP);
-        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed), SYNC_GROUP);
-        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed), SYNC_GROUP);
-        m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed), SYNC_GROUP);
+        LOGGER.debug("TURN DRIVE SPEEDS: FL:" + frontLeftSpeed + ", FR:" +  frontRightSpeed + ", BL:" + backLeftSpeed + ", BR:" + backRightSpeed);
+        m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed, RobotMap.FRONT_LEFT), SYNC_GROUP);
+        m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
+        m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
+        m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
 
 //        m_frontLeftMotor.set(0, SYNC_GROUP);
 //        m_frontRightMotor.set(0, SYNC_GROUP);
@@ -184,13 +186,34 @@ public class Drive extends RobotDrive
         WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, TURN_IN_PLACE_ANGLE, -speed);
         WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, -TURN_IN_PLACE_ANGLE, speed);
         WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, -TURN_IN_PLACE_ANGLE, -speed);
-        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);
-
+        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);               
+        
         this.fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
         this.fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backRight.speed);
     }
 
-    private double lastSpeed = 0.0;
+    /**
+     * Set angles in "turn in place" position
+     * Wrap around will check whether the closest angle is facing forward or backward
+     * 
+     * Front Left- / \ - Front Right<br>
+     * Back Left - \ / - Back Right
+     * 
+     * @param speed
+     */
+    public void turnDriveTemp(double speed)
+    {
+        WheelCorrection frontLeft = new WheelCorrection(TURN_IN_PLACE_ANGLE, -speed);//(RobotMap.FRONT_LEFT, TURN_IN_PLACE_ANGLE, -speed);
+        WheelCorrection frontRight = new WheelCorrection(-TURN_IN_PLACE_ANGLE, speed);//wrapAroundCorrect(RobotMap.FRONT_RIGHT, -TURN_IN_PLACE_ANGLE, speed);
+        WheelCorrection backLeft = new WheelCorrection(-TURN_IN_PLACE_ANGLE, -speed);//wrapAroundCorrect(RobotMap.BACK_LEFT, -TURN_IN_PLACE_ANGLE, -speed);
+        WheelCorrection backRight = new WheelCorrection(TURN_IN_PLACE_ANGLE, speed);//wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);               
+        
+        this.fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
+        this.fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backRight.speed);
+    }
+    
+    //prev speeds for the four wheels
+    private double lastSpeed[] = new double[]{0.0,0.0,0.0,0.0};
 
     /**
      * Limit the rate at which the robot can change speed once driving fast.
@@ -201,7 +224,7 @@ public class Drive extends RobotDrive
      *            desired speed for robot
      * @return returns rate-limited speed
      */
-    private double limitSpeed(double speed)
+    private double limitSpeed(double speed, int wheelID)
     {
         // Apply speed modifiers first
 
@@ -220,18 +243,19 @@ public class Drive extends RobotDrive
         }
 
         // Limit the rate at which robot can change speed once driving over 0.6
-        if (Math.abs(speed - lastSpeed) > SPEED_MAX_CHANGE && Math.abs(lastSpeed) > 0.6)
+        if (Math.abs(speed - lastSpeed[wheelID]) > SPEED_MAX_CHANGE && Math.abs(lastSpeed[wheelID]) > 0.6)
         {
-            if (speed > lastSpeed)
+            if (speed > lastSpeed[wheelID])
             {
-                speed = lastSpeed + SPEED_MAX_CHANGE;
+                speed = lastSpeed[wheelID] + SPEED_MAX_CHANGE;
             }
             else
             {
-                speed = lastSpeed - SPEED_MAX_CHANGE;
+                speed = lastSpeed[wheelID] - SPEED_MAX_CHANGE;
             }
         }
-        lastSpeed = speed;
+        lastSpeed[wheelID] = speed;
+        LOGGER.debug("LIMIT SPEED: " + speed);
         return (speed);
     }
 
@@ -247,7 +271,7 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        double gyroAngle = 0; // if gyro exists use gyro.getAngle()
+        double gyroAngle = 0;//(fieldAlign)? gyro.getAngle(): 0; // if gyro exists use gyro.getAngle(), else 0        
 
         // Calculate the wheel angle necessary to drive in the required direction.
         double steeringAngle = (fieldAlign) ? angle - gyroAngle / (2 * Math.PI) : angle;
@@ -273,7 +297,7 @@ public class Drive extends RobotDrive
         // Set steering angle
         steering[steeringId].setAngle(angle);
 
-        this.drive(limitSpeed(speed), null);
+        this.drive(limitSpeed(speed, steeringId), null);
     }
 
     /**
@@ -281,6 +305,7 @@ public class Drive extends RobotDrive
      */
     public void noDrive()
     {
+        LOGGER.debug("NO DRIVE CALLED");
         this.fourWheelDrive(0, 0, 0, 0);// no drive for you!
 
         // maintain current angles

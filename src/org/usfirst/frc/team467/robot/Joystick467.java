@@ -81,7 +81,7 @@ public class Joystick467
      */
     public boolean buttonDown(int button)
     {
-        return joystick.getRawButton(button);
+        return buttons[(button) - 1];
     }
 
     /**
