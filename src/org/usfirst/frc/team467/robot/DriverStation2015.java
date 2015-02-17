@@ -12,7 +12,7 @@ public class DriverStation2015
     Joystick467 driverJoy = null;
     ButtonPanel2015 buttonPanel = null;
     
-    public static int GYRO_RESET_BUTTON = 4;
+    public static int GYRO_RESET_BUTTON = 8;
 
     // CAL/AUTO
     public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
@@ -361,6 +361,11 @@ public class DriverStation2015
     public boolean getMoveTurbo()
     {
         return buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON);
+    }
+    
+    public boolean getResetGyro()
+    {
+        return driverJoy.buttonDown(8);
     }
 
     /**

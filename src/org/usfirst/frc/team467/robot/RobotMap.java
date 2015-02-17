@@ -115,9 +115,9 @@ public class RobotMap
     // PID array
     public static final PID[] PIDvalues =
     {
-            new PID(-0.007, 0.0, 0.0), // Front Left PID values
-            new PID(-0.007, 0.0, 0.0), // Front Right PID values
-            new PID(-0.007, 0.0, 0.0), // Back Left PID values
-            new PID(-0.007, 0.0, 0.0), // Back Right PID values
+            new PID(-0.01, 0.0, 0.0), // Front Left PID values
+            new PID(-0.01, 0.0, 0.0), // Front Right PID values
+            new PID(-0.01, 0.0, 0.0), // Back Left PID values
+            new PID(-0.01, 0.0, 0.0), // Back Right PID values
     };
 }

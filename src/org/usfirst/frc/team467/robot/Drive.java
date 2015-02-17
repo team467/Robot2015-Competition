@@ -23,7 +23,7 @@ public class Drive extends RobotDrive
 
     // Data storage object
     private DataStorage data;
-    
+    private Gyro2015 gyro;
 
     // Angle to turn at when rotating in place - initialized in constructor
     // takes the arctan of width over length in radians
@@ -62,6 +62,7 @@ public class Drive extends RobotDrive
 
         // Make objects
         data = DataStorage.getInstance();
+        gyro = Gyro2015.getInstance();
 
         // Make steering array
         steering = new Steering[4];
@@ -271,10 +272,11 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        double gyroAngle = 0;//(fieldAlign)? gyro.getAngle(): 0; // if gyro exists use gyro.getAngle(), else 0        
+        double gyroAngle = (fieldAlign)? gyro.getAngle(): 0; // if gyro exists use gyro.getAngle(), else 0        
 
+        double gyroAngleRad = Math.toRadians(gyroAngle);
         // Calculate the wheel angle necessary to drive in the required direction.
-        double steeringAngle = (fieldAlign) ? angle - gyroAngle / (2 * Math.PI) : angle;
+        double steeringAngle = (fieldAlign) ? (angle - gyroAngleRad) : angle;
 
         WheelCorrection corrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, steeringAngle, speed);
 
