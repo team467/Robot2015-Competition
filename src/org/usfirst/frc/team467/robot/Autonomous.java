@@ -21,7 +21,7 @@ public class Autonomous
     private Claw claw = null;
     private Lifter lifter = null;
 
-    private AutoType autonomousType = AutoType.GRAB_CONTAINER_PUSH_TOTE;
+    private AutoType autonomousType = AutoType.GRAB_AND_PUSH;
 
     long autonomousStartTime = -999999;
 
@@ -177,7 +177,7 @@ public class Autonomous
         // into the auto zone
         if (timeSinceStart < 3000) // in milleseconds
         {
-            drive.crabDrive(0, // angle to drive at in radians
+            drive.crabDrive(3*Math.PI/2, // angle to drive at in radians
                     0.5,  // speed to drive at in percent
                     false); // no field align
         }
@@ -259,29 +259,33 @@ public class Autonomous
     }
     private void grabAndPush(long timeSinceStart)
     {
-        if (timeSinceStart < 1000)
+        if (timeSinceStart < 500)
         {
             drive.crabDrive(Math.PI/2, 0.5, false);
+            //move right (one second, half speed) to bash past tote and position for lift
         }
-        else if (timeSinceStart < 6000)
+        else if (timeSinceStart < 1500)
         {
             lifter.setLift(LiftTypes.LIFT_DOWN_SLOW);
-            
+            //move lift/arms around bin (one seconds)
         }
-        else if (timeSinceStart < 7000 && !claw.isClosed())
+        else if (!claw.isClosed())
         {
             lifter.setLift(LiftTypes.NO_LIFT);
             claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
             gripTimeElapsed = System.currentTimeMillis() - timeSinceStart;
+            //stops lift, hugs bin
         }
-        else if (timeSinceStart < 8000 + gripTimeElapsed)
+        else if (timeSinceStart < 2500 + gripTimeElapsed)
         {
             lifter.setLift(LiftTypes.LIFT_UP_SLOW);
+            //lift bin upwards (one second)
         }
-        else if (timeSinceStart < 11000 + gripTimeElapsed)
+        else if (timeSinceStart < 4500 + gripTimeElapsed)
         {
             lifter.setLift(LiftTypes.NO_LIFT);
             drive.crabDrive(Math.PI/2, 0.5, false);
+            //move right (two seconds at half speed)
         }
         else
         {
