@@ -35,8 +35,8 @@ public class DriverStation2015
 
     // JOYSTICK
     public static int OPERATE_FASTER_BUTTON = ButtonPanel2015.JOY_TOP_BUTTON;
-    public static int CLAW_OPEN = ButtonPanel2015.JOY_LEFT;
-    public static int CLAW_CLOSED = ButtonPanel2015.JOY_RIGHT;
+    public static int CLAW_OPEN = ButtonPanel2015.JOY_RIGHT;
+    public static int CLAW_CLOSED = ButtonPanel2015.JOY_LEFT;
     public static int ELEVATOR_UP = ButtonPanel2015.JOY_UP;
     public static int ELEVATOR_DOWN = ButtonPanel2015.JOY_DOWN;
 
