@@ -13,9 +13,11 @@ public class CameraDashboard extends Thread
 {
     private static final Logger LOGGER = Logger.getLogger(CameraDashboard.class);
     
-    final float BLACK = 0;
-    final float RED = 255;
-    final float WHITE = 255*256*256 + 255*256 + 255;
+    final float BLACK = color(0, 0, 0);
+    final float RED = color(255, 0, 0);
+    final float GREEN = color(0, 255, 0);
+    final float BLUE = color(0, 0, 255);
+    final float WHITE = color(255, 255, 255);
 
     static CameraDashboard instance;
     Steering flSteering;
@@ -91,6 +93,21 @@ public class CameraDashboard extends Thread
         drawAngleMonitors(viewWidth, viewHeight);
 
         cameraServer.setImage(frame);
+    }
+    
+    /**
+     * Color values are from 0 to 255<br>
+     * e.g. white = (255, 255, 255)
+     * 
+     * @param r - The red value
+     * @param g - The green value
+     * @param b - The blue value
+     * @return The float for newPixelValue argument in NIVision.imaqDrawShapeOnImage()
+     */
+    public float color(int r, int g, int b)
+    {
+        // 24 bits, every 8 bits is a color channel
+        return b*256*256 + g*256 + r;
     }
 
     private void drawCrossHairs(int viewWidth, int viewHeight)
