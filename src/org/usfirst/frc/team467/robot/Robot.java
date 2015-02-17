@@ -171,7 +171,8 @@ public class Robot extends IterativeRobot
 
     public void disabledPeriodic()
     {
-        
+        gyro.update();
+        System.out.println("GYRO ANGLE: " + gyro.getAngle());
     }
 
     public void autonomousInit()

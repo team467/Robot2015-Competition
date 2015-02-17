@@ -19,6 +19,7 @@ public class Claw
     private final double CLOSE_SPEED_SLOW = -OPEN_SPEED_SLOW;
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;
 
+
     private final double MAX_CURRENT_GRIP = 4;
     private final double MAX_CURRENT_UNGRIP = 6;
 
@@ -114,7 +115,8 @@ public class Claw
 
             case STOP:
                 clawMotor.set(0);
-                driverstation.setClawLED(isClosed || isFullyOpen);
+                isClosed = false;
+                isFullyOpen = false;                
                 break;
         }
     }

@@ -279,7 +279,7 @@ public class Drive extends RobotDrive
         double steeringAngle = (fieldAlign) ? (angle - gyroAngleRad) : angle;
 
         WheelCorrection corrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, steeringAngle, speed);
-
+        System.out.println("ANGLE: " + corrected.angle + " SPEED: " + corrected.speed);
         fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
         fourWheelDrive(corrected.speed, corrected.speed, corrected.speed, corrected.speed);
     }
