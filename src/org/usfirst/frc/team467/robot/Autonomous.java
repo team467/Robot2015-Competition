@@ -1,16 +1,16 @@
 package org.usfirst.frc.team467.robot;
 
-import java.util.Comparator;
-import java.util.Vector;
-
-import org.apache.log4j.Logger;
-
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ImageType;
-
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import java.util.Comparator;
+//import java.util.Vector;
+//
+//import org.apache.log4j.Logger;
+//
+//import com.ni.vision.NIVision;
+//import com.ni.vision.NIVision.Image;
+//import com.ni.vision.NIVision.ImageType;
+//
+//import edu.wpi.first.wpilibj.CameraServer;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Autonomous
 {
@@ -103,6 +103,9 @@ public class Autonomous
                 test(timeSinceStart);
             case GRAB_AND_PUSH:
                 grabAndPush(timeSinceStart);
+                break;
+            case GRAB_AND_PUSH_VAR:
+                grabAndPushVariation(timeSinceStart);
                 break;
             case PUSH_BOTH:
                 pushBoth(timeSinceStart);
@@ -299,6 +302,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, PUSH_BOTH, GRAB_AND_PUSH, TEST, DRIVE_ONLY, GRAB_CAN, PUSH_TOTE
+        NO_AUTO, PUSH_BOTH, GRAB_AND_PUSH, GRAB_AND_PUSH_VAR, TEST, DRIVE_ONLY, GRAB_CAN, PUSH_TOTE
     }
 }
