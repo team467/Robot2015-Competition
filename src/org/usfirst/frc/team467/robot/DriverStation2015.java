@@ -158,11 +158,11 @@ public class DriverStation2015
             if (buttonPanel.isButtonDown(AUTO_DRIVE_ONLY))
                 return AutoType.DRIVE_ONLY;
             else if (buttonPanel.isButtonDown(AUTO_PUSH_BOTH))
-                return AutoType.PUSH_BOTH;
+                return AutoType.NO_AUTO;
             else if (buttonPanel.isButtonDown(AUTO_GRAB_AND_PUSH))
-                return AutoType.GRAB_AND_PUSH;
+                return AutoType.GRAB_CAN;
             else if (buttonPanel.isButtonDown(AUTO_PUSH_TOTE))
-                return AutoType.PUSH_TOTE;
+                return AutoType.HOOK_AND_PUSH;
             else
                 return AutoType.NO_AUTO;
         }
