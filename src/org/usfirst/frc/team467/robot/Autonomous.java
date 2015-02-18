@@ -93,15 +93,12 @@ public class Autonomous
             case DRIVE_ONLY:
                 driveOnly(timeSinceStart);
                 break;
-            case GRAB_ITEM:
-                grabItem(timeSinceStart);
+            case GRAB_CAN:
+                grabCan(timeSinceStart);
                 break;
             case PUSH_TOTE:
                 pushTote(timeSinceStart);
                 break;            
-            case GRAB_BOTH:
-                grabAndPushVariation(timeSinceStart);
-                break;
             case TEST:
                 test(timeSinceStart);
             case GRAB_AND_PUSH:
@@ -149,7 +146,7 @@ public class Autonomous
         }
     }
 
-    private void grabItem(long timeSinceStart)
+    private void grabCan(long timeSinceStart)
     {
         // Start behind an item (container or tote), and pick it up
         // and carry it to the auto zone
@@ -166,7 +163,7 @@ public class Autonomous
         }
         else if (timeSinceStart < 3500 + gripTimeElapsed) // in milleseconds
         {
-            drive.crabDrive(0, // angle to drive at in radians
+            drive.crabDrive(Math.PI, // angle to drive at in radians
                     -0.4,  // speed to drive at in percent
                     false); // no field align
         }
@@ -302,6 +299,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, PUSH_BOTH, GRAB_AND_PUSH, TEST, DRIVE_ONLY, GRAB_ITEM, PUSH_TOTE, GRAB_BOTH
+        NO_AUTO, PUSH_BOTH, GRAB_AND_PUSH, TEST, DRIVE_ONLY, GRAB_CAN, PUSH_TOTE
     }
 }
