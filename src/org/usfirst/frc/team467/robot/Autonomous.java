@@ -169,8 +169,9 @@ public class Autonomous
         {
             lifter.setLift(LiftTypes.LIFT_UP_SLOW);
         }
-        else if (timeSinceStart < 5000)
+        else if (timeSinceStart < 7000)
         {
+            lifter.setLift(LiftTypes.NO_LIFT);
             drive.crabDrive(Math.PI/2, 0.5, false);
         }
     }
