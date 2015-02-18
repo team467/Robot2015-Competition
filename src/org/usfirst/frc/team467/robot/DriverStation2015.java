@@ -29,7 +29,7 @@ public class DriverStation2015
     public static int AUTO_DRIVE_ONLY = ButtonPanel2015.DIAL_POS_2;
     public static int AUTO_PUSH_TOTE = ButtonPanel2015.DIAL_POS_3;
     public static int AUTO_PUSH_BOTH = ButtonPanel2015.DIAL_POS_4;    
-    public static int AUTO_GRAB_CONTAINER_PUSH_TOTE = ButtonPanel2015.DIAL_POS_5;    
+    public static int AUTO_GRAB_AND_PUSH = ButtonPanel2015.DIAL_POS_5;    
     public static int AUTO_NOTHING = ButtonPanel2015.DIAL_POS_6;
 
     // JOYSTICK
@@ -158,11 +158,11 @@ public class DriverStation2015
             if (buttonPanel.isButtonDown(AUTO_DRIVE_ONLY))
                 return AutoType.DRIVE_ONLY;
             else if (buttonPanel.isButtonDown(AUTO_PUSH_BOTH))
-                return AutoType.PUSH_BOTH;
-            else if (buttonPanel.isButtonDown(AUTO_GRAB_CONTAINER_PUSH_TOTE))
-                return AutoType.GRAB_AND_PUSH;
+                return AutoType.NO_AUTO;
+            else if (buttonPanel.isButtonDown(AUTO_GRAB_AND_PUSH))
+                return AutoType.GRAB_CAN;
             else if (buttonPanel.isButtonDown(AUTO_PUSH_TOTE))
-                return AutoType.PUSH_TOTE;
+                return AutoType.HOOK_AND_PUSH;
             else
                 return AutoType.NO_AUTO;
         }

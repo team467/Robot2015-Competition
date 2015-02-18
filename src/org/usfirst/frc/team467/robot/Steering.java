@@ -124,6 +124,22 @@ public class Steering
     {
         return steeringPID.getSetpoint();
     }
+    
+    /**
+     * @return The setPoint in radians
+     */
+    public double getSetAngle()
+    {
+        return (getSetPoint() * (Math.PI * 2) / LEVELS_PER_ROTATION);
+    }
+    
+    /**
+     * @return The absolute difference between the setPoint and sensorAngle in radians
+     */
+    public double getAngleDelta()
+    {
+        return Math.abs(getSetPoint() - getSensorValue()) * (Math.PI * 2) / LEVELS_PER_ROTATION;
+    }
 
     /**
      * Get the Talon motor of this steering object
@@ -148,6 +164,7 @@ public class Steering
         double output = sensor * (Math.PI * 2) / LEVELS_PER_ROTATION;
         LOGGER.trace(String.format("getSteeringAngle() channel=%d sensor=%6.3f center=%4.0f output=%f", steeringMotor.getChannel(),
                 sensor, steeringCenter, output));
+        
         if (steeringSensor.getChannel() == RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL)
         {
             SmartDashboard.putNumber("Front-Left Angle", output);
