@@ -14,7 +14,7 @@ public class Claw
     PowerDistroBoard467 board = null;
     DriverStation2015 driverstation= null;
 
-    private final double OPEN_SPEED_SLOW = -0.4;
+    private final double OPEN_SPEED_SLOW = -0.6;
     private final double OPEN_SPEED_FAST = -0.8;
     private final double CLOSE_SPEED_SLOW = -OPEN_SPEED_SLOW;
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;

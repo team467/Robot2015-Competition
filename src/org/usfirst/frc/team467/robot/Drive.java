@@ -46,7 +46,7 @@ public class Drive extends RobotDrive
     private static final double SPEED_MAX_CHANGE = 0.2;
 
     // Speed to use for Strafe and Revolve Drive
-    private static final double SPEED_STRAFE = 0.4;
+    private static final double SPEED_STRAFE = 0.6;
 
     private static final double REVOLVE_LARGE_FRONT_RADIUS = 65;
     private static final double REVOLVE_LARGE_BACK_RADIUS = REVOLVE_LARGE_FRONT_RADIUS + RobotMap.LENGTH;
