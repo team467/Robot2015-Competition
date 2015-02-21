@@ -181,14 +181,25 @@ public class Autonomous
 
     private void hookAndPush(long timeSinceStart)
     {
-        if (timeSinceStart < 3000)
+        if (timeSinceStart < 2000)
         {
             lifter.setLift(LiftTypes.LIFT_UP_SLOW);
+            drive.crabDrive(Math.PI / 2, 0, false);
         }
-        else if (timeSinceStart < 7000)
+        else if (timeSinceStart < 5750)
         {
             lifter.setLift(LiftTypes.NO_LIFT);
             drive.crabDrive(Math.PI / 2, 0.5, false);
+        }
+        else if (timeSinceStart < 7250)
+        {
+            lifter.setLift(LiftTypes.LIFT_DOWN_SLOW);
+            drive.crabDrive(Math.PI / 2, 0, false);
+        }
+        else
+        {
+            lifter.setLift(LiftTypes.NO_LIFT);
+            drive.crabDrive(Math.PI / 2, 0, false);
         }
     }
 
