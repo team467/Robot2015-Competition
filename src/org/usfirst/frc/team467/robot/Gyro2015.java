@@ -124,12 +124,12 @@ public class Gyro2015
      */
     public void reset()
     {
-        reset(GyroResetDirection.UPFIELD);
+        reset(GyroResetDirection.FACE_AWAY);
     }
     
     /**
      * Resets the angle of the gyro to the given orientation.
-     * @param dir
+     * @param dir - Direction the robot is *CURRENTLY* facing relative to the teleop location.
      */
     public void reset(GyroResetDirection dir)
     {
@@ -137,16 +137,16 @@ public class Gyro2015
         
         switch(dir)
         {
-            case UPFIELD:
+            case FACE_AWAY:
                 additionalResetAngle = 0;
                 break;
-            case DOWNFIELD:
+            case FACE_TOWARD:
                 additionalResetAngle = Math.PI;
                 break;
-            case LEFT:
+            case FACE_LEFT:
                 additionalResetAngle = 3 * Math.PI / 2;
                 break;                
-            case RIGHT:
+            case FACE_RIGHT:
                 additionalResetAngle = Math.PI / 2;
                 break;
         }
@@ -170,5 +170,5 @@ public class Gyro2015
 
 enum GyroResetDirection
 {
-    UPFIELD, DOWNFIELD, LEFT, RIGHT
+    FACE_AWAY, FACE_TOWARD, FACE_LEFT, FACE_RIGHT
 }

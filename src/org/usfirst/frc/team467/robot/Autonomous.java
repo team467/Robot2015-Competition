@@ -67,6 +67,23 @@ public class Autonomous
     {
         autonomousStartTime = -1;
         autonomousType = DriverStation2015.getInstance().getAutoType();
+        switch(autonomousType)
+        {
+            case NO_AUTO:    
+                Gyro2015.getInstance().reset();//reset to upfield
+                break;
+            case DRIVE_ONLY:    
+                Gyro2015.getInstance().reset();//reset to upfield
+                break;
+            case GRAB_CAN:    
+                //starts facing the wall
+                Gyro2015.getInstance().reset(GyroResetDirection.FACE_TOWARD);//reset to upfield
+                break;
+            case HOOK_AND_PUSH:    
+                //starts facing left
+                Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);//reset to upfield
+                break;
+        }
         System.out.println("AUTO MODE " + autonomousType.toString());
     }
 
