@@ -21,7 +21,7 @@ public class Claw
 
 
     private final double MAX_CURRENT_GRIP = 10;
-    private final double MAX_CURRENT_UNGRIP = 10;
+    private final double MAX_CURRENT_UNGRIP = 15;
 
     private boolean isClosed = false;
     private boolean isFullyOpen = false;

@@ -68,10 +68,13 @@ public class Autonomous
         autonomousStartTime = -1;
         autonomousType = DriverStation2015.getInstance().getAutoType();
         switch (autonomousType)
-        {            
+        {
             case GRAB_CAN:
                 // starts facing the wall
                 Gyro2015.getInstance().reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
+                break;
+            case DRIVE_ONLY:
+                Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);// reset to upfield
                 break;
             case HOOK_AND_PUSH:
                 // starts facing left
@@ -142,21 +145,28 @@ public class Autonomous
             claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
             gripTimeElapsed = System.currentTimeMillis() - autonomousStartTime;
         }
-        else if (timeSinceStart < 500 + gripTimeElapsed)
+        else if (timeSinceStart < 2000 + gripTimeElapsed)
         {
             lifter.setLift(LiftTypes.LIFT_UP_SLOW);
         }
-        else if (timeSinceStart < 3500 + gripTimeElapsed) // in milliseconds
+        else if (timeSinceStart < 5000 + gripTimeElapsed) // in milliseconds
         {
             drive.crabDrive(0, // angle to drive at in radians
                     -0.4,      // speed to drive at in percent
                     false);    // no field align
+            lifter.setLift(LiftTypes.NO_LIFT);
+        }
+        else if (timeSinceStart < 6100 + gripTimeElapsed)
+        {
+            drive.turnDrive(0.5);
+            lifter.setLift(LiftTypes.NO_LIFT);
         }
         else
         {
             drive.crabDrive(0, // angle to drive at in radians
                     0,         // speed to drive at in percent
                     false);    // no field align
+            lifter.setLift(LiftTypes.NO_LIFT);
         }
     }
 
@@ -166,15 +176,13 @@ public class Autonomous
         // just creeps into the zone
         if (timeSinceStart < 2000) // in milliseconds
         {
-            drive.crabDrive(0, // angle to drive at in radians
+            drive.crabDrive(Math.PI / 2, // angle to drive at in radians
                     0.5,       // speed to drive at in percent
                     false);    // no field align
         }
         else
         {
-            drive.crabDrive(0, // angle to drive at in radians
-                    0,         // speed to drive at in percent
-                    false);    // no field align
+            drive.noDrive();
 
         }
     }
