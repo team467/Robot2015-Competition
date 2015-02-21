@@ -128,8 +128,7 @@ public class Robot extends IterativeRobot
         drive = Drive.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
-        gyro = Gyro2015.getInstance();
-        gyro.reset();
+        gyro = Gyro2015.getInstance();        
 
         // Initalize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
