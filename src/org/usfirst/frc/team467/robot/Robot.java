@@ -116,6 +116,9 @@ public class Robot extends IterativeRobot
     NIVision.ParticleFilterCriteria2 criteria[] = new NIVision.ParticleFilterCriteria2[1];
     NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0, 0, 1, 1);
     Scores scores = new Scores();
+    
+    final long TELEMETRY_PERIOD_MS = 500;
+    long lastTelemetryTime = System.currentTimeMillis();
 
     public void robotInit()
     {
@@ -208,6 +211,14 @@ public class Robot extends IterativeRobot
             updateDrive();
             updateNavigator();
         }
+        
+        long now = System.currentTimeMillis();
+        if (now > lastTelemetryTime + TELEMETRY_PERIOD_MS)
+        {
+            LOGGER.info(drive.getTelemetry());
+            lastTelemetryTime = now;
+        }
+        
     }
 
     /**

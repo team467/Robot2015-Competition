@@ -104,6 +104,57 @@ public class Drive extends RobotDrive
         }
         return instance;
     }
+    
+    static String formatTelemetry(
+        double flSteeringSensorAngle, double flSteeringSetAngle, double flDriveValue,
+        double frSteeringSensorAngle, double frSteeringSetAngle, double frDriveValue,
+        double blSteeringSensorAngle, double blSteeringSetAngle, double blDriveValue,
+        double brSteeringSensorAngle, double brSteeringSetAngle, double brDriveValue)
+    {
+        return String.format(
+                // (Steering sensor angle, steering set angle, drive value) for each wheel
+                "FL(%+06.2f,%+06.2f,%+05.2f) " +
+                "FR(%+06.2f,%+06.2f,%+05.2f) " +
+                "BL(%+06.2f,%+06.2f,%+05.2f) " +
+                "BR(%+06.2f,%+06.2f,%+05.2f)",
+                
+                flSteeringSensorAngle,
+                flSteeringSetAngle,
+                flDriveValue,
+
+                frSteeringSensorAngle,
+                frSteeringSetAngle,
+                frDriveValue,
+
+                blSteeringSensorAngle,
+                blSteeringSetAngle,
+                blDriveValue,
+
+                brSteeringSensorAngle,
+                brSteeringSetAngle,
+                brDriveValue);
+    }
+    
+    public String getTelemetry()
+    {
+        return formatTelemetry(
+                steering[RobotMap.FRONT_LEFT].getSensorValue(),
+                steering[RobotMap.FRONT_LEFT].getSetAngle(),
+                m_frontLeftMotor.get(),
+                
+                steering[RobotMap.FRONT_RIGHT].getSensorValue(),
+                steering[RobotMap.FRONT_RIGHT].getSetAngle(),
+                m_frontRightMotor.get(),
+                
+                steering[RobotMap.BACK_LEFT].getSensorValue(),
+                steering[RobotMap.BACK_LEFT].getSetAngle(),
+                m_rearLeftMotor.get(),
+                
+                steering[RobotMap.BACK_RIGHT].getSensorValue(),
+                steering[RobotMap.BACK_RIGHT].getSetAngle(),
+                m_rearRightMotor.get()
+                );
+    }
 
     /**
      * Turns on the PID for all wheels.
