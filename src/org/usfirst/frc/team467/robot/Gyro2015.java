@@ -59,7 +59,7 @@ public class Gyro2015
 
     private double getSerialPortAngle()
     {
-        //catch in case Serial Port not working.
+        // catch in case Serial Port not working.
         if (sp == null)
         {
             try
@@ -119,9 +119,38 @@ public class Gyro2015
         return trustedAngle;
     }
 
+    /**
+     * Resets the angle to the gyro to upfield.
+     */
     public void reset()
     {
-        resetSubtractAngle = wrapAngle(trustedAngle + resetSubtractAngle);
+        reset(GyroResetDirection.FACE_AWAY);
+    }
+    
+    /**
+     * Resets the angle of the gyro to the given orientation.
+     * @param dir - Direction the robot is *CURRENTLY* facing relative to the teleop location.
+     */
+    public void reset(GyroResetDirection dir)
+    {
+        double additionalResetAngle = 0;
+        
+        switch(dir)
+        {
+            case FACE_AWAY:
+                additionalResetAngle = 0;
+                break;
+            case FACE_TOWARD:
+                additionalResetAngle = Math.PI;
+                break;
+            case FACE_LEFT:
+                additionalResetAngle = 3 * Math.PI / 2;
+                break;                
+            case FACE_RIGHT:
+                additionalResetAngle = Math.PI / 2;
+                break;
+        }
+        resetSubtractAngle = wrapAngle(trustedAngle + resetSubtractAngle + additionalResetAngle);
     }
 
     public double wrapAngle(double val)
@@ -137,4 +166,9 @@ public class Gyro2015
 //        return String.format("Gyro2015 [trustedAngle=%-7.2f deg, deltaAngle=%-7.3f deg/sec]", trustedAngle, deltaAngle / deltaTime);
     }
 
+}
+
+enum GyroResetDirection
+{
+    FACE_AWAY, FACE_TOWARD, FACE_LEFT, FACE_RIGHT
 }

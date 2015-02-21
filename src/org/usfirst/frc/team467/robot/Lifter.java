@@ -22,7 +22,7 @@ public class Lifter
 
     private PowerDistroBoard467 board = null;
 
-    public static final double SLOW_SPEED_UP = -0.4;
+    public static final double SLOW_SPEED_UP = -0.6;
     public static final double FAST_SPEED_UP = -1.0;
 
     public static final double SLOW_SPEED_DOWN = -SLOW_SPEED_UP;
@@ -30,7 +30,7 @@ public class Lifter
 
     // TODO Replace with practical value
     private static final double MAX_CURRENT_DOWN = 15;
-    private static final double MAX_CURRENT_UP = 25;
+    private static final double MAX_CURRENT_UP = 15;
 
     /**
      * Gets the singleton instance of the elevator
@@ -50,12 +50,12 @@ public class Lifter
     private Lifter()
     {
         lifterMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
-//        topStop = new DigitalInput(RobotMap.SWITCH_UP_STOP);
-//        topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);
-//        bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);
-//        bottomStop = new DigitalInput(RobotMap.SWITCH_DOWN_STOP);
+        topStop = new DigitalInput(RobotMap.SWITCH_UP_STOP);
+        topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);
+        bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);
+        bottomStop = new DigitalInput(RobotMap.SWITCH_DOWN_STOP);
 
-        board = PowerDistroBoard467.getInstance();        
+        board = PowerDistroBoard467.getInstance();
         currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
     }
 
@@ -87,7 +87,7 @@ public class Lifter
 
     private boolean isJammedTop = false;
     private boolean isJammedBottom = false;
-    
+
     /**
      * Lifter implementation that has no limit switch stops.
      * 
@@ -99,7 +99,7 @@ public class Lifter
         switch (lifterDirection)
         {
             case UP:
-                LOGGER.debug("UP");    
+                LOGGER.debug("UP");
                 DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_TOP_STOP, isJammedTop);
                 if (!isJammedTop)
                 {
@@ -121,6 +121,76 @@ public class Lifter
                     isJammedBottom = (board.getLifterCurrent() > MAX_CURRENT_DOWN);
                     isJammedTop = false;
                     lifterMotor.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                }
+                else
+                {
+                    lifterMotor.set(0);
+                }
+                break;
+
+            default:
+                lifterMotor.set(0);
+                isJammedTop = false;
+                isJammedBottom = false;
+                break;
+        }
+    }
+
+    /**
+     * Lifter implementation that has limit switch stops.
+     * 
+     * @param lifterDirection
+     */
+    public void driveLifterZone(LifterDirection lifterDirection, boolean turbo)
+    {
+        LOGGER.debug("LIFT CURRENT: " + board.getLifterCurrent());
+        boolean stopBottomState = bottomStop.get();
+        boolean slowBottomState = bottomSlow.get();
+        boolean slowTopState = topSlow.get();
+        boolean stopTopState = topStop.get();
+        DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_BOTTOM_STOP, stopBottomState);
+        DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_BOTTOM_SLOW, slowBottomState);
+        DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_TOP_SLOW, slowTopState);
+        DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_TOP_STOP, stopTopState);
+        switch (lifterDirection)
+        {
+            case UP:
+                LOGGER.debug("UP");
+                DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_TOP_STOP, isJammedTop);
+                if (!isJammedTop)
+                {
+                    isJammedTop = (board.getLifterCurrent() > MAX_CURRENT_UP);
+                    isJammedBottom = false;
+                    if (!stopTopState)
+                    {
+                        lifterMotor.set((turbo && slowTopState) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                    }
+                    else
+                    {
+                        lifterMotor.set(0);                        
+                    }
+                }
+                else
+                {
+                    lifterMotor.set(0);
+                }
+                break;
+
+            case DOWN:
+                LOGGER.debug("DOWN");
+                DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_BOTTOM_STOP, isJammedBottom);
+                if (!isJammedBottom)
+                {
+                    isJammedBottom = (board.getLifterCurrent() > MAX_CURRENT_DOWN);
+                    isJammedTop = false;
+                    if (!stopBottomState)
+                    {
+                        lifterMotor.set((turbo && !slowBottomState) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                    }
+                    else
+                    {
+                        lifterMotor.set(0);
+                    }
                 }
                 else
                 {
