@@ -23,7 +23,7 @@ public class Autonomous
 
     private AutoType autonomousType = AutoType.NO_AUTO;
 
-    long autonomousStartTime = -999999;
+    long autonomousStartTime = -1;
 
     /**
      * Gets a singleton instance of the Autonomous
@@ -33,7 +33,9 @@ public class Autonomous
     public static Autonomous getInstance()
     {
         if (autonomous == null)
+        {
             autonomous = new Autonomous();
+        }
         return autonomous;
     }
 
@@ -63,7 +65,7 @@ public class Autonomous
      */
     public void initAutonomous()
     {
-        autonomousStartTime = -999999;
+        autonomousStartTime = -1;
         autonomousType = DriverStation2015.getInstance().getAutoType();
         System.out.println("AUTO MODE " + autonomousType.toString());
     }
@@ -90,15 +92,18 @@ public class Autonomous
         // Grab box and grab container and drive to AUTO zone
         switch (this.autonomousType)
         {
-            case DRIVE_ONLY:
-                driveOnly(timeSinceStart);
-                break;
-            case GRAB_CAN:
-                grabCan(timeSinceStart);
-                break;            
             case NO_AUTO:
                 noAuto();
                 break;
+
+            case DRIVE_ONLY:
+                driveOnly(timeSinceStart);
+                break;
+
+            case GRAB_CAN:
+                grabCan(timeSinceStart);
+                break;
+
             case HOOK_AND_PUSH:
                 hookAndPush(timeSinceStart);
                 break;
@@ -109,11 +114,8 @@ public class Autonomous
     {
         drive.noDrive();
     }
-    
-    long gripTimeElapsed = 0;
-    long ungripTimeElapsed = 0;
-    long lifterTimeElapsed = 0;
 
+    long gripTimeElapsed = 0;
 
     private void grabCan(long timeSinceStart)
     {
@@ -130,17 +132,17 @@ public class Autonomous
         {
             lifter.setLift(LiftTypes.LIFT_UP_SLOW);
         }
-        else if (timeSinceStart < 3500 + gripTimeElapsed) // in milleseconds
+        else if (timeSinceStart < 3500 + gripTimeElapsed) // in milliseconds
         {
-            drive.crabDrive(Math.PI, // angle to drive at in radians
-                    -0.4,  // speed to drive at in percent
-                    false); // no field align
+            drive.crabDrive(0, // angle to drive at in radians
+                    -0.4,      // speed to drive at in percent
+                    false);    // no field align
         }
         else
         {
             drive.crabDrive(0, // angle to drive at in radians
-                    0,  // speed to drive at in percent
-                    false); // no field align
+                    0,         // speed to drive at in percent
+                    false);    // no field align
         }
     }
 
@@ -148,21 +150,21 @@ public class Autonomous
     {
         // Drive to auto zone. Starts on the very edge and
         // just creeps into the zone
-        if (timeSinceStart < 2000) // in milleseconds
+        if (timeSinceStart < 2000) // in milliseconds
         {
             drive.crabDrive(0, // angle to drive at in radians
-                    0.5,  // speed to drive at in percent
-                    false); // no field align
+                    0.5,       // speed to drive at in percent
+                    false);    // no field align
         }
         else
         {
             drive.crabDrive(0, // angle to drive at in radians
-                    0,  // speed to drive at in percent
-                    false); // no field align
+                    0,         // speed to drive at in percent
+                    false);    // no field align
 
         }
-
     }
+
     private void hookAndPush(long timeSinceStart)
     {
         if (timeSinceStart < 3000)
@@ -172,7 +174,7 @@ public class Autonomous
         else if (timeSinceStart < 7000)
         {
             lifter.setLift(LiftTypes.NO_LIFT);
-            drive.crabDrive(Math.PI/2, 0.5, false);
+            drive.crabDrive(Math.PI / 2, 0.5, false);
         }
     }
 
@@ -184,5 +186,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH    }
+        NO_AUTO, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH
+    }
 }
