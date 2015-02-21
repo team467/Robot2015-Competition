@@ -13,7 +13,7 @@ public class PowerDistroBoard467
     private PowerDistributionPanel pdp = null;
     
     private RollingAverage clawAverageCurrent = new RollingAverage(10);
-    private RollingAverage lifterAverageCurrent = new RollingAverage(10);
+    private RollingAverage lifterAverageCurrent = new RollingAverage(5);
 
     /**
      * Gets the singleton instance of the board.

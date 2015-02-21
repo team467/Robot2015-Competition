@@ -15,6 +15,7 @@ public class RollingAverageTest
 
         for (int i = 0; i <= 5; i++)
         {
+            // 1 through 5
             rolling.add(i);
         }
         assertEquals(3.0, rolling.getAverage(), MAX_DELTA);
