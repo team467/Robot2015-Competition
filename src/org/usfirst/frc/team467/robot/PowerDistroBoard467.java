@@ -11,6 +11,9 @@ public class PowerDistroBoard467
     private final int CLAW_MOTOR_CHANNEL = 5;
 
     private PowerDistributionPanel pdp = null;
+    
+    private RollingAverage clawAverageCurrent = new RollingAverage(10);
+    private RollingAverage lifterAverageCurrent = new RollingAverage(10);
 
     /**
      * Gets the singleton instance of the board.
@@ -43,6 +46,12 @@ public class PowerDistroBoard467
     {
         return pdp.getTotalCurrent();
     }
+    
+    public void update()
+    {
+        lifterAverageCurrent.add(getCurrent(LIFTER_MOTOR_CHANNEL));
+        clawAverageCurrent.add(getCurrent(CLAW_MOTOR_CHANNEL));
+    }
 
     /**
      * Current of a specific channel
@@ -57,12 +66,12 @@ public class PowerDistroBoard467
 
     public double getLifterCurrent()
     {
-        return getCurrent(LIFTER_MOTOR_CHANNEL);
+        return lifterAverageCurrent.getAverage();
     }
 
     public double getClawCurrent()
     {
-        return getCurrent(CLAW_MOTOR_CHANNEL);
+        return clawAverageCurrent.getAverage();
     }
 
     @Override

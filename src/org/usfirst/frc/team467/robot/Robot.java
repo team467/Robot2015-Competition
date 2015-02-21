@@ -34,6 +34,7 @@ public class Robot extends IterativeRobot
     private DriverStation2015 driverstation;
 
     private Drive drive;
+    private PowerDistroBoard467 board;
     private Autonomous autonomous;
 
     private CameraDashboard cameraDashboard;
@@ -126,6 +127,7 @@ public class Robot extends IterativeRobot
         driverstation = DriverStation2015.getInstance();
         autonomous = Autonomous.getInstance();
         drive = Drive.getInstance();
+        board = PowerDistroBoard467.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
         gyro = Gyro2015.getInstance();
@@ -310,7 +312,8 @@ public class Robot extends IterativeRobot
      */
     private void updateNavigator()
     {
-        lifter.basicDriveLifter(driverstation.getLiftDirection(), driverstation.getMoveTurbo());
+        board.update();
+        lifter.driveLifter(driverstation.getLiftDirection(), driverstation.getMoveTurbo());
         claw.moveClawNew(driverstation.getClawDirection(), driverstation.getMoveTurbo());
     }
 }
