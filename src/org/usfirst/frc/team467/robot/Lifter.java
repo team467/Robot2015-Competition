@@ -11,7 +11,8 @@ public class Lifter
 
     private static Lifter elevator = null;
 
-    private Talon lifterMotor = null;
+    private Talon lifterMotorBottom = null;
+    private Talon lifterMotorTop = null;
     private DigitalInput topStop = null;
     private DigitalInput topSlow = null;
     private DigitalInput bottomSlow = null;
@@ -30,7 +31,7 @@ public class Lifter
 
     // TODO Replace with practical value
     private static final double MAX_CURRENT_DOWN = 15;
-    private static final double MAX_CURRENT_UP = 20;
+    private static final double MAX_CURRENT_UP = 15;
 
     /**
      * Gets the singleton instance of the elevator
@@ -49,7 +50,8 @@ public class Lifter
      */
     private Lifter()
     {
-        lifterMotor = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL);
+        lifterMotorBottom = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL_BOTTOM);
+        lifterMotorTop = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL_TOP);
         topStop = new DigitalInput(RobotMap.SWITCH_UP_STOP);
         topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);
         bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);
@@ -66,21 +68,24 @@ public class Lifter
      */
     public void basicDriveLifter(LifterDirection lifterDirection, boolean turbo)
     {
-        LOGGER.debug("LIFT CURRENT: " + board.getLifterCurrent());
+        LOGGER.debug("LIFT CURRENT: " + board.getLifterBottomCurrent());
         switch (lifterDirection)
         {
             case UP:
                 LOGGER.debug("UP");
-                lifterMotor.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                lifterMotorBottom.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                lifterMotorTop.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
                 break;
 
             case DOWN:
                 LOGGER.debug("DOWN");
-                lifterMotor.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                lifterMotorBottom.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                lifterMotorTop.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
                 break;
 
             default:
-                lifterMotor.set(0);
+                lifterMotorBottom.set(0);
+                lifterMotorTop.set(0);
                 break;
         }
     }
@@ -95,7 +100,7 @@ public class Lifter
      */
     public void driveLifter(LifterDirection lifterDirection, boolean turbo)
     {
-        LOGGER.debug("LIFT CURRENT: " + board.getLifterCurrent());
+        LOGGER.debug("LIFT CURRENT: BOTTOM: " + board.getLifterBottomCurrent() + " TOP: " + board.getLifterTopCurrent());
         switch (lifterDirection)
         {
             case UP:
@@ -103,13 +108,15 @@ public class Lifter
                 DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_TOP_STOP, isJammedTop);
                 if (!isJammedTop)
                 {
-                    isJammedTop = (board.getLifterCurrent() > MAX_CURRENT_UP);
+                    isJammedTop = (board.getLifterBottomCurrent() > MAX_CURRENT_UP) || (board.getLifterTopCurrent() > MAX_CURRENT_UP);
                     isJammedBottom = false;
-                    lifterMotor.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                    lifterMotorBottom.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                    lifterMotorTop.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
                 }
                 else
                 {
-                    lifterMotor.set(0);
+                    lifterMotorBottom.set(0);
+                    lifterMotorTop.set(0);
                 }
                 break;
 
@@ -118,18 +125,21 @@ public class Lifter
                 DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_BOTTOM_STOP, isJammedBottom);
                 if (!isJammedBottom)
                 {
-                    isJammedBottom = (board.getLifterCurrent() > MAX_CURRENT_DOWN);
+                    isJammedBottom = (board.getLifterBottomCurrent() > MAX_CURRENT_DOWN) || (board.getLifterTopCurrent() > MAX_CURRENT_DOWN);
                     isJammedTop = false;
-                    lifterMotor.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                    lifterMotorBottom.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                    lifterMotorTop.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
                 }
                 else
                 {
-                    lifterMotor.set(0);
+                    lifterMotorBottom.set(0);
+                    lifterMotorTop.set(0);
                 }
                 break;
 
             default:
-                lifterMotor.set(0);
+                lifterMotorBottom.set(0);
+                lifterMotorTop.set(0);
                 isJammedTop = false;
                 isJammedBottom = false;
                 break;
@@ -143,7 +153,7 @@ public class Lifter
      */
     public void driveLifterZone(LifterDirection lifterDirection, boolean turbo)
     {
-        LOGGER.debug("LIFT CURRENT: " + board.getLifterCurrent());
+        LOGGER.debug("LIFT CURRENT: " + board.getLifterBottomCurrent());
         boolean stopBottomState = bottomStop.get();
         boolean slowBottomState = bottomSlow.get();
         boolean slowTopState = topSlow.get();
@@ -159,20 +169,20 @@ public class Lifter
                 DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_TOP_STOP, isJammedTop);
                 if (!isJammedTop)
                 {
-                    isJammedTop = (board.getLifterCurrent() > MAX_CURRENT_UP);
+                    isJammedTop = (board.getLifterBottomCurrent() > MAX_CURRENT_UP);
                     isJammedBottom = false;
                     if (!stopTopState)
                     {
-                        lifterMotor.set((turbo && slowTopState) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                        lifterMotorBottom.set((turbo && slowTopState) ? FAST_SPEED_UP : SLOW_SPEED_UP);
                     }
                     else
                     {
-                        lifterMotor.set(0);                        
+                        lifterMotorBottom.set(0);                        
                     }
                 }
                 else
                 {
-                    lifterMotor.set(0);
+                    lifterMotorBottom.set(0);
                 }
                 break;
 
@@ -181,25 +191,25 @@ public class Lifter
                 DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_BOTTOM_STOP, isJammedBottom);
                 if (!isJammedBottom)
                 {
-                    isJammedBottom = (board.getLifterCurrent() > MAX_CURRENT_DOWN);
+                    isJammedBottom = (board.getLifterBottomCurrent() > MAX_CURRENT_DOWN);
                     isJammedTop = false;
                     if (!stopBottomState)
                     {
-                        lifterMotor.set((turbo && !slowBottomState) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                        lifterMotorBottom.set((turbo && !slowBottomState) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
                     }
                     else
                     {
-                        lifterMotor.set(0);
+                        lifterMotorBottom.set(0);
                     }
                 }
                 else
                 {
-                    lifterMotor.set(0);
+                    lifterMotorBottom.set(0);
                 }
                 break;
 
             default:
-                lifterMotor.set(0);
+                lifterMotorBottom.set(0);
                 isJammedTop = false;
                 isJammedBottom = false;
                 break;
@@ -222,11 +232,11 @@ public class Lifter
                     case DOWN:
                         if (!topStop.get())
                             currentZone = LifterZoneTypes.SLOW_ZONE_TOP;
-                        lifterMotor.set(SLOW_SPEED_DOWN);
+                        lifterMotorBottom.set(SLOW_SPEED_DOWN);
                         break;
 
                     default:// no drive
-                        lifterMotor.set(0);
+                        lifterMotorBottom.set(0);
                         break;
                 }
                 break;
@@ -237,17 +247,17 @@ public class Lifter
                     case UP:
                         if (topStop.get())
                             currentZone = LifterZoneTypes.STOP_ZONE_TOP;
-                        lifterMotor.set(SLOW_SPEED_UP);
+                        lifterMotorBottom.set(SLOW_SPEED_UP);
                         break;
 
                     case DOWN:
                         if (topSlow.get())
                             currentZone = LifterZoneTypes.FAST_ZONE;
-                        lifterMotor.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                        lifterMotorBottom.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
                         break;
 
                     default: // no drive
-                        lifterMotor.set(0);
+                        lifterMotorBottom.set(0);
                         break;
                 }
                 break;
@@ -264,17 +274,17 @@ public class Lifter
                     case UP:
                         if (topSlow.get())
                             currentZone = LifterZoneTypes.SLOW_ZONE_TOP;
-                        lifterMotor.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                        lifterMotorBottom.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
                         break;
 
                     case DOWN:
                         if (bottomSlow.get())
                             currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
-                        lifterMotor.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                        lifterMotorBottom.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
                         break;
 
                     default:// no drive
-                        lifterMotor.set(0);
+                        lifterMotorBottom.set(0);
                         break;
                 }
                 break;
@@ -289,17 +299,17 @@ public class Lifter
                     case UP:
                         if (bottomSlow.get())
                             currentZone = LifterZoneTypes.FAST_ZONE;
-                        lifterMotor.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                        lifterMotorBottom.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
                         break;
 
                     case DOWN:
                         if (bottomStop.get())
                             currentZone = LifterZoneTypes.STOP_ZONE_BOTTOM;
-                        lifterMotor.set(SLOW_SPEED_DOWN);
+                        lifterMotorBottom.set(SLOW_SPEED_DOWN);
                         break;
 
                     default: // no drive
-                        lifterMotor.set(0);
+                        lifterMotorBottom.set(0);
                         break;
                 }
                 break;
@@ -311,11 +321,11 @@ public class Lifter
                 switch (lifterDirection)
                 {
                     case UP:
-                        lifterMotor.set(SLOW_SPEED_UP);
+                        lifterMotorBottom.set(SLOW_SPEED_UP);
                         break;
 
                     default:// no drive
-                        lifterMotor.set(0);
+                        lifterMotorBottom.set(0);
                         break;
                 }
                 break;
@@ -368,27 +378,27 @@ public class Lifter
      */
     public void setLift(LiftTypes liftType)
     {
-        double current = board.getLifterCurrent();
+        double current = board.getLifterBottomCurrent();
         if (current > MAX_CURRENT_DOWN)
         {
-            lifterMotor.set(0.0);
+            lifterMotorBottom.set(0.0);
             return;
         }
         if (liftType == LiftTypes.NO_LIFT)
         {
-            lifterMotor.set(0.0);
+            lifterMotorBottom.set(0.0);
             currentLiftDirection = LifterDirection.STOP;
         }
         else if (liftType == LiftTypes.LIFT_DOWN_SLOW)
         {
             if (currentZone != LifterZoneTypes.STOP_ZONE_BOTTOM)
             {
-                lifterMotor.set(SLOW_SPEED_DOWN);
+                lifterMotorBottom.set(SLOW_SPEED_DOWN);
                 currentLiftDirection = LifterDirection.DOWN;
             }
             else
             {
-                lifterMotor.set(0);
+                lifterMotorBottom.set(0);
                 currentLiftDirection = LifterDirection.STOP;
             }
         }
@@ -396,12 +406,12 @@ public class Lifter
         {
             if (currentZone != LifterZoneTypes.STOP_ZONE_TOP)
             {
-                lifterMotor.set(SLOW_SPEED_UP);
+                lifterMotorBottom.set(SLOW_SPEED_UP);
                 currentLiftDirection = LifterDirection.UP;
             }
             else
             {
-                lifterMotor.set(0);
+                lifterMotorBottom.set(0);
                 currentLiftDirection = LifterDirection.STOP;
             }
         }
@@ -410,18 +420,18 @@ public class Lifter
             if (currentZone == LifterZoneTypes.FAST_ZONE || currentZone == LifterZoneTypes.SLOW_ZONE_TOP
                     || currentZone == LifterZoneTypes.STOP_ZONE_TOP)
             {
-                lifterMotor.set(FAST_SPEED_DOWN);
+                lifterMotorBottom.set(FAST_SPEED_DOWN);
                 currentLiftDirection = LifterDirection.DOWN;
             }
             else if (currentZone != LifterZoneTypes.STOP_ZONE_BOTTOM)
             {
-                lifterMotor.set(SLOW_SPEED_DOWN);
+                lifterMotorBottom.set(SLOW_SPEED_DOWN);
                 currentLiftDirection = LifterDirection.DOWN;
             }
             else
             // in stop zone bottom
             {
-                lifterMotor.set(0);
+                lifterMotorBottom.set(0);
                 currentLiftDirection = LifterDirection.STOP;
             }
         }
@@ -430,25 +440,25 @@ public class Lifter
             if (currentZone == LifterZoneTypes.FAST_ZONE || currentZone == LifterZoneTypes.SLOW_ZONE_BOTTOM
                     || currentZone == LifterZoneTypes.STOP_ZONE_BOTTOM)
             {
-                lifterMotor.set(FAST_SPEED_UP);
+                lifterMotorBottom.set(FAST_SPEED_UP);
                 currentLiftDirection = LifterDirection.UP;
             }
             else if (currentZone != LifterZoneTypes.STOP_ZONE_TOP)
             {
-                lifterMotor.set(SLOW_SPEED_UP);
+                lifterMotorBottom.set(SLOW_SPEED_UP);
                 currentLiftDirection = LifterDirection.UP;
             }
             else
             // in stop zone top
             {
-                lifterMotor.set(0);
+                lifterMotorBottom.set(0);
                 currentLiftDirection = LifterDirection.STOP;
             }
         }
         else
         // Should never get here
         {
-            lifterMotor.set(0);
+            lifterMotorBottom.set(0);
             currentLiftDirection = LifterDirection.STOP;
         }
     }

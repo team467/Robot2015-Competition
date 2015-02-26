@@ -156,9 +156,7 @@ public class DriverStation2015
         if (isAutonomousMode())
         {
             if (buttonPanel.isButtonDown(AUTO_DRIVE_ONLY))
-                return AutoType.DRIVE_ONLY;
-            else if (buttonPanel.isButtonDown(AUTO_PUSH_BOTH))
-                return AutoType.NO_AUTO;
+                return AutoType.DRIVE_ONLY;            
             else if (buttonPanel.isButtonDown(AUTO_GRAB_AND_PUSH))
                 return AutoType.GRAB_CAN;
             else if (buttonPanel.isButtonDown(AUTO_PUSH_TOTE))

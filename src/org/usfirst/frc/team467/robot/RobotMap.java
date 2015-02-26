@@ -38,7 +38,8 @@ public class RobotMap
     public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 3;
 
     // Game Piece Motor IDs - PWMTalon, RoboRio
-    public static final int LIFTER_MOTOR_CHANNEL = 4;
+    public static final int LIFTER_MOTOR_CHANNEL_BOTTOM = 4;
+    public static final int LIFTER_MOTOR_CHANNEL_TOP = 6;
     public static final int CLAW_MOTOR_CHANNEL = 5;
 
     //
