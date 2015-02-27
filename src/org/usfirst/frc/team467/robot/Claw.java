@@ -57,28 +57,28 @@ public class Claw
      * @param clawDir
      * @param turbo
      */
-    public void basicMoveClaw(ClawMoveDirection clawDir, boolean turbo)
-    {
-        LOGGER.debug("CLAW CURRENT: " + board.getClawCurrent());
-        switch (clawDir)
-        {
-            case CLOSE:
-                LOGGER.debug("CLOSE");
-                clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
-                break;
+//    public void basicMoveClaw(ClawMoveDirection clawDir, boolean turbo)
+//    {
+//        LOGGER.debug("CLAW CURRENT: " + board.getClawCurrent());
+//        switch (clawDir)
+//        {
+//            case CLOSE:
+//                LOGGER.debug("CLOSE");
+//                clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
+//                break;
+//
+//            case OPEN:
+//                LOGGER.debug("OPEN");
+//                clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
+//                break;
+//
+//            case STOP:
+//                clawMotor.set(0);
+//                break;
+//        }
+//    }
 
-            case OPEN:
-                LOGGER.debug("OPEN");
-                clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
-                break;
-
-            case STOP:
-                clawMotor.set(0);
-                break;
-        }
-    }
-
-    public void moveClawNew(ClawMoveDirection clawDir, boolean turbo)
+    public void moveClaw(ClawMoveDirection clawDir, boolean turbo)
     {
         LOGGER.debug("CLAW CURRENT: " + board.getClawCurrent());
         switch (clawDir)
@@ -88,7 +88,7 @@ public class Claw
                 driverstation.setClawLED(isClosed);
                 if (!isClosed)
                 {
-                    isClosed = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                    isClosed = (board.getClawCurrent() > MAX_CURRENT_GRIP);
                     isFullyOpen = false;
                     clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
                 }
@@ -121,68 +121,68 @@ public class Claw
         }
     }
 
-    /**
-     * Moves the claw given the ClawMoveType
-     * 
-     * @param clawTypes
-     */
-    public void moveClaw(ClawMoveTypes clawTypes)
-    {
-        double current = board.getClawCurrent();
-        switch (clawTypes)
-        {
-            case GRIP_SLOW:
-                isClosed = (current > MAX_CURRENT_GRIP);
-                if (!isClosed)
-                {
-                    clawMotor.set(CLOSE_SPEED_SLOW);
-                }
-                else
-                {
-                    clawMotor.set(0);
-                }
-                break;
-
-            case GRIP_FAST:
-                isClosed = (current > MAX_CURRENT_GRIP);
-                if (!isClosed)
-                {
-                    clawMotor.set(CLOSE_SPEED_FAST);
-                }
-                else
-                {
-                    clawMotor.set(0);
-                }
-                break;
-
-            case UNGRIP_SLOW:
-                isFullyOpen = (current > MAX_CURRENT_UNGRIP);
-                if (!isFullyOpen)
-                {
-                    clawMotor.set(OPEN_SPEED_SLOW);
-                }
-                else
-                {
-                    clawMotor.set(0);
-                }
-                break;
-
-            case UNGRIP_FAST:
-                isFullyOpen = (current > MAX_CURRENT_UNGRIP);
-                if (!isFullyOpen)
-                {
-                    clawMotor.set(OPEN_SPEED_FAST);
-                }
-                else
-                {
-                    clawMotor.set(0);
-                }
-                break;
-
-            default:
-                clawMotor.set(0);
-        }
-    }
+//    /**
+//     * Moves the claw given the ClawMoveType
+//     * 
+//     * @param clawTypes
+//     */
+//    public void moveClaw(ClawMoveTypes clawTypes)
+//    {
+//        double current = board.getClawCurrent();
+//        switch (clawTypes)
+//        {
+//            case GRIP_SLOW:
+//                isClosed = (current > MAX_CURRENT_GRIP);
+//                if (!isClosed)
+//                {
+//                    clawMotor.set(CLOSE_SPEED_SLOW);
+//                }
+//                else
+//                {
+//                    clawMotor.set(0);
+//                }
+//                break;
+//
+//            case GRIP_FAST:
+//                isClosed = (current > MAX_CURRENT_GRIP);
+//                if (!isClosed)
+//                {
+//                    clawMotor.set(CLOSE_SPEED_FAST);
+//                }
+//                else
+//                {
+//                    clawMotor.set(0);
+//                }
+//                break;
+//
+//            case UNGRIP_SLOW:
+//                isFullyOpen = (current > MAX_CURRENT_UNGRIP);
+//                if (!isFullyOpen)
+//                {
+//                    clawMotor.set(OPEN_SPEED_SLOW);
+//                }
+//                else
+//                {
+//                    clawMotor.set(0);
+//                }
+//                break;
+//
+//            case UNGRIP_FAST:
+//                isFullyOpen = (current > MAX_CURRENT_UNGRIP);
+//                if (!isFullyOpen)
+//                {
+//                    clawMotor.set(OPEN_SPEED_FAST);
+//                }
+//                else
+//                {
+//                    clawMotor.set(0);
+//                }
+//                break;
+//
+//            default:
+//                clawMotor.set(0);
+//        }
+//    }
 
     /**
      * When something is in the claw
@@ -211,13 +211,3 @@ enum ClawMoveDirection
     OPEN, CLOSE, STOP
 }
 
-/**
- * Different movement types for the claw.
- * 
- * @author kyle
- *
- */
-enum ClawMoveTypes
-{
-    GRIP_SLOW, GRIP_FAST, UNGRIP_SLOW, UNGRIP_FAST, STOP
-}

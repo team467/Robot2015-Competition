@@ -1,17 +1,5 @@
 package org.usfirst.frc.team467.robot;
 
-//import java.util.Comparator;
-//import java.util.Vector;
-//
-//import org.apache.log4j.Logger;
-//
-//import com.ni.vision.NIVision;
-//import com.ni.vision.NIVision.Image;
-//import com.ni.vision.NIVision.ImageType;
-//
-//import edu.wpi.first.wpilibj.CameraServer;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 public class Autonomous
 {
 
@@ -142,31 +130,31 @@ public class Autonomous
         if (!claw.isClosed())
         {
             // close motor around box
-            claw.moveClaw(ClawMoveTypes.GRIP_SLOW);
+            claw.moveClaw(ClawMoveDirection.CLOSE, false);
             gripTimeElapsed = System.currentTimeMillis() - autonomousStartTime;
         }
         else if (timeSinceStart < 2000 + gripTimeElapsed)
         {
-            lifter.setLift(LiftTypes.LIFT_UP_SLOW);
+            lifter.driveLifter(LifterDirection.UP, false);
         }
         else if (timeSinceStart < 5000 + gripTimeElapsed) // in milliseconds
         {
             drive.crabDrive(0, // angle to drive at in radians
                     -0.4,      // speed to drive at in percent
                     false);    // no field align
-            lifter.setLift(LiftTypes.NO_LIFT);
+            lifter.driveLifter(LifterDirection.STOP, false);
         }
         else if (timeSinceStart < 6100 + gripTimeElapsed)
         {
             drive.turnDrive(0.5);
-            lifter.setLift(LiftTypes.NO_LIFT);
+            lifter.driveLifter(LifterDirection.STOP, false);
         }
         else
         {
             drive.crabDrive(0, // angle to drive at in radians
                     0,         // speed to drive at in percent
                     false);    // no field align
-            lifter.setLift(LiftTypes.NO_LIFT);
+            lifter.driveLifter(LifterDirection.STOP, false);
         }
     }
 
@@ -191,22 +179,22 @@ public class Autonomous
     {
         if (timeSinceStart < 2000)
         {
-            lifter.setLift(LiftTypes.LIFT_UP_SLOW);
+            lifter.driveLifter(LifterDirection.UP,false);
             drive.crabDrive(Math.PI / 2, 0, false);
         }
         else if (timeSinceStart < 6000)
         {
-            lifter.setLift(LiftTypes.NO_LIFT);
+            lifter.driveLifter(LifterDirection.STOP, false);
             drive.crabDrive(Math.PI / 2, 0.5, false);
         }
         else if (timeSinceStart < 7500)
         {
-            lifter.setLift(LiftTypes.LIFT_DOWN_SLOW);
+            lifter.driveLifter(LifterDirection.DOWN, false);
             drive.crabDrive(Math.PI / 2, 0, false);
         }
         else
         {
-            lifter.setLift(LiftTypes.NO_LIFT);
+            lifter.driveLifter(LifterDirection.STOP, false);
             drive.crabDrive(Math.PI / 2, 0, false);
         }
     }

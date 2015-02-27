@@ -313,6 +313,6 @@ public class Robot extends IterativeRobot
     {
         board.update();
         lifter.driveLifter(driverstation.getLiftDirection(), driverstation.getMoveTurbo());
-        claw.moveClawNew(driverstation.getClawDirection(), driverstation.getMoveTurbo());
+        claw.moveClaw(driverstation.getClawDirection(), driverstation.getMoveTurbo());
     }
 }
