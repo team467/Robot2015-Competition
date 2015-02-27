@@ -87,13 +87,16 @@ public class Lifter
                     isJammedTop = (board.getLifterBottomCurrent() > MAX_CURRENT_UP)
                             || (board.getLifterTopCurrent() > MAX_CURRENT_UP);
                     isJammedBottom = false;
-                    lifterMotorBottom.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
-                    lifterMotorTop.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
                 }
-                else
+                if (isJammedTop)
                 {
                     lifterMotorBottom.set(0);
                     lifterMotorTop.set(0);
+                }
+                else
+                {
+                    lifterMotorBottom.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                    lifterMotorTop.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
                 }
                 break;
 
@@ -105,13 +108,16 @@ public class Lifter
                     isJammedBottom = (board.getLifterBottomCurrent() > MAX_CURRENT_DOWN)
                             || (board.getLifterTopCurrent() > MAX_CURRENT_DOWN);
                     isJammedTop = false;
-                    lifterMotorBottom.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
-                    lifterMotorTop.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
                 }
-                else
+                if (isJammedBottom)
                 {
                     lifterMotorBottom.set(0);
                     lifterMotorTop.set(0);
+                }
+                else
+                {
+                    lifterMotorBottom.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                    lifterMotorTop.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
                 }
                 break;
 

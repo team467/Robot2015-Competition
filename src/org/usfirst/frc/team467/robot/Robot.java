@@ -10,6 +10,7 @@ package org.usfirst.frc.team467.robot;
 import java.util.Comparator;
 
 import org.apache.log4j.Logger;
+
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
@@ -150,7 +151,7 @@ public class Robot extends IterativeRobot
     public void disabledPeriodic()
     {
         gyro.update();
-        System.out.println("GYRO ANGLE: " + gyro.getAngle());
+//           System.out.println("GYRO ANGLE: " + gyro.getAngle());
     }
 
     public void autonomousInit()
@@ -174,6 +175,9 @@ public class Robot extends IterativeRobot
     public void autonomousPeriodic()
     {
         LOGGER.debug("Autonomous");
+        
+        driverstation.readInputs();
+        board.update();
         autonomous.updateAutonomousPeriodic();
     }
 
@@ -188,7 +192,7 @@ public class Robot extends IterativeRobot
     public void teleopPeriodic()
     {
         // Read driverstation inputs
-        driverstation.readInputs();        
+        driverstation.readInputs();
         gyro.update();               
         if(driverstation.getGyroReset())
         {

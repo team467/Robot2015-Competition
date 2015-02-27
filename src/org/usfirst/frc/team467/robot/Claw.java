@@ -68,13 +68,17 @@ public class Claw
 
                 if (!m_isClosed)
                 {
+                    LOGGER.debug("CLAW OPEN MAX=" + MAX_CURRENT_GRIP);
                     m_isClosed = (board.getClawCurrent() > MAX_CURRENT_GRIP);
                     m_isFullyOpen = false;
-                    clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
                 }
-                else
+                if (m_isClosed)
                 {                    
                     clawMotor.set(0);
+                }
+                else
+                {
+                    clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
                 }
                 break;
 
@@ -85,11 +89,14 @@ public class Claw
                 {
                     m_isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
                     m_isClosed = false;
-                    clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
+                }
+                if (m_isFullyOpen)
+                {
+                    clawMotor.set(0);
                 }
                 else
                 {
-                    clawMotor.set(0);
+                    clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
                 }
                 break;
 
