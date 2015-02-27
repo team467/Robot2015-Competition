@@ -269,7 +269,7 @@ public class DriverStation2015
      */
     public boolean getSlow()
     {
-        return getDriveJoystick().buttonDown(7);
+        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
     }
 
     /**
@@ -278,7 +278,7 @@ public class DriverStation2015
      */
     public boolean getTurbo()
     {
-        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
+        return getDriveJoystick().buttonDown(7);
     }
 
     // Calibration functions. Calibration is a separate use mode - so the buttons used

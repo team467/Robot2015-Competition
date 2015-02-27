@@ -74,7 +74,14 @@ public class Gyro2015
         }
         else
         {
-            String data = sp.readString();
+            String data = "";
+            try
+            {
+                data = sp.readString();
+            }
+            catch(Exception ex)
+            {                
+            }
             stringBuffer.append(data);
             int startIndex = 0;
             int endIndex = 0;
