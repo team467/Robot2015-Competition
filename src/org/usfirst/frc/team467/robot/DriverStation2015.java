@@ -2,6 +2,7 @@ package org.usfirst.frc.team467.robot;
 
 import org.usfirst.frc.team467.robot.Autonomous.AutoType;
 
+import com.sun.corba.se.impl.encoding.CodeSetConversion.BTCConverter;
 import com.sun.media.jfxmedia.logging.Logger;
 
 public class DriverStation2015
@@ -24,13 +25,6 @@ public class DriverStation2015
     public static int CAL_FR = ButtonPanel2015.DIAL_POS_5;
     public static int CAL_BL = ButtonPanel2015.DIAL_POS_4;
     public static int CAL_BR = ButtonPanel2015.DIAL_POS_3;
-
-    // KNOB - AUTO
-    public static int AUTO_DRIVE_ONLY = ButtonPanel2015.DIAL_POS_2;
-    public static int AUTO_PUSH_TOTE = ButtonPanel2015.DIAL_POS_3;
-    public static int AUTO_PUSH_BOTH = ButtonPanel2015.DIAL_POS_5;    
-    public static int AUTO_GRAB_AND_PUSH = ButtonPanel2015.DIAL_POS_4;    
-    public static int AUTO_NOTHING = ButtonPanel2015.DIAL_POS_6;
 
     // JOYSTICK
     public static int OPERATE_FASTER_BUTTON = ButtonPanel2015.JOY_TOP_BUTTON;
@@ -155,14 +149,22 @@ public class DriverStation2015
     {
         if (isAutonomousMode())
         {
-            if (buttonPanel.isButtonDown(AUTO_DRIVE_ONLY))
-                return AutoType.DRIVE_ONLY;            
-            else if (buttonPanel.isButtonDown(AUTO_GRAB_AND_PUSH))
+            if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_2))
+            {
+                return AutoType.DRIVE_ONLY;
+            }                           
+            else if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_3))
+            {
                 return AutoType.GRAB_CAN;
-            else if (buttonPanel.isButtonDown(AUTO_PUSH_TOTE))
+            }
+            else if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_4))
+            {
                 return AutoType.HOOK_AND_PUSH;
+            }
             else
+            {
                 return AutoType.NO_AUTO;
+            }
         }
         else
         {
