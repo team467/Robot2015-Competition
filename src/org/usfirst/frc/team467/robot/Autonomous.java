@@ -126,12 +126,12 @@ public class Autonomous
     {
         // Start behind an item (container or tote), and pick it up
         // and carry it to the auto zone
-
+        
         if (!claw.isClosed())
         {
             // close motor around box
             claw.moveClaw(ClawMoveDirection.CLOSE, false);
-            gripTimeElapsed = System.currentTimeMillis() - autonomousStartTime;
+            gripTimeElapsed = timeSinceStart;
         }
         else if (timeSinceStart < 2000 + gripTimeElapsed)
         {

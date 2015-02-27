@@ -13,7 +13,7 @@ public class PowerDistroBoard467
 
     private PowerDistributionPanel pdp = null;
     
-    private RollingAverage clawAverageCurrent = new RollingAverage(10);
+    private RollingAverage clawAverageCurrent = new RollingAverage(3);
     private RollingAverage lifterAverageCurrentBottom = new RollingAverage(3);
     private RollingAverage lifterAverageCurrentTop = new RollingAverage(3);
 

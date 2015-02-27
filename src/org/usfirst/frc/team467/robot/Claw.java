@@ -20,11 +20,11 @@ public class Claw
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;
 
 
-    private final double MAX_CURRENT_GRIP = 10;
+    private final double MAX_CURRENT_GRIP = 7;
     private final double MAX_CURRENT_UNGRIP = 15;
 
-    private boolean isClosed = false;
-    private boolean isFullyOpen = false;
+    private boolean m_isClosed = false;
+    private boolean m_isFullyOpen = false;
 
     /**
      * Singleton instance of the robot.
@@ -57,26 +57,6 @@ public class Claw
      * @param clawDir
      * @param turbo
      */
-//    public void basicMoveClaw(ClawMoveDirection clawDir, boolean turbo)
-//    {
-//        LOGGER.debug("CLAW CURRENT: " + board.getClawCurrent());
-//        switch (clawDir)
-//        {
-//            case CLOSE:
-//                LOGGER.debug("CLOSE");
-//                clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
-//                break;
-//
-//            case OPEN:
-//                LOGGER.debug("OPEN");
-//                clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
-//                break;
-//
-//            case STOP:
-//                clawMotor.set(0);
-//                break;
-//        }
-//    }
 
     public void moveClaw(ClawMoveDirection clawDir, boolean turbo)
     {
@@ -85,11 +65,11 @@ public class Claw
         {
             case CLOSE:
                 LOGGER.debug("CLOSE");
-                driverstation.setClawLED(isClosed);
-                if (!isClosed)
+
+                if (!m_isClosed)
                 {
-                    isClosed = (board.getClawCurrent() > MAX_CURRENT_GRIP);
-                    isFullyOpen = false;
+                    m_isClosed = (board.getClawCurrent() > MAX_CURRENT_GRIP);
+                    m_isFullyOpen = false;
                     clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
                 }
                 else
@@ -100,11 +80,11 @@ public class Claw
 
             case OPEN:
                 LOGGER.debug("OPEN");
-                driverstation.setClawLED(isFullyOpen);
-                if (!isFullyOpen)
+
+                if (!m_isFullyOpen)
                 {
-                    isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
-                    isClosed = false;
+                    m_isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                    m_isClosed = false;
                     clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
                 }
                 else
@@ -115,74 +95,12 @@ public class Claw
 
             case STOP:
                 clawMotor.set(0);
-                isClosed = false;
-                isFullyOpen = false;                
+                m_isClosed = false;
+                m_isFullyOpen = false;                
                 break;
         }
+        driverstation.setClawLED(m_isClosed || m_isFullyOpen);
     }
-
-//    /**
-//     * Moves the claw given the ClawMoveType
-//     * 
-//     * @param clawTypes
-//     */
-//    public void moveClaw(ClawMoveTypes clawTypes)
-//    {
-//        double current = board.getClawCurrent();
-//        switch (clawTypes)
-//        {
-//            case GRIP_SLOW:
-//                isClosed = (current > MAX_CURRENT_GRIP);
-//                if (!isClosed)
-//                {
-//                    clawMotor.set(CLOSE_SPEED_SLOW);
-//                }
-//                else
-//                {
-//                    clawMotor.set(0);
-//                }
-//                break;
-//
-//            case GRIP_FAST:
-//                isClosed = (current > MAX_CURRENT_GRIP);
-//                if (!isClosed)
-//                {
-//                    clawMotor.set(CLOSE_SPEED_FAST);
-//                }
-//                else
-//                {
-//                    clawMotor.set(0);
-//                }
-//                break;
-//
-//            case UNGRIP_SLOW:
-//                isFullyOpen = (current > MAX_CURRENT_UNGRIP);
-//                if (!isFullyOpen)
-//                {
-//                    clawMotor.set(OPEN_SPEED_SLOW);
-//                }
-//                else
-//                {
-//                    clawMotor.set(0);
-//                }
-//                break;
-//
-//            case UNGRIP_FAST:
-//                isFullyOpen = (current > MAX_CURRENT_UNGRIP);
-//                if (!isFullyOpen)
-//                {
-//                    clawMotor.set(OPEN_SPEED_FAST);
-//                }
-//                else
-//                {
-//                    clawMotor.set(0);
-//                }
-//                break;
-//
-//            default:
-//                clawMotor.set(0);
-//        }
-//    }
 
     /**
      * When something is in the claw
@@ -191,7 +109,7 @@ public class Claw
      */
     public boolean isClosed()
     {
-        return isClosed;
+        return m_isClosed;
     }
 
     /**
@@ -201,7 +119,7 @@ public class Claw
      */
     public boolean isFullyOpen()
     {
-        return isFullyOpen;
+        return m_isFullyOpen;
     }
 
 }
