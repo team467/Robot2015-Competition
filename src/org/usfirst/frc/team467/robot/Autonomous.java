@@ -1,7 +1,55 @@
 package org.usfirst.frc.team467.robot;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 public class Autonomous
 {
+	interface VoidCallable
+	{
+		void call();
+	}
+	
+	private static class Action
+	{
+		static final long FOREVER = 10000;
+		
+		long durationMS;
+		VoidCallable action;
+		
+		private Action(float durationSecs, VoidCallable action)
+		{
+			this.durationMS = (long)(durationSecs * 1000);
+			this.action = action;
+		}
+
+		long getDurationMS() {
+			return durationMS;
+		}
+
+		VoidCallable getAction() {
+			return action;
+		}
+		
+		public static Action make(float durationSecs, VoidCallable action) {
+			return new Action(durationSecs, action);
+		}
+	}
+	
+	List<Action> actions = new LinkedList<Action>();
+	
+	private List<Action> addAction(float durationSecs, VoidCallable action)
+	{
+		actions.add(new Action(durationSecs, action));
+		return actions;
+	}
+	
+	private boolean forDurationSecs(float duration)
+	{
+  		long now = System.currentTimeMillis();
+    	return now < actionStartTimeMS + duration;
+	}
 
     private static Autonomous autonomous = null;
 
@@ -11,6 +59,7 @@ public class Autonomous
 
     private AutoType autonomousType = AutoType.NO_AUTO;
 
+    long actionStartTimeMS = -1;
     long autonomousStartTime = -1;
 
     /**
@@ -38,17 +87,6 @@ public class Autonomous
     }
 
     /**
-     * Sets what autonomous routine to run. Please do not call this after
-     * updateAutonomousPeriodic() has been run.
-     * 
-     * @param autoType
-     */
-    public void setAutoType(AutoType autoType)
-    {
-        this.autonomousType = autoType;
-    }
-
-    /**
      * Sets up the periodic function
      */
     public void initAutonomous()
@@ -63,15 +101,42 @@ public class Autonomous
                 break;
             case DRIVE_ONLY:
                 Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);// reset to upfield
+                // Drive to auto zone. Starts on the very edge and just creeps into the zone
+                addAction(2.0f, () -> {
+                    drive.crabDrive(Math.PI / 2, 0.5, false);
+                });
+                addAction(Action.FOREVER, () -> {
+                    drive.noDrive();
+                });
                 break;
             case HOOK_AND_PUSH:
                 // starts facing left
                 Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);// reset to upfield
+                addAction(2.0f, () -> {
+    				lifter.driveLifter(LifterDirection.UP,false);
+    				drive.crabDrive(Math.PI / 2, 0, false);
+                });
+                addAction(4.0f, () -> {
+    				lifter.driveLifter(LifterDirection.STOP, false);
+    				drive.crabDrive(Math.PI / 2, 0.5, false);
+                });
+                addAction(1.5f, () -> {
+    	            lifter.driveLifter(LifterDirection.DOWN, false);
+    	            drive.crabDrive(Math.PI / 2, 0, false);
+                });
+                addAction(Action.FOREVER, () -> {
+    	            lifter.driveLifter(LifterDirection.STOP, false);
+    	            drive.crabDrive(Math.PI / 2, 0, false);
+                });
                 break;
             default:
                 Gyro2015.getInstance().reset();// reset to upfield
+                addAction(Action.FOREVER, () -> {
+                    drive.noDrive();
+                });
                 break;
         }
+
         System.out.println("AUTO MODE " + autonomousType.toString());
     }
 
@@ -80,6 +145,43 @@ public class Autonomous
      */
     public void updateAutonomousPeriodic()
     {
+        if (actionStartTimeMS < 0)
+        {
+        	actionStartTimeMS = System.currentTimeMillis();
+        }
+
+        // Make sure there something to do.
+        if (actions.isEmpty())
+        {
+        	return;
+        }
+        
+  		long now = System.currentTimeMillis();
+  		Action currentAction = actions.get(0);
+    	long durationMS = currentAction.getDurationMS();
+    	if (now > actionStartTimeMS + durationMS)
+    	{
+    		actions.remove(0);
+    		if (actions.isEmpty())
+    		{
+    			// Ran out of actions.
+    			return;
+    		}
+
+    		// Move on to the next action.
+    		actionStartTimeMS = now;
+    		currentAction = actions.get(0);
+    	}
+
+		try {
+			currentAction.getAction().call();
+		} catch (Exception e) {
+			System.out.println("Action call threw exception: " + e);
+		}
+    }
+    
+    public void updateAutonomousPeriodic_old()
+        {
         if (autonomousStartTime < 0)
         {
             autonomousStartTime = System.currentTimeMillis();
