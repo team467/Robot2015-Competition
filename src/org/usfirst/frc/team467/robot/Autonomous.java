@@ -98,13 +98,6 @@ public class Autonomous
         return false;
     }
 
-    // Always returns true, will claim done first time called.
-    private boolean once()
-    {
-        // Always done.
-        return true;
-    }
-
     /**
      * Gets a singleton instance of the Autonomous
      * 
@@ -190,14 +183,7 @@ public class Autonomous
                     claw.stop();
                     drive.turnDrive(0.5);
                 });
-        addAction("Stop lifting and driving", 
-                () -> once(), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.noDrive();
-                });
-        addAction("Stop driving", 
+        addAction("Done",
                 () -> forever(), 
                 () -> {
                     lifter.stop();
@@ -251,14 +237,7 @@ public class Autonomous
                     claw.stop();
                     drive.noDrive();
                 });
-        addAction("Stop lifter", 
-                () -> once(), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.noDrive();
-                });
-        addAction("Stop driving", 
+        addAction("Done",
                 () -> forever(), 
                 () -> {
                     lifter.stop();
