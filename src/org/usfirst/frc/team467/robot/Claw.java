@@ -50,14 +50,18 @@ public class Claw
         board = PowerDistroBoard467.getInstance();
         driverstation = DriverStation2015.getInstance();
     }
-
+    
+    public void stop()
+    {
+        claw.moveClaw(ClawMoveDirection.STOP, false);
+    }
+    
     /**
      * Basic move without current or limit switching
      * 
      * @param clawDir
      * @param turbo
      */
-
     public void moveClaw(ClawMoveDirection clawDir, boolean turbo)
     {
         LOGGER.debug("CLAW CURRENT: " + board.getClawCurrent());

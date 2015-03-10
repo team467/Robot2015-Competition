@@ -21,7 +21,13 @@ public class Autonomous
     {
         boolean call();
     }
-
+    
+    /**
+     * Should Always contain:<br>
+     * • Lifter<br>
+     * • Claw<br>
+     * • Drive
+     */
     private interface Action
     {
         void call();
@@ -158,31 +164,46 @@ public class Autonomous
         Gyro2015.getInstance().reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
         addAction("Close claw to grip container or tote",
                 () -> !claw.isClosed(),
-                () -> claw.moveClaw(ClawMoveDirection.CLOSE, false));
+                () -> {
+                    lifter.stop();
+                    claw.moveClaw(ClawMoveDirection.CLOSE, false);
+                    drive.noDrive();
+                });
         addAction("Lift container or tote", 
                 () -> forDurationSecs(2.0f),
-                () -> lifter.driveLifter(LifterDirection.UP, false));
+                () -> {
+                    lifter.driveLifter(LifterDirection.UP, false);
+                    claw.stop();
+                    drive.noDrive();
+                });
         addAction("Drive backwards", 
                 () -> forDurationSecs(3.0f), 
                 () -> {
+                    lifter.stop();
+                    claw.stop();
                     drive.crabDrive(Math.PI, 0.4, false);
-                    lifter.driveLifter(LifterDirection.STOP, false);
                 });
         addAction("Turn in place", 
-                () -> forDurationSecs(1.1f), 
+                () -> forDurationSecs(1.1f),
                 () -> {
+                    lifter.stop();
+                    claw.stop();
                     drive.turnDrive(0.5);
-                    lifter.driveLifter(LifterDirection.STOP, false);
                 });
         addAction("Stop lifting and driving", 
                 () -> once(), 
                 () -> {
-                    lifter.driveLifter(LifterDirection.STOP, false);
+                    lifter.stop();
+                    claw.stop();
                     drive.noDrive();
                 });
         addAction("Stop driving", 
                 () -> forever(), 
-                () -> drive.noDrive());
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.noDrive();
+                });
     }
 
     private void initDriveOnly()
@@ -191,10 +212,18 @@ public class Autonomous
         // Drive to auto zone. Starts on the very edge and just creeps into the zone
         addAction("Drive into auto zone", 
                 () -> forDurationSecs(2.0f), 
-                () -> drive.crabDrive(Math.PI / 2, 0.5, false));
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.crabDrive(Math.PI / 2, 0.5, false);
+                });
         addAction("Stop driving", 
                 () -> forever(), 
-                () -> drive.noDrive());
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.noDrive();
+                });
     }
 
     private void initHookAndPush()
@@ -205,26 +234,37 @@ public class Autonomous
                 () -> forDurationSecs(2.0f), 
                 () -> {
                     lifter.driveLifter(LifterDirection.UP, false);
+                    claw.stop();
                     drive.crabDrive(Math.PI / 2, 0, false);
                 });
         addAction("Stop lifting and drive sideeways", 
                 () -> forDurationSecs(4.0f), 
                 () -> {
-                    lifter.driveLifter(LifterDirection.STOP, false);
+                    lifter.stop();
+                    claw.stop();
                     drive.crabDrive(Math.PI / 2, 0.5, false);
                 });
         addAction("Lower lifter and stop driving", 
                 () -> forDurationSecs(1.5f), 
                 () -> {
                     lifter.driveLifter(LifterDirection.DOWN, false);
-                    drive.crabDrive(Math.PI / 2, 0, false);
+                    claw.stop();
+                    drive.noDrive();
                 });
         addAction("Stop lifter", 
                 () -> once(), 
-                () -> lifter.driveLifter(LifterDirection.STOP, false));
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.noDrive();
+                });
         addAction("Stop driving", 
                 () -> forever(), 
-                () -> drive.crabDrive(Math.PI / 2, 0, false));
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.noDrive();
+                    });
     }
 
     private void initStayInPlace()
@@ -233,7 +273,11 @@ public class Autonomous
         Gyro2015.getInstance().reset();
         addAction("Stop driving", 
                 () -> forever(), 
-                () -> drive.noDrive());
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.noDrive();
+                });
     }
 
     /**

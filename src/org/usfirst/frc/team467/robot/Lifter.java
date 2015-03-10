@@ -65,7 +65,12 @@ public class Lifter
 
     private boolean isJammedTop = false;
     private boolean isJammedBottom = false;
-
+    
+    public void stop()
+    {
+        elevator.driveLifter(LifterDirection.STOP, false);
+    }
+    
     /**
      * Lifter implementation that has no limit switch stops.
      * 
