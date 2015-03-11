@@ -137,8 +137,11 @@ public class Autonomous
             case DRIVE_ONLY:
                 initDriveOnly();
                 break;
+            case HOOK_AND_PUSH_OVER_RAMP:
+                initHookAndPush(4.0f);
+                break;
             case HOOK_AND_PUSH:
-                initHookAndPush();
+                initHookAndPush(3.5f);
                 break;
             default:
                 initStayInPlace();
@@ -209,8 +212,11 @@ public class Autonomous
                     drive.stop();
                 });
     }
-
-    private void initHookAndPush()
+    
+    /**
+     * @param sidewaysSecs - time for driving sideways
+     */
+    private void initHookAndPush(float sidewaysSecs)
     {
         // Starts facing left, reset to upfield.
         Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);
@@ -221,8 +227,8 @@ public class Autonomous
                     claw.stop();
                     drive.crabDrive(Math.PI / 2, 0, false);
                 });
-        addAction("Stop lifting and drive sideeways", 
-                () -> forDurationSecs(4.0f), 
+        addAction("Stop lifting and drive sideways", 
+                () -> forDurationSecs(sidewaysSecs),
                 () -> {
                     lifter.stop();
                     claw.stop();
@@ -296,6 +302,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH
+        NO_AUTO, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH_OVER_RAMP, HOOK_AND_PUSH
     }
 }
