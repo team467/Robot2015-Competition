@@ -323,7 +323,7 @@ public class Drive extends RobotDrive
     /**
      * Does not drive drive motors and keeps steering angle at previous position.
      */
-    public void noDrive()
+    public void stop()
     {
         LOGGER.debug("NO DRIVE CALLED");
         this.fourWheelDrive(0, 0, 0, 0);// no drive for you!
@@ -514,14 +514,6 @@ public class Drive extends RobotDrive
         }
 
         fourWheelDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
-    }
-
-    /**
-     * Stops the motors
-     */
-    public void stop()
-    {
-        drive(0, null);
     }
 
     /**

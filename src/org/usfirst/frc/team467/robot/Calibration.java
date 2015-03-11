@@ -45,7 +45,7 @@ public class Calibration
         if (motorId < 0)
         {
             LOGGER.debug("No Drive");
-            drive.noDrive();
+            drive.stop();
             return;
         }
 

@@ -17,6 +17,9 @@ public class Autonomous
 
     long actionStartTimeMS = -1;
 
+    /**
+     * Run the said action until this returns true.
+     */
     private interface DoneCondition
     {
         boolean call();
@@ -59,15 +62,7 @@ public class Autonomous
 
         boolean isDone()
         {
-            try
-            {
-                return doneCondition.call();
-            }
-            catch (Exception e)
-            {
-                LOGGER.error("Done condition threw exception, assuming done: " + e.getMessage());
-                return true;
-            }
+            return doneCondition.call();
         }
     }
 
@@ -107,7 +102,10 @@ public class Autonomous
     {
         if (autonomous == null)
         {
-            autonomous = new Autonomous();
+            autonomous = new Autonomous(
+                    Drive.getInstance(),
+                    Claw.getInstance(),
+                    Lifter.getInstance());
         }
         return autonomous;
     }
@@ -115,11 +113,11 @@ public class Autonomous
     /**
      * Private constructor to setup the Autonomous
      */
-    private Autonomous()
+    public Autonomous(Drive drive, Claw claw, Lifter lifter)
     {
-        drive = Drive.getInstance();
-        claw = Claw.getInstance();
-        lifter = Lifter.getInstance();
+        this.drive = drive;
+        this.claw = claw;
+        this.lifter = lifter;
     }
 
     /**
@@ -160,14 +158,14 @@ public class Autonomous
                 () -> {
                     lifter.stop();
                     claw.moveClaw(ClawMoveDirection.CLOSE, false);
-                    drive.noDrive();
+                    drive.stop();
                 });
         addAction("Lift container or tote", 
                 () -> forDurationSecs(2.0f),
                 () -> {
                     lifter.driveLifter(LifterDirection.UP, false);
                     claw.stop();
-                    drive.noDrive();
+                    drive.stop();
                 });
         addAction("Drive backwards", 
                 () -> forDurationSecs(3.0f), 
@@ -188,7 +186,7 @@ public class Autonomous
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.noDrive();
+                    drive.stop();
                 });
     }
 
@@ -208,7 +206,7 @@ public class Autonomous
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.noDrive();
+                    drive.stop();
                 });
     }
 
@@ -235,14 +233,14 @@ public class Autonomous
                 () -> {
                     lifter.driveLifter(LifterDirection.DOWN, false);
                     claw.stop();
-                    drive.noDrive();
+                    drive.stop();
                 });
         addAction("Done",
                 () -> forever(), 
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.noDrive();
+                    drive.stop();
                     });
     }
 
@@ -255,7 +253,7 @@ public class Autonomous
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.noDrive();
+                    drive.stop();
                 });
     }
 

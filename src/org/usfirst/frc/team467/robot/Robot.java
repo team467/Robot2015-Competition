@@ -272,7 +272,7 @@ public class Robot extends IterativeRobot
                 if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
                 {
                     // If in joystick deadzone, don't steer, leave wheel at current angle.
-                    drive.noDrive();
+                    drive.stop();
                 }
                 else
                 {
@@ -285,7 +285,7 @@ public class Robot extends IterativeRobot
                 if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
                 {
                     // If in joystick deadzone, don't steer, leave wheel at current angle.
-                    drive.noDrive();
+                    drive.stop();
                 }
                 else
                 {
@@ -298,7 +298,7 @@ public class Robot extends IterativeRobot
                 LOGGER.error("Button State not calculated correctly");
                 if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
                 {
-                    drive.noDrive();
+                    drive.stop();
 
                 }
                 else
