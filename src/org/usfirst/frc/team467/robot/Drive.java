@@ -327,13 +327,6 @@ public class Drive extends RobotDrive
     {
         LOGGER.debug("NO DRIVE CALLED");
         this.fourWheelDrive(0, 0, 0, 0);// no drive for you!
-
-        // maintain current angles
-        this.steering[RobotMap.BACK_LEFT].setAngle(steering[RobotMap.BACK_LEFT].getSteeringAngle());
-        this.steering[RobotMap.BACK_RIGHT].setAngle(steering[RobotMap.BACK_RIGHT].getSteeringAngle());
-        this.steering[RobotMap.FRONT_LEFT].setAngle(steering[RobotMap.FRONT_LEFT].getSteeringAngle());
-        this.steering[RobotMap.FRONT_RIGHT].setAngle(steering[RobotMap.FRONT_RIGHT].getSteeringAngle());
-
     }
 
     /**
