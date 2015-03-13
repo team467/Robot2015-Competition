@@ -24,7 +24,7 @@ public class DriverStation2015
     public static int CAL_BR = ButtonPanel2015.DIAL_POS_3;
 
     // JOYSTICK
-    public static int OPERATE_FASTER_BUTTON = ButtonPanel2015.JOY_TOP_BUTTON;
+    public static int CHANGE_SPEED_BUTTON = ButtonPanel2015.JOY_TOP_BUTTON;
     public static int CLAW_OPEN = ButtonPanel2015.JOY_RIGHT;
     public static int CLAW_CLOSED = ButtonPanel2015.JOY_LEFT;
     public static int ELEVATOR_UP = ButtonPanel2015.JOY_UP;
@@ -36,6 +36,10 @@ public class DriverStation2015
     public static int LED_LIFTER_BOTTOM_SLOW = 3;
     public static int LED_LIFTER_BOTTOM_STOP = 1;
     public static int LED_CLAW_STOPPED = 4;
+    
+    enum Speed {
+        SLOW, FAST
+    }
 
     /**
      * Singleton instance of the object.
@@ -85,12 +89,12 @@ public class DriverStation2015
     {
         double driveSpeed = 0;
         if (buttonPanel.isButtonDown(ELEVATOR_UP))
-            if (buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON))
+            if (buttonPanel.isButtonDown(CHANGE_SPEED_BUTTON))
                 return LiftTypes.LIFT_UP_FAST;
             else
                 return LiftTypes.LIFT_UP_SLOW;
         else if (buttonPanel.isButtonDown(ELEVATOR_DOWN))
-            if (buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON))
+            if (buttonPanel.isButtonDown(CHANGE_SPEED_BUTTON))
                 return LiftTypes.LIFT_DOWN_FAST;
             else
                 return LiftTypes.LIFT_DOWN_SLOW;
@@ -111,7 +115,7 @@ public class DriverStation2015
             driveSpeed = 0.4;// TODO determine sign
         else if (buttonPanel.isButtonDown(CLAW_CLOSED))
             driveSpeed = -0.4;// TODO determine sign
-        if (buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON))
+        if (buttonPanel.isButtonDown(CHANGE_SPEED_BUTTON))
             driveSpeed *= 2;
         return driveSpeed;
     }
@@ -362,9 +366,13 @@ public class DriverStation2015
      * 
      * @return
      */
-    public boolean getMoveTurbo()
+    public Speed getSpeedChange()
     {
-        return buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON);
+        if (buttonPanel.isButtonDown(CHANGE_SPEED_BUTTON))
+        {
+            return Speed.SLOW;
+        }
+        return Speed.FAST;
     }
     
     public boolean getResetGyro()

@@ -3,6 +3,8 @@ package org.usfirst.frc.team467.robot;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
+
 import org.apache.log4j.Logger;
 
 public class Autonomous
@@ -160,13 +162,13 @@ public class Autonomous
                 () -> !claw.isClosed(),
                 () -> {
                     lifter.stop();
-                    claw.moveClaw(ClawMoveDirection.CLOSE, false);
+                    claw.moveClaw(ClawMoveDirection.CLOSE, Speed.SLOW);
                     drive.stop();
                 });
         addAction("Lift container or tote", 
                 () -> forDurationSecs(2.0f),
                 () -> {
-                    lifter.driveLifter(LifterDirection.UP, false);
+                    lifter.driveLifter(LifterDirection.UP, Speed.SLOW);
                     claw.stop();
                     drive.stop();
                 });
@@ -223,7 +225,7 @@ public class Autonomous
         addAction("Raise lifter up and turn wheels sideways", 
                 () -> forDurationSecs(2.0f), 
                 () -> {
-                    lifter.driveLifter(LifterDirection.UP, false);
+                    lifter.driveLifter(LifterDirection.UP, Speed.SLOW);
                     claw.stop();
                     drive.crabDrive(Math.PI / 2, 0, false);
                 });
@@ -237,7 +239,7 @@ public class Autonomous
         addAction("Lower lifter and stop driving", 
                 () -> forDurationSecs(1.5f), 
                 () -> {
-                    lifter.driveLifter(LifterDirection.DOWN, false);
+                    lifter.driveLifter(LifterDirection.DOWN, Speed.SLOW);
                     claw.stop();
                     drive.stop();
                 });

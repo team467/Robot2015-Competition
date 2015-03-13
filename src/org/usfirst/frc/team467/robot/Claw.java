@@ -1,6 +1,7 @@
 package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
+import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
 
 import edu.wpi.first.wpilibj.Talon;
 
@@ -53,16 +54,16 @@ public class Claw
     
     public void stop()
     {
-        claw.moveClaw(ClawMoveDirection.STOP, false);
+        clawMotor.set(0);
     }
     
     /**
      * Basic move without current or limit switching
      * 
      * @param clawDir
-     * @param turbo
+     * @param speed
      */
-    public void moveClaw(ClawMoveDirection clawDir, boolean turbo)
+    public void moveClaw(ClawMoveDirection clawDir, Speed speed)
     {
         LOGGER.debug("CLAW CURRENT: " + board.getClawCurrent());
         switch (clawDir)
@@ -78,11 +79,19 @@ public class Claw
                 }
                 if (m_isClosed)
                 {                    
-                    clawMotor.set(0);
+                    stop();
                 }
                 else
                 {
-                    clawMotor.set((turbo) ? CLOSE_SPEED_FAST : CLOSE_SPEED_SLOW);
+                    switch (speed)
+                    {
+                        case FAST:
+                            clawMotor.set(CLOSE_SPEED_FAST);
+                            break;
+                        case SLOW:
+                            clawMotor.set(CLOSE_SPEED_SLOW);
+                            break;
+                    }
                 }
                 break;
 
@@ -96,16 +105,24 @@ public class Claw
                 }
                 if (m_isFullyOpen)
                 {
-                    clawMotor.set(0);
+                    stop();
                 }
                 else
                 {
-                    clawMotor.set((turbo) ? OPEN_SPEED_FAST : OPEN_SPEED_SLOW);
+                    switch (speed)
+                    {
+                        case FAST:
+                            clawMotor.set(OPEN_SPEED_FAST);
+                            break;
+                        case SLOW:
+                            clawMotor.set(OPEN_SPEED_SLOW);
+                            break;
+                    }
                 }
                 break;
 
             case STOP:
-                clawMotor.set(0);
+                stop();
                 m_isClosed = false;
                 m_isFullyOpen = false;                
                 break;

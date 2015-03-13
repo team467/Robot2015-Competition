@@ -1,6 +1,7 @@
 package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
+import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
@@ -68,7 +69,8 @@ public class Lifter
     
     public void stop()
     {
-        elevator.driveLifter(LifterDirection.STOP, false);
+        lifterMotorBottom.set(0);
+        lifterMotorTop.set(0);
     }
     
     /**
@@ -76,7 +78,7 @@ public class Lifter
      * 
      * @param lifterDirection
      */
-    public void driveLifter(LifterDirection lifterDirection, boolean turbo)
+    public void driveLifter(LifterDirection lifterDirection, Speed speed)
     {
         if (board.getLifterTopCurrent() > MAX_CURRENT_UP - 1 || board.getLifterBottomCurrent() > MAX_CURRENT_UP - 1)
         {
@@ -95,13 +97,23 @@ public class Lifter
                 }
                 if (isJammedTop)
                 {
-                    lifterMotorBottom.set(0);
-                    lifterMotorTop.set(0);
+                    stop();
                 }
                 else
                 {
-                    lifterMotorBottom.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
-                    lifterMotorTop.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+//                    lifterMotorBottom.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+//                    lifterMotorTop.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                    switch (speed)
+                    {
+                        case FAST:
+                            lifterMotorBottom.set(FAST_SPEED_UP);
+                            lifterMotorTop.set(FAST_SPEED_UP);
+                            break;
+                        case SLOW:
+                            lifterMotorBottom.set(SLOW_SPEED_UP);
+                            lifterMotorTop.set(SLOW_SPEED_UP);
+                            break;
+                    }
                 }
                 break;
 
@@ -116,19 +128,28 @@ public class Lifter
                 }
                 if (isJammedBottom)
                 {
-                    lifterMotorBottom.set(0);
-                    lifterMotorTop.set(0);
+                    stop();
                 }
                 else
                 {
-                    lifterMotorBottom.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
-                    lifterMotorTop.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+//                    lifterMotorBottom.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+//                    lifterMotorTop.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                    switch (speed)
+                    {
+                        case FAST:
+                            lifterMotorBottom.set(FAST_SPEED_DOWN);
+                            lifterMotorTop.set(FAST_SPEED_DOWN);
+                            break;
+                        case SLOW:
+                            lifterMotorBottom.set(SLOW_SPEED_DOWN);
+                            lifterMotorTop.set(SLOW_SPEED_DOWN);
+                            break;
+                    }
+                    break;
                 }
-                break;
 
             default:
-                lifterMotorBottom.set(0);
-                lifterMotorTop.set(0);
+                stop();
                 isJammedTop = false;
                 isJammedBottom = false;
                 break;
