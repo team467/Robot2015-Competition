@@ -117,6 +117,7 @@ public class Autonomous
      */
     public Autonomous(Drive drive, Claw claw, Lifter lifter)
     {
+        // TODO Change drive, claw, and lifter to generics implementing respective interfaces
         this.drive = drive;
         this.claw = claw;
         this.lifter = lifter;
