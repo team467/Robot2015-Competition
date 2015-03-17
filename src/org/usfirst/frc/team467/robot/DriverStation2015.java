@@ -160,6 +160,10 @@ public class DriverStation2015
             }
             else if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_4))
             {
+                return AutoType.HOOK_AND_PUSH;
+            }
+            else if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_5))
+            {
                 return AutoType.HOOK_AND_PUSH_OVER_RAMP;
             }
             else
