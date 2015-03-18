@@ -8,6 +8,7 @@ import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class CameraDashboard extends Thread
 {
@@ -88,13 +89,14 @@ public class CameraDashboard extends Thread
         int viewHeight = 480;
 
         NIVision.IMAQdxGrab(session, frame, 1);
-
+        
+        drawTimerBar(viewWidth, viewHeight);
         drawCrossHairs(viewWidth, viewHeight);
         drawAngleMonitors(viewWidth, viewHeight);
 
         cameraServer.setImage(frame);
     }
-    
+
     /**
      * Color values are from 0 to 255<br>
      * e.g. white = (255, 255, 255)
@@ -109,22 +111,53 @@ public class CameraDashboard extends Thread
         // 24 bits, 8 bits for each color channel
         return b*256*256 + g*256 + r;
     }
+    
+    /**
+     * Draws Timer Bar on top of Camera Feed
+     * 
+     * @param viewWidth
+     * @param viewHeight
+     */
+    private void drawTimerBar(int viewWidth, int viewHeight)
+    {
+        final ShapeMode RECT = ShapeMode.SHAPE_RECT;
+        int height = 20;
+        double scale = viewWidth / 150;
+        
+        double matchTime = DriverStation.getInstance().getMatchTime();
+        double elapsedTime = 150 - matchTime;
+        double barWidth = elapsedTime * scale;
+        NIVision.Rect borderRect = new NIVision.Rect(0, 0, height, viewWidth);
+        NIVision.Rect timerRect = new NIVision.Rect(0, 0, height, (int)barWidth);
+        
+        NIVision.imaqDrawShapeOnImage(frame, frame, borderRect, DrawMode.PAINT_VALUE, RECT, BLACK);
+        
+        if (matchTime < 20)
+        {
+            // Final 20 seconds: No throwing noodles!
+            NIVision.imaqDrawShapeOnImage(frame, frame, timerRect, DrawMode.PAINT_VALUE, RECT, RED);
+        }
+        else
+        {
+            NIVision.imaqDrawShapeOnImage(frame, frame, timerRect, DrawMode.PAINT_VALUE, RECT, BLUE);
+        }
+    }
 
     private void drawCrossHairs(int viewWidth, int viewHeight)
     {
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
         
-        NIVision.Rect vert1 = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 2, 80, 5);
-        NIVision.Rect vert2 = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 1, 80, 3);
+        NIVision.Rect vertBlack = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 2, 80, 5);
+        NIVision.Rect vertWhite = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 1, 80, 3);
         
-        NIVision.Rect horiz1 = new NIVision.Rect(viewHeight / 2 - 2, viewWidth / 2 - 40, 5, 80);
-        NIVision.Rect horiz2 = new NIVision.Rect(viewHeight / 2 - 1, viewWidth / 2 - 40, 3, 80);
+        NIVision.Rect horizBlack = new NIVision.Rect(viewHeight / 2 - 2, viewWidth / 2 - 40, 5, 80);
+        NIVision.Rect horizWhite = new NIVision.Rect(viewHeight / 2 - 1, viewWidth / 2 - 40, 3, 80);
 
-        NIVision.imaqDrawShapeOnImage(frame, frame, vert1, DrawMode.PAINT_VALUE, RECT, BLACK);
-        NIVision.imaqDrawShapeOnImage(frame, frame, horiz1, DrawMode.PAINT_VALUE, RECT, BLACK);
+        NIVision.imaqDrawShapeOnImage(frame, frame, vertBlack, DrawMode.PAINT_VALUE, RECT, BLACK);
+        NIVision.imaqDrawShapeOnImage(frame, frame, horizBlack, DrawMode.PAINT_VALUE, RECT, BLACK);
         
-        NIVision.imaqDrawShapeOnImage(frame, frame, vert2, DrawMode.PAINT_VALUE, RECT, WHITE);
-        NIVision.imaqDrawShapeOnImage(frame, frame, horiz2, DrawMode.PAINT_VALUE, RECT, WHITE);
+        NIVision.imaqDrawShapeOnImage(frame, frame, vertWhite, DrawMode.PAINT_VALUE, RECT, WHITE);
+        NIVision.imaqDrawShapeOnImage(frame, frame, horizWhite, DrawMode.PAINT_VALUE, RECT, WHITE);
     }
 
     private void drawAngleMonitors(int viewWidth, int viewHeight)
