@@ -15,8 +15,11 @@ import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DriverStation;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -47,6 +50,11 @@ public class Robot extends IterativeRobot
     Image frame;
 
     CameraServer cameraServer;
+    
+    public Joystick joy = null;
+    public DigitalOutput autoOut = null;
+    public DigitalOutput TeleopOut = null;
+    public DigitalOutput warningOut = null;
 
     /**
      * Time in milliseconds
@@ -131,7 +139,11 @@ public class Robot extends IterativeRobot
         board = PowerDistroBoard467.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
-        gyro = Gyro2015.getInstance();        
+        gyro = Gyro2015.getInstance();
+        joy = new Joystick(0);
+        autoOut = new DigitalOutput(0);
+        TeleopOut = new DigitalOutput(1);
+        warningOut = new DigitalOutput(2);
 
         // Initalize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
@@ -145,6 +157,9 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
         LOGGER.info("Robot disabled");
+        autoOut.set(false);
+        TeleopOut.set(false);
+        warningOut.set(false);
         
     }
 
@@ -179,6 +194,9 @@ public class Robot extends IterativeRobot
         driverstation.readInputs();
         board.update();
         autonomous.updateAutonomousPeriodic();
+        autoOut.set(true);
+        TeleopOut.set(false);
+        warningOut.set(false);
     }
 
     // read file in from disk. For this example to run you need to copy
@@ -212,6 +230,27 @@ public class Robot extends IterativeRobot
             // Drive Mode
             updateDrive();
             updateNavigator();
+        }
+        double time = DriverStation.getInstance().getMatchTime();
+        System.out.println("time=" + time);
+        
+        if (time > 120) {
+            DriverStation.Alliance color = DriverStation.getInstance().getAlliance();
+            if (color == DriverStation.Alliance.Red) {
+                autoOut.set(false);
+                TeleopOut.set(true);
+                warningOut.set(false);
+            }
+            else if (color == DriverStation.Alliance.Blue) {
+                autoOut.set(true);
+                TeleopOut.set(true);
+                warningOut.set(false);
+            }
+        }
+        else {
+        autoOut.set(false);    
+        TeleopOut.set(false);
+        warningOut.set(true);
         }
     }
 
