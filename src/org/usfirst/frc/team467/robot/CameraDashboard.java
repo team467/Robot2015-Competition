@@ -8,6 +8,7 @@ import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class CameraDashboard extends Thread
 {
@@ -16,6 +17,7 @@ public class CameraDashboard extends Thread
     private static final float BLACK = color(0, 0, 0);
     private static final float RED = color(255, 0, 0);
     private static final float GREEN = color(0, 255, 0);
+    @SuppressWarnings("unused")
     private static final float BLUE = color(0, 0, 255);
     private static final float WHITE = color(255, 255, 255);
 
@@ -89,6 +91,7 @@ public class CameraDashboard extends Thread
 
         NIVision.IMAQdxGrab(session, frame, 1);
 
+        drawTimerBar(viewWidth, viewHeight);
         drawCrossHairs(viewWidth, viewHeight);
         drawAngleMonitors(viewWidth, viewHeight);
 
@@ -108,6 +111,48 @@ public class CameraDashboard extends Thread
     {
         // 24 bits, 8 bits for each color channel
         return b*256*256 + g*256 + r;
+    }
+    
+    /**
+     * Draws Timer Bar on top of Camera Feed
+     * 
+     * @param viewWidth
+     * @param viewHeight
+     */
+    private void drawTimerBar(int viewWidth, int viewHeight)
+    {
+        final ShapeMode RECT = ShapeMode.SHAPE_RECT;
+        int height = 20;
+        double matchTime = DriverStation.getInstance().getMatchTime();
+
+        double totalTime = 135; // Teleop
+        if (DriverStation.getInstance().isAutonomous())
+        {
+            totalTime = 15;
+        }
+        
+        double scale = viewWidth / totalTime;
+        double elapsedTime = (totalTime - matchTime);
+        
+        if (elapsedTime < 0) {
+            LOGGER.warn("elapsedTime is negative: " + elapsedTime);
+            elapsedTime = 0;
+        }
+        
+        double barWidth = elapsedTime * scale;
+        
+        
+        NIVision.Rect timerRect = new NIVision.Rect(0, 0, height, (int)barWidth);
+        
+        if (matchTime < 20)
+        {
+            // Final 20 seconds: No throwing noodles!
+            NIVision.imaqDrawShapeOnImage(frame, frame, timerRect, DrawMode.PAINT_VALUE, RECT, RED);
+        }
+        else
+        {
+            NIVision.imaqDrawShapeOnImage(frame, frame, timerRect, DrawMode.PAINT_VALUE, RECT, GREEN);
+        }
     }
 
     private void drawCrossHairs(int viewWidth, int viewHeight)
@@ -133,9 +178,10 @@ public class CameraDashboard extends Thread
         final int rectHeight = 20;
         final int rectWidth = 100 + barWidth;
 
-        final int topMargin = 20;
+        final int margin = 20;
         final int leftMargin = 20;
-        final int bottomMargin = viewHeight - (topMargin + rectHeight);
+        final int bottomMargin = viewHeight - (margin + rectHeight);
+        final int topMargin = margin + 20;
         final int rightMargin = viewWidth - (leftMargin + rectWidth) - barWidth;
 
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;

@@ -141,13 +141,14 @@ public class Robot extends IterativeRobot
         claw = Claw.getInstance();
         gyro = Gyro2015.getInstance();
         joy = new Joystick(0);
-        autoOut = new DigitalOutput(0);
-        TeleopOut = new DigitalOutput(1);
-        warningOut = new DigitalOutput(2);
+        autoOut = new DigitalOutput(4);
+        TeleopOut = new DigitalOutput(5);
+        warningOut = new DigitalOutput(6);
 
         // Initalize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
         if (cameraDashboard.cameraExists()) {
+            LOGGER.debug("Camera Starting");
             cameraDashboard.start();
         }
 
@@ -166,7 +167,7 @@ public class Robot extends IterativeRobot
     public void disabledPeriodic()
     {
         gyro.update();
-//           System.out.println("GYRO ANGLE: " + gyro.getAngle());
+        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
     }
 
     public void autonomousInit()
@@ -176,7 +177,7 @@ public class Robot extends IterativeRobot
 
     public void teleopInit()
     {
-
+        
     }
 
     public void testInit()
@@ -217,7 +218,7 @@ public class Robot extends IterativeRobot
             System.out.println("GYRO RESET");
             gyro.reset();
         }
-        System.out.println("GYRO ANGLE: " + gyro.getAngle());        
+        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());       
                 
 
         if (driverstation.getCalibrate())
@@ -234,7 +235,7 @@ public class Robot extends IterativeRobot
         double time = DriverStation.getInstance().getMatchTime();
         System.out.println("time=" + time);
         
-        if (time > 120) {
+        if (time > 20) {
             DriverStation.Alliance color = DriverStation.getInstance().getAlliance();
             if (color == DriverStation.Alliance.Red) {
                 autoOut.set(false);
