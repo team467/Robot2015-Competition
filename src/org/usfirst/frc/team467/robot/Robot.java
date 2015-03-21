@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -144,6 +145,9 @@ public class Robot extends IterativeRobot
         autoOut = new DigitalOutput(4);
         TeleopOut = new DigitalOutput(5);
         warningOut = new DigitalOutput(6);
+        autoOut.set(false);
+        TeleopOut.set(false);
+        warningOut.set(false);
 
         // Initalize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
@@ -157,34 +161,22 @@ public class Robot extends IterativeRobot
 
     public void disabledInit()
     {
-        LOGGER.info("Robot disabled");
-        autoOut.set(false);
-        TeleopOut.set(false);
-        warningOut.set(false);
-        
+        LOGGER.info("Robot disabled");   
     }
 
     public void disabledPeriodic()
     {
         gyro.update();
         LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
-        
-        
-        DriverStation.Alliance color = DriverStation.getInstance().getAlliance();
-        if (color == DriverStation.Alliance.Red) {
-            autoOut.set(false);
-            TeleopOut.set(true);
-            warningOut.set(false);
-        }
-        else if (color == DriverStation.Alliance.Blue) {
-            autoOut.set(true);
-            TeleopOut.set(true);
-            warningOut.set(false);
-        }
+        autoOut.set(false);
+        TeleopOut.set(false);
+        warningOut.set(true);
     }
 
+    @Override
     public void autonomousInit()
     {
+        LOGGER.info("Autonomous init");
         autonomous.initAutonomous();
     }
 
@@ -203,7 +195,7 @@ public class Robot extends IterativeRobot
 
     public void autonomousPeriodic()
     {
-        LOGGER.debug("Autonomous");
+        LOGGER.info("Autonomous");
         
         driverstation.readInputs();
         board.update();
@@ -227,14 +219,13 @@ public class Robot extends IterativeRobot
     {
         // Read driverstation inputs
         driverstation.readInputs();
-        gyro.update();               
-        if(driverstation.getGyroReset())
+        gyro.update();
+        if (driverstation.getGyroReset())
         {
             System.out.println("GYRO RESET");
             gyro.reset();
         }
-        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());       
-                
+        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
 
         if (driverstation.getCalibrate())
         {
@@ -247,13 +238,36 @@ public class Robot extends IterativeRobot
             updateDrive();
             updateNavigator();
         }
+        double time = DriverStation.getInstance().getMatchTime();
+        if (time > 20)
+        switch (DriverStation.getInstance().getAlliance()) 
+        {
+            case Red:
+                autoOut.set(false);
+                TeleopOut.set(true);
+                warningOut.set(false);
+                break;
+            case Blue:
+                autoOut.set(true);
+                TeleopOut.set(true);
+                warningOut.set(false);
+                break;
+            case Invalid:
+                autoOut.set(false);
+                TeleopOut.set(false);
+                warningOut.set(true);
+                break;
+        }
+        else 
+        {
+            autoOut.set(false);
+            TeleopOut.set(true);
+            warningOut.set(true);
+        }
+
         
         
-        
-        autoOut.set(false);    
-        TeleopOut.set(false);
-        warningOut.set(true);
-        
+
     }
 
     /**
