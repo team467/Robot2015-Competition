@@ -32,6 +32,8 @@ public class Lifter
     // TODO Replace with practical value
     private static final double MAX_CURRENT_DOWN = 12;
     private static final double MAX_CURRENT_UP = 12;
+    
+    private final double MAX_RAMP_RATE = 02;
 
     /**
      * Gets the singleton instance of the elevator
@@ -65,6 +67,21 @@ public class Lifter
 
     private boolean isJammedTop = false;
     private boolean isJammedBottom = false;
+    
+    public void set(double speed)
+    {
+    	double oldSpeed = lifterMotorTop.get();
+    	if (Math.abs(speed - oldSpeed) >= MAX_RAMP_RATE)
+    	{
+    		lifterMotorBottom.set(oldSpeed += MAX_RAMP_RATE);
+    		lifterMotorTop.set(oldSpeed += MAX_RAMP_RATE);
+    	}
+    	else
+    	{
+    		lifterMotorBottom.set(speed);
+    		lifterMotorTop.set(speed);
+    	}
+    }
 
     /**
      * Lifter implementation that has no limit switch stops.
