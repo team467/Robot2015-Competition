@@ -12,7 +12,6 @@ package org.usfirst.frc.team467.robot;
 
 /**
  *
- * @author Team467
  */
 public class RobotMap
 {

@@ -7,8 +7,8 @@ package org.usfirst.frc.team467.robot;
 import org.apache.log4j.Logger;
 
 /**
- * @author Team467 This class contains only static variables and functions, and
- *         simply acts as a container for all the calibration code.
+ *  This class contains only static variables and functions, and
+ *  simply acts as a container for all the calibration code.
  */
 public class Calibration
 {
@@ -63,7 +63,7 @@ public class Calibration
         LOGGER.debug("ANGLE: " + calibrationAngle);
 
         // Drive specified steering motor with no speed to allow only steering
-        drive.individualSteeringDrive(calibrationAngle, 0, motorId);
+        drive.individualSteeringDrive(calibrationAngle, motorId);
 
         // Write and set new center if trigger is pressed
         if (DriverStation2015.getInstance().getCalibrateConfirmSelection())
@@ -88,7 +88,7 @@ public class Calibration
      * 
      * @return
      */
-    public static int getWheelDial(int prevSelectedWheel)
+    private static int getWheelDial(int prevSelectedWheel)
     {
         DriverStation2015 driverstation = DriverStation2015.getInstance();
         if (driverstation.getCalibrate())
@@ -108,7 +108,8 @@ public class Calibration
      *            previously selected wheel
      * @return int val of which wheel to select
      */
-    public static int getWheel(int prevSelectedWheel)
+    @SuppressWarnings("unused")   // used if/when joystick is used for calibration
+    private static int getWheelStick(int prevSelectedWheel)
     {
         Joystick467 joystick = DriverStation2015.getInstance().getCalibrationJoystick();
         double stickAngle = joystick.getStickAngle();
@@ -184,7 +185,7 @@ public class Calibration
      */
     public static void updateCalibrate()
     {
-        calibrateWheelSelect = Calibration.getWheelDial(calibrateWheelSelect);
+        calibrateWheelSelect = getWheelDial(calibrateWheelSelect);
         updateSteeringCalibrate(calibrateWheelSelect);
         if (calibrateWheelSelect >= 0)
         {

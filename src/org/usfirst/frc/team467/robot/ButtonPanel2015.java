@@ -104,7 +104,9 @@ public class ButtonPanel2015
         for (int i = 1; i < buttons.length; i++)
         {
             if (buttons[i])
+            {
                 System.out.print(i + " ");
+            }
         }
         System.out.println();
     }

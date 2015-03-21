@@ -7,20 +7,13 @@
 /*----------------------------------------------------------------------------*/
 package org.usfirst.frc.team467.robot;
 
-import java.util.Comparator;
-
 import org.apache.log4j.Logger;
-
-import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
-
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DigitalOutput;
-import edu.wpi.first.wpilibj.DriverStation;
-// import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -66,68 +59,6 @@ public class Robot extends IterativeRobot
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-
-    public class ParticleReport implements Comparator<ParticleReport>, Comparable<ParticleReport>
-    {
-        double PercentAreaToImageArea;
-        double Area;
-        double BoundingRectLeft;
-        double BoundingRectTop;
-        double BoundingRectRight;
-        double BoundingRectBottom;
-
-        public int compareTo(ParticleReport r)
-        {
-            return (int) (r.Area - this.Area);
-        }
-
-        public int compare(ParticleReport r1, ParticleReport r2)
-        {
-            return (int) (r1.Area - r2.Area);
-        }
-    };
-
-    // Structure to represent the scores for the various tests used for target
-    // identification
-    public class Scores
-    {
-        double Area;
-        double Aspect;
-    };
-
-    // Images
-    Image binaryFrame;
-    int imaqError;
-
-    // Constants
-    NIVision.Range TOTE_HUE_RANGE = new NIVision.Range(101, 64); // Default hue
-                                                                 // range for
-                                                                 // yellow
-                                                                 // tote
-    NIVision.Range TOTE_SAT_RANGE = new NIVision.Range(88, 255); // Default
-                                                                 // saturation
-                                                                 // range for
-                                                                 // yellow
-                                                                 // tote
-    NIVision.Range TOTE_VAL_RANGE = new NIVision.Range(134, 255); // Default
-                                                                  // value
-                                                                  // range for
-                                                                  // yellow
-                                                                  // tote
-    double AREA_MINIMUM = 0.5; // Default Area minimum for particle as a
-                               // percentage of total image area
-    double LONG_RATIO = 2.22; // Tote long side = 26.9 / Tote height = 12.1 =
-                              // 2.22
-    double SHORT_RATIO = 1.4; // Tote short side = 16.9 / Tote height = 12.1 =
-                              // 1.4
-    double SCORE_MIN = 70.0; // Minimum score to be considered a tote
-    double VIEW_ANGLE = 49.4; // View angle fo camera, set to Axis m1011 by
-                              // default, 64 for m1013, 51.7 for 206, 52 for
-                              // HD3000 square, 60 for HD3000 640x480
-    NIVision.ParticleFilterCriteria2 criteria[] = new NIVision.ParticleFilterCriteria2[1];
-    NIVision.ParticleFilterOptions2 filterOptions = new NIVision.ParticleFilterOptions2(0, 0, 1, 1);
-    Scores scores = new Scores();
-
     public void robotInit()
     {
         // Initialize logging framework.
@@ -149,19 +80,19 @@ public class Robot extends IterativeRobot
         TeleopOut.set(false);
         warningOut.set(false);
 
-        // Initalize the camera dashboard and launch in separate thread.
+        // Initialize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
-        if (cameraDashboard.cameraExists()) {
+        if (cameraDashboard.cameraExists()) 
+        {
             LOGGER.debug("Camera Starting");
             cameraDashboard.start();
         }
-
         Calibration.init();
     }
 
     public void disabledInit()
     {
-        LOGGER.info("Robot disabled");   
+        LOGGER.info("Robot disabled");
     }
 
     public void disabledPeriodic()
@@ -201,16 +132,10 @@ public class Robot extends IterativeRobot
         board.update();
         autonomous.updateAutonomousPeriodic();
         
-        
         autoOut.set(true);
         TeleopOut.set(false);
         warningOut.set(false);
     }
-
-    // read file in from disk. For this example to run you need to copy
-    // image.jpg from the SampleImages folder to the
-    // directory shown below using FTP or SFTP:
-    // http://wpilib.screenstepslive.com/s/4485/m/24166/l/282299-roborio-ftp
 
     /**
      * This function is called periodically during operator control
@@ -238,6 +163,7 @@ public class Robot extends IterativeRobot
             updateDrive();
             updateNavigator();
         }
+        
         double time = DriverStation.getInstance().getMatchTime();
         if (time > 20)
         switch (DriverStation.getInstance().getAlliance()) 
@@ -265,9 +191,6 @@ public class Robot extends IterativeRobot
             warningOut.set(true);
         }
 
-        
-        
-
     }
 
     /**
@@ -276,7 +199,8 @@ public class Robot extends IterativeRobot
      */
     private void updateDrive()
     {
-        switch (driverstation.getDriveMode())
+        DriveMode driveMode = driverstation.getDriveMode();
+        switch (driveMode)
         {
             case UNWIND:
                 for (Steering wheelpod : Drive.getInstance().steering)
@@ -285,81 +209,45 @@ public class Robot extends IterativeRobot
                 }
                 break;
 
-            case REVOLVE_LARGE:
-            {
-                Direction direction = Direction.LEFT;
-                if (driverstation.getDriveJoystick().buttonDown(4))
-                {
-                    direction = Direction.RIGHT;
-                }
-                drive.revolveDriveLarge(direction);
-            }
+            case REVOLVE_LARGE_LEFT:
+                drive.revolveDriveLarge(Direction.LEFT);
+                break;
+            
+            case REVOLVE_LARGE_RIGHT:
+                drive.revolveDriveLarge(Direction.RIGHT);
                 break;
                 
-            case REVOLVE_SMALL:
-            {
-                Direction direction = Direction.LEFT;
-                if (driverstation.getDriveJoystick().buttonDown(6))
-                {
-                    direction = Direction.RIGHT;
-                }
-                drive.revolveDriveSmall(direction);
+            case REVOLVE_SMALL_LEFT:
+                drive.revolveDriveSmall(Direction.LEFT);
+                break;
                 
-            }
+            case REVOLVE_SMALL_RIGHT:
+                drive.revolveDriveSmall(Direction.RIGHT);
                 break;
 
-            case STRAFE:
-            {
-                Direction direction = Direction.LEFT;
-                if (driverstation.getDriveJoystick().getPOV() == 90)
-                {
-                    direction = Direction.RIGHT;
-                }
-                drive.strafeDrive(direction);
-            }
+            case STRAFE_LEFT:
+                drive.strafeDrive(Direction.LEFT);
                 break;
 
+            case STRAFE_RIGHT:
+                drive.strafeDrive(Direction.RIGHT);
+                break;
+                
             case TURN:
                 drive.turnDrive(-driverstation.getDriveJoystick().getTwist()/2);
                 break;
 
             case CRAB_FA:
-                if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
-                {
-                    // If in joystick deadzone, don't steer, leave wheel at current angle.
-                    drive.stop();
-                }
-                else
-                {
-                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
-                            .getStickDistance(), true /* field aligned */);
-                }
-                break;
-
             case CRAB_NO_FA:
                 if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
                 {
-                    // If in joystick deadzone, don't steer, leave wheel at current angle.
+                    // Don't start driving until commanded speed greater than minimum
                     drive.stop();
                 }
                 else
                 {
                     drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
-                            .getStickDistance(), false /* not field aligned */);
-                }
-                break;
-
-            default:  // should never enter here
-                LOGGER.error("Button State not calculated correctly");
-                if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
-                {
-                    drive.stop();
-
-                }
-                else
-                {
-                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
-                            .getStickDistance(), false /* not field aligned */);
+                            .getStickDistance(), (driveMode == DriveMode.CRAB_FA));
                 }
                 break;
         }        
