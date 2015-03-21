@@ -76,17 +76,22 @@ public class Lifter
      */
     public void set(double speed)
     {
-    	double oldSpeed = lifterMotorTop.get();
-    	if (Math.abs(speed - oldSpeed) >= MAX_RAMP_RATE)
-    	{
-    		lifterMotorBottom.set(oldSpeed += MAX_RAMP_RATE);
-    		lifterMotorTop.set(oldSpeed += MAX_RAMP_RATE);
-    	}
-    	else
-    	{
-    		lifterMotorBottom.set(speed);
-    		lifterMotorTop.set(speed);
-    	}
+        double oldSpeed = lifterMotorTop.get();
+        double newSpeed = speed;
+
+        // Adjust newSpeed to never exceed MAX_RAMP_RATE
+        if ((speed - oldSpeed) >= MAX_RAMP_RATE)
+        {
+            newSpeed += MAX_RAMP_RATE;
+        }
+        else if ((speed - oldSpeed) <= MAX_RAMP_RATE)
+        {
+            newSpeed -= MAX_RAMP_RATE;
+        }
+
+        // Set both lifter motors to the new adjusted speed.
+        lifterMotorBottom.set(newSpeed);
+        lifterMotorTop.set(newSpeed);
     }
 
     /**

@@ -86,6 +86,7 @@ public class CameraDashboard extends Thread
     {
         LOGGER.debug("Rendering image");
 
+        // TODO Get from camera
         int viewWidth = 640;
         int viewHeight = 480;
 
