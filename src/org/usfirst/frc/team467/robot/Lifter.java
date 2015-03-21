@@ -68,19 +68,30 @@ public class Lifter
     private boolean isJammedTop = false;
     private boolean isJammedBottom = false;
     
+    /**
+     * Sets the speed of the lifter motors; <br>
+     * stops current spike on sudden speed change.
+     * 
+     * @param speed
+     */
     public void set(double speed)
     {
-    	double oldSpeed = lifterMotorTop.get();
-    	if (Math.abs(speed - oldSpeed) >= MAX_RAMP_RATE)
-    	{
-    		lifterMotorBottom.set(oldSpeed += MAX_RAMP_RATE);
-    		lifterMotorTop.set(oldSpeed += MAX_RAMP_RATE);
-    	}
-    	else
-    	{
-    		lifterMotorBottom.set(speed);
-    		lifterMotorTop.set(speed);
-    	}
+        double oldSpeed = lifterMotorTop.get();
+        double diff = speed - oldSpeed;
+
+        // Adjust newSpeed to never exceed MAX_RAMP_RATE
+        if (diff >= MAX_RAMP_RATE)
+        {
+            speed += MAX_RAMP_RATE;
+        }
+        else if (diff <= MAX_RAMP_RATE)
+        {
+            speed -= MAX_RAMP_RATE;
+        }
+
+        // Set both lifter motors to the new adjusted speed.
+        lifterMotorBottom.set(speed);
+        lifterMotorTop.set(speed);
     }
 
     /**
@@ -107,13 +118,11 @@ public class Lifter
                 }
                 if (isJammedTop)
                 {
-                    lifterMotorBottom.set(0);
-                    lifterMotorTop.set(0);
+                    set(0);
                 }
                 else
                 {
-                    lifterMotorBottom.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
-                    lifterMotorTop.set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
+                    set((turbo) ? FAST_SPEED_UP : SLOW_SPEED_UP);
                 }
                 break;
 
@@ -128,19 +137,16 @@ public class Lifter
                 }
                 if (isJammedBottom)
                 {
-                    lifterMotorBottom.set(0);
-                    lifterMotorTop.set(0);
+                    set(0);
                 }
                 else
                 {
-                    lifterMotorBottom.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
-                    lifterMotorTop.set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
+                    set((turbo) ? FAST_SPEED_DOWN : SLOW_SPEED_DOWN);
                 }
                 break;
 
             default:
-                lifterMotorBottom.set(0);
-                lifterMotorTop.set(0);
+                set(0);
                 isJammedTop = false;
                 isJammedBottom = false;
                 break;
