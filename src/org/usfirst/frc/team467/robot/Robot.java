@@ -168,6 +168,19 @@ public class Robot extends IterativeRobot
     {
         gyro.update();
         LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
+        
+        
+        DriverStation.Alliance color = DriverStation.getInstance().getAlliance();
+        if (color == DriverStation.Alliance.Red) {
+            autoOut.set(false);
+            TeleopOut.set(true);
+            warningOut.set(false);
+        }
+        else if (color == DriverStation.Alliance.Blue) {
+            autoOut.set(true);
+            TeleopOut.set(true);
+            warningOut.set(false);
+        }
     }
 
     public void autonomousInit()
@@ -195,6 +208,8 @@ public class Robot extends IterativeRobot
         driverstation.readInputs();
         board.update();
         autonomous.updateAutonomousPeriodic();
+        
+        
         autoOut.set(true);
         TeleopOut.set(false);
         warningOut.set(false);
@@ -232,27 +247,13 @@ public class Robot extends IterativeRobot
             updateDrive();
             updateNavigator();
         }
-        double time = DriverStation.getInstance().getMatchTime();
-        System.out.println("time=" + time);
         
-        if (time > 20) {
-            DriverStation.Alliance color = DriverStation.getInstance().getAlliance();
-            if (color == DriverStation.Alliance.Red) {
-                autoOut.set(false);
-                TeleopOut.set(true);
-                warningOut.set(false);
-            }
-            else if (color == DriverStation.Alliance.Blue) {
-                autoOut.set(true);
-                TeleopOut.set(true);
-                warningOut.set(false);
-            }
-        }
-        else {
+        
+        
         autoOut.set(false);    
         TeleopOut.set(false);
         warningOut.set(true);
-        }
+        
     }
 
     /**
