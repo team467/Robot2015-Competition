@@ -78,14 +78,21 @@ public class Autonomous
     // Returns false for durationSecs, then returns true.
     private boolean forDurationSecs(float durationSecs)
     {
+        LOGGER.debug("forDurationSecs durationSecs=" + durationSecs);
         if (actionStartTimeMS < 0)
         {
-            actionStartTimeMS = System.currentTimeMillis();
+            resetActionStartTime();
         }
+        LOGGER.debug("forDurationSecs actionStartTimeMS=" + actionStartTimeMS);
 
         final long now = System.currentTimeMillis();
         final long durationMS = (long) (1000 * durationSecs);
-        return now < actionStartTimeMS + durationMS;
+        return now > actionStartTimeMS + durationMS;
+    }
+    
+    private void resetActionStartTime()
+    {
+        actionStartTimeMS = System.currentTimeMillis();
     }
 
     // Always returns false, indicates is never done.
@@ -131,6 +138,10 @@ public class Autonomous
         AutoType autonomousType = DriverStation2015.getInstance().getAutoType();
         LOGGER.info("AUTO MODE " + autonomousType);
 
+        // Reset actions.
+        actions.clear();
+        resetActionStartTime();
+        
         // Set up gyro and create actions list.
         switch (autonomousType)
         {
@@ -274,6 +285,7 @@ public class Autonomous
         // Make sure there something to do.
         if (actions.isEmpty())
         {
+            LOGGER.debug("No more actions");
             return;
         }
 
@@ -283,6 +295,7 @@ public class Autonomous
             // This action is done. Remove it from the list and prepare the next one.
             LOGGER.info("Finished action: " + currentAction.getDescription());
             actions.remove(0);
+            resetActionStartTime();
             if (actions.isEmpty())
             {
                 // Ran out of actions. We're done.
@@ -294,6 +307,7 @@ public class Autonomous
             LOGGER.info("Beginning action: " + currentAction.getDescription());
         }
 
+        LOGGER.debug("Running action: " + currentAction.getDescription() + " number of actions: " + actions.size());
         currentAction.doIt();
     }
 

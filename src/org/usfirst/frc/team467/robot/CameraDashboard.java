@@ -86,10 +86,13 @@ public class CameraDashboard extends Thread
     public void renderImage()
     {
         LOGGER.debug("Rendering image");
-        
-        ImageInfo info = NIVision.imaqGetImageInfo(frame);
-        int viewWidth = info.xRes; // 640
-        int viewHeight = info.yRes; // 480
+
+        // TODO Need to make this not crash
+//        ImageInfo info = NIVision.imaqGetImageInfo(frame);
+//        int viewWidth = info.xRes; // 640
+//        int viewHeight = info.yRes; // 480
+        int viewWidth = 640;
+        int viewHeight = 480;
 
         NIVision.IMAQdxGrab(session, frame, 1);
         

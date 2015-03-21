@@ -16,8 +16,9 @@ public class Logging
 //        Logger.getLogger(Steering.class).setLevel(Level.INFO);
 //        Logger.getLogger(Calibration.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Drive.class).setLevel(Level.DEBUG);
-        Logger.getLogger(Lifter.class).setLevel(Level.DEBUG);
-        Logger.getLogger(Claw.class).setLevel(Level.DEBUG);
+//        Logger.getLogger(Lifter.class).setLevel(Level.DEBUG);
+//        Logger.getLogger(Claw.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
     }
 
