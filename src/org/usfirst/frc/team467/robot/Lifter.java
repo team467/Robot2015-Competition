@@ -83,21 +83,37 @@ public class Lifter
     public void set(double speed)
     {
         double oldSpeed = lifterMotorTop.get();
-        double diff = speed - oldSpeed;
 
-        // Adjust newSpeed to never exceed MAX_RAMP_RATE
-        if (diff >= MAX_RAMP_RATE)
-        {
-            speed += MAX_RAMP_RATE;
-        }
-        else if (diff <= MAX_RAMP_RATE)
-        {
-            speed -= MAX_RAMP_RATE;
-        }
+        speed = limitRateOfChange(oldSpeed, speed, MAX_RAMP_RATE);
 
-        // Set both lifter motors to the new adjusted speed.
         lifterMotorBottom.set(speed);
         lifterMotorTop.set(speed);
+    }
+    
+    /**
+     * Limit rate at which speed can change to maxRampRate
+     *
+     * @param lastSpeed
+     * @param newSpeed - Desired speed
+     * @param maxRampRate
+     * @return Updated speed
+     */
+    private double limitRateOfChange(double lastSpeed, double newSpeed, double maxRampRate)
+    {
+        if (Math.abs(newSpeed - lastSpeed) > maxRampRate)
+        {
+            if (newSpeed > lastSpeed)
+            {
+                newSpeed = lastSpeed + maxRampRate;
+            }
+            else
+            {
+                newSpeed = lastSpeed - maxRampRate;
+            }
+        }
+        lastSpeed = newSpeed;
+        LOGGER.debug("LIMIT SPEED: " + newSpeed);
+        return newSpeed;
     }
     
     /**
