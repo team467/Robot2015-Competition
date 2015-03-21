@@ -112,6 +112,7 @@ public class CameraDashboard extends Thread
         return b*256*256 + g*256 + r;
     }
     
+    
     /**
      * Draws Timer Bar on top of Camera Feed
      * 
@@ -122,15 +123,26 @@ public class CameraDashboard extends Thread
     {
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
         int height = 20;
-        double scale = viewWidth / 150;
-        
         double matchTime = DriverStation.getInstance().getMatchTime();
-        double elapsedTime = 150 - matchTime;
-        double barWidth = elapsedTime * scale;
-        NIVision.Rect borderRect = new NIVision.Rect(0, 0, height, viewWidth);
-        NIVision.Rect timerRect = new NIVision.Rect(0, 0, height, (int)barWidth);
+
+        double totalTime = 135; // Teleop
+        if (DriverStation.getInstance().isAutonomous())
+        {
+            totalTime = 15;
+        }
         
-        NIVision.imaqDrawShapeOnImage(frame, frame, borderRect, DrawMode.PAINT_VALUE, RECT, BLACK);
+        double scale = viewWidth / totalTime;
+        double elapsedTime = (totalTime - matchTime);
+        
+        if (elapsedTime < 0) {
+            LOGGER.warn("elapsedTime is negative: " + elapsedTime);
+            elapsedTime = 0;
+        }
+        
+        double barWidth = elapsedTime * scale;
+        
+        
+        NIVision.Rect timerRect = new NIVision.Rect(0, 0, height, (int)barWidth);
         
         if (matchTime < 20)
         {
@@ -139,9 +151,10 @@ public class CameraDashboard extends Thread
         }
         else
         {
-            NIVision.imaqDrawShapeOnImage(frame, frame, timerRect, DrawMode.PAINT_VALUE, RECT, BLUE);
+            NIVision.imaqDrawShapeOnImage(frame, frame, timerRect, DrawMode.PAINT_VALUE, RECT, GREEN);
         }
     }
+
 
     private void drawCrossHairs(int viewWidth, int viewHeight)
     {
