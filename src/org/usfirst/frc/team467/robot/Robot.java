@@ -15,8 +15,12 @@ import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DriverStation;
 // import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -47,6 +51,11 @@ public class Robot extends IterativeRobot
     Image frame;
 
     CameraServer cameraServer;
+    
+    public Joystick joy = null;
+    public DigitalOutput autoOut = null;
+    public DigitalOutput TeleopOut = null;
+    public DigitalOutput warningOut = null;
 
     /**
      * Time in milliseconds
@@ -131,11 +140,19 @@ public class Robot extends IterativeRobot
         board = PowerDistroBoard467.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
-        gyro = Gyro2015.getInstance();        
+        gyro = Gyro2015.getInstance();
+        joy = new Joystick(0);
+        autoOut = new DigitalOutput(4);
+        TeleopOut = new DigitalOutput(5);
+        warningOut = new DigitalOutput(6);
+        autoOut.set(false);
+        TeleopOut.set(false);
+        warningOut.set(false);
 
         // Initalize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
         if (cameraDashboard.cameraExists()) {
+            LOGGER.debug("Camera Starting");
             cameraDashboard.start();
         }
 
@@ -144,24 +161,28 @@ public class Robot extends IterativeRobot
 
     public void disabledInit()
     {
-        LOGGER.info("Robot disabled");
-        
+        LOGGER.info("Robot disabled");   
     }
 
     public void disabledPeriodic()
     {
         gyro.update();
-//           System.out.println("GYRO ANGLE: " + gyro.getAngle());
+        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
+        autoOut.set(false);
+        TeleopOut.set(false);
+        warningOut.set(true);
     }
 
+    @Override
     public void autonomousInit()
     {
+        LOGGER.info("Autonomous init");
         autonomous.initAutonomous();
     }
 
     public void teleopInit()
     {
-
+        
     }
 
     public void testInit()
@@ -174,11 +195,16 @@ public class Robot extends IterativeRobot
 
     public void autonomousPeriodic()
     {
-        LOGGER.debug("Autonomous");
+        LOGGER.info("Autonomous");
         
         driverstation.readInputs();
         board.update();
         autonomous.updateAutonomousPeriodic();
+        
+        
+        autoOut.set(true);
+        TeleopOut.set(false);
+        warningOut.set(false);
     }
 
     // read file in from disk. For this example to run you need to copy
@@ -193,14 +219,13 @@ public class Robot extends IterativeRobot
     {
         // Read driverstation inputs
         driverstation.readInputs();
-        gyro.update();               
-        if(driverstation.getGyroReset())
+        gyro.update();
+        if (driverstation.getGyroReset())
         {
             System.out.println("GYRO RESET");
             gyro.reset();
         }
-        System.out.println("GYRO ANGLE: " + gyro.getAngle());        
-                
+        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
 
         if (driverstation.getCalibrate())
         {
@@ -213,6 +238,36 @@ public class Robot extends IterativeRobot
             updateDrive();
             updateNavigator();
         }
+        double time = DriverStation.getInstance().getMatchTime();
+        if (time > 20)
+        switch (DriverStation.getInstance().getAlliance()) 
+        {
+            case Red:
+                autoOut.set(false);
+                TeleopOut.set(true);
+                warningOut.set(false);
+                break;
+            case Blue:
+                autoOut.set(true);
+                TeleopOut.set(true);
+                warningOut.set(false);
+                break;
+            case Invalid:
+                autoOut.set(false);
+                TeleopOut.set(false);
+                warningOut.set(true);
+                break;
+        }
+        else 
+        {
+            autoOut.set(false);
+            TeleopOut.set(true);
+            warningOut.set(true);
+        }
+
+        
+        
+
     }
 
     /**

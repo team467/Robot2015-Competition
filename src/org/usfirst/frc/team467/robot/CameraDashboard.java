@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ImageInfo;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
@@ -17,6 +18,7 @@ public class CameraDashboard extends Thread
     private static final float BLACK = color(0, 0, 0);
     private static final float RED = color(255, 0, 0);
     private static final float GREEN = color(0, 255, 0);
+    @SuppressWarnings("unused")
     private static final float BLUE = color(0, 0, 255);
     private static final float WHITE = color(255, 255, 255);
 
@@ -84,9 +86,10 @@ public class CameraDashboard extends Thread
     public void renderImage()
     {
         LOGGER.debug("Rendering image");
-
-        int viewWidth = 640;
-        int viewHeight = 480;
+        
+        ImageInfo info = NIVision.imaqGetImageInfo(frame);
+        int viewWidth = info.xRes; // 640
+        int viewHeight = info.yRes; // 480
 
         NIVision.IMAQdxGrab(session, frame, 1);
         
@@ -111,7 +114,6 @@ public class CameraDashboard extends Thread
         // 24 bits, 8 bits for each color channel
         return b*256*256 + g*256 + r;
     }
-    
     
     /**
      * Draws Timer Bar on top of Camera Feed
@@ -179,9 +181,10 @@ public class CameraDashboard extends Thread
         final int rectHeight = 20;
         final int rectWidth = 100 + barWidth;
 
-        final int topMargin = 20;
+        final int margin = 20;
         final int leftMargin = 20;
-        final int bottomMargin = viewHeight - (topMargin + rectHeight);
+        final int bottomMargin = viewHeight - (margin + rectHeight);
+        final int topMargin = margin + 20;
         final int rightMargin = viewWidth - (leftMargin + rectWidth) - barWidth;
 
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
