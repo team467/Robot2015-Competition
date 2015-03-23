@@ -20,7 +20,6 @@ public class Logging
 //        Logger.getLogger(Claw.class).setLevel(Level.DEBUG);
         Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
-//        Logger.getLogger(RateLimiter.class).setLevel(Level.DEBUG);
     }
 
     private static void setupDefaultLogging()

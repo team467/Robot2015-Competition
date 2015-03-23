@@ -1,12 +1,10 @@
 package org.usfirst.frc.team467.robot;
 
-import org.apache.log4j.Logger;
-
+/**
+ * Utility class to simply limit the rate of change of a control variable.
+ */
 public class RateLimiter
-{
-    @SuppressWarnings("unused")
-    private static final Logger LOGGER = Logger.getLogger(RateLimiter.class);
-    
+{   
     /**
      * Limit rate at which speed can change to maxRampRate
      *
