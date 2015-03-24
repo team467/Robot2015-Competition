@@ -52,10 +52,7 @@ public class Robot extends IterativeRobot
 
     CameraServer cameraServer;
     
-    public Joystick joy = null;
-    public DigitalOutput autoOut = null;
-    public DigitalOutput TeleopOut = null;
-    public DigitalOutput warningOut = null;
+    public LEDStrip leds = new LEDStrip();
 
     /**
      * Time in milliseconds
@@ -141,13 +138,7 @@ public class Robot extends IterativeRobot
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
         gyro = Gyro2015.getInstance();
-        joy = new Joystick(0);
-        autoOut = new DigitalOutput(4);
-        TeleopOut = new DigitalOutput(5);
-        warningOut = new DigitalOutput(6);
-        autoOut.set(false);
-        TeleopOut.set(false);
-        warningOut.set(false);
+        leds.set(false, false, false);
 
         // Initalize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
@@ -168,9 +159,7 @@ public class Robot extends IterativeRobot
     {
         gyro.update();
         LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
-        autoOut.set(false);
-        TeleopOut.set(false);
-        warningOut.set(true);
+        leds.set(false, false, true);
     }
 
     @Override
@@ -201,10 +190,7 @@ public class Robot extends IterativeRobot
         board.update();
         autonomous.updateAutonomousPeriodic();
         
-        
-        autoOut.set(true);
-        TeleopOut.set(false);
-        warningOut.set(false);
+        leds.set(true, false, false);
     }
 
     // read file in from disk. For this example to run you need to copy
@@ -243,31 +229,19 @@ public class Robot extends IterativeRobot
         switch (DriverStation.getInstance().getAlliance()) 
         {
             case Red:
-                autoOut.set(false);
-                TeleopOut.set(true);
-                warningOut.set(false);
+                leds.set(false, true, false);
                 break;
             case Blue:
-                autoOut.set(true);
-                TeleopOut.set(true);
-                warningOut.set(false);
+                leds.set(true, true, false);
                 break;
             case Invalid:
-                autoOut.set(false);
-                TeleopOut.set(false);
-                warningOut.set(true);
+                leds.set(false, false, true);
                 break;
         }
         else 
         {
-            autoOut.set(false);
-            TeleopOut.set(true);
-            warningOut.set(true);
+            leds.set(false, true, true);
         }
-
-        
-        
-
     }
 
     /**
