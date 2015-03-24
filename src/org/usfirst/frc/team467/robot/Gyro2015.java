@@ -2,11 +2,9 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
-import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.SerialPort;
 
 /**
- * @author nathan
  *
  */
 public class Gyro2015

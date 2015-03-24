@@ -6,11 +6,6 @@ public class PowerDistroBoard467
 {
     private static PowerDistroBoard467 board = null;
 
-    private final int LIFTER_MOTOR_CHANNEL_BOTTOM = 4;
-    private final int LIFTER_MOTOR_CHANNEL_TOP = 6;
-
-    private final int CLAW_MOTOR_CHANNEL = 5;
-
     private PowerDistributionPanel pdp = null;
     
     private RollingAverage clawAverageCurrent = new RollingAverage(3);
@@ -51,9 +46,9 @@ public class PowerDistroBoard467
     
     public void update()
     {
-        lifterAverageCurrentBottom.add(getCurrent(LIFTER_MOTOR_CHANNEL_BOTTOM));
-        lifterAverageCurrentTop.add(getCurrent(LIFTER_MOTOR_CHANNEL_TOP));
-        clawAverageCurrent.add(getCurrent(CLAW_MOTOR_CHANNEL));
+        lifterAverageCurrentBottom.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_BOTTOM));
+        lifterAverageCurrentTop.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_TOP));
+        clawAverageCurrent.add(getCurrent(RobotMap.CLAW_MOTOR_CHANNEL));
     }
 
     /**

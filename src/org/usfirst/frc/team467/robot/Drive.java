@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import edu.wpi.first.wpilibj.*;
 
 /**
- * @author Team 467
+ * 
  */
 public class Drive extends RobotDrive
 {
@@ -145,6 +145,8 @@ public class Drive extends RobotDrive
         }
         
         final double MAX_DRIVE_ANGLE = Math.PI / 25;
+        
+        // Don't drive until wheels are close to the commanded steering angle
         if (steering[RobotMap.FRONT_LEFT] .getAngleDelta() < MAX_DRIVE_ANGLE ||
             steering[RobotMap.FRONT_RIGHT].getAngleDelta() < MAX_DRIVE_ANGLE ||
             steering[RobotMap.BACK_LEFT]  .getAngleDelta() < MAX_DRIVE_ANGLE ||
@@ -155,7 +157,8 @@ public class Drive extends RobotDrive
             m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
             m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
             m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
-        } else
+        } 
+        else
         {
             LOGGER.debug("NO DRIVE");
             m_frontLeftMotor.set(0, SYNC_GROUP);
@@ -164,7 +167,7 @@ public class Drive extends RobotDrive
             m_rearRightMotor.set(0, SYNC_GROUP);
         }
 
-        LOGGER.debug("TURN DRIVE SPEEDS: FL:" + frontLeftSpeed + ", FR:" +  frontRightSpeed + ", BL:" + backLeftSpeed + ", BR:" + backRightSpeed);
+        LOGGER.debug("WHEEL SPEEDS: FL:" + frontLeftSpeed + ", FR:" +  frontRightSpeed + ", BL:" + backLeftSpeed + ", BR:" + backRightSpeed);
         if (m_safetyHelper != null)
         {
             m_safetyHelper.feed();
@@ -180,11 +183,6 @@ public class Drive extends RobotDrive
     private void fourWheelSteer(double frontLeft, double frontRight, double backLeft, double backRight)
     {
         // set the angles to steer
-//        steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
-//        steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
-//        steering[RobotMap.BACK_LEFT].setAngle(backLeft);
-//        steering[RobotMap.BACK_RIGHT].setAngle(backRight);
-
         steering[RobotMap.FRONT_LEFT].setAngle(frontLeft);
         steering[RobotMap.FRONT_RIGHT].setAngle(frontRight);
         steering[RobotMap.BACK_LEFT].setAngle(backLeft);
@@ -210,28 +208,8 @@ public class Drive extends RobotDrive
         this.fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
         this.fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backRight.speed);
     }
-
-    /**
-     * Set angles in "turn in place" position
-     * Wrap around will check whether the closest angle is facing forward or backward
-     * 
-     * Front Left- / \ - Front Right<br>
-     * Back Left - \ / - Back Right
-     * 
-     * @param speed
-     */
-    public void turnDriveTemp(double speed)
-    {
-        WheelCorrection frontLeft = new WheelCorrection(TURN_IN_PLACE_ANGLE, -speed);//(RobotMap.FRONT_LEFT, TURN_IN_PLACE_ANGLE, -speed);
-        WheelCorrection frontRight = new WheelCorrection(-TURN_IN_PLACE_ANGLE, speed);//wrapAroundCorrect(RobotMap.FRONT_RIGHT, -TURN_IN_PLACE_ANGLE, speed);
-        WheelCorrection backLeft = new WheelCorrection(-TURN_IN_PLACE_ANGLE, -speed);//wrapAroundCorrect(RobotMap.BACK_LEFT, -TURN_IN_PLACE_ANGLE, -speed);
-        WheelCorrection backRight = new WheelCorrection(TURN_IN_PLACE_ANGLE, speed);//wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);               
-        
-        this.fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
-        this.fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backRight.speed);
-    }
     
-    //prev speeds for the four wheels
+    // Previous speeds for the four wheels
     private double lastSpeed[] = new double[]{0.0,0.0,0.0,0.0};
 
     /**
@@ -257,7 +235,7 @@ public class Drive extends RobotDrive
         }
         else
         {
-            // Limit maximum regular speed to 80%.
+            // Limit maximum regular speed to specified Maximum.
             speed *= SPEED_MAX_MODIFIER;
         }
 
@@ -290,7 +268,7 @@ public class Drive extends RobotDrive
      */
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        double gyroAngle = (fieldAlign)? gyro.getAngle(): 0; // if gyro exists use gyro.getAngle(), else 0        
+        double gyroAngle = (fieldAlign) ? gyro.getAngle() : 0; // if field aligned use gyro.getAngle(), else 0        
 
         double gyroAngleRad = Math.toRadians(gyroAngle);
         // Calculate the wheel angle necessary to drive in the required direction.
@@ -312,12 +290,10 @@ public class Drive extends RobotDrive
      * @param steeringId
      *            Id of steering motor to drive
      */
-    public void individualSteeringDrive(double angle, double speed, int steeringId)
+    public void individualSteeringDrive(double angle, int steeringId)
     {
         // Set steering angle
         steering[steeringId].setAngle(angle);
-
-        this.drive(limitSpeed(speed, steeringId), null);
     }
 
     /**
@@ -343,18 +319,6 @@ public class Drive extends RobotDrive
         WheelCorrection corrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, angle, speed);
         fourWheelSteer(corrected.angle, corrected.angle, corrected.angle, corrected.angle);
         fourWheelDrive(corrected.speed, corrected.speed, corrected.speed, corrected.speed);
-    }
-    
-    public void autoDrive(Direction direction)
-    {
-        double angle = (direction == Direction.RIGHT) ? Math.PI / 2 : -Math.PI / 2;
-        double backSpeed = SPEED_STRAFE;
-        double frontSpeed = backSpeed + 0.22;
-        
-        WheelCorrection backCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, angle, backSpeed);
-        WheelCorrection frontCorrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, angle, frontSpeed);
-        fourWheelSteer(frontCorrected.angle, frontCorrected.angle, backCorrected.angle, backCorrected.angle);
-        fourWheelDrive(frontCorrected.speed, frontCorrected.speed, backCorrected.speed, backCorrected.speed);
     }
 
     /**
@@ -417,13 +381,13 @@ public class Drive extends RobotDrive
         switch (steeringId)
         {
             case RobotMap.FRONT_LEFT:
-                frontLeftSpeed = speed * -1.0;
+                frontLeftSpeed = 1.0;
                 break;
             case RobotMap.FRONT_RIGHT:
                 frontRightSpeed = speed * 1.0;
                 break;
             case RobotMap.BACK_LEFT:
-                rearLeftSpeed = speed * -1.0;
+                rearLeftSpeed = speed * 1.0;
                 break;
             case RobotMap.BACK_RIGHT:
                 rearRightSpeed = speed * 1.0;
@@ -481,35 +445,6 @@ public class Drive extends RobotDrive
     }
 
     /**
-     * New drive function. Allows for wheel correction using speed based on a
-     * specified correction angle
-     *
-     * @param speed
-     *            The speed to drive at
-     * @param inverts
-     *            Array of which motors to invert in form {FL, FR, BL, BR}
-     */
-    public void drive(double speed, boolean[] inverts)
-    {
-        double frontLeftSpeed = speed;
-        double frontRightSpeed = speed;
-        double rearLeftSpeed = speed;
-        double rearRightSpeed = speed;
-
-        // If the inverts parameter is fed in, invert the specified motors
-
-        if (inverts != null)
-        {
-            frontLeftSpeed *= inverts[0] ? -1.0 : 1.0;
-            frontRightSpeed *= inverts[1] ? -1.0 : 1.0;
-            rearLeftSpeed *= inverts[2] ? -1.0 : 1.0;
-            rearRightSpeed *= inverts[3] ? -1.0 : 1.0;
-        }
-
-        fourWheelDrive(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
-    }
-
-    /**
      * Set the steering center to a new value
      *
      * @param steeringMotor
@@ -529,9 +464,9 @@ public class Drive extends RobotDrive
      *            The id of the steering motor
      * @return
      */
-    public double getSteeringAngle(int steeringId)
+    public double getSteeringAngle(int steeringMotor)
     {
-        return steering[steeringId].getSensorValue();
+        return steering[steeringMotor].getSensorValue();
     }
 
     /**
@@ -541,9 +476,9 @@ public class Drive extends RobotDrive
      *            The id of the steering motor
      * @return
      */
-    public double getNormalizedSteeringAngle(int steeringId)
+    public double getNormalizedSteeringAngle(int steeringMotor)
     {
-        return steering[steeringId].getSteeringAngle();
+        return steering[steeringMotor].getSteeringAngle();
     }
 
 }

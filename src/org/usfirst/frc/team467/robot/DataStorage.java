@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Preferences;
 
 /**
  *
- * @author aidan
  */
 public class DataStorage
 {

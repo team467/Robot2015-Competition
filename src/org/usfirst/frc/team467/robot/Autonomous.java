@@ -313,8 +313,6 @@ public class Autonomous
 
     /**
      * Type of Autonomous drive to use.
-     * 
-     * @author kyle
      *
      */
     enum AutoType

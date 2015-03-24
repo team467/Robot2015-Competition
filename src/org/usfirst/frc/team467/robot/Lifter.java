@@ -3,7 +3,6 @@ package org.usfirst.frc.team467.robot;
 import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 
 public class Lifter
@@ -14,13 +13,6 @@ public class Lifter
 
     private Talon lifterMotorBottom = null;
     private Talon lifterMotorTop = null;
-    private DigitalInput topStop = null;
-    private DigitalInput topSlow = null;
-    private DigitalInput bottomSlow = null;
-    private DigitalInput bottomStop = null;
-
-    private LifterZoneTypes currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
-    private LifterDirection currentLiftDirection = LifterDirection.STOP;
 
     private PowerDistroBoard467 board = null;
 
@@ -30,7 +22,6 @@ public class Lifter
     public static final double SLOW_SPEED_DOWN = -SLOW_SPEED_UP;
     public static final double FAST_SPEED_DOWN = -FAST_SPEED_UP;
 
-    // TODO Replace with practical value
     private static final double MAX_CURRENT_DOWN = 12;
     private static final double MAX_CURRENT_UP = 12;
     
@@ -57,18 +48,17 @@ public class Lifter
     {
         lifterMotorBottom = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL_BOTTOM);
         lifterMotorTop = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL_TOP);
-        topStop = new DigitalInput(RobotMap.SWITCH_UP_STOP);
-        topSlow = new DigitalInput(RobotMap.SWITCH_UP_SLOW);
-        bottomSlow = new DigitalInput(RobotMap.SWITCH_DOWN_SLOW);
-        bottomStop = new DigitalInput(RobotMap.SWITCH_DOWN_STOP);
 
         board = PowerDistroBoard467.getInstance();
-        currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
     }
 
     private boolean isJammedTop = false;
     private boolean isJammedBottom = false;
     
+    /**
+     * Stop driving lifter motors
+     * 
+     */
     public void stop()
     {
         set(0);
@@ -97,27 +87,26 @@ public class Lifter
      */
     public void driveLifter(LifterDirection lifterDirection, Speed speed)
     {
-        if (board.getLifterTopCurrent() > MAX_CURRENT_UP - 1 || board.getLifterBottomCurrent() > MAX_CURRENT_UP - 1)
+        if ((board.getLifterTopCurrent() > MAX_CURRENT_UP - 1) || (board.getLifterBottomCurrent() > MAX_CURRENT_UP - 1))
         {
             LOGGER.debug("LIFT CURRENT: BOTTOM: " + board.getLifterBottomCurrent() + " TOP: " + board.getLifterTopCurrent());
         }
+        
         switch (lifterDirection)
         {
             case UP:
                 LOGGER.debug("UP");
-                DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_TOP_STOP, isJammedTop);
-                if (!isJammedTop)
-                {
-                    isJammedTop = (board.getLifterBottomCurrent() > MAX_CURRENT_UP)
-                            || (board.getLifterTopCurrent() > MAX_CURRENT_UP);
-                    isJammedBottom = false;
-                }
+                
+                isJammedTop = isJammedTop || (board.getLifterBottomCurrent() > MAX_CURRENT_UP) || (board.getLifterTopCurrent() > MAX_CURRENT_UP);
+                
                 if (isJammedTop)
                 {
                     stop();
                 }
                 else
                 {
+                    isJammedBottom = false;
+                    
                     switch (speed)
                     {
                         case FAST:
@@ -127,25 +116,22 @@ public class Lifter
                             set(SLOW_SPEED_UP);
                             break;
                     }
-                    break;
                 }
                 break;
 
             case DOWN:
                 LOGGER.debug("DOWN");
-                DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_BOTTOM_STOP, isJammedBottom);
-                if (!isJammedBottom)
-                {
-                    isJammedBottom = (board.getLifterBottomCurrent() > MAX_CURRENT_DOWN)
-                            || (board.getLifterTopCurrent() > MAX_CURRENT_DOWN);
-                    isJammedTop = false;
-                }
+                
+                isJammedBottom = isJammedBottom || (board.getLifterBottomCurrent() > MAX_CURRENT_DOWN) || (board.getLifterTopCurrent() > MAX_CURRENT_DOWN);
+               
                 if (isJammedBottom)
                 {
                     stop();
                 }
                 else
                 {
+                    isJammedTop = false;
+
                     switch (speed)
                     {
                         case FAST:
@@ -164,53 +150,15 @@ public class Lifter
                 isJammedBottom = false;
                 break;
         }
-    }
-
-    /**
-     * Updates the logic of the lifter to set current state.
-     */
-    public void update()
-    {
-
-        if (currentZone == LifterZoneTypes.STOP_ZONE_BOTTOM)
-        {
-            if (!bottomStop.get() && currentLiftDirection == LifterDirection.UP)
-                currentZone = LifterZoneTypes.SLOW_ZONE_BOTTOM;
-        }
-        else if (currentZone == LifterZoneTypes.SLOW_ZONE_BOTTOM)
-        {
-            if (bottomStop.get() && currentLiftDirection == LifterDirection.DOWN)
-                currentZone = LifterZoneTypes.STOP_ZONE_BOTTOM;
-            else if (bottomSlow.get() && currentLiftDirection == LifterDirection.UP)
-                currentZone = LifterZoneTypes.FAST_ZONE;
-        }
-        else if (currentZone == LifterZoneTypes.FAST_ZONE)
-        {
-            if (topSlow.get() && currentLiftDirection == LifterDirection.UP)
-                currentZone = LifterZoneTypes.SLOW_ZONE_TOP;
-            else if (bottomSlow.get() && currentLiftDirection == LifterDirection.DOWN)
-                currentZone = LifterZoneTypes.STOP_ZONE_BOTTOM;
-        }
-        else if (currentZone == LifterZoneTypes.SLOW_ZONE_TOP)
-        {
-            if (topStop.get() && currentLiftDirection == LifterDirection.UP)
-                currentZone = LifterZoneTypes.STOP_ZONE_TOP;
-            else if (topSlow.get() && currentLiftDirection == LifterDirection.DOWN)
-                currentZone = LifterZoneTypes.FAST_ZONE;
-        }
-        else if (currentZone == LifterZoneTypes.STOP_ZONE_TOP)
-        {
-            if (!topStop.get() && currentLiftDirection == LifterDirection.DOWN)
-                currentZone = LifterZoneTypes.SLOW_ZONE_TOP;
-        }
+        
+        DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_TOP_STOP, isJammedTop);
+        DriverStation2015.getInstance().setLifterLED(DriverStation2015.LED_LIFTER_BOTTOM_STOP, isJammedBottom);
     }
 
 }
 
 /**
  * Used for maintaining lifter direction.
- * 
- * @author kyle
  *
  */
 enum LifterDirection
@@ -220,22 +168,10 @@ enum LifterDirection
 
 /**
  * Zone types internal to the lifter
- * 
- * @author kyle
  *
  */
-enum LifterZoneTypes
+enum LifterZone
 {
     STOP_ZONE_BOTTOM, SLOW_ZONE_BOTTOM, FAST_ZONE, STOP_ZONE_TOP, SLOW_ZONE_TOP
 }
 
-/**
- * Types of lifting that can occur
- * 
- * @author kyle
- *
- */
-enum LiftTypes
-{
-    LIFT_UP_SLOW, LIFT_DOWN_SLOW, LIFT_UP_FAST, LIFT_DOWN_FAST, NO_LIFT
-}

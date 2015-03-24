@@ -71,18 +71,15 @@ public class Claw
             case CLOSE:
                 LOGGER.debug("CLOSE");
 
-                if (!m_isClosed)
-                {
-                    LOGGER.debug("CLAW OPEN MAX=" + MAX_CURRENT_GRIP);
-                    m_isClosed = (board.getClawCurrent() > MAX_CURRENT_GRIP);
-                    m_isFullyOpen = false;
-                }
+                m_isClosed = m_isClosed || (board.getClawCurrent() > MAX_CURRENT_GRIP);
+                
                 if (m_isClosed)
-                {                    
+                {
                     stop();
                 }
                 else
                 {
+                    m_isFullyOpen = false;
                     switch (speed)
                     {
                         case FAST:
@@ -98,17 +95,15 @@ public class Claw
             case OPEN:
                 LOGGER.debug("OPEN");
 
-                if (!m_isFullyOpen)
-                {
-                    m_isFullyOpen = (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
-                    m_isClosed = false;
-                }
+                m_isFullyOpen = m_isFullyOpen || (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                
                 if (m_isFullyOpen)
                 {
                     stop();
                 }
                 else
                 {
+                    m_isClosed = false;
                     switch (speed)
                     {
                         case FAST:
