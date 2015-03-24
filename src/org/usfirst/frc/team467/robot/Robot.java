@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot
 
     int session;
     
-    private LEDStrip leds = new LEDStrip();
+    private LEDStrip ledStrip = new LEDStrip();
 
     /**
      * Time in milliseconds
@@ -65,7 +65,7 @@ public class Robot extends IterativeRobot
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
         gyro = Gyro2015.getInstance();
-        leds.setMode(Mode.OFF);
+        ledStrip.setMode(Mode.OFF);
 
         // Initialize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
@@ -86,7 +86,7 @@ public class Robot extends IterativeRobot
     {
         gyro.update();
         LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
-        leds.setMode(Mode.BLUE_AND_GOLD);
+        ledStrip.setMode(Mode.BLUE_AND_GOLD);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class Robot extends IterativeRobot
         board.update();
         autonomous.updateAutonomousPeriodic();
         
-        leds.setMode(Mode.RAINBOW);
+        ledStrip.setMode(Mode.RAINBOW);
     }
 
     /**
@@ -153,19 +153,19 @@ public class Robot extends IterativeRobot
             switch (DriverStation.getInstance().getAlliance()) 
             {
                 case Red:
-                    leds.setMode(Mode.PULSE_RED);
+                    ledStrip.setMode(Mode.PULSE_RED);
                     break;
                 case Blue:
-                    leds.setMode(Mode.PULSE_BLUE);
+                    ledStrip.setMode(Mode.PULSE_BLUE);
                     break;
                 case Invalid:
-                    leds.setMode(Mode.BLUE_AND_GOLD);
+                    ledStrip.setMode(Mode.BLUE_AND_GOLD);
                     break;
             }
         }
         else 
         {
-            leds.setMode(Mode.PULSE_YELLOW);
+            ledStrip.setMode(Mode.PULSE_YELLOW);
         }
     }
 
