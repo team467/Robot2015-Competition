@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 
 public class LEDStrip
 {
-    enum Mode {
+    public enum Mode {
         OFF,
         RAINBOW,
         BLUE_AND_GOLD,
@@ -26,13 +26,6 @@ public class LEDStrip
         setMode(Mode.OFF);
     }
     
-    private void set(boolean setAutoOut, boolean setTeleopOut, boolean setWarningOut)
-    {
-        autoOut.set(setAutoOut);
-        teleopOut.set(setTeleopOut);
-        warningOut.set(setWarningOut);
-    }
-
     public void setMode(Mode mode)
     {
         switch (mode)
@@ -56,5 +49,12 @@ public class LEDStrip
                 set(false, true, true);
                 break;
         }
+    }
+
+    private void set(boolean setAutoOut, boolean setTeleopOut, boolean setWarningOut)
+    {
+        autoOut.set(setAutoOut);
+        teleopOut.set(setTeleopOut);
+        warningOut.set(setWarningOut);
     }
 }
