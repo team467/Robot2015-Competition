@@ -10,6 +10,7 @@ package org.usfirst.frc.team467.robot;
 import java.util.Comparator;
 
 import org.apache.log4j.Logger;
+import org.usfirst.frc.team467.robot.LEDStrip.Mode;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
@@ -138,7 +139,7 @@ public class Robot extends IterativeRobot
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
         gyro = Gyro2015.getInstance();
-        leds.set(false, false, false);
+        leds.setMode(Mode.OFF);
 
         // Initalize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
@@ -159,7 +160,7 @@ public class Robot extends IterativeRobot
     {
         gyro.update();
         LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
-        leds.set(false, false, true);
+        leds.setMode(Mode.BLUE_AND_GOLD);
     }
 
     @Override
@@ -190,7 +191,7 @@ public class Robot extends IterativeRobot
         board.update();
         autonomous.updateAutonomousPeriodic();
         
-        leds.set(true, false, false);
+        leds.setMode(Mode.RAINBOW);
     }
 
     // read file in from disk. For this example to run you need to copy
@@ -226,21 +227,23 @@ public class Robot extends IterativeRobot
         }
         double time = DriverStation.getInstance().getMatchTime();
         if (time > 20)
-        switch (DriverStation.getInstance().getAlliance()) 
         {
-            case Red:
-                leds.set(false, true, false);
-                break;
-            case Blue:
-                leds.set(true, true, false);
-                break;
-            case Invalid:
-                leds.set(false, false, true);
-                break;
+            switch (DriverStation.getInstance().getAlliance()) 
+            {
+                case Red:
+                    leds.setMode(Mode.PULSE_RED);
+                    break;
+                case Blue:
+                    leds.setMode(Mode.PULSE_BLUE);
+                    break;
+                case Invalid:
+                    leds.setMode(Mode.BLUE_AND_GOLD);
+                    break;
+            }
         }
         else 
         {
-            leds.set(false, true, true);
+            leds.setMode(Mode.PULSE_YELLOW);
         }
     }
 
