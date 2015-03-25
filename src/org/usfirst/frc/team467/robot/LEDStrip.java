@@ -38,10 +38,14 @@ public class LEDStrip
         setMode(Mode.OFF);
     }
     
+    /**
+     * @param mode - LEDStrip.Mode.&lt;mode&gt;
+     */
     public void setMode(Mode mode)
     {
         set(mode.getLedCode());
-        
+
+// TODO Remove if above code works
 //        switch (mode)
 //        {
 //            case OFF:
@@ -65,7 +69,7 @@ public class LEDStrip
 //        }
     }
     
-    
+// TODO Remove if above code works    
 //    private void set(boolean setBit0, boolean setBit1, boolean setBit2)
 //    {
 //        bit0.set(setBit0);
@@ -80,8 +84,9 @@ public class LEDStrip
      */
     private void set(int ledCode)
     {
-        bit0.set((ledCode & 0x01) == 0x01);
-        bit1.set((ledCode & 0x02) == 0x02);
-        bit2.set((ledCode & 0x04) == 0x04);
+        // If specified bit is true
+        bit0.set((ledCode & 0x01) != 0);
+        bit1.set((ledCode & 0x02) != 0);
+        bit2.set((ledCode & 0x04) != 0);
     }
 }
