@@ -13,6 +13,8 @@ public class Lifter
 
     private Talon lifterMotorBottom = null;
     private Talon lifterMotorTop = null;
+    
+    private DriverStation2015 station = null;
 
     private PowerDistroBoard467 board = null;
 
@@ -25,7 +27,7 @@ public class Lifter
     private static final double MAX_CURRENT_DOWN = 12;
     private static final double MAX_CURRENT_UP = 12;
     
-    private final double MAX_RAMP_RATE = 02;
+    private double MAX_RAMP_RATE = 0.2;
 
     /**
      * Gets the singleton instance of the elevator
@@ -50,6 +52,8 @@ public class Lifter
         lifterMotorTop = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL_TOP);
 
         board = PowerDistroBoard467.getInstance();
+        
+        station = DriverStation2015.getInstance();
     }
 
     private boolean isJammedTop = false;
@@ -73,7 +77,9 @@ public class Lifter
     public void set(double speed)
     {
         double oldSpeed = lifterMotorTop.get();
-
+        
+        MAX_RAMP_RATE = station.getLifterRampRate();
+        
         speed = RateLimiter.limit(oldSpeed, speed, MAX_RAMP_RATE);
 
         lifterMotorBottom.set(speed);
