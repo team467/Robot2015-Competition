@@ -27,7 +27,7 @@ public class Lifter
     private static final double MAX_CURRENT_DOWN = 20;
     private static final double MAX_CURRENT_UP = 20;
     
-    private double MAX_RAMP_RATE = 0.2;
+    private double MAX_RAMP_RATE = 0.1;
 
     /**
      * Gets the singleton instance of the elevator
@@ -84,6 +84,11 @@ public class Lifter
 
         lifterMotorBottom.set(speed);
         lifterMotorTop.set(speed);
+    }
+    
+    public void driveLifter(LifterDirection lifterDirection)
+    {
+        driveLifter(lifterDirection, Speed.FAST);
     }
     
     /**

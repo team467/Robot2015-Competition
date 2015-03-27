@@ -21,10 +21,11 @@ public class Claw
     private final double CLOSE_SPEED_SLOW = -OPEN_SPEED_SLOW;
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;
 
+    private final double HIGH_MAX_CURRENT_GRIP = 20;
+    private final double LOW_MAX_CURRENT_GRIP = 15;
 
-    private final double MAX_CURRENT_GRIP = 20;
-    private final double MAX_CURRENT_UNGRIP = 15;
-
+    private final double MAX_CURRENT_UNGRIP = 20;
+    
     private boolean m_isClosed = false;
     private boolean m_isFullyOpen = false;
 
@@ -64,8 +65,9 @@ public class Claw
      * @param clawDir
      * @param speed
      */
-    public void moveClaw(ClawMoveDirection clawDir, Speed speed)
+    public void moveClaw(ClawMoveDirection clawDir, boolean lowCurrentLimit)
     {
+        Speed speed = Speed.FAST;
         final double clawCurrent = board.getClawCurrent();
         
         LOGGER.debug("moveClaw CURRENT=" + clawCurrent + " previous m_isClosed=" + m_isClosed
@@ -74,8 +76,15 @@ public class Claw
         {
             case CLOSE:
                 LOGGER.debug("CLOSE");
-
-                m_isClosed = m_isClosed || (clawCurrent > MAX_CURRENT_GRIP);
+                
+                if (!lowCurrentLimit)
+                {
+                    m_isClosed = m_isClosed || (clawCurrent > HIGH_MAX_CURRENT_GRIP);
+                }
+                else
+                {
+                    m_isClosed = m_isClosed || (clawCurrent > LOW_MAX_CURRENT_GRIP);
+                }
                 
                 if (m_isClosed)
                 {

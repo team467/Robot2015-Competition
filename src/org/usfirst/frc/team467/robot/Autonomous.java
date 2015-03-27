@@ -174,29 +174,36 @@ public class Autonomous
                 () -> claw.isClosed(),
                 () -> {
                     lifter.stop();
-                    claw.moveClaw(ClawMoveDirection.CLOSE, Speed.SLOW);
+                    claw.moveClaw(ClawMoveDirection.CLOSE, false);
                     drive.stop();
                 });
-        addAction("Lift container or tote", 
-                () -> forDurationSecs(2.0f),
+        addAction("Lift container", 
+                () -> forDurationSecs(0.5f),
                 () -> {
-                    lifter.driveLifter(LifterDirection.UP, Speed.SLOW);
+                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
                     claw.stop();
                     drive.stop();
                 });
+        addAction("Lift container and drive backwards", 
+                () -> forDurationSecs(1.25f),
+                () -> {
+                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
+                    claw.stop();
+                    drive.crabDrive(Math.PI, 0.6, false);
+                });
         addAction("Drive backwards", 
-                () -> forDurationSecs(3.0f), 
+                () -> forDurationSecs(3.25f), 
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.crabDrive(Math.PI, 0.4, false);
+                    drive.crabDrive(Math.PI, 0.6, false);
                 });
         addAction("Turn in place", 
                 () -> forDurationSecs(1.1f),
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.turnDrive(0.5);
+                    drive.turnDrive(0.6);
                 });
         addAction("Done",
                 () -> forever(), 

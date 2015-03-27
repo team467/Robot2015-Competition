@@ -235,7 +235,7 @@ public class Robot extends IterativeRobot
     private void updateNavigator()
     {
         board.update();
-        lifter.driveLifter(driverstation.getLiftDirection(), driverstation.getSpeedChange());
-        claw.moveClaw(driverstation.getClawDirection(), driverstation.getSpeedChange());
+        lifter.driveLifter(driverstation.getLiftDirection());
+        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
     }
 }

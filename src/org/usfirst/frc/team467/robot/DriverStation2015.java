@@ -335,18 +335,23 @@ public class DriverStation2015
         }
     }
 
-    /**
-     * Checks to see if the speed change button is pressed.
-     * 
-     * @return
-     */
-    public Speed getSpeedChange()
+//    /**
+//     * Checks to see if the speed change button is pressed.
+//     * 
+//     * @return
+//     */
+//    public Speed getSpeedChange()
+//    {
+////        if (buttonPanel.isButtonDown(CHANGE_SPEED_BUTTON))
+////        {
+////            return Speed.SLOW;
+//        }
+//        return Speed.FAST;
+//    }
+    
+    public boolean getLowerCurrent()
     {
-        if (buttonPanel.isButtonDown(CHANGE_SPEED_BUTTON))
-        {
-            return Speed.SLOW;
-        }
-        return Speed.FAST;
+        return buttonPanel.isButtonDown(CHANGE_SPEED_BUTTON);
     }
     
     public boolean getResetGyro()
