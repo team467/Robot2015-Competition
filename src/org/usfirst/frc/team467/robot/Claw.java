@@ -7,21 +7,22 @@ import edu.wpi.first.wpilibj.Talon;
 
 public class Claw
 {
-    private static final Logger LOGGER = Logger.getLogger(Lifter.class);
+    private static final Logger LOGGER = Logger.getLogger(Claw.class);
 
     private static Claw claw = null;
 
     private Talon clawMotor = null;
     PowerDistroBoard467 board = null;
     DriverStation2015 driverstation= null;
-
-    private final double OPEN_SPEED_SLOW = -0.6;
-    private final double OPEN_SPEED_FAST = -0.8;
+    
+    // Change these if joystick goes the wrong way
+    private final double OPEN_SPEED_SLOW = 0.6;
+    private final double OPEN_SPEED_FAST = 0.8;
     private final double CLOSE_SPEED_SLOW = -OPEN_SPEED_SLOW;
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;
 
 
-    private final double MAX_CURRENT_GRIP = 7;
+    private final double MAX_CURRENT_GRIP = 20;
     private final double MAX_CURRENT_UNGRIP = 15;
 
     private boolean m_isClosed = false;
@@ -65,13 +66,16 @@ public class Claw
      */
     public void moveClaw(ClawMoveDirection clawDir, Speed speed)
     {
-        LOGGER.debug("CLAW CURRENT: " + board.getClawCurrent());
+        final double clawCurrent = board.getClawCurrent();
+        
+        LOGGER.debug("moveClaw CURRENT=" + clawCurrent + " previous m_isClosed=" + m_isClosed
+                + " clawDir=" + clawDir + " speed=" + speed);
         switch (clawDir)
         {
             case CLOSE:
                 LOGGER.debug("CLOSE");
 
-                m_isClosed = m_isClosed || (board.getClawCurrent() > MAX_CURRENT_GRIP);
+                m_isClosed = m_isClosed || (clawCurrent > MAX_CURRENT_GRIP);
                 
                 if (m_isClosed)
                 {
@@ -95,7 +99,7 @@ public class Claw
             case OPEN:
                 LOGGER.debug("OPEN");
 
-                m_isFullyOpen = m_isFullyOpen || (board.getClawCurrent() > MAX_CURRENT_UNGRIP);
+                m_isFullyOpen = m_isFullyOpen || (clawCurrent > MAX_CURRENT_UNGRIP);
                 
                 if (m_isFullyOpen)
                 {

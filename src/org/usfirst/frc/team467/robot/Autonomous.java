@@ -171,7 +171,7 @@ public class Autonomous
         // and carry it rolling backwards to the auto zone.
         Gyro2015.getInstance().reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
         addAction("Close claw to grip container or tote",
-                () -> !claw.isClosed(),
+                () -> claw.isClosed(),
                 () -> {
                     lifter.stop();
                     claw.moveClaw(ClawMoveDirection.CLOSE, Speed.SLOW);

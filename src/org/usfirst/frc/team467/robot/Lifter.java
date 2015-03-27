@@ -24,8 +24,8 @@ public class Lifter
     public static final double SLOW_SPEED_DOWN = -SLOW_SPEED_UP;
     public static final double FAST_SPEED_DOWN = -FAST_SPEED_UP;
 
-    private static final double MAX_CURRENT_DOWN = 12;
-    private static final double MAX_CURRENT_UP = 12;
+    private static final double MAX_CURRENT_DOWN = 20;
+    private static final double MAX_CURRENT_UP = 20;
     
     private double MAX_RAMP_RATE = 0.2;
 
@@ -93,7 +93,9 @@ public class Lifter
      */
     public void driveLifter(LifterDirection lifterDirection, Speed speed)
     {
-        if ((board.getLifterTopCurrent() > MAX_CURRENT_UP - 1) || (board.getLifterBottomCurrent() > MAX_CURRENT_UP - 1))
+        boolean topCurrentStop = (board.getLifterTopCurrent() > MAX_CURRENT_UP - 1);
+        boolean bottomCurrentStop = (board.getLifterBottomCurrent() > MAX_CURRENT_UP - 1);
+        if (topCurrentStop || bottomCurrentStop)
         {
             LOGGER.debug("LIFT CURRENT: BOTTOM: " + board.getLifterBottomCurrent() + " TOP: " + board.getLifterTopCurrent());
         }

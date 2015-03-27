@@ -207,22 +207,22 @@ public class Steering
         switch (steeringSensor.getChannel())
         {
             case RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL:
-                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f BRsetPoint=%d BRsensorValue=%f",
+                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f BRsetPoint=%f BRsensorValue=%f",
                     function, requestedAngle, outputAngle, setPoint, getSensorValue()));
                 break;
         
             case RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL:
-                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f BLsetPoint=%d BLsensorValue=%f",
+                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f BLsetPoint=%f BLsensorValue=%f",
                     function, requestedAngle, outputAngle, setPoint, getSensorValue()));
                 break;
             
             case RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL:
-                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f FRsetPoint=%d FRsensorValue=%f",
+                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f FRsetPoint=%f FRsensorValue=%f",
                     function, requestedAngle, outputAngle, setPoint, getSensorValue()));
                 break;
                 
             case RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL:
-                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f FLsetPoint=%d FLsensorValue=%f",
+                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f FLsetPoint=%f FLsensorValue=%f",
                     function, requestedAngle, outputAngle, setPoint, getSensorValue()));
         }
     }
