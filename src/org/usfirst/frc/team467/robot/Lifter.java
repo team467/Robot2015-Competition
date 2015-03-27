@@ -78,7 +78,7 @@ public class Lifter
     {
         double oldSpeed = lifterMotorTop.get();
         
-        MAX_RAMP_RATE = station.getLifterRampRate();
+//        MAX_RAMP_RATE = station.getLifterRampRate();
         
         speed = RateLimiter.limit(oldSpeed, speed, MAX_RAMP_RATE);
 
