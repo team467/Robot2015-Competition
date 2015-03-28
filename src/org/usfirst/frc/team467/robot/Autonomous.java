@@ -155,7 +155,7 @@ public class Autonomous
                 initHookAndPush(4.0f);
                 break;
             case HOOK_AND_PUSH:
-                initHookAndPush(3.5f);
+                initHookAndPush(3.75f);
                 break;
             default:
                 initStayInPlace();
