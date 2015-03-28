@@ -244,7 +244,7 @@ public class Autonomous
         addAction("Raise lifter up and turn wheels sideways", 
                 () -> forDurationSecs(2.0f), 
                 () -> {
-                    lifter.driveLifter(LifterDirection.UP, Speed.SLOW);
+                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
                     claw.stop();
                     drive.crabDrive(Math.PI / 2, 0, false);
                 });
@@ -256,7 +256,7 @@ public class Autonomous
                     drive.crabDrive(Math.PI / 2, 0.5, false);
                 });
         addAction("Lower lifter and stop driving", 
-                () -> forDurationSecs(1.5f), 
+                () -> forDurationSecs(0.5f), 
                 () -> {
                     lifter.driveLifter(LifterDirection.DOWN, Speed.SLOW);
                     claw.stop();
