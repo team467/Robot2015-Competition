@@ -192,7 +192,7 @@ public class Autonomous
                     drive.crabDrive(Math.PI, 0.6, false);
                 });
         addAction("Drive backwards", 
-                () -> forDurationSecs(3.25f), 
+                () -> forDurationSecs(1.75f),
                 () -> {
                     lifter.stop();
                     claw.stop();

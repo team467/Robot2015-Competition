@@ -22,7 +22,7 @@ public class Claw
     private final double CLOSE_SPEED_FAST = -OPEN_SPEED_FAST;
 
     private final double HIGH_MAX_CURRENT_GRIP = 20;
-    private final double LOW_MAX_CURRENT_GRIP = 15;
+    private final double LOW_MAX_CURRENT_GRIP = 20;
 
     private final double MAX_CURRENT_UNGRIP = 20;
     
