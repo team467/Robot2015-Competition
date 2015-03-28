@@ -28,7 +28,7 @@ public class CameraDashboard extends Thread
     Steering brSteering;
     final double maxTurns = Steering.getMaxTurns();
 
-    private boolean cameraExists = true;
+    private boolean cameraExists = false;
     
     private long lastTimeStamp = System.currentTimeMillis();
     
@@ -65,7 +65,6 @@ public class CameraDashboard extends Thread
     {
         try
         {
-            cameraExists = true;
             cameraServer = CameraServer.getInstance();
             cameraServer.setQuality(50);
 
@@ -74,6 +73,8 @@ public class CameraDashboard extends Thread
             // the camera name (ex "cam0") can be found through the roborio web interface
             session = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
             NIVision.IMAQdxConfigureGrab(session);
+            
+            cameraExists = true;
         }
         catch (Exception e)
         {
@@ -95,7 +96,7 @@ public class CameraDashboard extends Thread
 
         NIVision.IMAQdxGrab(session, frame, 1);
         
-        drawTimerBar(viewWidth, viewHeight);
+//        drawTimerBar(viewWidth, viewHeight);
         drawCrossHairs(viewWidth, viewHeight);
         drawAngleMonitors(viewWidth, viewHeight);
 
@@ -127,7 +128,17 @@ public class CameraDashboard extends Thread
     {
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
         int height = 20;
-        double matchTime = DriverStation.getInstance().getMatchTime();
+        double matchTime = 0.0;
+
+        try
+        {
+            matchTime = DriverStation.getInstance().getMatchTime();
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Can't get match time: " + e.getMessage());
+            matchTime = 0.0;
+        }
 
         double totalTime = 135; // Teleop
         if (DriverStation.getInstance().isAutonomous())
