@@ -276,8 +276,15 @@ public class CameraDashboard extends Thread
 
             // Do the actual work.
             if (cameraExists)
-            {
-                renderImage();
+            {   
+                try
+                {
+                    renderImage();
+                }
+                catch (Exception e)
+                {
+                    LOGGER.error("Couldn't render image: " + e.getMessage());
+                }
             }
 
             // Sleep until next scheduled render time.

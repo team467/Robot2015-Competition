@@ -1,6 +1,9 @@
 package org.usfirst.frc.team467.robot;
 
+import java.io.IOException;
+
 import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
@@ -30,6 +33,15 @@ public class Logging
         String pattern = "%rms %p %c - %m%n";
         PatternLayout layout = new PatternLayout(pattern);
         Logger.getRootLogger().addAppender(new ConsoleAppender(layout));
+        try
+        {
+            Logger.getRootLogger().addAppender(new FileAppender(layout, "/tmp/Robot467.log", false));
+        }
+        catch (IOException e)
+        {
+            System.out.println("Failed to create log file appender: " + e.getMessage());
+        }
+
 
         // Set the default log level to INFO.
         Logger.getRootLogger().setLevel(Level.INFO); // changing log level
