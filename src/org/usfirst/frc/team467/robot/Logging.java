@@ -35,7 +35,7 @@ public class Logging
         Logger.getRootLogger().addAppender(new ConsoleAppender(layout));
         try
         {
-            Logger.getRootLogger().addAppender(new FileAppender(layout, "/tmp/Robot467.log", false));
+            Logger.getRootLogger().addAppender(new FileAppender(layout, "/tmp/Robot467.log"));
         }
         catch (IOException e)
         {
