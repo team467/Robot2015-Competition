@@ -24,7 +24,7 @@ public class Claw
     private final double HIGH_MAX_CURRENT_GRIP = 25;
     private final double LOW_MAX_CURRENT_GRIP = HIGH_MAX_CURRENT_GRIP; //TODO
 
-    private final double MAX_CURRENT_UNGRIP = 20;
+    private final double MAX_CURRENT_UNGRIP = 25;
     
     private boolean m_isClosed = false;
     private boolean m_isFullyOpen = false;

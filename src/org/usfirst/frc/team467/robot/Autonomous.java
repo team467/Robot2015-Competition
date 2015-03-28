@@ -152,7 +152,7 @@ public class Autonomous
                 initDriveOnly();
                 break;
             case HOOK_AND_PUSH_OVER_RAMP:
-                initHookAndPush(4.0f);
+                initHookAndPush(4.5f);
                 break;
             case HOOK_AND_PUSH:
                 initHookAndPush(3.75f);
