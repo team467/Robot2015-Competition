@@ -20,7 +20,9 @@ public class CameraDashboard extends Thread
     @SuppressWarnings("unused")
     private static final float BLUE = color(0, 0, 255);
     private static final float WHITE = color(255, 255, 255);
-
+    
+    DriverStation station;
+    
     static CameraDashboard instance;
     Steering flSteering;
     Steering frSteering;
@@ -43,7 +45,9 @@ public class CameraDashboard extends Thread
         frSteering = drive.steering[RobotMap.FRONT_RIGHT];
         blSteering = drive.steering[RobotMap.BACK_LEFT];
         brSteering = drive.steering[RobotMap.BACK_RIGHT];
-
+        
+        station = DriverStation.getInstance();
+        
         initCamera();
     }
 
@@ -96,7 +100,10 @@ public class CameraDashboard extends Thread
 
         NIVision.IMAQdxGrab(session, frame, 1);
         
-//        drawTimerBar(viewWidth, viewHeight);
+        if (station.isEnabled())
+        {
+//          drawTimerBar(viewWidth, viewHeight);
+        }
         drawCrossHairs(viewWidth, viewHeight);
         drawAngleMonitors(viewWidth, viewHeight);
 
@@ -141,7 +148,7 @@ public class CameraDashboard extends Thread
         }
 
         double totalTime = 135; // Teleop
-        if (DriverStation.getInstance().isAutonomous())
+        if (station.isAutonomous())
         {
             totalTime = 15;
         }
