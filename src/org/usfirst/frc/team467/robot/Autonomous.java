@@ -199,7 +199,7 @@ public class Autonomous
                     drive.crabDrive(Math.PI, 0.6, false);
                 });
         addAction("Turn in place", 
-                () -> forDurationSecs(1.1f),
+                () -> forDurationSecs(0.7f),
                 () -> {
                     lifter.stop();
                     claw.stop();
