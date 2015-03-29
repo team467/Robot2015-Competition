@@ -26,7 +26,7 @@ public class Logging
 //        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
         Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
     }
-
+    
     private static void setupDefaultLogging()
     {
         // Create a logging appender that writes our pattern to the console.

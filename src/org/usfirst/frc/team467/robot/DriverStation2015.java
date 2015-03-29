@@ -73,7 +73,7 @@ public class DriverStation2015
     private DriverStation2015()
     {
         driverJoy = new Joystick467(0);
-        buttonPanel = new ButtonPanel2015(1);
+        buttonPanel = new ButtonPanel2015(1, false);
     }
 
     /**

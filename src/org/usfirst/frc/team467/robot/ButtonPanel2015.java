@@ -13,6 +13,8 @@ public class ButtonPanel2015
     boolean[] buttons = new boolean[17];
     // NOTE: LED indexes begin at 1, therefore 0 is ignored
     private boolean[] ledStates = new boolean[7];
+    
+    private final boolean allowJoystickDiagonals;
 
     // CONSTANTS:
 
@@ -38,10 +40,12 @@ public class ButtonPanel2015
      * ButtonPanel for the 2015 driverstation
      * 
      * @param port
+     * @param allowJoystickDiagonals If false, diagonals do nothing.
      */
-    public ButtonPanel2015(int port)
+    public ButtonPanel2015(int port, boolean allowJoystickDiagonals)
     {
         buttonPanel = new Joystick(port);
+        this.allowJoystickDiagonals = allowJoystickDiagonals;
     }
 
     /**
@@ -92,24 +96,29 @@ public class ButtonPanel2015
      */
     public boolean isButtonDown(int button)
     {
-        switch (button) {
-            // All of the joystick direction buttons.
-            case JOY_UP:
-            case JOY_DOWN:
-            case JOY_LEFT:
-            case JOY_RIGHT:
-                // If not exactly one button pressed, pretend none are pressed.
-                if (!(buttonPanel.getRawButton(JOY_UP)
-                        ^ buttonPanel.getRawButton(JOY_DOWN)
-                        ^ buttonPanel.getRawButton(JOY_LEFT)
-                        ^ buttonPanel.getRawButton(JOY_RIGHT)))
-                {
-                    return false;
-                }
-                return buttonPanel.getRawButton(button);
-            default:
-                return buttonPanel.getRawButton(button);
+        if (!allowJoystickDiagonals)
+        {
+            // If not exactly one button pressed, pretend none are pressed.
+            switch (button) {
+                // All of the joystick direction buttons.
+                case JOY_UP:
+                case JOY_DOWN:
+                case JOY_LEFT:
+                case JOY_RIGHT:
+                    if (!(buttonPanel.getRawButton(JOY_UP)
+                            ^ buttonPanel.getRawButton(JOY_DOWN)
+                            ^ buttonPanel.getRawButton(JOY_LEFT)
+                            ^ buttonPanel.getRawButton(JOY_RIGHT)))
+                    {
+                        return false;
+                    }
+                    break;
+                default:
+                    // All other buttons there is no check needed.
+                    break;
+            }
         }
+        return buttonPanel.getRawButton(button);
     }
 
     /**
