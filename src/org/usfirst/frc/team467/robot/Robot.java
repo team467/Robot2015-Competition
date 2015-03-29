@@ -75,6 +75,8 @@ public class Robot extends IterativeRobot
             cameraDashboard.start();
         }
         Calibration.init();
+        
+        LOGGER.info("Initialized robot");
     }
 
     public void disabledInit()
@@ -85,7 +87,6 @@ public class Robot extends IterativeRobot
     public void disabledPeriodic()
     {
         gyro.update();
-        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
         ledStrip.setMode(Mode.BLUE_AND_GOLD);
     }
 
@@ -98,11 +99,12 @@ public class Robot extends IterativeRobot
 
     public void teleopInit()
     {
-        
+        LOGGER.info("Teleop init");
     }
 
     public void testInit()
     {
+        LOGGER.info("Test init");
     }
 
     public void testPeriodic()

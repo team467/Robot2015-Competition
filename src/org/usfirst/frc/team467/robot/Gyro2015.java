@@ -117,6 +117,7 @@ public class Gyro2015
     public void update()
     {
         trustedAngle = wrapAngle(getSerialPortAngle());
+        LOGGER.debug("GYRO ANGLE: " + getAngle());
     }
 
     public double getAngle()
