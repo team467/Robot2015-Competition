@@ -100,7 +100,7 @@ public class CameraDashboard extends Thread
         
         if (station.isEnabled())
         {
-//          drawTimerBar(viewWidth, viewHeight);
+            drawTimerBar(viewWidth, viewHeight);
         }
         drawCrossHairs(viewWidth, viewHeight);
         drawAngleMonitors(viewWidth, viewHeight);

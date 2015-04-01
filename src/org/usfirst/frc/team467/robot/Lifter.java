@@ -14,8 +14,6 @@ public class Lifter
     private Talon lifterMotorBottom = null;
     private Talon lifterMotorTop = null;
     
-    private DriverStation2015 station = null;
-
     private PowerDistroBoard467 board = null;
 
     public static final double SLOW_SPEED_UP = -0.6;
@@ -52,8 +50,6 @@ public class Lifter
         lifterMotorTop = new Talon(RobotMap.LIFTER_MOTOR_CHANNEL_TOP);
 
         board = PowerDistroBoard467.getInstance();
-        
-        station = DriverStation2015.getInstance();
     }
 
     private boolean isJammedTop = false;
