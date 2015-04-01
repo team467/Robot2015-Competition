@@ -30,6 +30,7 @@ public class DriverStation2015
     private static int POV_UNWIND = 0;
     private static int POV_STRAFE_LEFT = 270;
     private static int POV_STRAFE_RIGHT = 90;
+    private static int POV_STRAFE_BACK = 180;
 
     // CAL/AUTO
     public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
@@ -211,6 +212,11 @@ public class DriverStation2015
         if (pov == POV_STRAFE_RIGHT)
         {
             drivemode = DriveMode.STRAFE_RIGHT;
+        }
+        
+        if (pov == POV_STRAFE_BACK)
+        {
+            drivemode = DriveMode.STRAFE_BACK;
         }
         
         if (getDriveJoystick().buttonDown(REVOLVE_SMALL_LEFT_BUTTON))

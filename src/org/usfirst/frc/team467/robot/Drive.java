@@ -313,7 +313,24 @@ public class Drive extends RobotDrive
      */
     public void strafeDrive(Direction direction)
     {
-        double angle = (direction == Direction.RIGHT) ? Math.PI / 2 : -Math.PI / 2;
+        double angle = 0.0;
+        switch (direction)
+        {
+            case FRONT:
+                // Not used, here to be thorough
+                angle = 0.0;
+                break;
+            case LEFT:
+                angle = -Math.PI / 2;
+                break;
+            case RIGHT:
+                angle = Math.PI / 2;
+                break;
+            case BACK:
+                angle = Math.PI;
+                break;
+        }
+        
         double speed = SPEED_STRAFE;
 
         WheelCorrection corrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, angle, speed);

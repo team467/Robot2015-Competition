@@ -7,9 +7,10 @@ public enum DriveMode
     TURN, 		                // Turn in Place
     STRAFE_LEFT, 	            // Strafe Drive - Left
     STRAFE_RIGHT,               // Strafe Drive - Right
+    STRAFE_BACK,                // Drive Backwards Slowly
     REVOLVE_LARGE_LEFT,	        // Revolve Drive (rotate left around a center outside robot)
     REVOLVE_LARGE_RIGHT,        // Revolve Drive (rotate right around a center outside robot)
     REVOLVE_SMALL_LEFT,         // Revolve Drive (rotate left around a center near robot)
     REVOLVE_SMALL_RIGHT,        // Revolve Drive (rotate right around a center near robot)
-    UNWIND,		                // Unwind the wheel pods
+    UNWIND,	                    // Unwind the wheel pods
 }

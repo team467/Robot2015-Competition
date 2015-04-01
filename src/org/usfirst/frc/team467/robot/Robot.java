@@ -211,6 +211,10 @@ public class Robot extends IterativeRobot
                 drive.strafeDrive(Direction.RIGHT);
                 break;
                 
+            case STRAFE_BACK:
+                drive.strafeDrive(Direction.BACK);
+                break;
+                
             case TURN:
                 drive.turnDrive(-driverstation.getDriveJoystick().getTwist()/2);
                 break;
