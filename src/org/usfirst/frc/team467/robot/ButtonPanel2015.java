@@ -13,35 +13,39 @@ public class ButtonPanel2015
     boolean[] buttons = new boolean[17];
     // NOTE: LED indexes begin at 1, therefore 0 is ignored
     private boolean[] ledStates = new boolean[7];
+    
+    private final boolean allowJoystickDiagonals;
 
     // CONSTANTS:
 
     // DIAL (FROM LEFT):
-    public static int DIAL_POS_1 = 1;
-    public static int DIAL_POS_2 = 2;
-    public static int DIAL_POS_3 = 5;
-    public static int DIAL_POS_4 = 4;
-    public static int DIAL_POS_5 = 3;
-    public static int DIAL_POS_6 = 6;
+    public static final int DIAL_POS_1 = 1;
+    public static final int DIAL_POS_2 = 2;
+    public static final int DIAL_POS_3 = 5;
+    public static final int DIAL_POS_4 = 4;
+    public static final int DIAL_POS_5 = 3;
+    public static final int DIAL_POS_6 = 6;
 
     // AUTO SWITCH (ON is UP):
     public static int COVERED_SWITCH = 9;
 
     // JOYSTICK:
-    public static int JOY_TOP_BUTTON = 16;
-    public static int JOY_UP = 14;
-    public static int JOY_DOWN = 12;
-    public static int JOY_LEFT = 13;
-    public static int JOY_RIGHT = 15;
+    public static final int JOY_TOP_BUTTON = 16;
+    public static final int JOY_UP = 14;
+    public static final int JOY_DOWN = 12;
+    public static final int JOY_LEFT = 13;
+    public static final int JOY_RIGHT = 15;
 
     /**
      * ButtonPanel for the 2015 driverstation
      * 
      * @param port
+     * @param allowJoystickDiagonals If false, diagonals do nothing.
      */
-    public ButtonPanel2015(int port)
+    public ButtonPanel2015(int port, boolean allowJoystickDiagonals)
     {
         buttonPanel = new Joystick(port);
+        this.allowJoystickDiagonals = allowJoystickDiagonals;
     }
 
     /**
@@ -92,6 +96,28 @@ public class ButtonPanel2015
      */
     public boolean isButtonDown(int button)
     {
+        if (!allowJoystickDiagonals)
+        {
+            // If not exactly one button pressed, pretend none are pressed.
+            switch (button) {
+                // All of the joystick direction buttons.
+                case JOY_UP:
+                case JOY_DOWN:
+                case JOY_LEFT:
+                case JOY_RIGHT:
+                    if (!(buttonPanel.getRawButton(JOY_UP)
+                            ^ buttonPanel.getRawButton(JOY_DOWN)
+                            ^ buttonPanel.getRawButton(JOY_LEFT)
+                            ^ buttonPanel.getRawButton(JOY_RIGHT)))
+                    {
+                        return false;
+                    }
+                    break;
+                default:
+                    // All other buttons there is no check needed.
+                    break;
+            }
+        }
         return buttonPanel.getRawButton(button);
     }
 
@@ -104,7 +130,9 @@ public class ButtonPanel2015
         for (int i = 1; i < buttons.length; i++)
         {
             if (buttons[i])
+            {
                 System.out.print(i + " ");
+            }
         }
         System.out.println();
     }

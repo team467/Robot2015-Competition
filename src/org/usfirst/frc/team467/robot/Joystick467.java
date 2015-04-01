@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Joystick;
 
 /**
  *
- * @author Team467
  */
 public class Joystick467
 {

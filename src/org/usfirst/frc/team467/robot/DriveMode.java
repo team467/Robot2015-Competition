@@ -2,11 +2,15 @@ package org.usfirst.frc.team467.robot;
 
 public enum DriveMode
 {
-    CRAB_FA,    // Crab Drive - Field Aligned
-    CRAB_NO_FA, // Crab Drive - No Field Alignment
-    TURN, 		// Turn in Place
-    STRAFE, 	// Strafe Drive
-    REVOLVE_LARGE,	// Revolve Drive (rotate around a center outside robot)
-    REVOLVE_SMALL,  // Revolve Drive (rotate around a center outside robot)
-    UNWIND,		// Unwind the wheel pods
+    CRAB_FA,                    // Crab Drive - Field Aligned
+    CRAB_NO_FA,                 // Crab Drive - No Field Alignment
+    TURN, 		                // Turn in Place
+    STRAFE_LEFT, 	            // Strafe Drive - Left
+    STRAFE_RIGHT,               // Strafe Drive - Right
+    STRAFE_BACK,                // Drive Backwards Slowly
+    REVOLVE_LARGE_LEFT,	        // Revolve Drive (rotate left around a center outside robot)
+    REVOLVE_LARGE_RIGHT,        // Revolve Drive (rotate right around a center outside robot)
+    REVOLVE_SMALL_LEFT,         // Revolve Drive (rotate left around a center near robot)
+    REVOLVE_SMALL_RIGHT,        // Revolve Drive (rotate right around a center near robot)
+    UNWIND,	                    // Unwind the wheel pods
 }

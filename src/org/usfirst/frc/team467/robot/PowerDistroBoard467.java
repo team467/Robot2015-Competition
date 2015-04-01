@@ -6,11 +6,11 @@ public class PowerDistroBoard467
 {
     private static PowerDistroBoard467 board = null;
 
-    private final int LIFTER_MOTOR_CHANNEL = 4;
-
-    private final int CLAW_MOTOR_CHANNEL = 5;
-
     private PowerDistributionPanel pdp = null;
+    
+    private RollingAverage clawAverageCurrent = new RollingAverage(3);
+    private RollingAverage lifterAverageCurrentBottom = new RollingAverage(3);
+    private RollingAverage lifterAverageCurrentTop = new RollingAverage(3);
 
     /**
      * Gets the singleton instance of the board.
@@ -43,6 +43,13 @@ public class PowerDistroBoard467
     {
         return pdp.getTotalCurrent();
     }
+    
+    public void update()
+    {
+        lifterAverageCurrentBottom.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_BOTTOM));
+        lifterAverageCurrentTop.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_TOP));
+        clawAverageCurrent.add(getCurrent(RobotMap.CLAW_MOTOR_CHANNEL));
+    }
 
     /**
      * Current of a specific channel
@@ -55,14 +62,19 @@ public class PowerDistroBoard467
         return pdp.getCurrent(channel);
     }
 
-    public double getLifterCurrent()
+    public double getLifterBottomCurrent()
     {
-        return getCurrent(LIFTER_MOTOR_CHANNEL);
+        return lifterAverageCurrentBottom.getAverage();
+    }
+    
+    public double getLifterTopCurrent()
+    {
+        return lifterAverageCurrentTop.getAverage();
     }
 
     public double getClawCurrent()
     {
-        return getCurrent(CLAW_MOTOR_CHANNEL);
+        return clawAverageCurrent.getAverage();
     }
 
     @Override

@@ -1,39 +1,42 @@
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.Autonomous.AutoType;
-
-import com.sun.media.jfxmedia.logging.Logger;
 
 public class DriverStation2015
 {
-
+    private static final Logger LOGGER = Logger.getLogger(DriverStation2015.class);
+    
     private static DriverStation2015 driverstation2015 = null;
 
     Joystick467 driverJoy = null;
     ButtonPanel2015 buttonPanel = null;
     
-    public static int GYRO_RESET_BUTTON = 8;
+    // Mapping of functions to Joystick Buttons for normal operation
+    private static int SLOW_BUTTON = Joystick467.TRIGGER;
+    private static int TURN_BUTTON = 2;
+    private static int REVOLVE_LARGE_LEFT_BUTTON = 3;
+    private static int REVOLVE_LARGE_RIGHT_BUTTON = 4;
+    private static int REVOLVE_SMALL_LEFT_BUTTON = 5;
+    private static int REVOLVE_SMALL_RIGHT_BUTTON = 6;
+    private static int TURBO_BUTTON = 7;
+    private static int GYRO_RESET_BUTTON = 8;
+    
+    // Mapping of functions to Joystick Buttons for calibration mode
+    private static int CALIBRATE_CONFIRM_BUTTON = Joystick467.TRIGGER;
+    private static int CALIBRATE_SLOW_BUTTON = 4;
+    
+    // Mapping of POV position to functions
+    private static int POV_UNWIND = 0;
+    private static int POV_STRAFE_LEFT = 270;
+    private static int POV_STRAFE_RIGHT = 90;
+    private static int POV_STRAFE_BACK = 180;
 
     // CAL/AUTO
     public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
 
-    // KNOB - CAL
-    public static int CAL_STD_DRIVE_1 = ButtonPanel2015.DIAL_POS_1;
-    public static int CAL_STD_DRIVE_2 = ButtonPanel2015.DIAL_POS_2;
-    public static int CAL_FL = ButtonPanel2015.DIAL_POS_2;
-    public static int CAL_FR = ButtonPanel2015.DIAL_POS_5;
-    public static int CAL_BL = ButtonPanel2015.DIAL_POS_4;
-    public static int CAL_BR = ButtonPanel2015.DIAL_POS_3;
-
-    // KNOB - AUTO
-    public static int AUTO_DRIVE_ONLY = ButtonPanel2015.DIAL_POS_2;
-    public static int AUTO_PUSH_TOTE = ButtonPanel2015.DIAL_POS_3;
-    public static int AUTO_PUSH_BOTH = ButtonPanel2015.DIAL_POS_5;    
-    public static int AUTO_GRAB_AND_PUSH = ButtonPanel2015.DIAL_POS_4;    
-    public static int AUTO_NOTHING = ButtonPanel2015.DIAL_POS_6;
-
     // JOYSTICK
-    public static int OPERATE_FASTER_BUTTON = ButtonPanel2015.JOY_TOP_BUTTON;
+    public static int CHANGE_SPEED_BUTTON = ButtonPanel2015.JOY_TOP_BUTTON;
     public static int CLAW_OPEN = ButtonPanel2015.JOY_RIGHT;
     public static int CLAW_CLOSED = ButtonPanel2015.JOY_LEFT;
     public static int ELEVATOR_UP = ButtonPanel2015.JOY_UP;
@@ -45,6 +48,11 @@ public class DriverStation2015
     public static int LED_LIFTER_BOTTOM_SLOW = 3;
     public static int LED_LIFTER_BOTTOM_STOP = 1;
     public static int LED_CLAW_STOPPED = 4;
+    
+    enum Speed 
+    {
+        SLOW, FAST
+    }
 
     /**
      * Singleton instance of the object.
@@ -54,7 +62,9 @@ public class DriverStation2015
     public static DriverStation2015 getInstance()
     {
         if (driverstation2015 == null)
+        {
             driverstation2015 = new DriverStation2015();
+        }
         return driverstation2015;
     }
 
@@ -64,7 +74,7 @@ public class DriverStation2015
     private DriverStation2015()
     {
         driverJoy = new Joystick467(0);
-        buttonPanel = new ButtonPanel2015(1);
+        buttonPanel = new ButtonPanel2015(1, false);
     }
 
     /**
@@ -86,63 +96,13 @@ public class DriverStation2015
     }
 
     /**
-     * Gets the Lift type to lift the Lifter
-     * 
-     * @return
-     */
-    public LiftTypes getLiftType()
-    {
-        double driveSpeed = 0;
-        if (buttonPanel.isButtonDown(ELEVATOR_UP))
-            if (buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON))
-                return LiftTypes.LIFT_UP_FAST;
-            else
-                return LiftTypes.LIFT_UP_SLOW;
-        else if (buttonPanel.isButtonDown(ELEVATOR_DOWN))
-            if (buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON))
-                return LiftTypes.LIFT_DOWN_FAST;
-            else
-                return LiftTypes.LIFT_DOWN_SLOW;
-        else
-            return LiftTypes.NO_LIFT;
-
-    }
-
-    /**
-     * Gets the speed to drive the gripper motor in PWM, between -1.0 and 1.0.
-     * 
-     * @return moves speed for the gripper between -1.0 and 1.0
-     */
-    public double getClawMoveType()
-    {
-        double driveSpeed = 0;
-        if (buttonPanel.isButtonDown(CLAW_OPEN))
-            driveSpeed = 0.4;// TODO determine sign
-        else if (buttonPanel.isButtonDown(CLAW_CLOSED))
-            driveSpeed = -0.4;// TODO determine sign
-        if (buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON))
-            driveSpeed *= 2;
-        return driveSpeed;
-    }
-
-    /**
-     * Gets if the driverstation switch is in Auto selector mode.
-     * 
-     * @return
-     */
-    public boolean isAutonomousMode()
-    {
-        return !buttonPanel.isButtonDown(AUTO_CAL_SWITCH);
-    }
-
-    /**
      * Gets if the driverstation switch is in calibrate selector mode.
      * 
      * @return
      */
     public boolean isCalibrateMode()
     {
-        return !isAutonomousMode();
+        return buttonPanel.isButtonDown(AUTO_CAL_SWITCH);
     }
 
     /**
@@ -153,52 +113,42 @@ public class DriverStation2015
      */
     public AutoType getAutoType()
     {
-        if (isAutonomousMode())
-        {
-            if (buttonPanel.isButtonDown(AUTO_DRIVE_ONLY))
-                return AutoType.DRIVE_ONLY;
-            else if (buttonPanel.isButtonDown(AUTO_PUSH_BOTH))
-                return AutoType.NO_AUTO;
-            else if (buttonPanel.isButtonDown(AUTO_GRAB_AND_PUSH))
-                return AutoType.GRAB_CAN;
-            else if (buttonPanel.isButtonDown(AUTO_PUSH_TOTE))
-                return AutoType.HOOK_AND_PUSH;
-            else
-                return AutoType.NO_AUTO;
-        }
-        else
-        {
-            return AutoType.NO_AUTO;
-        }
+        // Dial positions are mutually exclusive
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_2)) return AutoType.DRIVE_ONLY;                       
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_3)) return AutoType.GRAB_CAN;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_4)) return AutoType.HOOK_AND_PUSH;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_5)) return AutoType.HOOK_AND_PUSH_OVER_RAMP;
+
+        return AutoType.NO_AUTO;
     }
 
     /**
      * Gets the wheel to calibrate.
      * 
      * @return - Steering motor IDs from RobotMap or -1 if no wheel is selected,
-     *         or -9999 if not in calibrate mode
      */
     public int getCalibrateWheel()
+    {   
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_2)) return RobotMap.FRONT_LEFT;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_3)) return RobotMap.BACK_RIGHT;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_4)) return RobotMap.BACK_LEFT;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_5)) return RobotMap.FRONT_RIGHT;
+        
+        // no wheel selected
+        return -1;
+    }
+    
+    public double getLifterRampRate()
     {
-        if (DriverStation2015.getInstance().getCalibrate())
-        {
-            if (buttonPanel.isButtonDown(CAL_BL))
-                return RobotMap.BACK_LEFT;
-            else if (buttonPanel.isButtonDown(CAL_BR))
-                return RobotMap.BACK_RIGHT;
-            else if (buttonPanel.isButtonDown(CAL_FL))
-                return RobotMap.FRONT_LEFT;
-            else if (buttonPanel.isButtonDown(CAL_FR))
-                return RobotMap.FRONT_RIGHT;
-            else
-                // no wheel selected
-                return -1;
-        }
-        else
-        {
-            // not in calibrate mode
-            return -9999;
-        }
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_1)) return 0.1;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_2)) return 0.2;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_3)) return 0.3;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_4)) return 0.4;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_5)) return 0.5;
+        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_6)) return 0.6;
+        
+        LOGGER.error("No Dial Position Selected");
+        return 0.2;
     }
 
     /**
@@ -245,23 +195,54 @@ public class DriverStation2015
         DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
         
         if (flap) // If flap is up
+        {
             drivemode = DriveMode.CRAB_FA;
+        }
         
-        if (getDriveJoystick().buttonDown(2))
+        if (getDriveJoystick().buttonDown(TURN_BUTTON))
+        {
             drivemode = DriveMode.TURN;
+        }
         
-        if (pov == 270 || pov == 90)
-            drivemode = DriveMode.STRAFE;
+        if (pov == POV_STRAFE_LEFT)
+        {
+            drivemode = DriveMode.STRAFE_LEFT;
+        }
         
-        if (getDriveJoystick().buttonDown(5) || getDriveJoystick().buttonDown(6))
-            drivemode = DriveMode.REVOLVE_SMALL;
+        if (pov == POV_STRAFE_RIGHT)
+        {
+            drivemode = DriveMode.STRAFE_RIGHT;
+        }
         
-        if (getDriveJoystick().buttonDown(3) || getDriveJoystick().buttonDown(4))
-            drivemode = DriveMode.REVOLVE_LARGE;
-
-        if (pov == 0)
+        if (pov == POV_STRAFE_BACK)
+        {
+            drivemode = DriveMode.STRAFE_BACK;
+        }
+        
+        if (getDriveJoystick().buttonDown(REVOLVE_SMALL_LEFT_BUTTON))
+        {
+            drivemode = DriveMode.REVOLVE_SMALL_LEFT;
+        }
+        
+        if (getDriveJoystick().buttonDown(REVOLVE_SMALL_RIGHT_BUTTON))
+        {
+            drivemode = DriveMode.REVOLVE_SMALL_RIGHT;
+        }
+        
+        if (getDriveJoystick().buttonDown(REVOLVE_LARGE_LEFT_BUTTON))
+        {
+            drivemode = DriveMode.REVOLVE_LARGE_LEFT;
+        }
+        
+        if (getDriveJoystick().buttonDown(REVOLVE_LARGE_RIGHT_BUTTON))
+        {
+            drivemode = DriveMode.REVOLVE_LARGE_RIGHT;
+        }
+        
+        if (pov == POV_UNWIND)
+        {
             drivemode = DriveMode.UNWIND;
-
+        }
         return drivemode;
     }
 
@@ -271,7 +252,7 @@ public class DriverStation2015
      */
     public boolean getSlow()
     {
-        return getDriveJoystick().buttonDown(7);
+        return getDriveJoystick().buttonDown(SLOW_BUTTON);
     }
 
     /**
@@ -280,7 +261,7 @@ public class DriverStation2015
      */
     public boolean getTurbo()
     {
-        return getDriveJoystick().buttonDown(Joystick467.TRIGGER);
+        return getDriveJoystick().buttonDown(TURBO_BUTTON);
     }
 
     // Calibration functions. Calibration is a separate use mode - so the buttons used
@@ -306,7 +287,7 @@ public class DriverStation2015
      */
     public boolean getCalibrateConfirmSelection()
     {
-        return getCalibrationJoystick().buttonDown(Joystick467.TRIGGER);
+        return getCalibrationJoystick().buttonDown(CALIBRATE_CONFIRM_BUTTON);
     }
 
     /**
@@ -315,7 +296,7 @@ public class DriverStation2015
      */
     public boolean getCalibrateSlowTurn()
     {
-        return getCalibrationJoystick().buttonDown(4);
+        return getCalibrationJoystick().buttonDown(CALIBRATE_SLOW_BUTTON);
     }
 
     /**
@@ -360,14 +341,23 @@ public class DriverStation2015
         }
     }
 
-    /**
-     * Checks to see if turbo from the nav is pressed.
-     * 
-     * @return
-     */
-    public boolean getMoveTurbo()
+//    /**
+//     * Checks to see if the speed change button is pressed.
+//     * 
+//     * @return
+//     */
+//    public Speed getSpeedChange()
+//    {
+////        if (buttonPanel.isButtonDown(CHANGE_SPEED_BUTTON))
+////        {
+////            return Speed.SLOW;
+//        }
+//        return Speed.FAST;
+//    }
+    
+    public boolean getLowerCurrent()
     {
-        return buttonPanel.isButtonDown(OPERATE_FASTER_BUTTON);
+        return buttonPanel.isButtonDown(CHANGE_SPEED_BUTTON);
     }
     
     public boolean getResetGyro()
@@ -382,18 +372,16 @@ public class DriverStation2015
      */
     public void setClawLED(boolean state)
     {
-        System.out.println("SETTING LED_CLAW to " + state);
         buttonPanel.setLED(LED_CLAW_STOPPED, state);        
     }
     
     /**
-     * Sets the state of the claw LED
+     * Sets the state of the lifter LED
      * 
      * @param state
      */
     public void setLifterLED(int led, boolean state)
     {
-        System.out.println("SETTING LED "+ led + " to " + state);
         buttonPanel.setLED(led, state);        
     }
 

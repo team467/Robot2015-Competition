@@ -2,11 +2,9 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
-import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.SerialPort;
 
 /**
- * @author nathan
  *
  */
 public class Gyro2015
@@ -74,7 +72,14 @@ public class Gyro2015
         }
         else
         {
-            String data = sp.readString();
+            String data = "";
+            try
+            {
+                data = sp.readString();
+            }
+            catch(Exception ex)
+            {                
+            }
             stringBuffer.append(data);
             int startIndex = 0;
             int endIndex = 0;
@@ -112,6 +117,7 @@ public class Gyro2015
     public void update()
     {
         trustedAngle = wrapAngle(getSerialPortAngle());
+        LOGGER.debug("GYRO ANGLE: " + getAngle());
     }
 
     public double getAngle()
@@ -141,13 +147,13 @@ public class Gyro2015
                 additionalResetAngle = 0;
                 break;
             case FACE_TOWARD:
-                additionalResetAngle = Math.PI;
+                additionalResetAngle = 180;
                 break;
             case FACE_LEFT:
-                additionalResetAngle = 3 * Math.PI / 2;
+                additionalResetAngle = 90;
                 break;                
             case FACE_RIGHT:
-                additionalResetAngle = Math.PI / 2;
+                additionalResetAngle = 270;
                 break;
         }
         resetSubtractAngle = wrapAngle(trustedAngle + resetSubtractAngle + additionalResetAngle);

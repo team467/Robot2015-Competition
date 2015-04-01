@@ -8,6 +8,7 @@ import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class CameraDashboard extends Thread
 {
@@ -16,9 +17,12 @@ public class CameraDashboard extends Thread
     private static final float BLACK = color(0, 0, 0);
     private static final float RED = color(255, 0, 0);
     private static final float GREEN = color(0, 255, 0);
+    @SuppressWarnings("unused")
     private static final float BLUE = color(0, 0, 255);
     private static final float WHITE = color(255, 255, 255);
-
+    
+    DriverStation station;
+    
     static CameraDashboard instance;
     Steering flSteering;
     Steering frSteering;
@@ -26,7 +30,7 @@ public class CameraDashboard extends Thread
     Steering brSteering;
     final double maxTurns = Steering.getMaxTurns();
 
-    private boolean cameraExists = true;
+    private boolean cameraExists = false;
     
     private long lastTimeStamp = System.currentTimeMillis();
     
@@ -41,7 +45,9 @@ public class CameraDashboard extends Thread
         frSteering = drive.steering[RobotMap.FRONT_RIGHT];
         blSteering = drive.steering[RobotMap.BACK_LEFT];
         brSteering = drive.steering[RobotMap.BACK_RIGHT];
-
+        
+        station = DriverStation.getInstance();
+        
         initCamera();
     }
 
@@ -63,7 +69,6 @@ public class CameraDashboard extends Thread
     {
         try
         {
-            cameraExists = true;
             cameraServer = CameraServer.getInstance();
             cameraServer.setQuality(50);
 
@@ -72,6 +77,8 @@ public class CameraDashboard extends Thread
             // the camera name (ex "cam0") can be found through the roborio web interface
             session = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
             NIVision.IMAQdxConfigureGrab(session);
+            
+            cameraExists = true;
         }
         catch (Exception e)
         {
@@ -82,19 +89,25 @@ public class CameraDashboard extends Thread
 
     public void renderImage()
     {
-        LOGGER.debug("Rendering image");
-
+        // TODO Need to make this not crash
+//        ImageInfo info = NIVision.imaqGetImageInfo(frame);
+//        int viewWidth = info.xRes; // 640
+//        int viewHeight = info.yRes; // 480
         int viewWidth = 640;
         int viewHeight = 480;
 
         NIVision.IMAQdxGrab(session, frame, 1);
-
+        
+        if (station.isEnabled())
+        {
+            drawTimerBar(viewWidth, viewHeight);
+        }
         drawCrossHairs(viewWidth, viewHeight);
         drawAngleMonitors(viewWidth, viewHeight);
 
         cameraServer.setImage(frame);
     }
-    
+
     /**
      * Color values are from 0 to 255<br>
      * e.g. white = (255, 255, 255)
@@ -109,22 +122,75 @@ public class CameraDashboard extends Thread
         // 24 bits, 8 bits for each color channel
         return b*256*256 + g*256 + r;
     }
+    
+    /**
+     * Draws Timer Bar on top of Camera Feed
+     * 
+     * @param viewWidth
+     * @param viewHeight
+     */
+    private void drawTimerBar(int viewWidth, int viewHeight)
+    {
+        final ShapeMode RECT = ShapeMode.SHAPE_RECT;
+        int height = 20;
+        double matchTime = 0.0;
+
+        try
+        {
+            matchTime = DriverStation.getInstance().getMatchTime();
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Can't get match time: " + e.getMessage());
+            matchTime = 0.0;
+        }
+
+        double totalTime = 135; // Teleop
+        if (station.isAutonomous())
+        {
+            totalTime = 15;
+        }
+        
+        double scale = viewWidth / totalTime;
+        double elapsedTime = (totalTime - matchTime);
+        
+        if (elapsedTime < 0) {
+            LOGGER.warn("elapsedTime is negative: " + elapsedTime);
+            elapsedTime = 0;
+        }
+        
+        double barWidth = elapsedTime * scale;
+        
+        
+        NIVision.Rect timerRect = new NIVision.Rect(0, 0, height, (int)barWidth);
+        
+        if (matchTime < 20)
+        {
+            // Final 20 seconds: No throwing noodles!
+            NIVision.imaqDrawShapeOnImage(frame, frame, timerRect, DrawMode.PAINT_VALUE, RECT, RED);
+        }
+        else
+        {
+            NIVision.imaqDrawShapeOnImage(frame, frame, timerRect, DrawMode.PAINT_VALUE, RECT, GREEN);
+        }
+    }
+
 
     private void drawCrossHairs(int viewWidth, int viewHeight)
     {
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
         
-        NIVision.Rect vert1 = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 2, 80, 5);
-        NIVision.Rect vert2 = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 1, 80, 3);
+        NIVision.Rect vertBlack = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 2, 80, 5);
+        NIVision.Rect vertWhite = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 1, 80, 3);
         
-        NIVision.Rect horiz1 = new NIVision.Rect(viewHeight / 2 - 2, viewWidth / 2 - 40, 5, 80);
-        NIVision.Rect horiz2 = new NIVision.Rect(viewHeight / 2 - 1, viewWidth / 2 - 40, 3, 80);
+        NIVision.Rect horizBlack = new NIVision.Rect(viewHeight / 2 - 2, viewWidth / 2 - 40, 5, 80);
+        NIVision.Rect horizWhite = new NIVision.Rect(viewHeight / 2 - 1, viewWidth / 2 - 40, 3, 80);
 
-        NIVision.imaqDrawShapeOnImage(frame, frame, vert1, DrawMode.PAINT_VALUE, RECT, BLACK);
-        NIVision.imaqDrawShapeOnImage(frame, frame, horiz1, DrawMode.PAINT_VALUE, RECT, BLACK);
+        NIVision.imaqDrawShapeOnImage(frame, frame, vertBlack, DrawMode.PAINT_VALUE, RECT, BLACK);
+        NIVision.imaqDrawShapeOnImage(frame, frame, horizBlack, DrawMode.PAINT_VALUE, RECT, BLACK);
         
-        NIVision.imaqDrawShapeOnImage(frame, frame, vert2, DrawMode.PAINT_VALUE, RECT, WHITE);
-        NIVision.imaqDrawShapeOnImage(frame, frame, horiz2, DrawMode.PAINT_VALUE, RECT, WHITE);
+        NIVision.imaqDrawShapeOnImage(frame, frame, vertWhite, DrawMode.PAINT_VALUE, RECT, WHITE);
+        NIVision.imaqDrawShapeOnImage(frame, frame, horizWhite, DrawMode.PAINT_VALUE, RECT, WHITE);
     }
 
     private void drawAngleMonitors(int viewWidth, int viewHeight)
@@ -133,9 +199,10 @@ public class CameraDashboard extends Thread
         final int rectHeight = 20;
         final int rectWidth = 100 + barWidth;
 
-        final int topMargin = 20;
+        final int margin = 20;
         final int leftMargin = 20;
-        final int bottomMargin = viewHeight - (topMargin + rectHeight);
+        final int bottomMargin = viewHeight - (margin + rectHeight);
+        final int topMargin = margin + 20;
         final int rightMargin = viewWidth - (leftMargin + rectWidth) - barWidth;
 
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
@@ -207,8 +274,15 @@ public class CameraDashboard extends Thread
 
             // Do the actual work.
             if (cameraExists)
-            {
-                renderImage();
+            {   
+                try
+                {
+                    renderImage();
+                }
+                catch (Exception e)
+                {
+                    LOGGER.error("Couldn't render image: " + e.getMessage());
+                }
             }
 
             // Sleep until next scheduled render time.
