@@ -43,15 +43,10 @@ public class Robot extends IterativeRobot
     int session;
     
     private LEDStrip ledStrip = new LEDStrip();
-
-    /**
-     * Time in milliseconds
-     */
-    double time;
     
     final long TELEMETRY_PERIOD_MS = 500;
     long lastTelemetryTime = System.currentTimeMillis();
-
+    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -113,6 +108,7 @@ public class Robot extends IterativeRobot
 
     public void testPeriodic()
     {
+        logTelemetry(System.currentTimeMillis());
     }
 
     public void autonomousPeriodic()
@@ -124,6 +120,7 @@ public class Robot extends IterativeRobot
         autonomous.updateAutonomousPeriodic();
         
         ledStrip.setMode(Mode.RAINBOW);
+        logTelemetry(System.currentTimeMillis());
     }
 
     /**
@@ -153,37 +150,9 @@ public class Robot extends IterativeRobot
             updateNavigator();
         }
         
-        long now = System.currentTimeMillis();
-        if (now > lastTelemetryTime + TELEMETRY_PERIOD_MS)
-        {
-            LOGGER.info(drive.getTelemetry());
-            lastTelemetryTime = now;
-        }
+        logTelemetry(System.currentTimeMillis());
         
-        double time = DriverStation.getInstance().getMatchTime();
-        if (time > 40)
-        {
-            switch (DriverStation.getInstance().getAlliance()) 
-            {
-                case Red:
-                    ledStrip.setMode(Mode.PULSE_RED);
-                    break;
-                case Blue:
-                    ledStrip.setMode(Mode.PULSE_BLUE);
-                    break;
-                case Invalid:
-                    ledStrip.setMode(Mode.BLUE_AND_GOLD);
-                    break;
-            }
-        }
-        else if (time > 20)
-        {
-            ledStrip.setMode(Mode.PULSE_YELLOW);
-        }
-        else
-        {
-            ledStrip.setMode(Mode.RAINBOW);
-        }
+        updateLEDS(DriverStation.getInstance().getMatchTime());
     }
 
     /**
@@ -258,5 +227,46 @@ public class Robot extends IterativeRobot
         board.update();
         lifter.driveLifter(driverstation.getLiftDirection());
         claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
+    }
+    
+    /**
+     * Call periodically, logs once every TELEMETRY_PERIOD_MS
+     * 
+     * @param now
+     */
+    private void logTelemetry(long now)
+    {
+        if (now > lastTelemetryTime + TELEMETRY_PERIOD_MS)
+        {
+            LOGGER.info(drive.getTelemetry());
+            lastTelemetryTime = now;
+        }
+    }
+
+    private void updateLEDS(double time)
+    {
+        if (time > 40)
+        {
+            switch (DriverStation.getInstance().getAlliance()) 
+            {
+                case Red:
+                    ledStrip.setMode(Mode.PULSE_RED);
+                    break;
+                case Blue:
+                    ledStrip.setMode(Mode.PULSE_BLUE);
+                    break;
+                case Invalid:
+                    ledStrip.setMode(Mode.BLUE_AND_GOLD);
+                    break;
+            }
+        }
+        else if (time > 20)
+        {
+            ledStrip.setMode(Mode.PULSE_YELLOW);
+        }
+        else
+        {
+            ledStrip.setMode(Mode.RAINBOW);
+        }
     }
 }
