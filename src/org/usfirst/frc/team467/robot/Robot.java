@@ -152,7 +152,8 @@ public class Robot extends IterativeRobot
         
         logTelemetry(System.currentTimeMillis());
         
-        updateLEDS(DriverStation.getInstance().getMatchTime());
+        LEDStrip.Mode mode = calcLEDMode(DriverStation.getInstance().getMatchTime());
+        ledStrip.setMode(mode);
     }
 
     /**
@@ -243,30 +244,28 @@ public class Robot extends IterativeRobot
         }
     }
 
-    private void updateLEDS(double time)
+    private LEDStrip.Mode calcLEDMode(double time)
     {
         if (time > 40)
         {
+            // More than 40 seconds left
             switch (DriverStation.getInstance().getAlliance()) 
             {
                 case Red:
-                    ledStrip.setMode(Mode.PULSE_RED);
-                    break;
+                    return Mode.PULSE_RED;
                 case Blue:
-                    ledStrip.setMode(Mode.PULSE_BLUE);
-                    break;
+                    return Mode.PULSE_BLUE;
                 case Invalid:
-                    ledStrip.setMode(Mode.BLUE_AND_GOLD);
-                    break;
+                    return Mode.BLUE_AND_GOLD;
             }
         }
         else if (time > 20)
         {
-            ledStrip.setMode(Mode.PULSE_YELLOW);
+            // Between 20 and 40 seconds left
+            return Mode.PULSE_YELLOW;
         }
-        else
-        {
-            ledStrip.setMode(Mode.RAINBOW);
-        }
+
+        // Less than 20 seconds left
+        return Mode.RAINBOW;
     }
 }
