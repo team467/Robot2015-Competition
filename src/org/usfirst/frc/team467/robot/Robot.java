@@ -150,7 +150,7 @@ public class Robot extends IterativeRobot
         }
         
         double time = DriverStation.getInstance().getMatchTime();
-        if (time > 20)
+        if (time > 40)
         {
             switch (DriverStation.getInstance().getAlliance()) 
             {
@@ -165,9 +165,13 @@ public class Robot extends IterativeRobot
                     break;
             }
         }
-        else 
+        else if (time > 20)
         {
             ledStrip.setMode(Mode.PULSE_YELLOW);
+        }
+        else
+        {
+            ledStrip.setMode(Mode.RAINBOW);
         }
     }
 
