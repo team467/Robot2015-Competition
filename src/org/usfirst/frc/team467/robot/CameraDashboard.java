@@ -79,10 +79,11 @@ public class CameraDashboard extends Thread
             NIVision.IMAQdxConfigureGrab(session);
             
             cameraExists = true;
+            LOGGER.debug("Camera initialized");
         }
         catch (Exception e)
         {
-            LOGGER.info("No Camera Detected: " + e.getMessage());
+            LOGGER.info("No camera detected: " + e.getMessage());
             cameraExists = false;
         }
     }
@@ -262,44 +263,51 @@ public class CameraDashboard extends Thread
     @Override
     public void run()
     {
-        final double UPDATE_FREQ = 5; // Updates per second
-        final long period = (long) (1000 / UPDATE_FREQ); // Update period in milliseconds
-        
-        while (true)
+        try
         {
-            long startTime = System.currentTimeMillis();
-            LOGGER.debug("delta=" + (startTime - lastTimeStamp));
+            final double UPDATE_FREQ = 5; // Updates per second
+            final long period = (long) (1000 / UPDATE_FREQ); // Update period in milliseconds
             
-            lastTimeStamp = startTime;
+            while (true)
+            {
+                long startTime = System.currentTimeMillis();
+                LOGGER.trace("delta=" + (startTime - lastTimeStamp));
+                
+                lastTimeStamp = startTime;
 
-            // Do the actual work.
-            if (cameraExists)
-            {   
+                // Do the actual work.
+                if (cameraExists)
+                {   
+                    try
+                    {
+                        renderImage();
+                    }
+                    catch (Exception e)
+                    {
+                        LOGGER.error("Couldn't render image: " + e.getMessage());
+                    }
+                }
+
+                // Sleep until next scheduled render time.
+                long endTime = System.currentTimeMillis();
+                long deltaTime = endTime - startTime;
                 try
                 {
-                    renderImage();
+                    // only sample camera at a fixed interval
+                    long sleepTime = (long)period - deltaTime;
+                    if (sleepTime > 0) {
+                        Thread.sleep(sleepTime);
+                    }
                 }
-                catch (Exception e)
+                catch (InterruptedException e)
                 {
-                    LOGGER.error("Couldn't render image: " + e.getMessage());
+                    LOGGER.error(e.getMessage());
                 }
             }
-
-            // Sleep until next scheduled render time.
-            long endTime = System.currentTimeMillis();
-            long deltaTime = endTime - startTime;
-            try
-            {
-                // only sample camera at a fixed interval
-                long sleepTime = (long)period - deltaTime;
-                if (sleepTime > 0) {
-                    Thread.sleep(sleepTime);
-                }
-            }
-            catch (InterruptedException e)
-            {
-                LOGGER.error(e.getMessage());
-            }
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Unexpected exception in run: " + e.getMessage());
         }
     }
 }
