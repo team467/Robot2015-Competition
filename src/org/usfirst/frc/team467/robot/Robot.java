@@ -206,7 +206,11 @@ public class Robot extends IterativeRobot
             case REVOLVE_SMALL_RIGHT:
                 drive.revolveDriveSmall(Direction.RIGHT);
                 break;
-
+                
+            case STRAFE_FRONT:
+                drive.strafeDrive(Direction.FRONT);
+                break;
+                
             case STRAFE_LEFT:
                 drive.strafeDrive(Direction.LEFT);
                 break;

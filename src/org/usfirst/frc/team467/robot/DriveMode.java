@@ -5,8 +5,9 @@ public enum DriveMode
     CRAB_FA,                    // Crab Drive - Field Aligned
     CRAB_NO_FA,                 // Crab Drive - No Field Alignment
     TURN, 		                // Turn in Place
-    STRAFE_LEFT, 	            // Strafe Drive - Left
-    STRAFE_RIGHT,               // Strafe Drive - Right
+    STRAFE_FRONT,                  // Drive Forwards Slowly
+    STRAFE_LEFT, 	            // Drive left Slowly
+    STRAFE_RIGHT,               // Drive Right Slowly
     STRAFE_BACK,                // Drive Backwards Slowly
     REVOLVE_LARGE_LEFT,	        // Revolve Drive (rotate left around a center outside robot)
     REVOLVE_LARGE_RIGHT,        // Revolve Drive (rotate right around a center outside robot)

@@ -27,10 +27,12 @@ public class DriverStation2015
     private static int CALIBRATE_SLOW_BUTTON = 4;
     
     // Mapping of POV position to functions
-    private static int POV_UNWIND = 0;
+    private static int POV_STRAFE_FRONT = 0;
     private static int POV_STRAFE_LEFT = 270;
     private static int POV_STRAFE_RIGHT = 90;
     private static int POV_STRAFE_BACK = 180;
+    
+    private static int UNWIND_BUTTON = 10;
 
     // CAL/AUTO
     public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
@@ -204,6 +206,11 @@ public class DriverStation2015
             drivemode = DriveMode.TURN;
         }
         
+        if (pov == POV_STRAFE_FRONT)
+        {
+            drivemode = DriveMode.STRAFE_FRONT;
+        }
+        
         if (pov == POV_STRAFE_LEFT)
         {
             drivemode = DriveMode.STRAFE_LEFT;
@@ -239,7 +246,7 @@ public class DriverStation2015
             drivemode = DriveMode.REVOLVE_LARGE_RIGHT;
         }
         
-        if (pov == POV_UNWIND)
+        if (getDriveJoystick().buttonDown(UNWIND_BUTTON))
         {
             drivemode = DriveMode.UNWIND;
         }
