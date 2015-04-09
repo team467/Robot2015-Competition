@@ -37,7 +37,7 @@ public class Logging
         try
         {
             RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, "/home/admin/log/Robot467.log");
-            rollingFileAppender.setMaxBackupIndex(10);
+            rollingFileAppender.setMaxBackupIndex(20);
             rollingFileAppender.setMaximumFileSize(1_000_000);
             rollingFileAppender.rollOver();
             Logger.getRootLogger().addAppender(rollingFileAppender);
