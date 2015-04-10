@@ -43,7 +43,7 @@ public class Drive extends RobotDrive
     private static final double SPEED_SLOW_MODIFIER = 0.5;
     private static final double SPEED_TURBO_MODIFIER = 2.0;
     private static final double SPEED_MAX_MODIFIER = 0.8;
-    private static final double SPEED_MAX_CHANGE = 0.2;
+    private static final double SPEED_MAX_CHANGE = 0.15;
 
     // Speed to use for Strafe and Revolve Drive
     private static final double SPEED_STRAFE = 0.6;
