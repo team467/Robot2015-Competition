@@ -185,10 +185,10 @@ public class Robot extends IterativeRobot
         switch (driveMode)
         {
             case UNWIND:
-                for (Steering wheelpod : Drive.getInstance().steering)
-                {
-                    wheelpod.setAbsoluteAngle(0);
-                }
+                drive.frontLeft.absoluteSteer(0);
+                drive.frontRight.absoluteSteer(0);
+                drive.backLeft.absoluteSteer(0);
+                drive.backRight.absoluteSteer(0);
                 break;
 
             case REVOLVE_LARGE_LEFT:

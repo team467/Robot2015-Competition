@@ -69,7 +69,7 @@ public class Calibration
             LOGGER.debug("SAVED VALUE -> WHEEL: " + motorId + "Ang: " + currentAngle);
 
             // Set new steering center
-            drive.setSteeringCenter(pod, currentAngle);
+            pod.getSteering().setCenter(currentAngle);
 
             // Reset calibration angle
             calibrationAngle = 0.0;

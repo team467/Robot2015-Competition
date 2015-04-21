@@ -41,10 +41,10 @@ public class CameraDashboard extends Thread
     private CameraDashboard()
     {
         Drive drive = Drive.getInstance();
-        flSteering = drive.steering[RobotMap.FRONT_LEFT];
-        frSteering = drive.steering[RobotMap.FRONT_RIGHT];
-        blSteering = drive.steering[RobotMap.BACK_LEFT];
-        brSteering = drive.steering[RobotMap.BACK_RIGHT];
+        flSteering = drive.frontLeft.getSteering();
+        frSteering = drive.frontRight.getSteering();
+        blSteering = drive.backLeft.getSteering();
+        brSteering = drive.backRight.getSteering();
         
         station = DriverStation.getInstance();
         

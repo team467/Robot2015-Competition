@@ -77,6 +77,11 @@ public class WheelPod implements MotorSafety
         drive(driveMotor.getSpeed(), angle);
     }
     
+    public void absoluteSteer(double angle)
+    {
+        steering.setAbsoluteAngle(angle);
+    }
+    
     public CANTalon getDriveMotor()
     {
         return driveMotor;

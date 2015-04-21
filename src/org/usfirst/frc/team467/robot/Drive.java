@@ -21,9 +21,6 @@ public class Drive
     public WheelPod backLeft;
     public WheelPod backRight;
 
-    // Steering objects
-    public Steering[] steering;
-
     // Data storage object
     private static DataStorage data;
     private Gyro2015 gyro;
@@ -252,8 +249,8 @@ public class Drive
     /**
      * Set the steering center to a new value
      *
-     * @param steeringMotor
-     *            The id of the steering motor (0 = FL, 1 = FR, 2 = BL, 3 = BR)
+     * @param pod
+     *            The wheelpod of the steering motor (0 = FL, 1 = FR, 2 = BL, 3 = BR)
      * @param value
      *            The new center value
      */
@@ -269,9 +266,9 @@ public class Drive
      *            The id of the steering motor
      * @return
      */
-    public double getSteeringAngle(int steeringMotor)
+    public double getSteeringAngle(WheelPod pod)
     {
-        return steering[steeringMotor].getSensorValue();
+        return pod.getSteering().getSensorValue();
     }
 
     /**
@@ -281,9 +278,9 @@ public class Drive
      *            The id of the steering motor
      * @return
      */
-    public double getNormalizedSteeringAngle(int steeringMotor)
+    public double getNormalizedSteeringAngle(WheelPod pod)
     {
-        return steering[steeringMotor].getSteeringAngle();
+        return pod.getSteering().getSteeringAngle();
     }
 
 }
