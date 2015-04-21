@@ -233,8 +233,14 @@ public class WheelPod implements MotorSafety
     @Override
     public void stopMotor()
     {
-        if (driveMotor != null) driveMotor.set(0.0);
-        if (m_safetyHelper != null) m_safetyHelper.feed();
+        if (driveMotor != null)
+        {
+            driveMotor.set(0.0);
+        }
+        if (m_safetyHelper != null)
+        {
+            m_safetyHelper.feed();
+        }
     }
 
     @Override
