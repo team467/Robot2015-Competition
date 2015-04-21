@@ -6,6 +6,10 @@ import org.junit.Test;
 
 public class RateLimiterTest
 {
+    static {
+        Logging.initForTest();
+    }
+    
     @Test
     public void zeroToOne()
     {

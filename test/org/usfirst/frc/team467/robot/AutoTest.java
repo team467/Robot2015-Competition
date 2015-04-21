@@ -7,6 +7,10 @@ public class AutoTest
 {
     Autonomous auto;
     
+    static {
+        Logging.initForTest();
+    }
+    
     public void init()
     {
         // TODO Make dummy classes for drive, claw, and lifter implementing respective interfaces

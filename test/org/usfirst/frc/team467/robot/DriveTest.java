@@ -9,6 +9,10 @@ public class DriveTest
 {
     private static final double MAX_DELTA = 0.0001;
 
+    static {
+        Logging.initForTest();
+    }
+    
     @Test
     public void wrapAroundDifferenceTest()
     {

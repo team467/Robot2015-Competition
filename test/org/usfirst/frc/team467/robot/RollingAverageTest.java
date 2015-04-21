@@ -8,6 +8,10 @@ public class RollingAverageTest
 {    
     private final double MAX_DELTA = 0.0001;
     
+    static {
+        Logging.initForTest();
+    }
+    
     @Test
     public void averageTest()
     {

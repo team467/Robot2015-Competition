@@ -12,7 +12,7 @@ public class Logging
 {
     public static void init()
     {
-        setupDefaultLogging();
+        setupDefaultLogging(true);
 
         // Enable extra logging for classes you want to debug
 //        Logger.getLogger(Robot.class).setLevel(Level.DEBUG);
@@ -27,7 +27,12 @@ public class Logging
         Logger.getLogger(WheelPod.class).setLevel(Level.DEBUG);
     }
     
-    private static void setupDefaultLogging()
+    public static void initForTest()
+    {
+        setupDefaultLogging(false);
+    }
+    
+    private static void setupDefaultLogging(boolean shouldUseFileLogger)
     {
         // Create a logging appender that writes our pattern to the console.
         // Our pattern looks like the following:
@@ -35,19 +40,21 @@ public class Logging
         String pattern = "%rms %p %c - %m%n";
         PatternLayout layout = new PatternLayout(pattern);
         Logger.getRootLogger().addAppender(new ConsoleAppender(layout));
-        try
-        {
-            RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, "/home/admin/log/Robot467.log");
-            rollingFileAppender.setMaxBackupIndex(20);
-            rollingFileAppender.setMaximumFileSize(1_000_000);
-            rollingFileAppender.rollOver();
-            Logger.getRootLogger().addAppender(rollingFileAppender);
+        
+        if (shouldUseFileLogger) {
+            try
+            {
+                RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, "/home/admin/log/Robot467.log");
+                rollingFileAppender.setMaxBackupIndex(20);
+                rollingFileAppender.setMaximumFileSize(1_000_000);
+                rollingFileAppender.rollOver();
+                Logger.getRootLogger().addAppender(rollingFileAppender);
+            }
+            catch (IOException e)
+            {
+                System.out.println("Failed to create log file appender: " + e.getMessage());
+            }
         }
-        catch (IOException e)
-        {
-            System.out.println("Failed to create log file appender: " + e.getMessage());
-        }
-
 
         // Set the default log level to INFO.
         Logger.getRootLogger().setLevel(Level.INFO); // changing log level
