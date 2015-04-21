@@ -5,24 +5,30 @@
 package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
+import org.usfirst.frc.team467.robot.WheelPod.WheelCorrection;
 
 import edu.wpi.first.wpilibj.*;
 
 /**
  * 
  */
-public class Drive extends RobotDrive
+public class Drive
 {
     private static final Logger LOGGER = Logger.getLogger(Drive.class);
 
     // Single instance of this class
     private static Drive instance = null;
+    
+    public WheelPod frontLeft;
+    public WheelPod frontRight;
+    public WheelPod backLeft;
+    public WheelPod backRight;
 
     // Steering objects
     public Steering[] steering;
 
     // Data storage object
-    private DataStorage data;
+    private static DataStorage data;
     private Gyro2015 gyro;
 
     // Angle to turn at when rotating in place - initialized in constructor
@@ -63,9 +69,9 @@ public class Drive extends RobotDrive
     private static final double REVOLVE_SMALL_BACK_ANGLE = (Math.atan((2 * REVOLVE_SMALL_BACK_RADIUS) / RobotMap.WIDTH));
 
     // Private constructor
-    private Drive(CANTalon frontLeftMotor, CANTalon backLeftMotor, CANTalon frontRightMotor, CANTalon backRightMotor)
+    private Drive(WheelPod frontLeft, WheelPod backLeft, WheelPod frontRight, WheelPod backRight)
     {
-        super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+//        super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
         // Make objects
         data = DataStorage.getInstance();
@@ -95,11 +101,28 @@ public class Drive extends RobotDrive
     {
         if (instance == null)
         {
+            double steeringCenterFL = data.getDouble(RobotMap.STEERING_KEYS[0], RobotMap.STEERING_RANGE / 2);
+            double steeringCenterFR = data.getDouble(RobotMap.STEERING_KEYS[1], RobotMap.STEERING_RANGE / 2);
+            double steeringCenterBL = data.getDouble(RobotMap.STEERING_KEYS[2], RobotMap.STEERING_RANGE / 2);
+            double steeringCenterBR = data.getDouble(RobotMap.STEERING_KEYS[3], RobotMap.STEERING_RANGE / 2);
+
             // First usage - create Drive object
-            CANTalon frontleft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
-            CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
-            CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
-            CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+            WheelPod frontleft = new WheelPod(RobotMap.FRONT_LEFT_MOTOR_CHANNEL,
+                    RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
+                    RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
+                    RobotMap.PIDvalues[0], steeringCenterFL);
+            WheelPod frontright = new WheelPod(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL,
+                    RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
+                    RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
+                    RobotMap.PIDvalues[1], steeringCenterFR);
+            WheelPod backleft = new WheelPod(RobotMap.BACK_LEFT_MOTOR_CHANNEL,
+                    RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
+                    RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
+                    RobotMap.PIDvalues[2], steeringCenterBL);
+            WheelPod backright = new WheelPod(RobotMap.BACK_RIGHT_MOTOR_CHANNEL,
+                    RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL,
+                    RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL,
+                    RobotMap.PIDvalues[2], steeringCenterBR);
             instance = new Drive(frontleft, backleft, frontright, backright);
         }
         return instance;
@@ -138,8 +161,12 @@ public class Drive extends RobotDrive
      */
     private void fourWheelDrive(double frontLeftSpeed, double frontRightSpeed, double backLeftSpeed, double backRightSpeed)
     {
+        CANTalon flMotor = frontLeft.getDriveMotor();
+        CANTalon frMotor = frontRight.getDriveMotor();
+        CANTalon blMotor = backLeft.getDriveMotor();
+        CANTalon brMotor = backRight.getDriveMotor();
         // If any of the motors doesn't exist then exit
-        if (m_rearLeftMotor == null || m_rearRightMotor == null || m_frontLeftMotor == null || m_frontRightMotor == null)
+        if (frontLeft.getDriveMotor() == null || backRight.getDriveMotor() == null || backLeft.getDriveMotor() == null || frontRight.getDriveMotor() == null)
         {
             throw new NullPointerException("Null motor provided");
         }
@@ -153,18 +180,18 @@ public class Drive extends RobotDrive
             steering[RobotMap.BACK_RIGHT] .getAngleDelta() < MAX_DRIVE_ANGLE)
         {
             LOGGER.debug("DRIVE");
-            m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed, RobotMap.FRONT_LEFT), SYNC_GROUP);
-            m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
-            m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
-            m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
+            flMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed, RobotMap.FRONT_LEFT), SYNC_GROUP);
+            frMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
+            blMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
+            brMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
         } 
         else
         {
             LOGGER.debug("NO DRIVE");
-            m_frontLeftMotor.set(0, SYNC_GROUP);
-            m_frontRightMotor.set(0, SYNC_GROUP);
-            m_rearLeftMotor.set(0, SYNC_GROUP);
-            m_rearRightMotor.set(0, SYNC_GROUP);
+            flMotor.set(0, SYNC_GROUP);
+            frMotor.set(0, SYNC_GROUP);
+            blMotor.set(0, SYNC_GROUP);
+            brMotor.set(0, SYNC_GROUP);
         }
 
         LOGGER.debug("WHEEL SPEEDS: FL:" + frontLeftSpeed + ", FR:" +  frontRightSpeed + ", BL:" + backLeftSpeed + ", BR:" + backRightSpeed);
@@ -498,22 +525,4 @@ public class Drive extends RobotDrive
         return steering[steeringMotor].getSteeringAngle();
     }
 
-}
-
-class WheelCorrection
-{
-    public double speed;
-    public double angle;
-
-    public WheelCorrection(double angleIn, double speedIn)
-    {
-        angle = angleIn;
-        speed = speedIn;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "WheelCorrection [speed=" + speed + ", angle=" + angle + "]";
-    }
 }
