@@ -16,31 +16,122 @@ public class WheelPod implements MotorSafety
     private MotorSafetyHelper m_safetyHelper;
     private Steering steering;
     
-    public WheelPod(int driveMotorID, int steeringMotorID, int steeringSensorID, PID pid, double center)
+    private static final double SPEED_SLOW_MODIFIER = 0.5;
+    private static final double SPEED_TURBO_MODIFIER = 2.0;
+    private static final double SPEED_MAX_MODIFIER = 0.8;
+    private static final double SPEED_MAX_CHANGE = 0.15;
+    final double MAX_DRIVE_ANGLE = Math.PI / 25;
+    private final Boolean INVERT;
+    
+    private double lastSpeed = 0.0;
+    
+    public WheelPod(int driveMotorID, int steeringMotorID, int steeringSensorID, PID pid, double center, boolean invert)
     {
         steering = new Steering(pid, steeringMotorID, steeringSensorID, center);
         driveMotor = new CANTalon(driveMotorID);
         setupMotorSafety();
+        INVERT = invert;
     }
-    
+
     public void drive(double speed, double angle)
     {
-        WheelCorrection correction = wrapAroundCorrect(speed, angle);
-        try
+        if (driveMotor == null)
         {
-            driveMotor.set(correction.speed);
-            m_safetyHelper.feed();
-            steering.setAngle(correction.angle);
+            throw new NullPointerException("Null motor provided");
         }
-        catch (Exception e)
+        if (steering.getAngleDelta() < MAX_DRIVE_ANGLE)
         {
-            LOGGER.error(e.getMessage());
+            // Limit the speed
+            speed = (INVERT ? -1 : 1) * limitSpeed(speed);
+            
+            WheelCorrection correction = wrapAroundCorrect(speed, angle);
+            try
+            {
+                driveMotor.set(correction.speed);
+                m_safetyHelper.feed();
+                steering.setAngle(correction.angle);
+                LOGGER.debug("DRIVE");
+            }
+            catch (Exception e)
+            {
+                LOGGER.error(e.getMessage());
+            }
+        }
+        else
+        {
+            LOGGER.debug("NO DRIVE");
+            stopMotor();
         }
     }
     
     public CANTalon getDriveMotor()
     {
         return driveMotor;
+    }
+    
+    public Steering getSteering()
+    {
+        return steering;
+    }
+    
+    /**
+     * Turns on the PID.
+     */
+    public void enableSteeringPID()
+    {
+            steering.enablePID();
+    }
+    
+    /**
+     * Turns off the PID.
+     */
+    public void disableSteeringPID()
+    {
+            steering.disablePID();
+    }
+
+    /**
+     * Limit the rate at which the robot can change speed once driving fast.
+     * This is to prevent causing mechanical damage - or tipping the robot
+     * through stopping too quickly.
+     *
+     * @param speed
+     *            desired speed for robot
+     * @return returns rate-limited speed
+     */
+    private double limitSpeed(double speed)
+    {
+        // Apply speed modifiers first
+
+        if (DriverStation2015.getInstance().getSlow())
+        {
+            speed *= SPEED_SLOW_MODIFIER;
+        }
+        else if (DriverStation2015.getInstance().getTurbo())
+        {
+            speed *= SPEED_TURBO_MODIFIER;
+        }
+        else
+        {
+            // Limit maximum regular speed to specified Maximum.
+            speed *= SPEED_MAX_MODIFIER;
+        }
+
+        // Limit the rate at which robot can change speed once driving over 0.6
+        if (Math.abs(speed - lastSpeed) > SPEED_MAX_CHANGE && Math.abs(lastSpeed) > 0.6)
+        {
+            if (speed > lastSpeed)
+            {
+                speed = lastSpeed + SPEED_MAX_CHANGE;
+            }
+            else
+            {
+                speed = lastSpeed - SPEED_MAX_CHANGE;
+            }
+        }
+        lastSpeed = speed;
+        LOGGER.debug("LIMIT SPEED: " + speed);
+        return (speed);
     }
     
     /**

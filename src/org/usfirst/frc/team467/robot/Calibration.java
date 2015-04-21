@@ -37,17 +37,10 @@ public class Calibration
      * @param motorId
      *            The id of the motor to calibrate
      */
-    public static void updateSteeringCalibrate(int motorId)
+    public static void updateSteeringCalibrate(WheelPod pod)
     {
         LOGGER.debug("Calibrating");
-
-        // not a valid wheel ID
-        if (motorId < 0)
-        {
-            LOGGER.debug("No Drive");
-            drive.stop();
-            return;
-        }
+        int motorId = drive.getWheelPodIndex(pod);
 
         calibrationAngle = getCalibrationAngle(calibrationAngle);
 
@@ -63,12 +56,12 @@ public class Calibration
         LOGGER.debug("ANGLE: " + calibrationAngle);
 
         // Drive specified steering motor with no speed to allow only steering
-        drive.individualSteeringDrive(calibrationAngle, motorId);
+        pod.drive(0, calibrationAngle);
 
         // Write and set new center if trigger is pressed
         if (DriverStation2015.getInstance().getCalibrateConfirmSelection())
         {
-            double currentAngle = drive.getSteeringAngle(motorId);
+            double currentAngle = pod.getSteering().getSensorValue();
 
             // Write data to robot
             data.putDouble(RobotMap.STEERING_KEYS[motorId], currentAngle);
@@ -76,7 +69,7 @@ public class Calibration
             LOGGER.debug("SAVED VALUE -> WHEEL: " + motorId + "Ang: " + currentAngle);
 
             // Set new steering center
-            drive.setSteeringCenter(motorId, currentAngle);
+            drive.setSteeringCenter(pod, currentAngle);
 
             // Reset calibration angle
             calibrationAngle = 0.0;
@@ -186,7 +179,7 @@ public class Calibration
     public static void updateCalibrate()
     {
         calibrateWheelSelect = getWheelDial(calibrateWheelSelect);
-        updateSteeringCalibrate(calibrateWheelSelect);
+        updateSteeringCalibrate(drive.getWheelByIndex(calibrateWheelSelect));
         if (calibrateWheelSelect >= 0)
         {
             LOGGER.info("Calibration Updated, Wheel: " + RobotMap.STEERING_KEYS[calibrateWheelSelect]);
