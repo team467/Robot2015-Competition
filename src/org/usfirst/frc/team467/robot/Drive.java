@@ -5,9 +5,6 @@
 package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
-import org.usfirst.frc.team467.robot.WheelPod.WheelCorrection;
-
-import edu.wpi.first.wpilibj.*;
 
 /**
  * 
@@ -35,9 +32,6 @@ public class Drive
     // takes the arctan of width over length in radians
     // Length is the wide side
     private static final double TURN_IN_PLACE_ANGLE = Math.atan(RobotMap.LENGTH / RobotMap.WIDTH);
-
-    // Magic number copied from WPI code
-    private static final byte SYNC_GROUP = (byte) 0x80;
 
     // Invert the drive motors to allow for wiring.
     private static final boolean FRONT_LEFT_DRIVE_INVERT = false;

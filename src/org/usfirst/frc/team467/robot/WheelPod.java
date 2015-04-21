@@ -16,6 +16,9 @@ public class WheelPod implements MotorSafety
     private MotorSafetyHelper m_safetyHelper;
     private Steering steering;
     
+ // Magic number copied from WPI code
+    private static final byte SYNC_GROUP = (byte) 0x80;
+    
     private static final double SPEED_SLOW_MODIFIER = 0.5;
     private static final double SPEED_TURBO_MODIFIER = 2.0;
     private static final double SPEED_MAX_MODIFIER = 0.8;
@@ -47,7 +50,7 @@ public class WheelPod implements MotorSafety
             WheelCorrection correction = wrapAroundCorrect(speed, angle);
             try
             {
-                driveMotor.set(correction.speed);
+                driveMotor.set(correction.speed, SYNC_GROUP);
                 m_safetyHelper.feed();
                 steering.setAngle(correction.angle);
                 LOGGER.debug("DRIVE");
@@ -62,6 +65,16 @@ public class WheelPod implements MotorSafety
             LOGGER.debug("NO DRIVE");
             stopMotor();
         }
+    }
+    
+    public void drive(double speed)
+    {
+        drive(speed, steering.getSteeringAngle());
+    }
+    
+    public void steer(double angle)
+    {
+        drive(driveMotor.getSpeed(), angle);
     }
     
     public CANTalon getDriveMotor()
