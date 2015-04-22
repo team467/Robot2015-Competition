@@ -24,7 +24,7 @@ public class Logging
 //        Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
         Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
-        Logger.getLogger(WheelPod.class).setLevel(Level.DEBUG);
+        Logger.getLogger(RobotWheelPod.class).setLevel(Level.DEBUG);
     }
     
     public static void initForTest()
