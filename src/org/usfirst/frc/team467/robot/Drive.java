@@ -16,10 +16,10 @@ public class Drive
     // Single instance of this class
     private static Drive instance = null;
     
-    public RobotWheelPod frontLeft;
-    public RobotWheelPod frontRight;
-    public RobotWheelPod backLeft;
-    public RobotWheelPod backRight;
+    public WheelPod frontLeft;
+    public WheelPod frontRight;
+    public WheelPod backLeft;
+    public WheelPod backRight;
 
     // Data storage object
     private static DataStorage data;
@@ -54,7 +54,7 @@ public class Drive
     private static final double REVOLVE_SMALL_BACK_ANGLE = (Math.atan((2 * REVOLVE_SMALL_BACK_RADIUS) / RobotMap.WIDTH));
 
     // Private constructor
-    private Drive(RobotWheelPod frontLeft, RobotWheelPod backLeft, RobotWheelPod frontRight, RobotWheelPod backRight)
+    private Drive(WheelPod frontLeft, WheelPod backLeft, WheelPod frontRight, WheelPod backRight)
     {
 //        super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
@@ -83,19 +83,19 @@ public class Drive
             double steeringCenterBR = data.getDouble(RobotMap.STEERING_KEYS[3], RobotMap.STEERING_RANGE / 2);
 
             // First usage - create Drive object
-            RobotWheelPod frontleft = new RobotWheelPod(RobotMap.FRONT_LEFT_MOTOR_CHANNEL,
+            WheelPod frontleft = new WheelPod(RobotMap.FRONT_LEFT_MOTOR_CHANNEL,
                     RobotMap.FRONT_LEFT_STEERING_MOTOR_CHANNEL,
                     RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL,
                     RobotMap.PIDvalues[0], steeringCenterFL, FRONT_LEFT_DRIVE_INVERT);
-            RobotWheelPod frontright = new RobotWheelPod(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL,
+            WheelPod frontright = new WheelPod(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL,
                     RobotMap.FRONT_RIGHT_STEERING_MOTOR_CHANNEL,
                     RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL,
                     RobotMap.PIDvalues[1], steeringCenterFR, FRONT_RIGHT_DRIVE_INVERT);
-            RobotWheelPod backleft = new RobotWheelPod(RobotMap.BACK_LEFT_MOTOR_CHANNEL,
+            WheelPod backleft = new WheelPod(RobotMap.BACK_LEFT_MOTOR_CHANNEL,
                     RobotMap.BACK_LEFT_STEERING_MOTOR_CHANNEL,
                     RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL,
                     RobotMap.PIDvalues[2], steeringCenterBL, BACK_LEFT_DRIVE_INVERT);
-            RobotWheelPod backright = new RobotWheelPod(RobotMap.BACK_RIGHT_MOTOR_CHANNEL,
+            WheelPod backright = new WheelPod(RobotMap.BACK_RIGHT_MOTOR_CHANNEL,
                     RobotMap.BACK_RIGHT_STEERING_MOTOR_CHANNEL,
                     RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL,
                     RobotMap.PIDvalues[2], steeringCenterBR, BACK_RIGHT_DRIVE_INVERT);
