@@ -50,14 +50,14 @@ public class Drive extends RobotDrive
 
     private static final double REVOLVE_LARGE_FRONT_RADIUS = 65;
     private static final double REVOLVE_LARGE_BACK_RADIUS = REVOLVE_LARGE_FRONT_RADIUS + RobotMap.LENGTH;
-    private static final double REVOLVE_LARGE_BACK_SPEED = 0.4;
+    private static final double REVOLVE_LARGE_BACK_SPEED = 0.5;
     private static final double REVOLVE_LARGE_FRONT_SPEED = REVOLVE_LARGE_BACK_SPEED * (REVOLVE_LARGE_FRONT_RADIUS / REVOLVE_LARGE_BACK_RADIUS);
     private static final double REVOLVE_LARGE_FRONT_ANGLE = (Math.atan((2 * REVOLVE_LARGE_FRONT_RADIUS) / RobotMap.WIDTH));
     private static final double REVOLVE_LARGE_BACK_ANGLE = (Math.atan((2 * REVOLVE_LARGE_BACK_RADIUS) / RobotMap.WIDTH));
     
     private static final double REVOLVE_SMALL_FRONT_RADIUS = 25;
     private static final double REVOLVE_SMALL_BACK_RADIUS = REVOLVE_SMALL_FRONT_RADIUS + RobotMap.LENGTH;
-    private static final double REVOLVE_SMALL_BACK_SPEED = 0.4;
+    private static final double REVOLVE_SMALL_BACK_SPEED = 0.5;
     private static final double REVOLVE_SMALL_FRONT_SPEED = REVOLVE_SMALL_BACK_SPEED * (REVOLVE_SMALL_FRONT_RADIUS / REVOLVE_SMALL_BACK_RADIUS);
     private static final double REVOLVE_SMALL_FRONT_ANGLE = (Math.atan((2 * REVOLVE_SMALL_FRONT_RADIUS) / RobotMap.WIDTH));
     private static final double REVOLVE_SMALL_BACK_ANGLE = (Math.atan((2 * REVOLVE_SMALL_BACK_RADIUS) / RobotMap.WIDTH));
@@ -152,8 +152,8 @@ public class Drive extends RobotDrive
             steering[RobotMap.BACK_LEFT]  .getAngleDelta() < MAX_DRIVE_ANGLE ||
             steering[RobotMap.BACK_RIGHT] .getAngleDelta() < MAX_DRIVE_ANGLE)
         {
-            LOGGER.debug("DRIVE");
-            m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontLeftSpeed, RobotMap.FRONT_LEFT), SYNC_GROUP);
+            LOGGER.debug("DRIVE"); // TODO
+            m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed((frontLeftSpeed * 1.2), RobotMap.FRONT_LEFT), SYNC_GROUP);
             m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
             m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
             m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
