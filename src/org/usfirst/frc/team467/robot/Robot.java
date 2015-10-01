@@ -87,7 +87,7 @@ public class Robot extends IterativeRobot
     public void disabledPeriodic()
     {
         gyro.update();
-        ledStrip.setMode(Mode.BLUE_AND_GOLD);
+        ledStrip.setMode(Mode.DISABLED);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class Robot extends IterativeRobot
         board.update();
         autonomous.updateAutonomousPeriodic();
         
-        ledStrip.setMode(Mode.RAINBOW);
+        ledStrip.setMode(Mode.AUTONOMOUS);
     }
 
     /**
@@ -155,23 +155,23 @@ public class Robot extends IterativeRobot
             switch (DriverStation.getInstance().getAlliance()) 
             {
                 case Red:
-                    ledStrip.setMode(Mode.PULSE_RED);
+                    ledStrip.setMode(Mode.TEAM_RED);
                     break;
                 case Blue:
-                    ledStrip.setMode(Mode.PULSE_BLUE);
+                    ledStrip.setMode(Mode.TEAM_BLUE);
                     break;
                 case Invalid:
-                    ledStrip.setMode(Mode.BLUE_AND_GOLD);
+                    ledStrip.setMode(Mode.NO_TEAM);
                     break;
             }
         }
         else if (time > 20)
         {
-            ledStrip.setMode(Mode.PULSE_YELLOW);
+            ledStrip.setMode(Mode.TIME_IS_UP);
         }
         else
         {
-            ledStrip.setMode(Mode.RAINBOW);
+            ledStrip.setMode(Mode.AUTONOMOUS);
         }
     }
 

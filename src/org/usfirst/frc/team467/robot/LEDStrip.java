@@ -5,12 +5,13 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 public class LEDStrip
 {
     public enum Mode {
-        OFF           (0),
-        RAINBOW       (1),
-        PULSE_RED     (2),
-        PULSE_BLUE    (3),
-        BLUE_AND_GOLD (4),
-        PULSE_YELLOW  (6);
+        OFF          (0),
+        AUTONOMOUS   (1),
+        TEAM_RED     (2),
+        TEAM_BLUE    (3),
+        NO_TEAM      (4),
+        DISABLED     (5),
+        TIME_IS_UP   (6);
         
         private final int ledCode;
         
