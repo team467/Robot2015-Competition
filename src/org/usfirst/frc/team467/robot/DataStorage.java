@@ -284,14 +284,6 @@ public class DataStorage
     }
 
     /**
-     * Save the table of preferences to the cRIO
-     */
-    public void save()
-    {
-        data.save();
-    }
-
-    /**
      * Clear all the preferences (use with caution)
      */
     public void clear()

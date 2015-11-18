@@ -72,7 +72,6 @@ public class Calibration
 
             // Write data to robot
             data.putDouble(RobotMap.STEERING_KEYS[motorId], currentAngle);
-            data.save();
             LOGGER.debug("SAVED VALUE -> WHEEL: " + motorId + "Ang: " + currentAngle);
 
             // Set new steering center
