@@ -30,7 +30,7 @@ public class CANTalonSpeedControl extends CANTalon
                 , 5 /* close loop ramp in volts/sec */
                 , 0)/*
                      * Profile (0 or 1) - allows the CANTalon
-                     * to switch between two modes
+                     * to switch between two sets of values
                      */;
         this.enableBrakeMode(false);
         this.enableControl();
