@@ -34,10 +34,10 @@ public class Robot extends IterativeRobot
     private PowerDistroBoard467 board;
     private Autonomous autonomous;
 
-    private CameraDashboard cameraDashboard;
+//    private CameraDashboard cameraDashboard;
     private Lifter lifter;
     private Claw claw;
-    private Gyro2015 gyro;
+//    private Gyro2015 gyro;
 
     int session;
     
@@ -64,16 +64,17 @@ public class Robot extends IterativeRobot
         board = PowerDistroBoard467.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
-        gyro = Gyro2015.getInstance();
+//        gyro = Gyro2015.getInstance();
         ledStrip.setMode(Mode.OFF);
 
         // Initialize the camera dashboard and launch in separate thread.
-        cameraDashboard = CameraDashboard.getInstance();
-        if (cameraDashboard.cameraExists()) 
-        {
-            LOGGER.debug("Camera Starting");
-            cameraDashboard.start();
-        }
+//        cameraDashboard = CameraDashboard.getInstance();
+//        if (cameraDashboard.cameraExists()) 
+//        {
+//            LOGGER.debug("Camera Starting");
+//            cameraDashboard.start();
+//        }
+        
         Calibration.init();
         
         LOGGER.info("Initialized robot");
@@ -86,7 +87,7 @@ public class Robot extends IterativeRobot
 
     public void disabledPeriodic()
     {
-        gyro.update();
+//        gyro.update();
         ledStrip.setMode(Mode.BLUE_AND_GOLD);
     }
 
@@ -129,13 +130,13 @@ public class Robot extends IterativeRobot
     {
         // Read driverstation inputs
         driverstation.readInputs();
-        gyro.update();
-        if (driverstation.getGyroReset())
-        {
-            System.out.println("GYRO RESET");
-            gyro.reset();
-        }
-        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
+//        gyro.update();
+//        if (driverstation.getGyroReset())
+//        {
+//            System.out.println("GYRO RESET");
+//            gyro.reset();
+//        }
+//        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
 
         if (driverstation.getCalibrate())
         {
