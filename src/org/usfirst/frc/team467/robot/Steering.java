@@ -47,10 +47,23 @@ public class Steering
      * Class which deals with value used when checking PID (sensor value)
      */
     class SteeringPIDSource implements PIDSource
-    {
+    {   
+        PIDSourceType type = PIDSourceType.kDisplacement;
         public double pidGet()
         {
             return (getSensorValue());
+        }
+
+        @Override
+        public void setPIDSourceType(PIDSourceType pidSource)
+        {
+            type = pidSource;
+        }
+
+        @Override
+        public PIDSourceType getPIDSourceType()
+        {
+            return type;
         }
     }
 

@@ -18,7 +18,7 @@ public class CANTalonSpeedControl extends CANTalon
     public CANTalonSpeedControl(int deviceNumber, boolean reverseSensor)
     {
         super(deviceNumber);
-        this.changeControlMode(CANTalon.ControlMode.Speed);
+        this.changeControlMode(CANTalon.TalonControlMode.Speed);
         this.setFeedbackDevice(CANTalon.FeedbackDevice.QuadEncoder);
         this.ClearIaccum();
         this.reverseSensor(reverseSensor);
