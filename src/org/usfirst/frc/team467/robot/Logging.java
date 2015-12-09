@@ -1,6 +1,8 @@
 package org.usfirst.frc.team467.robot;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -15,15 +17,15 @@ public class Logging
         setupDefaultLogging();
 
         // Enable extra logging for classes you want to debug
-//        Logger.getLogger(Robot.class).setLevel(Level.DEBUG);
-//        Logger.getLogger(Steering.class).setLevel(Level.INFO);
-//        Logger.getLogger(Calibration.class).setLevel(Level.DEBUG);
-//        Logger.getLogger(Drive.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Robot.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Steering.class).setLevel(Level.INFO);
+        Logger.getLogger(Calibration.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Drive.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Lifter.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Claw.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
-        Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
+//        Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
     }
     
     private static void setupDefaultLogging()
