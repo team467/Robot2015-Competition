@@ -59,7 +59,6 @@ public class Drive
 //        super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
         // Make objects
-        data = DataStorage.getInstance();
         gyro = Gyro2015.getInstance();
 
         this.frontLeft = frontLeft;
@@ -77,6 +76,8 @@ public class Drive
     {
         if (instance == null)
         {
+            data = DataStorage.getInstance();
+            
             double steeringCenterFL = data.getDouble(RobotMap.STEERING_KEYS[0], RobotMap.STEERING_RANGE / 2);
             double steeringCenterFR = data.getDouble(RobotMap.STEERING_KEYS[1], RobotMap.STEERING_RANGE / 2);
             double steeringCenterBL = data.getDouble(RobotMap.STEERING_KEYS[2], RobotMap.STEERING_RANGE / 2);
