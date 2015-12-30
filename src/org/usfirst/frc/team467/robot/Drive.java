@@ -145,10 +145,10 @@ public class Drive
      */
     public void turnDrive(double speed)
     {
-        this.frontLeft.drive(speed, TURN_IN_PLACE_ANGLE);
-        this.frontRight.drive(speed, -TURN_IN_PLACE_ANGLE);
-        this.backLeft.drive(speed, -TURN_IN_PLACE_ANGLE);
-        this.backRight.drive(speed, TURN_IN_PLACE_ANGLE);
+        frontLeft.drive(speed, TURN_IN_PLACE_ANGLE);
+        frontRight.drive(speed, -TURN_IN_PLACE_ANGLE);
+        backLeft.drive(speed, -TURN_IN_PLACE_ANGLE);
+        backRight.drive(speed, TURN_IN_PLACE_ANGLE);
     }
     
     /**
@@ -228,6 +228,7 @@ public class Drive
      */
     public void revolveDriveLarge(Direction direction)
     {        
+        // TODO Add back speed
         double speed = (direction == Direction.LEFT) ? REVOLVE_LARGE_FRONT_SPEED : -REVOLVE_LARGE_FRONT_SPEED;
         frontLeft.drive(speed, -REVOLVE_LARGE_FRONT_ANGLE);
         frontRight.drive(-speed, REVOLVE_LARGE_FRONT_ANGLE);
@@ -240,6 +241,7 @@ public class Drive
      */
     public void revolveDriveSmall(Direction direction)
     {
+        // TODO Add back speed
         double speed = (direction == Direction.LEFT) ? REVOLVE_SMALL_FRONT_SPEED : -REVOLVE_SMALL_FRONT_SPEED;
         frontLeft.drive(speed, -REVOLVE_SMALL_FRONT_ANGLE);
         frontRight.drive(-speed, REVOLVE_SMALL_FRONT_ANGLE);
