@@ -38,24 +38,29 @@ public class WheelPod implements MotorSafety
         INVERT = invert;
     }
 
-    public void drive(double speed, double angle)
+    public void drive(double inSpeed, double angle)
     {
+        WheelCorrection correction = wrapAroundCorrect(inSpeed, angle);
+
         if (driveMotor == null)
         {
             throw new NullPointerException("Null motor provided");
         }
+        
+        // Don't drive until wheel is close to commanded steering angle
         if (steering.getAngleDelta() < MAX_DRIVE_ANGLE)
         {
             // Limit the speed
-            speed = (INVERT ? -1 : 1) * limitSpeed(speed);
-            
-            WheelCorrection correction = wrapAroundCorrect(speed, angle);
+            final double outSpeed = (INVERT ? -1 : 1) * limitSpeed(correction.speed);
+
+// TODO This is probably the wrong place, need to test with correction at top of function.
+//            WheelCorrection correction = wrapAroundCorrect(speed, angle);
             try
             {
-                driveMotor.set(correction.speed, SYNC_GROUP);
+                driveMotor.set(outSpeed, SYNC_GROUP);
                 m_safetyHelper.feed();
                 steering.setAngle(correction.angle);
-                LOGGER.debug(name + " DRIVE: " + speed + ", " + angle);
+                LOGGER.debug(name + " DRIVE(corrected): " + outSpeed + ", " + correction.angle);
             }
             catch (Exception e)
             {
