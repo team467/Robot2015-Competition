@@ -145,10 +145,10 @@ public class Drive
      */
     public void turnDrive(double speed)
     {
-        frontLeft.drive(new Vector(TURN_IN_PLACE_ANGLE, speed));
-        frontRight.drive(new Vector(-TURN_IN_PLACE_ANGLE, speed));
-        backLeft.drive(new Vector(-TURN_IN_PLACE_ANGLE, speed));
-        backRight.drive(new Vector(TURN_IN_PLACE_ANGLE, speed));
+        frontLeft.drive(Vector.makeSpeedAngle(speed, TURN_IN_PLACE_ANGLE));
+        frontRight.drive(Vector.makeSpeedAngle(speed, -TURN_IN_PLACE_ANGLE));
+        backLeft.drive(Vector.makeSpeedAngle(speed, -TURN_IN_PLACE_ANGLE));
+        backRight.drive(Vector.makeSpeedAngle(speed, TURN_IN_PLACE_ANGLE));
     }
     
     /**
@@ -171,10 +171,10 @@ public class Drive
 
         LOGGER.debug("ANGLE: " + steeringAngle + " SPEED: " + speed);
         
-        frontLeft.drive(new Vector(steeringAngle, speed));
-        frontRight.drive(new Vector(steeringAngle, speed));
-        backLeft.drive(new Vector(steeringAngle, speed));
-        backRight.drive(new Vector(steeringAngle, speed));
+        frontLeft.drive(Vector.makeSpeedAngle(speed, steeringAngle));
+        frontRight.drive(Vector.makeSpeedAngle(speed, steeringAngle));
+        backLeft.drive(Vector.makeSpeedAngle(speed, steeringAngle));
+        backRight.drive(Vector.makeSpeedAngle(speed, steeringAngle));
     }
 
     /**
@@ -215,7 +215,7 @@ public class Drive
                 break;
         }
         
-        Vector v = new Vector(angle, SPEED_STRAFE);
+        Vector v = Vector.makeSpeedAngle(SPEED_STRAFE, angle);
         
         frontLeft.drive(v);
         frontRight.drive(v);
@@ -230,10 +230,10 @@ public class Drive
     {        
         // TODO Add back speed
         double speed = (direction == Direction.LEFT) ? REVOLVE_LARGE_FRONT_SPEED : -REVOLVE_LARGE_FRONT_SPEED;
-        frontLeft.drive(new Vector(-REVOLVE_LARGE_FRONT_ANGLE, speed));
-        frontRight.drive(new Vector(REVOLVE_LARGE_FRONT_ANGLE, -speed));
-        backLeft.drive(new Vector(-REVOLVE_LARGE_BACK_ANGLE, speed));
-        backRight.drive(new Vector(REVOLVE_LARGE_BACK_ANGLE, -speed));  
+        frontLeft.drive(Vector.makeSpeedAngle(speed, -REVOLVE_LARGE_FRONT_ANGLE));
+        frontRight.drive(Vector.makeSpeedAngle(-speed, REVOLVE_LARGE_FRONT_ANGLE));
+        backLeft.drive(Vector.makeSpeedAngle(speed, -REVOLVE_LARGE_BACK_ANGLE));
+        backRight.drive(Vector.makeSpeedAngle(-speed, REVOLVE_LARGE_BACK_ANGLE));  
     }
 
     /**
@@ -243,10 +243,10 @@ public class Drive
     {
         // TODO Add back speed
         double speed = (direction == Direction.LEFT) ? REVOLVE_SMALL_FRONT_SPEED : -REVOLVE_SMALL_FRONT_SPEED;
-        frontLeft.drive(new Vector(-REVOLVE_SMALL_FRONT_ANGLE, speed));
-        frontRight.drive(new Vector(REVOLVE_SMALL_FRONT_ANGLE, -speed));
-        backLeft.drive(new Vector(-REVOLVE_SMALL_BACK_ANGLE, speed));
-        backRight.drive(new Vector(REVOLVE_SMALL_BACK_ANGLE, -speed));
+        frontLeft.drive(Vector.makeSpeedAngle(speed, -REVOLVE_SMALL_FRONT_ANGLE));
+        frontRight.drive(Vector.makeSpeedAngle(-speed, REVOLVE_SMALL_FRONT_ANGLE));
+        backLeft.drive(Vector.makeSpeedAngle(speed, -REVOLVE_SMALL_BACK_ANGLE));
+        backRight.drive(Vector.makeSpeedAngle(-speed, REVOLVE_SMALL_BACK_ANGLE));
     }
 
     /**

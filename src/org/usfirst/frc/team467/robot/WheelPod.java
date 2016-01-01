@@ -78,12 +78,12 @@ public class WheelPod implements MotorSafety
     
     public void drive(double speed)
     {
-        drive(new Vector(steering.getSteeringAngle(), speed));
+        drive(Vector.makeSpeedAngle(speed, steering.getSteeringAngle()));
     }
     
     public void steer(double angle)
     {
-        drive(new Vector(angle, driveMotor.getSpeed()));
+        drive(Vector.makeSpeedAngle(driveMotor.getSpeed(), angle));
     }
     
     public void absoluteSteer(double angle)
@@ -196,20 +196,21 @@ public class WheelPod implements MotorSafety
      * @param targetSpeed
      * @return corrected
      */
-    private Vector wrapAroundCorrect(Vector v)
+    private Vector wrapAroundCorrect(Vector input)
     {   
         final double normalizedSteeringAngle = steering.getSteeringAngle() % (Math.PI * 2);
-        final double difference = wrapAroundDifference(normalizedSteeringAngle, v.getAngle());
+        final double difference = wrapAroundDifference(normalizedSteeringAngle, input.getAngle());
         LOGGER.debug(name + " wrapAroundCorrect() " + " normalizedSteeringAngle=" + Vector.r(normalizedSteeringAngle)
                 + " difference=" + Vector.r(difference));
 
         if (difference > Math.PI / 2)
         {
             // shortest path to desired angle is to reverse speed and adjust angle -PI
-            v.setAngleandSpeed(v.getAngle() - Math.PI, -v.getSpeed());
-            LOGGER.debug(name + " wrapAroundCorrect() FLIPPED " + v.toString());
+            Vector output = Vector.makeSpeedAngle(-input.getSpeed(), input.getAngle() - Math.PI);
+            LOGGER.debug(name + " wrapAroundCorrect() FLIPPED " + output);
+            return output;
         }
-        return v;
+        return input;
     }
 
     @Override

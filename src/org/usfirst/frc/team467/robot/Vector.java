@@ -7,25 +7,46 @@ public class Vector
     private double x;
     private double y;
 
-    public Vector(double angle, double speed)
+    public static Vector makeSpeedAngle(double speed, double angle)
     {
-        setAngleandSpeed(angle, speed);
+        Vector v = new Vector();
+        v.setSpeedAngle(speed, angle);
+        return v;
     }
     
-    public void setAngleandSpeed(double angle, double speed)
+    public static Vector makeXY(double x, double y)
     {
-        this.angle = angle;
+        Vector v = new Vector();
+        v.setXY(x, y);
+        return v;
+    }
+
+    public static Vector makeUnit(double angle)
+    {
+        Vector v = new Vector();
+        v.setSpeedAngle(1.0, angle);
+        return v;
+    }
+    
+    private void setSpeedAngle(double speed, double angle)
+    {
         this.speed = speed;
+        this.angle = angle;
         x = Math.cos(angle) * speed;
-        x = Math.sin(angle) * speed;
+        y = Math.sin(angle) * speed;
     }
     
-    public void setXandY(double x, double y)
+    private void setXY(double x, double y)
     {
         this.x = x;
         this.y = y;
         angle = Math.atan2(y, x);
-        speed = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        speed = Math.sqrt(x*x + y*y);
+    }
+    
+    public static Vector add(Vector v1, Vector v2)
+    {
+        return makeXY(v1.getX() + v2.getX(), v1.getY() + v2.getY());
     }
     
     public double getAngle()
