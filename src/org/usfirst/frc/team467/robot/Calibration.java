@@ -56,7 +56,7 @@ public class Calibration
         LOGGER.debug("ANGLE: " + calibrationAngle);
 
         // Drive specified steering motor with no speed to allow only steering
-        pod.drive(0, calibrationAngle);
+        pod.drive(new Vector(calibrationAngle, 0));
 
         // Write and set new center if trigger is pressed
         if (DriverStation2015.getInstance().getCalibrateConfirmSelection())

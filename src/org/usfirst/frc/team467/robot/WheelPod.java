@@ -43,11 +43,11 @@ public class WheelPod implements MotorSafety
         INVERT = invert;
     }
 
-    public void drive(double inSpeed, double angle)
+    public void drive(Vector v)
     {
 
-        LOGGER.debug(name + " DRIVE(requested): " + inSpeed + ", " + r(angle));
-        WheelCorrection correction = wrapAroundCorrect(angle, inSpeed);
+        LOGGER.debug(name + " DRIVE(requested): " + v);
+        Vector correction = wrapAroundCorrect(v);
 
         // Don't drive until wheel is close to commanded steering angle
         // TODO Always set steering angle, this if statement should only affect drive speed
@@ -55,14 +55,14 @@ public class WheelPod implements MotorSafety
         if (delta < MAX_DRIVE_ANGLE)
         {
             // Limit and possibly invert the speed
-            final double outSpeed = (INVERT ? -1 : 1) * limitSpeed(correction.speed);
-            LOGGER.debug(name + " DRIVE(corrected): " + outSpeed + ", " + r(correction.angle));
+            final double outSpeed = (INVERT ? -1 : 1) * limitSpeed(correction.getSpeed());
+            LOGGER.debug(name + " DRIVE(corrected): " + outSpeed + ", " + Vector.r(correction.getAngle()));
 
             try
             {
                 m_safetyHelper.feed();
                 driveMotor.set(outSpeed, SYNC_GROUP);
-                steering.setAngle(correction.angle);
+                steering.setAngle(correction.getAngle());
             }
             catch (Exception e)
             {
@@ -71,19 +71,19 @@ public class WheelPod implements MotorSafety
         }
         else
         {
-            LOGGER.debug(name + " NO DRIVE delta=" + r(delta));
+            LOGGER.debug(name + " NO DRIVE delta=" + Vector.r(delta));
             stopMotor();
         }
     }
     
     public void drive(double speed)
     {
-        drive(speed, steering.getSteeringAngle());
+        drive(new Vector(steering.getSteeringAngle(), speed));
     }
     
     public void steer(double angle)
     {
-        drive(driveMotor.getSpeed(), angle);
+        drive(new Vector(angle, driveMotor.getSpeed()));
     }
     
     public void absoluteSteer(double angle)
@@ -196,53 +196,20 @@ public class WheelPod implements MotorSafety
      * @param targetSpeed
      * @return corrected
      */
-    private WheelCorrection wrapAroundCorrect(double targetAngle, double targetSpeed)
-    {
-        WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
-        
+    private Vector wrapAroundCorrect(Vector v)
+    {   
         final double normalizedSteeringAngle = steering.getSteeringAngle() % (Math.PI * 2);
-        final double difference = wrapAroundDifference(normalizedSteeringAngle, targetAngle);
-        LOGGER.debug(name + " wrapAroundCorrect() " + " normalizedSteeringAngle=" + r(normalizedSteeringAngle)
-                + " difference=" + r(difference));
+        final double difference = wrapAroundDifference(normalizedSteeringAngle, v.getAngle());
+        LOGGER.debug(name + " wrapAroundCorrect() " + " normalizedSteeringAngle=" + Vector.r(normalizedSteeringAngle)
+                + " difference=" + Vector.r(difference));
 
         if (difference > Math.PI / 2)
         {
             // shortest path to desired angle is to reverse speed and adjust angle -PI
-            corrected.speed *= -1;
-
-            corrected.angle -= Math.PI;
-            LOGGER.debug(name + " wrapAroundCorrect() FLIPPED " + corrected.toString());
+            v.setAngleandSpeed(v.getAngle() - Math.PI, -v.getSpeed());
+            LOGGER.debug(name + " wrapAroundCorrect() FLIPPED " + v.toString());
         }
-        return corrected;
-    }
-
-    // TODO maybe move to a "vector" class later.
-    /**
-     * 
-     * @param value
-     * @return value expressed as multiple of pi
-     */
-    private String r(double value)
-    {
-        return String.format("%4.2fpi", value / Math.PI);
-    }
-    
-    private class WheelCorrection
-    {
-        public double speed;
-        public double angle;
-
-        public WheelCorrection(double angle, double speed)
-        {
-            this.speed = speed;
-            this.angle = angle;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "WheelCorrection [angle=" + r(angle) + " speed=" + speed + "]";
-        }
+        return v;
     }
 
     @Override
