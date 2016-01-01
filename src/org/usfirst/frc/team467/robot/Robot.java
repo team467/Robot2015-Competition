@@ -127,6 +127,8 @@ public class Robot extends IterativeRobot
      */
     public void teleopPeriodic()
     {
+        LOGGER.trace("BEGIN ITERATION");
+        
         // Read driverstation inputs
         driverstation.readInputs();
         gyro.update();

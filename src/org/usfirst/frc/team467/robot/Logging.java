@@ -44,7 +44,7 @@ public class Logging
         if (shouldUseFileLogger) {
             try
             {
-                RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, "/home/admin/log/Robot467.log");
+                RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, "/home/admin/Robot467.log");
                 rollingFileAppender.setMaxBackupIndex(20);
                 rollingFileAppender.setMaximumFileSize(1_000_000);
                 rollingFileAppender.rollOver();

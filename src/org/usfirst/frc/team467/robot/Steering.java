@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 public class Steering
 {
     private static final Logger LOGGER = Logger.getLogger(Steering.class);
+    final String name;
 
     private final double LEVELS_PER_ROTATION = 610;
 
@@ -79,8 +80,10 @@ public class Steering
      * @param center
      *            - sensor reading when wheels point forward
      */
-    Steering(PID pid, int motor, int sensor, double center)
+    Steering(String name, PID pid, int motor, int sensor, double center)
     {
+        this.name = name;
+        
         // Make steering motor
         steeringMotor = new Talon(motor);
 
@@ -218,31 +221,6 @@ public class Steering
         System.out.print(" S: " + steeringPID.getSetpoint());
         System.out.println();
     }
-
-    private void printDebug(String function, double requestedAngle, double outputAngle, double setPoint, double sensorValue)
-    {
-        switch (steeringSensor.getChannel())
-        {
-            case RobotMap.BACK_RIGHT_STEERING_SENSOR_CHANNEL:
-                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f BRsetPoint=%f BRsensorValue=%f",
-                    function, requestedAngle, outputAngle, setPoint, getSensorValue()));
-                break;
-        
-            case RobotMap.BACK_LEFT_STEERING_SENSOR_CHANNEL:
-                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f BLsetPoint=%f BLsensorValue=%f",
-                    function, requestedAngle, outputAngle, setPoint, getSensorValue()));
-                break;
-            
-            case RobotMap.FRONT_RIGHT_STEERING_SENSOR_CHANNEL:
-                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f FRsetPoint=%f FRsensorValue=%f",
-                    function, requestedAngle, outputAngle, setPoint, getSensorValue()));
-                break;
-                
-            case RobotMap.FRONT_LEFT_STEERING_SENSOR_CHANNEL:
-                LOGGER.debug(String.format("%s: requestedAngle=%f outputAngle=%f FLsetPoint=%f FLsensorValue=%f",
-                    function, requestedAngle, outputAngle, setPoint, getSensorValue()));
-        }
-    }
     
     /**
      * Set angle of front steering. A value of 0.0 corresponds to normally forward position.
@@ -273,7 +251,8 @@ public class Steering
         int setPoint = (int) (steeringCenter + (outputAngle * LEVELS_PER_ROTATION / (Math.PI * 2)));
 
         steeringPID.setSetpoint(setPoint);
-        printDebug("setAngle()", requestedAngle, outputAngle, setPoint, getSensorValue());
+        LOGGER.debug(String.format("%s setAngle: requestedAngle=%f outputAngle=%f setPoint=%d sensorValue=%f",
+                name, requestedAngle, outputAngle, setPoint, getSensorValue()));
     }
 
     public void setAbsoluteAngle(double requestedAngle)
@@ -286,7 +265,8 @@ public class Steering
         int setPoint = (int) (steeringCenter + (outputAngle * LEVELS_PER_ROTATION / (Math.PI * 2)));
 
         steeringPID.setSetpoint(setPoint);
-        printDebug("setAbsoluteAngle()", requestedAngle, outputAngle, setPoint, getSensorValue());
+        LOGGER.debug(String.format("%s setAbsoluteAngle: requestedAngle=%f outputAngle=%f setPoint=%d sensorValue=%f",
+                name, requestedAngle, outputAngle, setPoint, getSensorValue()));
     }
 
     /**

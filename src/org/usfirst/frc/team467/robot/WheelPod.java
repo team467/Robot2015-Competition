@@ -12,7 +12,7 @@ public class WheelPod implements MotorSafety
 {
     private static final Logger LOGGER = Logger.getLogger(WheelPod.class);
     final String name;
-    private CANTalon driveMotor;
+    private final CANTalon driveMotor;
     public static final double kDefaultExpirationTime = 0.1;
     private MotorSafetyHelper m_safetyHelper;
     private Steering steering;
@@ -24,7 +24,7 @@ public class WheelPod implements MotorSafety
     private static final double SPEED_TURBO_MODIFIER = 2.0;
     private static final double SPEED_MAX_MODIFIER = 0.8;
     private static final double SPEED_MAX_CHANGE = 0.15;
-    final double MAX_DRIVE_ANGLE = Math.PI / 25;
+    private final double MAX_DRIVE_ANGLE = Math.PI / 25;
     private final Boolean INVERT;
     
     private double lastSpeed = 0.0;
@@ -32,44 +32,46 @@ public class WheelPod implements MotorSafety
     public WheelPod(String name, int driveMotorID, int steeringMotorID, int steeringSensorID, PID pid, double center, boolean invert)
     {
         this.name = name;
-        steering = new Steering(pid, steeringMotorID, steeringSensorID, center);
+        steering = new Steering(name, pid, steeringMotorID, steeringSensorID, center);
         driveMotor = new CANTalon(driveMotorID);
+        if (driveMotor == null)
+        {
+            throw new NullPointerException("Null motor provided");
+        }
+        
         setupMotorSafety();
         INVERT = invert;
     }
 
     public void drive(double inSpeed, double angle)
     {
-        WheelCorrection correction = wrapAroundCorrect(inSpeed, angle);
 
-        if (driveMotor == null)
-        {
-            throw new NullPointerException("Null motor provided");
-        }
-        
+        LOGGER.debug(name + " DRIVE(requested): " + inSpeed + ", " + r(angle));
+        WheelCorrection correction = wrapAroundCorrect(angle, inSpeed);
+
         // Don't drive until wheel is close to commanded steering angle
-        if (steering.getAngleDelta() < MAX_DRIVE_ANGLE)
+        // TODO Always set steering angle, this if statement should only affect drive speed
+        final double delta = steering.getAngleDelta();
+        if (delta < MAX_DRIVE_ANGLE)
         {
-            // Limit the speed
+            // Limit and possibly invert the speed
             final double outSpeed = (INVERT ? -1 : 1) * limitSpeed(correction.speed);
+            LOGGER.debug(name + " DRIVE(corrected): " + outSpeed + ", " + r(correction.angle));
 
-// TODO This is probably the wrong place, need to test with correction at top of function.
-//            WheelCorrection correction = wrapAroundCorrect(speed, angle);
             try
             {
-                driveMotor.set(outSpeed, SYNC_GROUP);
                 m_safetyHelper.feed();
+                driveMotor.set(outSpeed, SYNC_GROUP);
                 steering.setAngle(correction.angle);
-                LOGGER.debug(name + " DRIVE(corrected): " + outSpeed + ", " + correction.angle);
             }
             catch (Exception e)
             {
-                LOGGER.error(e.getMessage());
+                LOGGER.error("Caught exception in drive() method", e);
             }
         }
         else
         {
-            LOGGER.debug("NO DRIVE");
+            LOGGER.debug(name + " NO DRIVE delta=" + r(delta));
             stopMotor();
         }
     }
@@ -155,7 +157,10 @@ public class WheelPod implements MotorSafety
             }
         }
         lastSpeed = speed;
-        LOGGER.debug("LIMIT SPEED: " + speed);
+        if (name.equals("FL"))
+        {
+            LOGGER.debug(name + " LIMIT SPEED: " + speed);
+        }
         return (speed);
     }
     
@@ -163,20 +168,21 @@ public class WheelPod implements MotorSafety
      * Function to determine the wrapped around difference from the joystick
      * angle to the steering angle.
      *
-     * @param value1
-     *            - The first angle to check against
-     * @param value2
-     *            - The second angle to check against
+     * @param actualNormalizedAngle
+     *            - The actual normalized angle the wheel is facing right now
+     * @param targetAngle
+     *            - The target angle requested by driver
      * @return The normalized wrap around difference
      */
-    static double wrapAroundDifference(double value1, double value2)
+    double wrapAroundDifference(double actualNormalizedAngle, double targetAngle)
     {
-        double diff = Math.abs(value1 - value2) % (2 * Math.PI);
+        double diff = Math.abs(actualNormalizedAngle - targetAngle) % (2 * Math.PI);
         while (diff > Math.PI)
         {
             diff = (2.0 * Math.PI) - diff;
         }
-        LOGGER.debug(String.format("wrapAroundDifference v1=%f v2=%f diff=%f", value1, value2, diff));
+        LOGGER.debug(String.format("%s wrapAroundDifference() actualNormalizedAngle=%4.2fpi targetAngle=%4.2fpi diff=%4.2fpi",
+                name, actualNormalizedAngle/Math.PI, targetAngle/Math.PI, diff/Math.PI));
         return diff;
     }
 
@@ -193,34 +199,49 @@ public class WheelPod implements MotorSafety
     private WheelCorrection wrapAroundCorrect(double targetAngle, double targetSpeed)
     {
         WheelCorrection corrected = new WheelCorrection(targetAngle, targetSpeed);
+        
+        final double normalizedSteeringAngle = steering.getSteeringAngle() % (Math.PI * 2);
+        final double difference = wrapAroundDifference(normalizedSteeringAngle, targetAngle);
+        LOGGER.debug(name + " wrapAroundCorrect() " + " normalizedSteeringAngle=" + r(normalizedSteeringAngle)
+                + " difference=" + r(difference));
 
-        double normalizedSteeringAngle = steering.getSteeringAngle() % (Math.PI * 2);
-        if (wrapAroundDifference(normalizedSteeringAngle, targetAngle) > Math.PI / 2)
+        if (difference > Math.PI / 2)
         {
             // shortest path to desired angle is to reverse speed and adjust angle -PI
             corrected.speed *= -1;
 
             corrected.angle -= Math.PI;
-            LOGGER.debug(corrected);
+            LOGGER.debug(name + " wrapAroundCorrect() FLIPPED " + corrected.toString());
         }
         return corrected;
     }
+
+    // TODO maybe move to a "vector" class later.
+    /**
+     * 
+     * @param value
+     * @return value expressed as multiple of pi
+     */
+    private String r(double value)
+    {
+        return String.format("%4.2fpi", value / Math.PI);
+    }
     
-    class WheelCorrection
+    private class WheelCorrection
     {
         public double speed;
         public double angle;
 
-        public WheelCorrection(double speedIn, double angleIn)
+        public WheelCorrection(double angle, double speed)
         {
-            speed = speedIn;
-            angle = angleIn;
+            this.speed = speed;
+            this.angle = angle;
         }
 
         @Override
         public String toString()
         {
-            return "WheelCorrection [speed=" + speed + ", angle=" + angle + "]";
+            return "WheelCorrection [angle=" + r(angle) + " speed=" + speed + "]";
         }
     }
 
