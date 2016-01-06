@@ -198,7 +198,7 @@ public class DriverStation2015
         
         if (flap) // If flap is up
         {
-            drivemode = DriveMode.CRAB_FA;
+            drivemode = DriveMode.VECTOR;
         }
         
         if (getDriveJoystick().buttonDown(TURN_BUTTON))

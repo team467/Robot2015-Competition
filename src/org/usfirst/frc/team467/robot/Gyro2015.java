@@ -66,7 +66,7 @@ public class Gyro2015
             }
             catch (Exception ex)
             {
-                // eaten
+                LOGGER.error("No Serial Port on Gyro: " + ex.getMessage());
             }
             return trustedAngle;
         }

@@ -229,7 +229,10 @@ public class Robot extends IterativeRobot
                 drive.turnDrive(-driverstation.getDriveJoystick().getTwist()/2);
                 break;
 
-            case CRAB_FA:
+            case VECTOR:
+                drive.vectorDrive(driverstation.getDriveJoystick().getStickAngle(),
+                        driverstation.getDriveJoystick().getStickDistance(), -driverstation.getDriveJoystick().getTwist()/2);
+                break;
             case CRAB_NO_FA:
                 if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
                 {

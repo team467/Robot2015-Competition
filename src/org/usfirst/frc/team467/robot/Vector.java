@@ -49,6 +49,11 @@ public class Vector
         return makeXY(v1.getX() + v2.getX(), v1.getY() + v2.getY());
     }
     
+    public static Vector average(Vector v1, Vector v2)
+    {
+        return makeXY(v1.getX()/2 + v2.getX()/2, v1.getY()/2 + v2.getY()/2);
+    }
+    
     public double getAngle()
     {
         return angle;
@@ -83,6 +88,38 @@ public class Vector
     public String toString()
     {
         return "WheelCorrection [angle=" + r(angle) + " speed=" + speed + "]";
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits(angle);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(speed);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        final double epsilon = 0.000001;
+        
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Vector other = (Vector) obj;
+        if (Math.abs(speed - other.speed) > epsilon)
+            return false;
+        if (Math.abs(angle - other.angle) > epsilon)
+            return false;
+        return true;
     }
     
 }

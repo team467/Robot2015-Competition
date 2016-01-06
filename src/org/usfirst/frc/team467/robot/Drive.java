@@ -145,9 +145,9 @@ public class Drive
      */
     public void turnDrive(double speed)
     {
-        frontLeft.drive(Vector.makeSpeedAngle(speed, TURN_IN_PLACE_ANGLE));
+        frontLeft.drive(Vector.makeSpeedAngle(-speed, TURN_IN_PLACE_ANGLE));
         frontRight.drive(Vector.makeSpeedAngle(speed, -TURN_IN_PLACE_ANGLE));
-        backLeft.drive(Vector.makeSpeedAngle(speed, -TURN_IN_PLACE_ANGLE));
+        backLeft.drive(Vector.makeSpeedAngle(-speed, -TURN_IN_PLACE_ANGLE));
         backRight.drive(Vector.makeSpeedAngle(speed, TURN_IN_PLACE_ANGLE));
     }
     
@@ -163,6 +163,8 @@ public class Drive
      */
     public void crabDrive(double angle, double speed, boolean fieldAlign)
     {
+        if (fieldAlign)
+            LOGGER.debug("Field Aligned");
         double gyroAngle = (fieldAlign) ? gyro.getAngle() : 0; // if field aligned use gyro.getAngle(), else 0        
 
         double gyroAngleRad = Math.toRadians(gyroAngle);
@@ -175,6 +177,21 @@ public class Drive
         frontRight.drive(Vector.makeSpeedAngle(speed, steeringAngle));
         backLeft.drive(Vector.makeSpeedAngle(speed, steeringAngle));
         backRight.drive(Vector.makeSpeedAngle(speed, steeringAngle));
+    }
+    
+    public void vectorDrive(double angle, double speed, double turnSpeed)
+    {
+        double gyroAngle = gyro.getAngle();       
+
+        double gyroAngleRad = Math.toRadians(gyroAngle);
+        // Calculate the wheel angle necessary to drive in the required direction.
+        double fieldAngle = angle - gyroAngleRad;
+        Vector straightVector = Vector.makeSpeedAngle(speed, fieldAngle);
+        
+        frontLeft.drive(Vector.average(straightVector, Vector.makeSpeedAngle(-turnSpeed, TURN_IN_PLACE_ANGLE)));
+        frontRight.drive(Vector.average(straightVector, Vector.makeSpeedAngle(turnSpeed, -TURN_IN_PLACE_ANGLE)));
+        backLeft.drive(Vector.average(straightVector, Vector.makeSpeedAngle(-turnSpeed, -TURN_IN_PLACE_ANGLE)));
+        backRight.drive(Vector.average(straightVector, Vector.makeSpeedAngle(turnSpeed, TURN_IN_PLACE_ANGLE)));
     }
 
     /**

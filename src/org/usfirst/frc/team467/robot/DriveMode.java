@@ -14,4 +14,5 @@ public enum DriveMode
     REVOLVE_SMALL_LEFT,         // Revolve Drive (rotate left around a center near robot)
     REVOLVE_SMALL_RIGHT,        // Revolve Drive (rotate right around a center near robot)
     UNWIND,	                    // Unwind the wheel pods
+    VECTOR
 }

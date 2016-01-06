@@ -22,9 +22,9 @@ public class Logging
 //        Logger.getLogger(Lifter.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Claw.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
-//        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
-        Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
-        Logger.getLogger(WheelPod.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
+//        Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
+//        Logger.getLogger(WheelPod.class).setLevel(Level.DEBUG);
     }
     
     public static void initForTest()
