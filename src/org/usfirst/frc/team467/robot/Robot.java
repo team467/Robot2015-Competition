@@ -134,7 +134,7 @@ public class Robot extends IterativeRobot
         gyro.update();
         if (driverstation.getGyroReset())
         {
-            System.out.println("GYRO RESET");
+            LOGGER.info("GYRO RESET");
             gyro.reset();
         }
         LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
