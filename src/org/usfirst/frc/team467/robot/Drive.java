@@ -188,10 +188,27 @@ public class Drive
         double fieldAngle = angle - gyroAngleRad;
         Vector straightVector = Vector.makeSpeedAngle(speed, fieldAngle);
         
-        frontLeft.drive(Vector.average(straightVector, Vector.makeSpeedAngle(-turnSpeed, TURN_IN_PLACE_ANGLE)));
-        frontRight.drive(Vector.average(straightVector, Vector.makeSpeedAngle(turnSpeed, -TURN_IN_PLACE_ANGLE)));
-        backLeft.drive(Vector.average(straightVector, Vector.makeSpeedAngle(-turnSpeed, -TURN_IN_PLACE_ANGLE)));
-        backRight.drive(Vector.average(straightVector, Vector.makeSpeedAngle(turnSpeed, TURN_IN_PLACE_ANGLE)));
+        final Vector FL = Vector.add(straightVector, Vector.makeSpeedAngle(-turnSpeed, TURN_IN_PLACE_ANGLE));
+        final Vector FR = Vector.add(straightVector, Vector.makeSpeedAngle(turnSpeed, -TURN_IN_PLACE_ANGLE));
+        final Vector BL = Vector.add(straightVector, Vector.makeSpeedAngle(-turnSpeed, -TURN_IN_PLACE_ANGLE));
+        final Vector BR = Vector.add(straightVector, Vector.makeSpeedAngle(turnSpeed, TURN_IN_PLACE_ANGLE));
+        
+        double maxSpeed = 1.0;
+        double maxWheelSpeed = speed + turnSpeed;
+        if (maxWheelSpeed > maxSpeed)
+        {
+            frontLeft.drive(Vector.makeSpeedAngle(FL.getSpeed()/maxWheelSpeed, FL.getAngle()));
+            frontRight.drive(Vector.makeSpeedAngle(FR.getSpeed()/maxWheelSpeed, FR.getAngle()));
+            backLeft.drive(Vector.makeSpeedAngle(BL.getSpeed()/maxWheelSpeed, BL.getAngle()));
+            backRight.drive(Vector.makeSpeedAngle(BR.getSpeed()/maxWheelSpeed, BR.getAngle()));
+        }
+        else
+        {
+            frontLeft.drive(FL);
+            frontRight.drive(FR);
+            backLeft.drive(BL);
+            backRight.drive(BR);
+        }
     }
 
     /**
