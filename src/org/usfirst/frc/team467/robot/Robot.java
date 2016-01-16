@@ -34,7 +34,7 @@ public class Robot extends IterativeRobot
     private PowerDistroBoard467 board;
     private Autonomous autonomous;
 
-    private CameraDashboard cameraDashboard;
+//    private CameraDashboard cameraDashboard;
     private Lifter lifter;
     private Claw claw;
     private Gyro2015 gyro;
@@ -68,12 +68,12 @@ public class Robot extends IterativeRobot
         ledStrip.setMode(Mode.OFF);
 
         // Initialize the camera dashboard and launch in separate thread.
-        cameraDashboard = CameraDashboard.getInstance();
-        if (cameraDashboard.cameraExists()) 
-        {
-            LOGGER.debug("Camera Starting");
-            cameraDashboard.start();
-        }
+//        cameraDashboard = CameraDashboard.getInstance();
+//        if (cameraDashboard.cameraExists()) 
+//        {
+//            LOGGER.debug("Camera Starting");
+//            cameraDashboard.start();
+//        }
         Calibration.init();
         
         LOGGER.info("Initialized robot");
