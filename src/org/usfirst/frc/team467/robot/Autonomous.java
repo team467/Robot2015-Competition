@@ -1,10 +1,10 @@
 package org.usfirst.frc.team467.robot;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
+
 import org.apache.log4j.Logger;
 
 public class Autonomous
@@ -16,7 +16,6 @@ public class Autonomous
     private Drive drive = null;
     private Claw claw = null;
     private Lifter lifter = null;
-    private VisionProcessor vision = null;
 
     long actionStartTimeMS = -1;
 
@@ -91,25 +90,6 @@ public class Autonomous
         return now > actionStartTimeMS + durationMS;
     }
     
-    private boolean untilWidestCentered(int marginOfError)
-    {
-        try
-        {
-            List<VisionProcessor.Contour> contours = vision.getContours();
-            VisionProcessor.Contour contour;
-            contour = Collections.max(contours, new VisionProcessor.WidthComp());
-            final double centerX = contour.getCenterX();
-            final double delta = Math.abs(centerX - 160);
-            LOGGER.debug("untilCentered centerY=" + centerX + " delta=" + delta);
-            return delta < marginOfError;
-        }
-        catch (Exception e)
-        {
-            LOGGER.info("Missed contour: " + e);
-            return false;
-        }
-    }
-    
     private void resetActionStartTime()
     {
         actionStartTimeMS = System.currentTimeMillis();
@@ -134,7 +114,7 @@ public class Autonomous
             autonomous = new Autonomous(
                     Drive.getInstance(),
                     Claw.getInstance(),
-                    Lifter.getInstance(), VisionProcessor.getInstance());
+                    Lifter.getInstance());
         }
         return autonomous;
     }
@@ -142,13 +122,12 @@ public class Autonomous
     /**
      * Private constructor to setup the Autonomous
      */
-    public Autonomous(Drive drive, Claw claw, Lifter lifter, VisionProcessor vision)
+    public Autonomous(Drive drive, Claw claw, Lifter lifter)
     {
         // TODO Change drive, claw, and lifter to generics implementing respective interfaces
         this.drive = drive;
         this.claw = claw;
         this.lifter = lifter;
-        this.vision = vision;
     }
 
     /**
@@ -177,9 +156,6 @@ public class Autonomous
                 break;
             case HOOK_AND_PUSH:
                 initHookAndPush(3.75f);
-                break;
-            case AIM:
-                initAim();
                 break;
             default:
                 initStayInPlace();
@@ -307,43 +283,7 @@ public class Autonomous
                     drive.stop();
                 });
     }
-    
-    private void initAim()
-    {
-        addAction("Rotate until square with widest is centered",
-                () -> untilWidestCentered(20),
-                () -> {
-                    seekWidestContour(drive);
-                });
-        
-        addAction("Stop driving",
-                () -> forever(),
-                () -> {
-                    drive.stop();
-                });
-    }
 
-    private void seekWidestContour(Drive drive)
-    {
-        LOGGER.debug("start seekWidestContour()");
-        List<VisionProcessor.Contour> contours = vision.getContours();
-        LOGGER.debug("found contours");
-        
-        // If more than 0 contours are found
-        if (contours.size() > 0) {
-            LOGGER.debug("Has contours");
-            // Find the widest contour
-            VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
-            LOGGER.debug("Found widest contour");
-            int direction = widest.getCenterX() > 160 ? -1 : 1;
-            LOGGER.debug("Calculated direction");
-            drive.turnDrive(0.22 * direction);
-            LOGGER.debug("Turned");
-        }
-        LOGGER.debug("end seekWidestContour()");
-
-    }
-    
     /**
      * Updates the Autonomous routine. Called by Robot.autonomousPeriodic().
      */
@@ -384,6 +324,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH_OVER_RAMP, HOOK_AND_PUSH, AIM
+        NO_AUTO, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH_OVER_RAMP, HOOK_AND_PUSH
     }
 }
