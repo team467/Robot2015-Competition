@@ -18,12 +18,12 @@ public class Logging
 
         // Enable extra logging for classes you want to debug
         Logger.getLogger(Robot.class).setLevel(Level.DEBUG);
-        Logger.getLogger(Steering.class).setLevel(Level.INFO);
-        Logger.getLogger(Calibration.class).setLevel(Level.DEBUG);
-        Logger.getLogger(Drive.class).setLevel(Level.DEBUG);
+//        Logger.getLogger(Steering.class).setLevel(Level.DEBUG);
+//        Logger.getLogger(Calibration.class).setLevel(Level.DEBUG);
+//        Logger.getLogger(Drive.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Lifter.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Claw.class).setLevel(Level.DEBUG);
-//        Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
     }
@@ -38,7 +38,7 @@ public class Logging
         Logger.getRootLogger().addAppender(new ConsoleAppender(layout));
         try
         {
-            RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, "/home/admin/log/Robot467.log");
+            RollingFileAppender rollingFileAppender = new RollingFileAppender(layout, "/home/admin/Robot467.log");
             rollingFileAppender.setMaxBackupIndex(20);
             rollingFileAppender.setMaximumFileSize(1_000_000);
             rollingFileAppender.rollOver();

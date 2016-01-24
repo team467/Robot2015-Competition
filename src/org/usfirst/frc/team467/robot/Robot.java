@@ -35,6 +35,8 @@ public class Robot extends IterativeRobot
     private Autonomous autonomous;
 
 //    private CameraDashboard cameraDashboard;
+    private VisionProcessor vision = null;
+    
     private Lifter lifter;
     private Claw claw;
 //    private Gyro2015 gyro;
@@ -62,6 +64,7 @@ public class Robot extends IterativeRobot
         autonomous = Autonomous.getInstance();
         drive = Drive.getInstance();
         board = PowerDistroBoard467.getInstance();
+        vision = VisionProcessor.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
 //        gyro = Gyro2015.getInstance();
@@ -87,6 +90,7 @@ public class Robot extends IterativeRobot
 
     public void disabledPeriodic()
     {
+        vision.updateContours();
 //        gyro.update();
         ledStrip.setMode(Mode.BLUE_AND_GOLD);
     }
@@ -115,9 +119,13 @@ public class Robot extends IterativeRobot
     public void autonomousPeriodic()
     {
         LOGGER.info("Autonomous");
+        vision.updateContours();
+        LOGGER.debug("Contours updated");
         
         driverstation.readInputs();
+        LOGGER.debug("Read driverStation");
         board.update();
+        LOGGER.debug("Update powerDistroBoard");
         autonomous.updateAutonomousPeriodic();
         
         ledStrip.setMode(Mode.RAINBOW);
@@ -128,6 +136,7 @@ public class Robot extends IterativeRobot
      */
     public void teleopPeriodic()
     {
+        vision.updateContours();
         // Read driverstation inputs
         driverstation.readInputs();
 //        gyro.update();
