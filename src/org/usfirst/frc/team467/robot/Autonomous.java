@@ -99,7 +99,7 @@ public class Autonomous
             VisionProcessor.Contour contour;
             contour = Collections.max(contours, new VisionProcessor.WidthComp());
             final double centerX = contour.getCenterX();
-            final double delta = Math.abs(centerX - 160);
+            final double delta = Math.abs(centerX - vision.getHorizontalCenter());
             LOGGER.debug("untilCentered centerY=" + centerX + " delta=" + delta);
             return delta < marginOfError;
         }
@@ -310,10 +310,13 @@ public class Autonomous
     
     private void initAim()
     {
+        final int marginOfError = 30;
+        
         addAction("Rotate until square with widest is centered",
-                () -> untilWidestCentered(20),
+//                () -> untilWidestCentered(marginOfError),
+                () -> forever(),
                 () -> {
-                    seekWidestContour(drive);
+                    seekWidestContour(drive, marginOfError);
                 });
         
         addAction("Stop driving",
@@ -323,8 +326,12 @@ public class Autonomous
                 });
     }
 
-    private void seekWidestContour(Drive drive)
+    private void seekWidestContour(Drive drive, int marginOfError)
     {
+        final double minTurnSpeed = 0.20;
+        final double maxTurnSpeed = 0.27;
+        final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
+        
         LOGGER.debug("start seekWidestContour()");
         List<VisionProcessor.Contour> contours = vision.getContours();
         LOGGER.debug("found contours");
@@ -335,10 +342,16 @@ public class Autonomous
             // Find the widest contour
             VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
             LOGGER.debug("Found widest contour");
-            int direction = widest.getCenterX() > 160 ? -1 : 1;
-            LOGGER.debug("Calculated direction");
-            drive.turnDrive(0.22 * direction);
-            LOGGER.debug("Turned");
+            final double centerX = widest.getCenterX();
+            final double delta = Math.abs(centerX - vision.getHorizontalCenter());
+            if (delta > marginOfError) {
+//            if (widest.getCenterX() - vision.getHorizontalCenter()) 
+                int direction = widest.getCenterX() > vision.getHorizontalCenter() ? -1 : 1;
+                final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/vision.getHorizontalCenter()));
+                LOGGER.info("Calculated direction, turnSpeed=" + turnSpeed);
+                drive.turnDrive(turnSpeed);
+                LOGGER.debug("Turned");
+            }
         }
         LOGGER.debug("end seekWidestContour()");
 

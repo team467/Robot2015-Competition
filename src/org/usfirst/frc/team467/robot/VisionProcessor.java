@@ -12,9 +12,12 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 public class VisionProcessor
 {
     private static final Logger LOGGER = Logger.getLogger(VisionProcessor.class);
-    private NetworkTable table;
+    private NetworkTable contourTable;
+    private NetworkTable sizeTable;
     private static VisionProcessor instance;
     private List<Contour> list;
+//    private double height;
+    private double width;
     
     private VisionProcessor()
     {
@@ -31,8 +34,10 @@ public class VisionProcessor
         }
         LOGGER.info("Started GRIP");
         
-        table = NetworkTable.getTable("GRIP/contoursReport");
-        LOGGER.info("Got GRIP table: " + table);
+        contourTable = NetworkTable.getTable("GRIP/contoursReport");
+        sizeTable = NetworkTable.getTable("GRIP/mySize");
+        LOGGER.info("Got GRIP table: " + contourTable);
+        width = sizeTable.getNumber("x", 0.0);
     }
     
     public static VisionProcessor getInstance()
@@ -44,6 +49,11 @@ public class VisionProcessor
         return instance;
     }
     
+    public double getHorizontalCenter()
+    {
+        return width/2;
+    }
+    
     /**
      * Refreshes the contours list, call once per cycle
      */
@@ -53,7 +63,7 @@ public class VisionProcessor
         try
         {
             LOGGER.debug("Trying to get contours");
-            double[] centerXs = table.getNumberArray("centerX", (double[])null);
+            double[] centerXs = contourTable.getNumberArray("centerX", (double[])null);
 //            LOGGER.debug("Got centerXs: " + centerXs);
 //            double[] centerYs = table.getNumberArray("centerY", (double[])null);
 //            LOGGER.debug("Got centerYs: " + centerYs);
@@ -61,7 +71,7 @@ public class VisionProcessor
 //            LOGGER.debug("Got areas: " + areas);
 //            double[] heights  = table.getNumberArray("height",  (double[])null);
 //            LOGGER.debug("Got heights: " + heights);
-            double[] widths   = table.getNumberArray("width",   (double[])null);
+            double[] widths   = contourTable.getNumberArray("width",   (double[])null);
 //            LOGGER.debug("Got widths: " + widths);
             
             List<Contour> list = new ArrayList<Contour>();
