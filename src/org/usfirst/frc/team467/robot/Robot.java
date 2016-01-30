@@ -64,7 +64,10 @@ public class Robot extends IterativeRobot
         CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
         CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
         CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+        
+        // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
         drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+//        drive = new TankDrive(1, 0, 3, 2);
         
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
@@ -81,13 +84,13 @@ public class Robot extends IterativeRobot
         autonomous.setDrive(drive);
 
         // Initialize the camera dashboard and launch in separate thread.
-        cameraDashboard = CameraDashboard.getInstance();
-        cameraDashboard.setDrive(drive);
-        if (cameraDashboard.cameraExists()) 
-        {
-            LOGGER.debug("Camera Starting");
-            cameraDashboard.start();
-        }
+//        cameraDashboard = CameraDashboard.getInstance();
+//        cameraDashboard.setDrive(drive);
+//        if (cameraDashboard.cameraExists()) 
+//        {
+//            LOGGER.debug("Camera Starting");
+//            cameraDashboard.start();
+//        }
         
         Calibration.init(drive);
         

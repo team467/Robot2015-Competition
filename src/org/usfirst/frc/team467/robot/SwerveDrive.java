@@ -11,12 +11,9 @@ import edu.wpi.first.wpilibj.*;
 /**
  * 
  */
-public class SwerveDrive extends RobotDrive implements Driveable
+public class SwerveDrive implements Driveable
 {
     private static final Logger LOGGER = Logger.getLogger(SwerveDrive.class);
-
-    // Single instance of this class
-    private static SwerveDrive instance = null;
 
     // Steering objects
     public Steering[] steering;
@@ -38,6 +35,15 @@ public class SwerveDrive extends RobotDrive implements Driveable
     private static final boolean FRONT_RIGHT_DRIVE_INVERT = true;
     private static final boolean BACK_LEFT_DRIVE_INVERT = false;
     private static final boolean BACK_RIGHT_DRIVE_INVERT = true;
+    
+    private final CANTalon frontLeftMotor;
+    private final CANTalon frontRightMotor;
+    private final CANTalon backLeftMotor;
+    private final CANTalon backRightMotor;
+    private final MotorSafetyHelper FLsafety;
+    private final MotorSafetyHelper FRsafety;
+    private final MotorSafetyHelper BLsafety;
+    private final MotorSafetyHelper BRsafety;
 
     // Speed modifier constants
     private static final double SPEED_SLOW_MODIFIER = 0.5;
@@ -65,7 +71,16 @@ public class SwerveDrive extends RobotDrive implements Driveable
     // Private constructor
     public SwerveDrive(CANTalon frontLeftMotor, CANTalon backLeftMotor, CANTalon frontRightMotor, CANTalon backRightMotor)
     {
-        super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
+        this.frontLeftMotor = frontLeftMotor;
+        this.frontRightMotor = frontRightMotor;
+        this.backLeftMotor = backLeftMotor;
+        this.backRightMotor = backRightMotor;
+        
+        FLsafety = new MotorSafetyHelper(frontLeftMotor);
+        FRsafety = new MotorSafetyHelper(frontRightMotor);
+        BLsafety = new MotorSafetyHelper(backLeftMotor);
+        BRsafety = new MotorSafetyHelper(backRightMotor);
+
 
         // Make objects
         data = DataStorage.getInstance();
@@ -139,7 +154,7 @@ public class SwerveDrive extends RobotDrive implements Driveable
     private void fourWheelDrive(double frontLeftSpeed, double frontRightSpeed, double backLeftSpeed, double backRightSpeed)
     {
         // If any of the motors doesn't exist then exit
-        if (m_rearLeftMotor == null || m_rearRightMotor == null || m_frontLeftMotor == null || m_frontRightMotor == null)
+        if (backLeftMotor == null || backRightMotor == null || frontLeftMotor == null || frontRightMotor == null)
         {
             throw new NullPointerException("Null motor provided");
         }
@@ -153,24 +168,41 @@ public class SwerveDrive extends RobotDrive implements Driveable
             steering[RobotMap.BACK_RIGHT] .getAngleDelta() < MAX_DRIVE_ANGLE)
         {
             LOGGER.debug("DRIVE"); // TODO
-            m_frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed((frontLeftSpeed * 1.2), RobotMap.FRONT_LEFT), SYNC_GROUP);
-            m_frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
-            m_rearLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
-            m_rearRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
+            frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed((frontLeftSpeed * 1.2), RobotMap.FRONT_LEFT), SYNC_GROUP);
+            frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
+            backLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
+            backRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
         } 
         else
         {
             LOGGER.debug("NO DRIVE");
-            m_frontLeftMotor.set(0, SYNC_GROUP);
-            m_frontRightMotor.set(0, SYNC_GROUP);
-            m_rearLeftMotor.set(0, SYNC_GROUP);
-            m_rearRightMotor.set(0, SYNC_GROUP);
+            frontLeftMotor.set(0, SYNC_GROUP);
+            frontRightMotor.set(0, SYNC_GROUP);
+            backLeftMotor.set(0, SYNC_GROUP);
+            backRightMotor.set(0, SYNC_GROUP);
         }
 
         LOGGER.debug("WHEEL SPEEDS: FL:" + frontLeftSpeed + ", FR:" +  frontRightSpeed + ", BL:" + backLeftSpeed + ", BR:" + backRightSpeed);
-        if (m_safetyHelper != null)
+        feedMotors();
+    }
+
+    private void feedMotors()
+    {
+        if (FLsafety != null)
         {
-            m_safetyHelper.feed();
+            FLsafety.feed();
+        }
+        if (FRsafety != null)
+        {
+            FRsafety.feed();
+        }
+        if (BLsafety != null)
+        {
+            BLsafety.feed();
+        }
+        if (BRsafety != null)
+        {
+            BRsafety.feed();
         }
     }
 
@@ -198,6 +230,7 @@ public class SwerveDrive extends RobotDrive implements Driveable
      * 
      * @param speed
      */
+    @Override
     public void turnDrive(double speed)
     {
         LOGGER.info("Start turnDrive()");
