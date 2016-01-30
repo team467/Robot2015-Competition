@@ -40,12 +40,6 @@ public class CameraDashboard extends Thread
 
     private CameraDashboard()
     {
-        Drive drive = Drive.getInstance();
-        flSteering = drive.steering[RobotMap.FRONT_LEFT];
-        frSteering = drive.steering[RobotMap.FRONT_RIGHT];
-        blSteering = drive.steering[RobotMap.BACK_LEFT];
-        brSteering = drive.steering[RobotMap.BACK_RIGHT];
-        
         station = DriverStation.getInstance();
         
         initCamera();
@@ -58,6 +52,18 @@ public class CameraDashboard extends Thread
             instance = new CameraDashboard();
         }
         return instance;
+    }
+    
+    public void setDrive(Driveable drive)
+    {
+        if (drive instanceof SwerveDrive)
+        {
+            SwerveDrive swerve = (SwerveDrive)drive;
+            flSteering = swerve.steering[RobotMap.FRONT_LEFT];
+            frSteering = swerve.steering[RobotMap.FRONT_RIGHT];
+            blSteering = swerve.steering[RobotMap.BACK_LEFT];
+            brSteering = swerve.steering[RobotMap.BACK_RIGHT];
+        }
     }
 
     public boolean cameraExists()

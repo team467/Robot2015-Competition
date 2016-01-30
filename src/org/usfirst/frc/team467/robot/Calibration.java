@@ -15,7 +15,7 @@ public class Calibration
     private static final Logger LOGGER = Logger.getLogger(Calibration.class);
     // Creates objects
 
-    private static Drive drive;
+    private static SwerveDrive drive;
     private static DataStorage data;
 
     // Incremented angle used for calibrating wheels
@@ -24,10 +24,18 @@ public class Calibration
     /**
      * Initialize calibration code
      */
-    public static void init()
+    public static void init(Driveable drive)
     {
         // makes the objects
-        drive = Drive.getInstance();
+        if (drive instanceof SwerveDrive)
+        {
+            SwerveDrive swerve = (SwerveDrive) drive;
+            Calibration.drive = swerve;
+        }
+        else
+        {
+            LOGGER.info("Tank Drive");
+        }
         data = DataStorage.getInstance();
     }
 

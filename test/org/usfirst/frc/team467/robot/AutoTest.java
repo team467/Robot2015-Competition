@@ -10,6 +10,7 @@ public class AutoTest
     public void init()
     {
         // TODO Make dummy classes for drive, claw, and lifter implementing respective interfaces
-        auto = new Autonomous(Drive.getInstance(), Claw.getInstance(), Lifter.getInstance());
+        auto = Autonomous.getInstance();
+        auto.setDrive(new SwerveDrive(null, null, null, null));
     }
 }

@@ -10,6 +10,7 @@ package org.usfirst.frc.team467.robot;
 import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.LEDStrip.Mode;
 
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
@@ -30,11 +31,11 @@ public class Robot extends IterativeRobot
     // Robot objects
     private DriverStation2015 driverstation;
 
-    private Drive drive;
+    public Driveable drive;
     private PowerDistroBoard467 board;
     private Autonomous autonomous;
 
-//    private CameraDashboard cameraDashboard;
+    private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
     
     private Lifter lifter;
@@ -58,11 +59,18 @@ public class Robot extends IterativeRobot
     {
         // Initialize logging framework.
         Logging.init();
-
+        
+        CANTalon frontleft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
+        CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
+        CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
+        CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+        
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
         autonomous = Autonomous.getInstance();
-        drive = Drive.getInstance();
+        autonomous.setDrive(drive);
+        
         board = PowerDistroBoard467.getInstance();
         vision = VisionProcessor.getInstance();
         lifter = Lifter.getInstance();
@@ -71,14 +79,15 @@ public class Robot extends IterativeRobot
         ledStrip.setMode(Mode.OFF);
 
         // Initialize the camera dashboard and launch in separate thread.
-//        cameraDashboard = CameraDashboard.getInstance();
-//        if (cameraDashboard.cameraExists()) 
-//        {
-//            LOGGER.debug("Camera Starting");
-//            cameraDashboard.start();
-//        }
+        cameraDashboard = CameraDashboard.getInstance();
+        cameraDashboard.setDrive(drive);
+        if (cameraDashboard.cameraExists()) 
+        {
+            LOGGER.debug("Camera Starting");
+            cameraDashboard.start();
+        }
         
-        Calibration.init();
+        Calibration.init(drive);
         
         LOGGER.info("Initialized robot");
     }
@@ -195,10 +204,7 @@ public class Robot extends IterativeRobot
         switch (driveMode)
         {
             case UNWIND:
-                for (Steering wheelpod : Drive.getInstance().steering)
-                {
-                    wheelpod.setAbsoluteAngle(0);
-                }
+                drive.unwind();
                 break;
 
             case REVOLVE_LARGE_LEFT:

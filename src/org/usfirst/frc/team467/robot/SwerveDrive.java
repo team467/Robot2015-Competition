@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.*;
 /**
  * 
  */
-public class Drive extends RobotDrive
+public class SwerveDrive extends RobotDrive implements Driveable
 {
-    private static final Logger LOGGER = Logger.getLogger(Drive.class);
+    private static final Logger LOGGER = Logger.getLogger(SwerveDrive.class);
 
     // Single instance of this class
-    private static Drive instance = null;
+    private static SwerveDrive instance = null;
 
     // Steering objects
     public Steering[] steering;
@@ -63,7 +63,7 @@ public class Drive extends RobotDrive
     private static final double REVOLVE_SMALL_BACK_ANGLE = (Math.atan((2 * REVOLVE_SMALL_BACK_RADIUS) / RobotMap.WIDTH));
 
     // Private constructor
-    private Drive(CANTalon frontLeftMotor, CANTalon backLeftMotor, CANTalon frontRightMotor, CANTalon backRightMotor)
+    public SwerveDrive(CANTalon frontLeftMotor, CANTalon backLeftMotor, CANTalon frontRightMotor, CANTalon backRightMotor)
     {
         super(frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor);
 
@@ -86,24 +86,24 @@ public class Drive extends RobotDrive
         }
     }
 
-    /**
-     * Gets the single instance of this class.
-     * 
-     * @return The single instance.
-     */
-    public static Drive getInstance()
-    {
-        if (instance == null)
-        {
-            // First usage - create Drive object
-            CANTalon frontleft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
-            CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
-            CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
-            CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
-            instance = new Drive(frontleft, backleft, frontright, backright);
-        }
-        return instance;
-    }
+//    /**
+//     * Gets the single instance of this class.
+//     * 
+//     * @return The single instance.
+//     */
+//    public static Drive getInstance()
+//    {
+//        if (instance == null)
+//        {
+//            // First usage - create Drive object
+//            CANTalon frontleft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
+//            CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
+//            CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
+//            CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+//            instance = new Drive(frontleft, backleft, frontright, backright);
+//        }
+//        return instance;
+//    }
 
     /**
      * Turns on the PID for all wheels.
@@ -305,6 +305,14 @@ public class Drive extends RobotDrive
     {
         LOGGER.debug("NO DRIVE CALLED");
         this.fourWheelDrive(0, 0, 0, 0);// no drive for you!
+    }
+    
+    public void unwind()
+    {
+        for (Steering wheelpod : steering)
+        {
+            wheelpod.setAbsoluteAngle(0);
+        }
     }
 
     /**

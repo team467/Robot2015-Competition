@@ -13,7 +13,7 @@ public class Autonomous
 
     private static Autonomous autonomous = null;
 
-    private Drive drive = null;
+    private Driveable drive = null;
     private Claw claw = null;
     private Lifter lifter = null;
     private VisionProcessor vision = null;
@@ -143,7 +143,7 @@ public class Autonomous
         return autonomous;
     }
     
-    public void setDrive(Drive drive)
+    public void setDrive(Driveable drive)
     {
         this.drive = drive;
     }
