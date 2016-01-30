@@ -106,25 +106,27 @@ public class VisionProcessor
             if (widths == null) {
                 LOGGER.debug("Empty contour list");
             }
-            
-            LOGGER.debug("Found " + widths.length + " contours");
-            for (int i = 0; i < widths.length; i++)
+            else
             {
-                try
+                for (int i = 0; i < widths.length; i++)
                 {
-//                    Contour contour = new Contour(centerXs[i], centerYs[i], areas[i], heights[i], widths[i]);
-                    Contour contour = new Contour(centerXs[i], widths[i]);
-//                Contour contour = new Contour(centerXs[i], centerYs[i], areas[i], 0.0,0.0);
-                    list.add(contour);
-                LOGGER.debug("Contour " + i + ": " + list.get(i));
+                    try
+                    {
+//                        Contour contour = new Contour(centerXs[i], centerYs[i], areas[i], heights[i], widths[i]);
+                        Contour contour = new Contour(centerXs[i], widths[i]);
+//                        Contour contour = new Contour(centerXs[i], centerYs[i], areas[i], 0.0,0.0);
+                        list.add(contour);
+                    LOGGER.debug("Contour " + i + ": " + list.get(i));
+                    }
+                    catch (ArrayIndexOutOfBoundsException e)
+                    {
+                        LOGGER.warn(e.getMessage());
+                    }
                 }
-                catch (ArrayIndexOutOfBoundsException e)
-                {
-                    LOGGER.warn(e.getMessage());
-                }
+    
+                this.list = list;
+                LOGGER.debug("Found " + list.size() + " contours");
             }
-
-            this.list = list;
         }
         catch (Exception e)
         {

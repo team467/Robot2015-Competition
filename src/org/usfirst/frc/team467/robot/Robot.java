@@ -69,6 +69,8 @@ public class Robot extends IterativeRobot
         claw = Claw.getInstance();
 //        gyro = Gyro2015.getInstance();
         ledStrip.setMode(Mode.OFF);
+        
+        autonomous.setDrive(drive);
 
         // Initialize the camera dashboard and launch in separate thread.
 //        cameraDashboard = CameraDashboard.getInstance();
