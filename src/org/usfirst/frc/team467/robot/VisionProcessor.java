@@ -17,7 +17,8 @@ public class VisionProcessor
     private static VisionProcessor instance;
     private List<Contour> list;
 //    private double height;
-    private double width;
+    private double width = 0.0;
+    private boolean isEnabled = false;
     
     private VisionProcessor()
     {
@@ -34,10 +35,30 @@ public class VisionProcessor
         }
         LOGGER.info("Started GRIP");
         
-        contourTable = NetworkTable.getTable("GRIP/contoursReport");
-        sizeTable = NetworkTable.getTable("GRIP/mySize");
-        LOGGER.info("Got GRIP table: " + contourTable);
+        setupTables();
+        LOGGER.debug("Got GRIP table: " + contourTable);
         width = sizeTable.getNumber("x", 0.0);
+    }
+
+    private void setupTables()
+    {
+        if (contourTable == null) {
+            contourTable = NetworkTable.getTable("GRIP/contoursReport");
+        }
+        if (sizeTable == null)
+        {
+            sizeTable = NetworkTable.getTable("GRIP/mySize");
+        }
+        if (sizeTable != null)
+        {
+            width = sizeTable.getNumber("x", 0.0);
+        }
+        isEnabled = (sizeTable != null && contourTable != null);
+    }
+    
+    public boolean isEnabled()
+    {
+        return isEnabled;
     }
     
     public static VisionProcessor getInstance()
@@ -51,6 +72,10 @@ public class VisionProcessor
     
     public double getHorizontalCenter()
     {
+        if (width == 0.0)
+        {
+            throw new IllegalStateException();
+        }
         return width/2;
     }
     
@@ -62,7 +87,7 @@ public class VisionProcessor
         LOGGER.debug("Starting to get contours");
         try
         {
-            LOGGER.debug("Trying to get contours");
+            setupTables();
             double[] centerXs = contourTable.getNumberArray("centerX", (double[])null);
 //            LOGGER.debug("Got centerXs: " + centerXs);
 //            double[] centerYs = table.getNumberArray("centerY", (double[])null);

@@ -93,6 +93,11 @@ public class Autonomous
     
     private boolean untilWidestCentered(int marginOfError)
     {
+        if (!vision.isEnabled())
+        {
+            return false;
+        }
+            
         try
         {
             List<VisionProcessor.Contour> contours = vision.getContours();
@@ -132,20 +137,23 @@ public class Autonomous
         if (autonomous == null)
         {
             autonomous = new Autonomous(
-                    Drive.getInstance(),
                     Claw.getInstance(),
                     Lifter.getInstance(), VisionProcessor.getInstance());
         }
         return autonomous;
     }
+    
+    public void setDrive(Drive drive)
+    {
+        this.drive = drive;
+    }
 
     /**
      * Private constructor to setup the Autonomous
      */
-    public Autonomous(Drive drive, Claw claw, Lifter lifter, VisionProcessor vision)
+    private Autonomous(Claw claw, Lifter lifter, VisionProcessor vision)
     {
         // TODO Change drive, claw, and lifter to generics implementing respective interfaces
-        this.drive = drive;
         this.claw = claw;
         this.lifter = lifter;
         this.vision = vision;
@@ -316,7 +324,7 @@ public class Autonomous
 //                () -> untilWidestCentered(marginOfError),
                 () -> forever(),
                 () -> {
-                    seekWidestContour(drive, marginOfError);
+                    seekWidestContour(marginOfError);
                 });
         
         addAction("Stop driving",
@@ -326,11 +334,18 @@ public class Autonomous
                 });
     }
 
-    private void seekWidestContour(Drive drive, int marginOfError)
+    private void seekWidestContour(int marginOfError)
     {
+        if (!vision.isEnabled())
+        {
+            drive.stop();
+            return;
+        }
+        
         final double minTurnSpeed = 0.20;
         final double maxTurnSpeed = 0.27;
         final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
+        final double horizontalCenter = vision.getHorizontalCenter();
         
         LOGGER.debug("start seekWidestContour()");
         List<VisionProcessor.Contour> contours = vision.getContours();
@@ -343,11 +358,11 @@ public class Autonomous
             VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
             LOGGER.debug("Found widest contour");
             final double centerX = widest.getCenterX();
-            final double delta = Math.abs(centerX - vision.getHorizontalCenter());
+            final double delta = Math.abs(centerX - horizontalCenter);
             if (delta > marginOfError) {
 //            if (widest.getCenterX() - vision.getHorizontalCenter()) 
-                int direction = widest.getCenterX() > vision.getHorizontalCenter() ? -1 : 1;
-                final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/vision.getHorizontalCenter()));
+                int direction = widest.getCenterX() > horizontalCenter ? -1 : 1;
+                final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/horizontalCenter));
                 LOGGER.info("Calculated direction, turnSpeed=" + turnSpeed);
                 drive.turnDrive(turnSpeed);
                 LOGGER.debug("Turned");
