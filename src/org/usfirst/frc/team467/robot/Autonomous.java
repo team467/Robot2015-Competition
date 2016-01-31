@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
+
+import edu.wpi.first.wpilibj.Ultrasonic;
+
 import org.apache.log4j.Logger;
 
 public class Autonomous
@@ -17,6 +20,7 @@ public class Autonomous
     private Claw claw = null;
     private Lifter lifter = null;
     private VisionProcessor vision = null;
+    private Ultrasonic ultrasonic = null;
 
     long actionStartTimeMS = -1;
 
@@ -146,6 +150,10 @@ public class Autonomous
     public void setDrive(Driveable drive)
     {
         this.drive = drive;
+    }
+    public void setUltrasonic(Ultrasonic ultra)
+    {
+        this.ultrasonic = ultra;
     }
 
     /**
@@ -336,14 +344,28 @@ public class Autonomous
 
     private void seekWidestContour(int marginOfError)
     {
+        final boolean targetIsCentered = seekAngle(marginOfError);
+        if (targetIsCentered)
+        {
+            approach(40);
+        }
+    }
+    
+    /**
+     * 
+     * @param marginOfError
+     * @return if robot successfully centered on target
+     */
+    private boolean seekAngle(int marginOfError)
+    {
         if (!vision.isEnabled())
         {
             drive.stop();
-            return;
+            return false;
         }
         
         final double minTurnSpeed = 0.20;
-        final double maxTurnSpeed = 0.27;
+        final double maxTurnSpeed = 0.26;
         final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
         final double horizontalCenter = vision.getHorizontalCenter();
         
@@ -351,25 +373,58 @@ public class Autonomous
         List<VisionProcessor.Contour> contours = vision.getContours();
         LOGGER.debug("found contours");
         
-        // If more than 0 contours are found
-        if (contours.size() > 0) {
-            LOGGER.debug("Has contours");
-            // Find the widest contour
-            VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
-            LOGGER.debug("Found widest contour");
-            final double centerX = widest.getCenterX();
-            final double delta = Math.abs(centerX - horizontalCenter);
-            if (delta > marginOfError) {
-//            if (widest.getCenterX() - vision.getHorizontalCenter()) 
-                int direction = widest.getCenterX() > horizontalCenter ? -1 : 1;
-                final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/horizontalCenter));
-                LOGGER.info("Calculated direction, turnSpeed=" + turnSpeed);
-                drive.turnDrive(turnSpeed);
-                LOGGER.debug("Turned");
+        if (contours.size() == 0)
+        {
+            // Still haven't found what I'm looking for
+            drive.stop();
+            return false;
+        }
+        LOGGER.debug("Has contours");
+        // Find the widest contour
+        VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
+        LOGGER.debug("Found widest contour");
+        final double centerX = widest.getCenterX();
+        final double delta = Math.abs(centerX - horizontalCenter);
+        if (delta < marginOfError)
+        {
+            // Found target
+            return true;
+        }
+//        if (widest.getCenterX() - vision.getHorizontalCenter()) 
+        int direction = widest.getCenterX() > horizontalCenter ? -1 : 1;
+        final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/horizontalCenter));
+        LOGGER.info("Calculated direction, turnSpeed=" + turnSpeed);
+        drive.turnDrive(turnSpeed);
+        LOGGER.debug("Turned");
+        LOGGER.debug("end seekWidestContour()");
+        
+        // Target seen but not centered
+        return false;
+    }
+    
+    /**
+     * 
+     * @param desiredDistance in inches
+     */
+    private void approach(double desiredDistance)
+    {
+        final double measuredDistance = ultrasonic.getRangeInches();
+        final double delta = Math.abs(measuredDistance - desiredDistance);
+        if (delta > 12)
+        {
+            if (measuredDistance > desiredDistance)
+            {
+                drive.strafeDrive(Direction.FRONT);
+            }
+            else
+            {
+                drive.strafeDrive(Direction.BACK);
             }
         }
-        LOGGER.debug("end seekWidestContour()");
-
+        else
+        {
+            drive.stop();
+        }
     }
     
     /**

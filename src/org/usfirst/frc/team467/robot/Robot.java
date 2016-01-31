@@ -13,6 +13,7 @@ import org.usfirst.frc.team467.robot.LEDStrip.Mode;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 
 /**
@@ -41,6 +42,7 @@ public class Robot extends IterativeRobot
     private Lifter lifter;
     private Claw claw;
 //    private Gyro2015 gyro;
+    private Ultrasonic ultrasonic;
 
     int session;
     
@@ -79,9 +81,11 @@ public class Robot extends IterativeRobot
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
 //        gyro = Gyro2015.getInstance();
+        ultrasonic = new Ultrasonic(1, 0);
         ledStrip.setMode(Mode.OFF);
         
         autonomous.setDrive(drive);
+        autonomous.setUltrasonic(ultrasonic);
 
         // Initialize the camera dashboard and launch in separate thread.
 //        cameraDashboard = CameraDashboard.getInstance();
@@ -160,7 +164,8 @@ public class Robot extends IterativeRobot
 //            gyro.reset();
 //        }
 //        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
-
+        
+        LOGGER.info("Distance: " + ultrasonic.getRangeInches());
         if (driverstation.getCalibrate())
         {
             // Calibrate Mode
