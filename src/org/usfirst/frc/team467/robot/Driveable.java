@@ -3,7 +3,7 @@ package org.usfirst.frc.team467.robot;
 public interface Driveable
 {
     void turnDrive(double speed);
-    void arcadeDrive(double angle, double speed, boolean fieldAlign);
+    void arcadeDrive(Joystick467 joystick, boolean fieldAlign);
     void individualSteeringDrive(double angle, int steeringId);
     void stop();
     void unwind();

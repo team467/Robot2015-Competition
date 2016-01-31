@@ -293,17 +293,12 @@ public class SwerveDrive implements Driveable
 
     /**
      * Field aligned drive. Assumes Gyro angle 0 is facing downfield
-     *
-     * @param angle
-     *            value corresponding to the field direction to move in
-     * @param speed
-     *            Speed to drive at
      * @param fieldAlign
      *            Whether or not to use field align drive
      */
-    public void arcadeDrive(double angle, double speed, boolean fieldAlign)
+    public void arcadeDrive(Joystick467 joystick, boolean fieldAlign)
     {
-        crabDrive(angle, speed, fieldAlign);
+        crabDrive(joystick.getStickAngle(), joystick.getStickDistance(), fieldAlign);
     }
 
     /**

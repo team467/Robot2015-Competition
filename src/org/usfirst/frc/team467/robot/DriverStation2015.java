@@ -117,10 +117,6 @@ public class DriverStation2015
     {
         return AutoType.AIM;
         // Dial positions are mutually exclusive
-//        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_2)) return AutoType.DRIVE_ONLY;                       
-//        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_3)) return AutoType.GRAB_CAN;
-//        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_4)) return AutoType.HOOK_AND_PUSH;
-//        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_5)) return AutoType.HOOK_AND_PUSH_OVER_RAMP;
 
 //        return AutoType.NO_AUTO;
     }

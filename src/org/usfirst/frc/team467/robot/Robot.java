@@ -262,8 +262,13 @@ public class Robot extends IterativeRobot
                 }
                 else
                 {
-                    drive.arcadeDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
-                            .getStickDistance(), (driveMode == DriveMode.ARCADE_FA));
+//                    drive.arcadeDrive(
+//                            driverstation.getDriveJoystick().getStickAngle(),
+//                            driverstation.getDriveJoystick().getStickDistance(),
+//                            (driveMode == DriveMode.ARCADE_FA));
+                    drive.arcadeDrive(
+                            driverstation.getDriveJoystick(),
+                            (driveMode == DriveMode.ARCADE_FA));
                 }
                 break;
         }        

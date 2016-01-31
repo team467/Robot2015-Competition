@@ -1,9 +1,13 @@
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
+
 import edu.wpi.first.wpilibj.RobotDrive;
 
 public class TankDrive implements Driveable
 {
+    private static final Logger LOGGER = Logger.getLogger(TankDrive.class);
+    
     RobotDrive front;
     RobotDrive back;
 
@@ -21,11 +25,13 @@ public class TankDrive implements Driveable
     }
 
     @Override
-    public void arcadeDrive(double angle, double speed, boolean fieldAlign)
+    public void arcadeDrive(Joystick467 joystick, boolean fieldAlign)
     {
-        final double rotation = angle/(2*Math.PI);
-        front.drive(speed, rotation);
-        back.drive(speed, rotation);
+        final double x = joystick.getStickX();
+        final double y = joystick.getStickY();
+        LOGGER.debug("x=" + x + " y=" + y);
+        front.arcadeDrive(-y, -x);
+        back.arcadeDrive(y, -x);
     }
 
     @Override
@@ -50,7 +56,7 @@ public class TankDrive implements Driveable
     @Override
     public void strafeDrive(Direction direction)
     {
-        double speed = -0.8;
+        double speed = -0.6;
         switch (direction)
         {
             case FRONT:

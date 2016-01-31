@@ -182,18 +182,6 @@ public class Autonomous
         // Set up gyro and create actions list.
         switch (autonomousType)
         {
-            case GRAB_CAN:
-                initGrabCan();
-                break;
-            case DRIVE_ONLY:
-                initDriveOnly();
-                break;
-            case HOOK_AND_PUSH_OVER_RAMP:
-                initHookAndPush(4.5f);
-                break;
-            case HOOK_AND_PUSH:
-                initHookAndPush(3.75f);
-                break;
             case AIM:
                 initAim();
                 break;
@@ -205,111 +193,54 @@ public class Autonomous
         LOGGER.info("Beginning action: " + actions.get(0).getDescription());
     }
 
-    private void initGrabCan()
-    {
-        // Start facing the wall in front of an item (container or tote), pick it up
-        // and carry it rolling backwards to the auto zone.
-        Gyro2015.getInstance().reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
-        addAction("Close claw to grip container or tote",
-                () -> claw.isClosed(),
-                () -> {
-                    lifter.stop();
-                    claw.moveClaw(ClawMoveDirection.CLOSE, false);
-                    drive.stop();
-                });
-        addAction("Lift container", 
-                () -> forDurationSecs(0.5f),
-                () -> {
-                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
-                    claw.stop();
-                    drive.stop();
-                });
-        addAction("Lift container and drive backwards", 
-                () -> forDurationSecs(1.25f),
-                () -> {
-                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
-                    claw.stop();
-                    drive.arcadeDrive(Math.PI, 0.6, false);
-                });
-        addAction("Drive backwards", 
-                () -> forDurationSecs(1.75f),
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.arcadeDrive(Math.PI, 0.6, false);
-                });
-        addAction("Turn in place", 
-                () -> forDurationSecs(0.7f),
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.turnDrive(0.6);
-                });
-        addAction("Done",
-                () -> forever(), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.stop();
-                });
-    }
-
-    private void initDriveOnly()
-    {
-        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);// reset to upfield
-        // Drive to auto zone. Starts on the very edge and just creeps into the zone
-        addAction("Drive into auto zone", 
-                () -> forDurationSecs(2.0f), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
-                });
-        addAction("Stop driving", 
-                () -> forever(), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.stop();
-                });
-    }
-    
-    /**
-     * @param sidewaysSecs - time for driving sideways
-     */
-    private void initHookAndPush(float sidewaysSecs)
-    {
-        // Starts facing left, reset to upfield.
-        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);
-        addAction("Raise lifter up and turn wheels sideways", 
-                () -> forDurationSecs(2.0f), 
-                () -> {
-                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
-                    claw.stop();
-                    drive.arcadeDrive(Math.PI / 2, 0, false);
-                });
-        addAction("Stop lifting and drive sideways", 
-                () -> forDurationSecs(sidewaysSecs),
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
-                });
-        addAction("Lower lifter and stop driving", 
-                () -> forDurationSecs(0.5f), 
-                () -> {
-                    lifter.driveLifter(LifterDirection.DOWN, Speed.SLOW);
-                    claw.stop();
-                    drive.stop();
-                });
-        addAction("Done",
-                () -> forever(), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.stop();
-                    });
-    }
+//    private void initGrabCan()
+//    {
+//        // Start facing the wall in front of an item (container or tote), pick it up
+//        // and carry it rolling backwards to the auto zone.
+//        Gyro2015.getInstance().reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
+//        addAction("Close claw to grip container or tote",
+//                () -> claw.isClosed(),
+//                () -> {
+//                    lifter.stop();
+//                    claw.moveClaw(ClawMoveDirection.CLOSE, false);
+//                    drive.stop();
+//                });
+//        addAction("Lift container", 
+//                () -> forDurationSecs(0.5f),
+//                () -> {
+//                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
+//                    claw.stop();
+//                    drive.stop();
+//                });
+//        addAction("Lift container and drive backwards", 
+//                () -> forDurationSecs(1.25f),
+//                () -> {
+//                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
+//                    claw.stop();
+//                    drive.arcadeDrive(null, false);
+//                });
+//        addAction("Drive backwards", 
+//                () -> forDurationSecs(1.75f),
+//                () -> {
+//                    lifter.stop();
+//                    claw.stop();
+//                    drive.arcadeDrive(null, false);
+//                });
+//        addAction("Turn in place", 
+//                () -> forDurationSecs(0.7f),
+//                () -> {
+//                    lifter.stop();
+//                    claw.stop();
+//                    drive.turnDrive(0.6);
+//                });
+//        addAction("Done",
+//                () -> forever(), 
+//                () -> {
+//                    lifter.stop();
+//                    claw.stop();
+//                    drive.stop();
+//                });
+//    }
 
     private void initStayInPlace()
     {
@@ -467,6 +398,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH_OVER_RAMP, HOOK_AND_PUSH, AIM
+        NO_AUTO, AIM
     }
 }
