@@ -221,14 +221,14 @@ public class Autonomous
                 () -> {
                     lifter.driveLifter(LifterDirection.UP, Speed.FAST);
                     claw.stop();
-                    drive.crabDrive(Math.PI, 0.6, false);
+                    drive.arcadeDrive(Math.PI, 0.6, false);
                 });
         addAction("Drive backwards", 
                 () -> forDurationSecs(1.75f),
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.crabDrive(Math.PI, 0.6, false);
+                    drive.arcadeDrive(Math.PI, 0.6, false);
                 });
         addAction("Turn in place", 
                 () -> forDurationSecs(0.7f),
@@ -255,7 +255,7 @@ public class Autonomous
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.crabDrive(Math.PI / 2, 0.5, false);
+                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
                 });
         addAction("Stop driving", 
                 () -> forever(), 
@@ -278,14 +278,14 @@ public class Autonomous
                 () -> {
                     lifter.driveLifter(LifterDirection.UP, Speed.FAST);
                     claw.stop();
-                    drive.crabDrive(Math.PI / 2, 0, false);
+                    drive.arcadeDrive(Math.PI / 2, 0, false);
                 });
         addAction("Stop lifting and drive sideways", 
                 () -> forDurationSecs(sidewaysSecs),
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.crabDrive(Math.PI / 2, 0.5, false);
+                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
                 });
         addAction("Lower lifter and stop driving", 
                 () -> forDurationSecs(0.5f), 

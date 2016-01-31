@@ -2,8 +2,8 @@ package org.usfirst.frc.team467.robot;
 
 public enum DriveMode
 {
-    CRAB_FA,                    // Crab Drive - Field Aligned
-    CRAB_NO_FA,                 // Crab Drive - No Field Alignment
+    ARCADE_FA,                    // Crab Drive - Field Aligned
+    ARCADE_NO_FA,                 // Crab Drive - No Field Alignment
     TURN, 		                // Turn in Place
     STRAFE_FRONT,                  // Drive Forwards Slowly
     STRAFE_LEFT, 	            // Drive left Slowly

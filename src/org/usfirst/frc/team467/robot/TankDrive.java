@@ -21,10 +21,11 @@ public class TankDrive implements Driveable
     }
 
     @Override
-    public void crabDrive(double angle, double speed, boolean fieldAlign)
+    public void arcadeDrive(double angle, double speed, boolean fieldAlign)
     {
-        // TODO Auto-generated method stub
-
+        final double rotation = angle/(2*Math.PI);
+        front.drive(speed, rotation);
+        back.drive(speed, rotation);
     }
 
     @Override

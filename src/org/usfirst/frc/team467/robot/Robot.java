@@ -248,8 +248,8 @@ public class Robot extends IterativeRobot
                 drive.turnDrive(-driverstation.getDriveJoystick().getTwist()/2);
                 break;
 
-            case CRAB_FA:
-            case CRAB_NO_FA:
+            case ARCADE_FA:
+            case ARCADE_NO_FA:
                 if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
                 {
                     // Don't start driving until commanded speed greater than minimum
@@ -257,8 +257,8 @@ public class Robot extends IterativeRobot
                 }
                 else
                 {
-                    drive.crabDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
-                            .getStickDistance(), (driveMode == DriveMode.CRAB_FA));
+                    drive.arcadeDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
+                            .getStickDistance(), (driveMode == DriveMode.ARCADE_FA));
                 }
                 break;
         }        

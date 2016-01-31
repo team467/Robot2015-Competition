@@ -195,11 +195,11 @@ public class DriverStation2015
         boolean flap = getDriveJoystick().getFlap();
         int pov = getDriveJoystick().getPOV();
 
-        DriveMode drivemode = DriveMode.CRAB_NO_FA;  // default is regular crab drive
+        DriveMode drivemode = DriveMode.ARCADE_NO_FA;  // default is regular crab drive
         
         if (flap) // If flap is up
         {
-            drivemode = DriveMode.CRAB_FA;
+            drivemode = DriveMode.ARCADE_FA;
         }
         
         if (getDriveJoystick().buttonDown(TURN_BUTTON))
