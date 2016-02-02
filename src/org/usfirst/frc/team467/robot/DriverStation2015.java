@@ -117,7 +117,6 @@ public class DriverStation2015
     {
         return AutoType.AIM;
         // Dial positions are mutually exclusive
-
 //        return AutoType.NO_AUTO;
     }
 

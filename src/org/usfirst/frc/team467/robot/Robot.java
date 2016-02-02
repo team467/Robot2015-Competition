@@ -68,8 +68,8 @@ public class Robot extends IterativeRobot
         CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
         
         // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
-        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-//        drive = new TankDrive(1, 0, 3, 2);
+//        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+        drive = new TankDrive(1, 0, 3, 2);
         
         // Make robot objects
         driverstation = DriverStation2015.getInstance();

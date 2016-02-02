@@ -295,14 +295,14 @@ public class Autonomous
             return false;
         }
         
-        final double minTurnSpeed = 0.20;
-        final double maxTurnSpeed = 0.26;
+        final double minTurnSpeed = 0.40;
+        final double maxTurnSpeed = 0.55;
         final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
         final double horizontalCenter = vision.getHorizontalCenter();
         
         LOGGER.debug("start seekWidestContour()");
         List<VisionProcessor.Contour> contours = vision.getContours();
-        LOGGER.debug("found contours");
+        LOGGER.debug("Found " + contours.size() + "contours");
         
         if (contours.size() == 0)
         {
@@ -313,9 +313,9 @@ public class Autonomous
         LOGGER.debug("Has contours");
         // Find the widest contour
         VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
-        LOGGER.debug("Found widest contour");
         final double centerX = widest.getCenterX();
         final double delta = Math.abs(centerX - horizontalCenter);
+        LOGGER.debug("Found widest contour, centerX=" + centerX + " delta=" + delta);
         if (delta < marginOfError)
         {
             // Found target
