@@ -13,7 +13,7 @@ public class RollingAverageTest
     {
         RollingAverage rolling = new RollingAverage(5);
 
-        for (int i = 0; i <= 5; i++)
+        for (double i = 0; i <= 5; i++)
         {
             // 1 through 5
             rolling.add(i);

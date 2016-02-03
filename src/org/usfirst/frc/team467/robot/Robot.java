@@ -13,9 +13,9 @@ import org.usfirst.frc.team467.robot.LEDStrip.Mode;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.Ultrasonic;
-
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -28,6 +28,8 @@ public class Robot extends IterativeRobot
     private static final Logger LOGGER = Logger.getLogger(Robot.class);
 
     private static final double MIN_DRIVE_SPEED = 0.1;
+    
+    Gyro2016 gyro2016 = new Gyro2016();
 
     // Robot objects
     private DriverStation2015 driverstation;
@@ -35,15 +37,15 @@ public class Robot extends IterativeRobot
     public Driveable drive;
     private PowerDistroBoard467 board;
     private Autonomous autonomous;
-
+  
     private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
     
     private Lifter lifter;
     private Claw claw;
-//    private Gyro2015 gyro;
     private Ultrasonic ultrasonic;
 
+    private Gyro gyro;
     int session;
     
     private LEDStrip ledStrip = new LEDStrip();
@@ -80,13 +82,16 @@ public class Robot extends IterativeRobot
         vision = VisionProcessor.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
-//        gyro = Gyro2015.getInstance();
+        gyro = gyro2016.gyro();
         ultrasonic = new Ultrasonic(1, 0);
         ledStrip.setMode(Mode.OFF);
         
         autonomous.setDrive(drive);
         autonomous.setUltrasonic(ultrasonic);
-
+        
+        ledStrip.setMode(Mode.OFF);
+        
+       
         // Initialize the camera dashboard and launch in separate thread.
 //        cameraDashboard = CameraDashboard.getInstance();
 //        cameraDashboard.setDrive(drive);
@@ -109,7 +114,7 @@ public class Robot extends IterativeRobot
     public void disabledPeriodic()
     {
         vision.updateContours();
-//        gyro.update();
+ //       gyro.update();
         ledStrip.setMode(Mode.BLUE_AND_GOLD);
     }
 
@@ -123,6 +128,8 @@ public class Robot extends IterativeRobot
     public void teleopInit()
     {
         LOGGER.info("Teleop init");
+        
+        
     }
 
     public void testInit()
@@ -157,15 +164,9 @@ public class Robot extends IterativeRobot
         vision.updateContours();
         // Read driverstation inputs
         driverstation.readInputs();
-//        gyro.update();
-//        if (driverstation.getGyroReset())
-//        {
-//            System.out.println("GYRO RESET");
-//            gyro.reset();
-//        }
-//        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
-        
+
         LOGGER.info("Distance: " + ultrasonic.getRangeInches());
+
         if (driverstation.getCalibrate())
         {
             // Calibrate Mode
