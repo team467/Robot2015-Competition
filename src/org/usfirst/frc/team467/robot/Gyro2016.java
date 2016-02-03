@@ -13,10 +13,10 @@ public class Gyro2016
         return gyro;
     }
    
-    public void autonomous(){
+    public double autonomous(){
         gyro.reset();
-        
         double angle = gyro.getAngle();
+        return angle;
     }
 
 }

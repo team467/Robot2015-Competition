@@ -194,6 +194,8 @@ public class Robot extends IterativeRobot
                     ledStrip.setMode(Mode.BLUE_AND_GOLD);
                     break;
             }
+
+            LOGGER.debug("GYRO angle : " +  gyro2016.autonomous());
         }
         else if (time > 20)
         {
