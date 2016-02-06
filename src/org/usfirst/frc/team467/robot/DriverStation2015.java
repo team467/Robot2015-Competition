@@ -7,30 +7,19 @@ public class DriverStation2015
 {
     private static final Logger LOGGER = Logger.getLogger(DriverStation2015.class);
     
-    private static DriverStation2015 driverstation2015 = null;
+    private static DriverStation2015 instance = null;
 
-    Joystick467 driverJoy = null;
+    Joystick467 driverJoy1 = null;
+    Joystick467 driverJoy2 = null;
     ButtonPanel2015 buttonPanel = null;
+    private int numSticks = 0;
     
     // Mapping of functions to Joystick Buttons for normal operation
-    private static int SLOW_BUTTON = Joystick467.TRIGGER;
-    private static int TURN_BUTTON = 2;
     private static int REVOLVE_LARGE_LEFT_BUTTON = 3;
     private static int REVOLVE_LARGE_RIGHT_BUTTON = 4;
     private static int REVOLVE_SMALL_LEFT_BUTTON = 5;
     private static int REVOLVE_SMALL_RIGHT_BUTTON = 6;
-    private static int TURBO_BUTTON = 7;
     private static int GYRO_RESET_BUTTON = 8;
-    
-    // Mapping of functions to Joystick Buttons for calibration mode
-    private static int CALIBRATE_CONFIRM_BUTTON = Joystick467.TRIGGER;
-    private static int CALIBRATE_SLOW_BUTTON = 4;
-    
-    // Mapping of POV position to functions
-    private static int POV_STRAFE_FRONT = 0;
-    private static int POV_STRAFE_LEFT = 270;
-    private static int POV_STRAFE_RIGHT = 90;
-    private static int POV_STRAFE_BACK = 180;
     
     private static int UNWIND_BUTTON = 10;
 
@@ -63,20 +52,26 @@ public class DriverStation2015
      */
     public static DriverStation2015 getInstance()
     {
-        if (driverstation2015 == null)
+        if (instance == null)
         {
-            driverstation2015 = new DriverStation2015();
+            instance = new DriverStation2015(1);
         }
-        return driverstation2015;
+        return instance;
     }
 
     /**
      * Private constructor
      */
-    private DriverStation2015()
+    private DriverStation2015(int numSticks)
     {
-        driverJoy = new Joystick467(0);
-        buttonPanel = new ButtonPanel2015(1, false);
+        driverJoy1 = new LogitechJoystick(0);
+        if (numSticks == 2)
+        {
+            driverJoy2 = new LogitechJoystick(1);
+        }
+        // The port for the button panel is one higher than the last joystick.
+        buttonPanel = new ButtonPanel2015(numSticks, false); // Last joystick
+        this.numSticks = numSticks;
     }
 
     /**
@@ -84,7 +79,11 @@ public class DriverStation2015
      */
     public void readInputs()
     {
-        driverJoy.readInputs();
+        driverJoy1.readInputs();
+        if (driverJoy2 != null)
+        {
+            driverJoy2.readInputs();
+        }
         buttonPanel.readInputs();
         buttonPanel.updateLEDs();
     }
@@ -158,13 +157,19 @@ public class DriverStation2015
     }
 
     /**
-     * Gets joystick instance used by driver.
-     *
-     * @return
+     * @return first joystick instance used by driver.
      */
-    public Joystick467 getDriveJoystick()
+    public Joystick467 getDriveJoystick1()
     {
-        return driverJoy;
+        return driverJoy1;
+    }
+    
+    /**
+     * @return second joystick instance used by driver.
+     */
+    public Joystick467 getDriveJoystick2()
+    {
+        return driverJoy2;
     }
 
     /**
@@ -174,7 +179,7 @@ public class DriverStation2015
      */
     public Joystick467 getCalibrationJoystick()
     {
-        return driverJoy;
+        return driverJoy1;
     }
 
     // All button mappings are accessed through the functions below
@@ -187,62 +192,61 @@ public class DriverStation2015
      */
     public DriveMode getDriveMode()
     {
-        boolean flap = getDriveJoystick().getFlap();
-        int pov = getDriveJoystick().getPOV();
+        boolean fieldAligned = getDriveJoystick1().getFieldAligned();
+        Direction strafe = getDriveJoystick1().getStrafeDirection();
 
         DriveMode drivemode = DriveMode.ARCADE_NO_FA;  // default is regular crab drive
         
-        if (flap) // If flap is up
+        if (fieldAligned)
         {
             drivemode = DriveMode.ARCADE_FA;
         }
         
-        if (getDriveJoystick().buttonDown(TURN_BUTTON))
+        if (getDriveJoystick1().getTurnButton())
         {
             drivemode = DriveMode.TURN;
         }
         
-        if (pov == POV_STRAFE_FRONT)
+        switch (strafe)
         {
-            drivemode = DriveMode.STRAFE_FRONT;
+            case FRONT:
+                drivemode = DriveMode.STRAFE_FRONT;
+                break;
+            case LEFT:
+                drivemode = DriveMode.STRAFE_LEFT;
+                break;
+            case BACK:
+                drivemode = DriveMode.STRAFE_BACK;
+                break;
+            case RIGHT:
+                drivemode = DriveMode.STRAFE_RIGHT;
+                break;
+            default:
+                // Eat default, nothing happens here
+                break;
         }
         
-        if (pov == POV_STRAFE_LEFT)
-        {
-            drivemode = DriveMode.STRAFE_LEFT;
-        }
-        
-        if (pov == POV_STRAFE_RIGHT)
-        {
-            drivemode = DriveMode.STRAFE_RIGHT;
-        }
-        
-        if (pov == POV_STRAFE_BACK)
-        {
-            drivemode = DriveMode.STRAFE_BACK;
-        }
-        
-        if (getDriveJoystick().buttonDown(REVOLVE_SMALL_LEFT_BUTTON))
+        if (getDriveJoystick1().buttonDown(REVOLVE_SMALL_LEFT_BUTTON))
         {
             drivemode = DriveMode.REVOLVE_SMALL_LEFT;
         }
         
-        if (getDriveJoystick().buttonDown(REVOLVE_SMALL_RIGHT_BUTTON))
+        if (getDriveJoystick1().buttonDown(REVOLVE_SMALL_RIGHT_BUTTON))
         {
             drivemode = DriveMode.REVOLVE_SMALL_RIGHT;
         }
         
-        if (getDriveJoystick().buttonDown(REVOLVE_LARGE_LEFT_BUTTON))
+        if (getDriveJoystick1().buttonDown(REVOLVE_LARGE_LEFT_BUTTON))
         {
             drivemode = DriveMode.REVOLVE_LARGE_LEFT;
         }
         
-        if (getDriveJoystick().buttonDown(REVOLVE_LARGE_RIGHT_BUTTON))
+        if (getDriveJoystick1().buttonDown(REVOLVE_LARGE_RIGHT_BUTTON))
         {
             drivemode = DriveMode.REVOLVE_LARGE_RIGHT;
         }
         
-        if (getDriveJoystick().buttonDown(UNWIND_BUTTON))
+        if (getDriveJoystick1().buttonDown(UNWIND_BUTTON))
         {
             drivemode = DriveMode.UNWIND;
         }
@@ -255,7 +259,7 @@ public class DriverStation2015
      */
     public boolean getSlow()
     {
-        return getDriveJoystick().buttonDown(SLOW_BUTTON);
+        return getDriveJoystick1().getSlow();
     }
 
     /**
@@ -264,7 +268,7 @@ public class DriverStation2015
      */
     public boolean getTurbo()
     {
-        return getDriveJoystick().buttonDown(TURBO_BUTTON);
+        return getDriveJoystick1().getTurbo();
     }
 
     // Calibration functions. Calibration is a separate use mode - so the buttons used
@@ -281,7 +285,7 @@ public class DriverStation2015
     
     public boolean getGyroReset()
     {
-        return driverJoy.buttonDown(GYRO_RESET_BUTTON);
+        return driverJoy1.buttonDown(GYRO_RESET_BUTTON);
     }
 
     /**
@@ -290,16 +294,7 @@ public class DriverStation2015
      */
     public boolean getCalibrateConfirmSelection()
     {
-        return getCalibrationJoystick().buttonDown(CALIBRATE_CONFIRM_BUTTON);
-    }
-
-    /**
-     * 
-     * @return true if button to enable calibration slow turn mode is pressed
-     */
-    public boolean getCalibrateSlowTurn()
-    {
-        return getCalibrationJoystick().buttonDown(CALIBRATE_SLOW_BUTTON);
+        return getCalibrationJoystick().getCalibrateConfirm();
     }
 
     /**
@@ -365,7 +360,7 @@ public class DriverStation2015
     
     public boolean getResetGyro()
     {
-        return driverJoy.buttonDown(8);
+        return driverJoy1.getResetGyro();
     }
 
     /**

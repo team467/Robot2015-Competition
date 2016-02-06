@@ -250,25 +250,32 @@ public class Robot extends IterativeRobot
                 break;
                 
             case TURN:
-                drive.turnDrive(-driverstation.getDriveJoystick().getTwist()/2);
+                drive.turnDrive(-driverstation.getDriveJoystick1().getTurn()/2);
                 break;
 
             case ARCADE_FA:
             case ARCADE_NO_FA:
-                if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
+                if (driverstation.getDriveJoystick2() == null)
                 {
-                    // Don't start driving until commanded speed greater than minimum
-                    drive.stop();
+                    if (driverstation.getDriveJoystick1().getStickDistance() < MIN_DRIVE_SPEED)
+                    {
+                        // Don't start driving until commanded speed greater than minimum
+                        drive.stop();
+                    }
+                    else
+                    {
+//                        drive.arcadeDrive(
+//                                  driverstation.getDriveJoystick().getStickAngle(),
+//                                  driverstation.getDriveJoystick().getStickDistance(),
+//                                  (driveMode == DriveMode.ARCADE_FA));
+                        drive.oneStickDrive(
+                                driverstation.getDriveJoystick1(),
+                                (driveMode == DriveMode.ARCADE_FA));
+                    }
                 }
                 else
                 {
-//                    drive.arcadeDrive(
-//                            driverstation.getDriveJoystick().getStickAngle(),
-//                            driverstation.getDriveJoystick().getStickDistance(),
-//                            (driveMode == DriveMode.ARCADE_FA));
-                    drive.arcadeDrive(
-                            driverstation.getDriveJoystick(),
-                            (driveMode == DriveMode.ARCADE_FA));
+                    drive.twoStickDrive(driverstation.getDriveJoystick1(), driverstation.getDriveJoystick2());
                 }
                 break;
         }        

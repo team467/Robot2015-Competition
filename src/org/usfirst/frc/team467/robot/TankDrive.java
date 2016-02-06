@@ -25,13 +25,23 @@ public class TankDrive implements Driveable
     }
 
     @Override
-    public void arcadeDrive(Joystick467 joystick, boolean fieldAlign)
+    public void oneStickDrive(Joystick467 joystick, boolean fieldAlign)
     {
-        final double x = joystick.getStickX();
-        final double y = joystick.getStickY();
-        LOGGER.debug("x=" + x + " y=" + y);
-        front.arcadeDrive(-y, -x);
-        back.arcadeDrive(y, -x);
+        final double turn = joystick.getTankTurn();
+        final double speed = joystick.getTankSpeed();
+        LOGGER.debug("turn=" + turn + " speed=" + speed);
+        front.arcadeDrive(-speed, -turn);
+        back.arcadeDrive(speed, -turn);
+    }
+
+    @Override
+    public void twoStickDrive(Joystick467 joystickLeft, Joystick467 joystickRight)
+    {
+        final double speedLeft = joystickLeft.getTankSpeed();
+        final double speedRight = joystickRight.getTankSpeed();
+        LOGGER.debug("twoStickDrive speedLeft=" + speedLeft + " speedRight=" + speedRight);
+//        front.tankDrive(-speedLeft, -speedRight);
+        back.tankDrive(speedLeft, speedRight);
     }
 
     @Override
@@ -65,8 +75,7 @@ public class TankDrive implements Driveable
             case BACK:
                 speed = -speed;
                 break;
-            case LEFT:
-            case RIGHT:
+            default:
                 speed = 0.0;
                 return;
         }
@@ -77,21 +86,21 @@ public class TankDrive implements Driveable
     @Override
     public void revolveDriveLarge(Direction direction)
     {
-        // TODO Auto-generated method stub
+        // Not applicable
 
     }
 
     @Override
     public void revolveDriveSmall(Direction direction)
     {
-        // TODO Auto-generated method stub
+        // Not applicable
 
     }
 
     @Override
     public void individualWheelDrive(double speed, int steeringId)
     {
-        // TODO Auto-generated method stub
+        // Not Applicable
 
     }
 

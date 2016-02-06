@@ -119,7 +119,7 @@ public class Calibration
     private static int getWheelStick(int prevSelectedWheel)
     {
         Joystick467 joystick = DriverStation2015.getInstance().getCalibrationJoystick();
-        double stickAngle = joystick.getStickAngle();
+        double stickAngle = joystick.getAngle();
 
         // Select motor being calibrated
         if (joystick.getStickDistance() > 0.5)
@@ -165,23 +165,13 @@ public class Calibration
     {
 
         // If slow pressed on stick is pressed, slow down wheel calibration.
-        double rateMultiplier = (DriverStation2015.getInstance().getCalibrateSlowTurn()) ? getCalibrationSlowTurnRate() : 1;
+        double rateMultiplier = (DriverStation2015.getInstance().getSlow()) ? 0.4 : 1;
 
         // Drive motor based on twist angle
         // Increase wheel angle by a small amount based on joystick twist
-        prevCalibrationAngle += (DriverStation2015.getInstance().getCalibrationJoystick().getTwist() / 100.0) * rateMultiplier;
+        prevCalibrationAngle += (DriverStation2015.getInstance().getCalibrationJoystick().getTurn() / 100.0) * rateMultiplier;
 
         return prevCalibrationAngle;
-    }
-
-    /**
-     * rate of turn slow down modifier
-     * 
-     * @return
-     */
-    private static double getCalibrationSlowTurnRate()
-    {
-        return 0.4;
     }
 
     // This is a static variable to define the wheel being calibrated.
@@ -199,5 +189,4 @@ public class Calibration
             LOGGER.info("Calibration Updated, Wheel: " + RobotMap.STEERING_KEYS[calibrateWheelSelect]);
         }
     }
-
 }
