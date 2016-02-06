@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 /**
  *
  */
-public class LogitechJoystick implements Joystick467
+public class LogitechJoystick implements MainJoystick467, RightJoystick467
 {
     private Joystick joystick;
     private boolean[] buttons = new boolean[12];     // array of current button states

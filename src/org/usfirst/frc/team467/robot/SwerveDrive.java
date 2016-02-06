@@ -296,13 +296,13 @@ public class SwerveDrive implements Driveable
      * @param fieldAlign
      *            Whether or not to use field align drive
      */
-    public void oneStickDrive(Joystick467 joystick, boolean fieldAlign)
+    public void oneStickDrive(MainJoystick467 joystick, boolean fieldAlign)
     {
         crabDrive(joystick.getAngle(), joystick.getStickDistance(), fieldAlign);
     }
 
     @Override
-    public void twoStickDrive(Joystick467 joystickLeft, Joystick467 joystickRight)
+    public void twoStickDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight)
     {
         // TODO Auto-generated method stub
         LOGGER.debug("twoStickDrive leftSpeed=" + joystickLeft.getTankSpeed() +

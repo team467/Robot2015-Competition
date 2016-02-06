@@ -70,7 +70,7 @@ public class TankDrive implements Driveable
     }
 
     @Override
-    public void oneStickDrive(Joystick467 joystick, boolean fieldAlign)
+    public void oneStickDrive(MainJoystick467 joystick, boolean fieldAlign)
     {
         final double turn = joystick.getTankTurn();
         final double speed = joystick.getTankSpeed();
@@ -104,7 +104,7 @@ public class TankDrive implements Driveable
     }
 
     @Override
-    public void twoStickDrive(Joystick467 joystickLeft, Joystick467 joystickRight)
+    public void twoStickDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight)
     {
         final double speedLeft = joystickLeft.getTankSpeed();
         final double speedRight = joystickRight.getTankSpeed();

@@ -9,10 +9,11 @@ public class DriverStation2015
     
     private static DriverStation2015 instance = null;
 
-    Joystick467 driverJoy1 = null;
-    Joystick467 driverJoy2 = null;
+    MainJoystick467 driverJoy1 = null;
+    RightJoystick467 driverJoy2 = null;
     ButtonPanel2015 buttonPanel = null;
     private int numSticks = 0;
+    private JoystickType type;
     
     // Mapping of functions to Joystick Buttons for normal operation
     private static int REVOLVE_LARGE_LEFT_BUTTON = 3;
@@ -44,6 +45,11 @@ public class DriverStation2015
     {
         SLOW, FAST
     }
+    
+    enum JoystickType
+    {
+        LOGITECH, PLAYSTATION
+    }
 
     /**
      * Singleton instance of the object.
@@ -54,7 +60,7 @@ public class DriverStation2015
     {
         if (instance == null)
         {
-            instance = new DriverStation2015(1);
+            instance = new DriverStation2015(JoystickType.LOGITECH, 1);
         }
         return instance;
     }
@@ -62,16 +68,30 @@ public class DriverStation2015
     /**
      * Private constructor
      */
-    private DriverStation2015(int numSticks)
+    private DriverStation2015(JoystickType type, int numSticks)
     {
-        driverJoy1 = new LogitechJoystick(0);
-        if (numSticks == 2)
+        if (type == JoystickType.LOGITECH)
         {
-            driverJoy2 = new LogitechJoystick(1);
+            driverJoy1 = new LogitechJoystick(0);
+            if (numSticks == 2)
+            {
+                driverJoy2 = new LogitechJoystick(1);
+            }
+            // The port for the button panel is one higher than the last joystick.
+            buttonPanel = new ButtonPanel2015(numSticks, false); // Last joystick
+            this.numSticks = numSticks;
         }
-        // The port for the button panel is one higher than the last joystick.
-        buttonPanel = new ButtonPanel2015(numSticks, false); // Last joystick
-        this.numSticks = numSticks;
+        if (type == JoystickType.PLAYSTATION)
+        {
+            driverJoy1 = new PlayStationJoystickMain(0);
+            if (numSticks == 2)
+            {
+                driverJoy2 = new PlayStationJoystickRight(0);
+            }
+            // The port for the button panel is one higher than the last joystick.
+            buttonPanel = new ButtonPanel2015(1, false); // Last joystick
+            this.numSticks = numSticks;
+        }
     }
 
     /**
@@ -159,7 +179,7 @@ public class DriverStation2015
     /**
      * @return first joystick instance used by driver.
      */
-    public Joystick467 getDriveJoystick1()
+    public MainJoystick467 getDriveJoystick1()
     {
         return driverJoy1;
     }
@@ -167,7 +187,7 @@ public class DriverStation2015
     /**
      * @return second joystick instance used by driver.
      */
-    public Joystick467 getDriveJoystick2()
+    public RightJoystick467 getDriveJoystick2()
     {
         return driverJoy2;
     }
@@ -177,7 +197,7 @@ public class DriverStation2015
      *
      * @return
      */
-    public Joystick467 getCalibrationJoystick()
+    public MainJoystick467 getCalibrationJoystick()
     {
         return driverJoy1;
     }

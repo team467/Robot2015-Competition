@@ -118,7 +118,7 @@ public class Calibration
     @SuppressWarnings("unused")   // used if/when joystick is used for calibration
     private static int getWheelStick(int prevSelectedWheel)
     {
-        Joystick467 joystick = DriverStation2015.getInstance().getCalibrationJoystick();
+        MainJoystick467 joystick = DriverStation2015.getInstance().getCalibrationJoystick();
         double stickAngle = joystick.getAngle();
 
         // Select motor being calibrated

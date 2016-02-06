@@ -2,9 +2,8 @@ package org.usfirst.frc.team467.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-public interface Joystick467
+public interface MainJoystick467
 {
-
     /**
      * Returns the jaw joystick object inside Joystick467
      * 
