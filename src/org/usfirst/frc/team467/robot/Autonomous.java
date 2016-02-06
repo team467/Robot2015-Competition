@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +18,9 @@ public class Autonomous
 
     private static Autonomous autonomous = null;
 
+    Gyro2016 gyro = null;
+    private AnalogGyro Agyro = null;
+    
     private Driveable drive = null;
     private Claw claw = null;
     private Lifter lifter = null;
@@ -25,9 +30,9 @@ public class Autonomous
     long actionStartTimeMS = -1;
 
     /**
-     * Run the said action until this returns true.
+     * Run the said action while the condition returns true.
      */
-    private interface DoneCondition
+    private interface WhileCondition
     {
         boolean call();
     }
@@ -45,15 +50,15 @@ public class Autonomous
 
     private static class Activity
     {
-        // The doneCondition should return false until then condition is met, then return true.
+        // The WhileCondition should return true until the action returns false.
         private final String description;
-        private final DoneCondition doneCondition;
+        private final WhileCondition whileCondition;
         private final Action action;
 
-        private Activity(String description, DoneCondition doneCondition, Action action)
+        private Activity(String description, WhileCondition whileCondition, Action action)
         {
             this.description = description;
-            this.doneCondition = doneCondition;
+            this.whileCondition = whileCondition;
             this.action = action;
         }
 
@@ -69,18 +74,18 @@ public class Autonomous
 
         boolean isDone()
         {
-            return doneCondition.call();
+            return whileCondition.call();
         }
     }
 
     List<Activity> actions = new LinkedList<Activity>();
 
-    private void addAction(String description, DoneCondition doneCondition, Action action)
+    private void addAction(String description, WhileCondition whileCondition, Action action)
     {
-        actions.add(new Activity(description, doneCondition, action));
+        actions.add(new Activity(description, whileCondition, action));
     }
 
-    // Returns false for durationSecs, then returns true.
+    // Returns true for durationSecs, then returns false.
     private boolean forDurationSecs(float durationSecs)
     {
         LOGGER.debug("forDurationSecs durationSecs=" + durationSecs);
@@ -92,14 +97,14 @@ public class Autonomous
 
         final long now = System.currentTimeMillis();
         final long durationMS = (long) (1000 * durationSecs);
-        return now > actionStartTimeMS + durationMS;
+        return now < actionStartTimeMS + durationMS;
     }
     
-    private boolean untilWidestCentered(int marginOfError)
+    private boolean whileWidestNotCentered(int marginOfError)
     {
         if (!vision.isEnabled())
         {
-            return false;
+            return true;
         }
             
         try
@@ -110,12 +115,12 @@ public class Autonomous
             final double centerX = contour.getCenterX();
             final double delta = Math.abs(centerX - vision.getHorizontalCenter());
             LOGGER.debug("untilCentered centerY=" + centerX + " delta=" + delta);
-            return delta < marginOfError;
+            return delta > marginOfError;
         }
         catch (Exception e)
         {
             LOGGER.info("Missed contour: " + e);
-            return false;
+            return true;
         }
     }
     
@@ -128,7 +133,7 @@ public class Autonomous
     private boolean forever()
     {
         // Never done.
-        return false;
+        return true;
     }
 
     /**
@@ -142,7 +147,7 @@ public class Autonomous
         {
             autonomous = new Autonomous(
                     Claw.getInstance(),
-                    Lifter.getInstance(), VisionProcessor.getInstance());
+                    Lifter.getInstance(), VisionProcessor.getInstance(), Gyro2016.getInstance());
         }
         return autonomous;
     }
@@ -158,13 +163,15 @@ public class Autonomous
 
     /**
      * Private constructor to setup the Autonomous
+     * @param gyro2 
      */
-    private Autonomous(Claw claw, Lifter lifter, VisionProcessor vision)
+    private Autonomous(Claw claw, Lifter lifter, VisionProcessor vision, Gyro2016 gyro)
     {
         // TODO Change drive, claw, and lifter to generics implementing respective interfaces
         this.claw = claw;
         this.lifter = lifter;
         this.vision = vision;
+        this.gyro = gyro;
     }
 
     /**
@@ -210,7 +217,49 @@ public class Autonomous
         // Start facing the wall in front of an item (container or tote), pick it up
         // and carry it rolling backwards to the auto zone.
         Gyro2015.getInstance().reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
-        addAction("Close claw to grip container or tote",
+//        addAction("Drive until angle reaches 8 degrees");
+        addAction("Move while flat",
+                () -> gyro.isFlat(),
+                () -> {
+                    drive.arcadeDrive(0, 0.5, false);
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                });
+        addAction("Move forward until gyro is 7 degrees",
+                () -> gyro.up(),
+                () -> {
+                    drive.arcadeDrive(0, 0.5, false);
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                });
+        addAction("Move",
+                () -> forDurationSecs(0.25f),
+                () -> {
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                    drive.arcadeDrive(0, 0.5, false);
+                });
+        addAction("Do nothing",
+                () -> forDurationSecs(0.1f),
+                () ->{
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                });
+        addAction("Move foward until gyro is 0 degrees",
+                () -> gyro.down(),
+                () ->{
+                    drive.arcadeDrive(0, 0.5, false);
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                });
+        addAction("Move",
+                () -> forDurationSecs(0.25f),
+                () -> {
+                    drive.arcadeDrive(0, 0.5, false);
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                });
+        addAction("Stop moving",
+                () -> gyro.isFlat(),
+                () -> {
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                    drive.stop();
+                });
+/*        addAction("Close claw to grip container or tote",
                 () -> claw.isClosed(),
                 () -> {
                     lifter.stop();
@@ -244,7 +293,7 @@ public class Autonomous
                     lifter.stop();
                     claw.stop();
                     drive.turnDrive(0.6);
-                });
+                });*/
         addAction("Done",
                 () -> forever(), 
                 () -> {

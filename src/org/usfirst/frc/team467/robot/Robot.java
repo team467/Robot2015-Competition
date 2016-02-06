@@ -29,7 +29,7 @@ public class Robot extends IterativeRobot
 
     private static final double MIN_DRIVE_SPEED = 0.1;
     
-    Gyro2016 gyro2016 = new Gyro2016();
+//    Gyro2016 gyro2016 = new Gyro2016();
 
     // Robot objects
     private DriverStation2015 driverstation;
@@ -70,8 +70,8 @@ public class Robot extends IterativeRobot
         CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
         
         // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
-        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-//        drive = new TankDrive(1, 0, 3, 2);
+//        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+        drive = new TankDrive(1, 0, 3, 2);
         
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
@@ -82,7 +82,7 @@ public class Robot extends IterativeRobot
         vision = VisionProcessor.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
-        gyro = gyro2016.gyro();
+ //       gyro = gyro2016.getInstance();
         ultrasonic = new Ultrasonic(1, 0);
         ledStrip.setMode(Mode.OFF);
         
@@ -109,6 +109,7 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
         LOGGER.info("Robot disabled");
+//        gyro2016.reset();
     }
 
     public void disabledPeriodic()
@@ -116,6 +117,9 @@ public class Robot extends IterativeRobot
         vision.updateContours();
  //       gyro.update();
         ledStrip.setMode(Mode.BLUE_AND_GOLD);
+        
+//        double angle = gyro2016.autonomous();
+//        LOGGER.debug("GYRO angle : " +  angle);
     }
 
     @Override
@@ -129,6 +133,7 @@ public class Robot extends IterativeRobot
     {
         LOGGER.info("Teleop init");
         
+//        gyro2016.reset();
         
     }
 
@@ -194,8 +199,8 @@ public class Robot extends IterativeRobot
                     ledStrip.setMode(Mode.BLUE_AND_GOLD);
                     break;
             }
-
-            LOGGER.debug("GYRO angle : " +  gyro2016.autonomous());
+//            double angle = gyro2016.autonomous();
+//            LOGGER.debug("GYRO angle : " +  angle);
         }
         else if (time > 20)
         {
@@ -205,6 +210,8 @@ public class Robot extends IterativeRobot
         {
             ledStrip.setMode(Mode.RAINBOW);
         }
+        
+//        LOGGER.debug("GYRO angle : " + gyro2016.autonomous());
     }
 
     /**
