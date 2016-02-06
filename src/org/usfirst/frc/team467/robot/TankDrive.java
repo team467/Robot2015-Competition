@@ -2,26 +2,71 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
-import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
 
 public class TankDrive implements Driveable
 {
     private static final Logger LOGGER = Logger.getLogger(TankDrive.class);
     
-    RobotDrive front;
-    RobotDrive back;
+    SpeedController fl;
+    SpeedController fr;
+    SpeedController bl;
+    SpeedController br;
 
-    public TankDrive(int frontLeftMotor, int frontRightMotor, int backLeftMotor, int backRightMotor)
+    private TankDrive(SpeedController fl, SpeedController fr, SpeedController bl, SpeedController br)
     {
-        front = new RobotDrive(frontLeftMotor, frontRightMotor);
-        back = new RobotDrive(backLeftMotor, backRightMotor);
+        this.fl = fl;
+        this.fr = fr;
+        this.bl = bl;
+        this.br = br;
     }
+    
+    public static TankDrive makeTalonTank(int fl, int fr, int bl, int br)
+    {
+        Talon flMotor = new Talon(fl);
+        Talon frMotor = new Talon(fr);
+        Talon blMotor = new Talon(bl);
+        Talon brMotor = new Talon(br);
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
+    }
+    
+    public static TankDrive makeJaguarTank(int fl, int fr, int bl, int br)
+    {
+        Jaguar flMotor = new Jaguar(fl);
+        Jaguar frMotor = new Jaguar(fr);
+        Jaguar blMotor = new Jaguar(bl);
+        Jaguar brMotor = new Jaguar(br);
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
+    }
+    
+    private double square(double number)
+    {
+        if (number >= 0.0)
+        {
+            return number * number;
+        }
+        else
+        {
+            return -(number * number);
+        }
+    }
+    
+    private void drive(double leftSpeed, double rightSpeed)
+    {
+        LOGGER.info("leftSpeed=" + (int)(100*leftSpeed) + " rightSpeed=" + (int)(100*rightSpeed));
+        fl.set(square(-leftSpeed));
+        fr.set(square(rightSpeed));
+        bl.set(square(-leftSpeed));
+        br.set(square(rightSpeed));
+    }
+
 
     @Override
     public void turnDrive(double speed)
     {
-        front.tankDrive(-speed, speed);
-        back.tankDrive(-speed, speed);
+        drive(speed, -speed);
     }
 
     @Override
@@ -29,9 +74,33 @@ public class TankDrive implements Driveable
     {
         final double turn = joystick.getTankTurn();
         final double speed = joystick.getTankSpeed();
+        final double left;
+        final double right;
         LOGGER.debug("turn=" + turn + " speed=" + speed);
-        front.arcadeDrive(-speed, -turn);
-        back.arcadeDrive(speed, -turn);
+        
+        if (speed > 0.0) {
+            if (turn > 0.0)
+            {
+              left = speed - turn;
+              right = Math.max(speed, turn);
+            }
+            else
+            {
+              left = Math.max(speed, -turn);
+              right = speed + turn;
+            }
+        }
+        else
+        {
+            if (turn > 0.0) {
+              left = -Math.max(-speed, turn);
+              right = speed + turn;
+            } else {
+              left = speed - turn;
+              right = -Math.max(-speed, -turn);
+            }
+        }
+        drive(left, right);
     }
 
     @Override
@@ -40,8 +109,7 @@ public class TankDrive implements Driveable
         final double speedLeft = joystickLeft.getTankSpeed();
         final double speedRight = joystickRight.getTankSpeed();
         LOGGER.debug("twoStickDrive speedLeft=" + speedLeft + " speedRight=" + speedRight);
-//        front.tankDrive(-speedLeft, -speedRight);
-        back.tankDrive(speedLeft, speedRight);
+        drive(speedLeft, speedRight);
     }
 
     @Override
@@ -53,8 +121,7 @@ public class TankDrive implements Driveable
     @Override
     public void stop()
     {
-        front.tankDrive(0.0, 0.0);
-        back.tankDrive(0.0, 0.0);
+        drive(0.0, 0.0);
     }
 
     @Override
@@ -66,7 +133,7 @@ public class TankDrive implements Driveable
     @Override
     public void strafeDrive(Direction direction)
     {
-        double speed = -0.6;
+        double speed = 0.6;
         switch (direction)
         {
             case FRONT:
@@ -79,8 +146,7 @@ public class TankDrive implements Driveable
                 speed = 0.0;
                 return;
         }
-        front.tankDrive(-speed, -speed);
-        back.tankDrive(speed, speed);
+        drive(-speed, -speed);
     }
 
     @Override

@@ -295,8 +295,8 @@ public class Autonomous
             return false;
         }
         
-        final double minTurnSpeed = 0.40;
-        final double maxTurnSpeed = 0.55;
+        final double minTurnSpeed = 0.35;
+        final double maxTurnSpeed = 0.45;
         final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
         final double horizontalCenter = vision.getHorizontalCenter();
         

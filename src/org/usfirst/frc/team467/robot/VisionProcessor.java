@@ -74,7 +74,7 @@ public class VisionProcessor
     {
         if (width == 0.0)
         {
-            throw new IllegalStateException();
+            throw new IllegalStateException("width is zero");
         }
         return width/2;
     }

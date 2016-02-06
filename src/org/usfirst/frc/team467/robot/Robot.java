@@ -69,7 +69,7 @@ public class Robot extends IterativeRobot
         
         // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-        drive = new TankDrive(1, 0, 3, 2);
+        drive = TankDrive.makeTalonTank(1, 0, 2, 3);
         
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
