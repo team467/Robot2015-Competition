@@ -3,6 +3,8 @@ package org.usfirst.frc.team467.robot;
 import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.Autonomous.AutoType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class DriverStation2015
 {
     private static final Logger LOGGER = Logger.getLogger(DriverStation2015.class);
@@ -12,8 +14,7 @@ public class DriverStation2015
     MainJoystick467 driverJoy1 = null;
     RightJoystick467 driverJoy2 = null;
     ButtonPanel2015 buttonPanel = null;
-    private int numSticks = 0;
-    private JoystickType type;
+    String stickType;
     
     // Mapping of functions to Joystick Buttons for normal operation
     private static int REVOLVE_LARGE_LEFT_BUTTON = 3;
@@ -45,11 +46,6 @@ public class DriverStation2015
     {
         SLOW, FAST
     }
-    
-    enum JoystickType
-    {
-        LOGITECH, PLAYSTATION
-    }
 
     /**
      * Singleton instance of the object.
@@ -60,7 +56,7 @@ public class DriverStation2015
     {
         if (instance == null)
         {
-            instance = new DriverStation2015(JoystickType.LOGITECH, 1);
+            instance = new DriverStation2015();
         }
         return instance;
     }
@@ -68,29 +64,44 @@ public class DriverStation2015
     /**
      * Private constructor
      */
-    private DriverStation2015(JoystickType type, int numSticks)
+    private DriverStation2015()
     {
-        if (type == JoystickType.LOGITECH)
+        makeJoysticks();
+    }
+    
+    private void makeJoysticks()
+    {
+        buttonPanel = new ButtonPanel2015(1, false); // Last joystick
+        String newStickType = SmartDashboard.getString("DB/String 0", "EMPTY");
+        SmartDashboard.putString("DB/String 5", newStickType);
+        LOGGER.info(newStickType);
+        if (newStickType.equals(stickType))
+        {
+            return;
+        }
+        stickType = newStickType;
+        if (stickType.startsWith("LT"))
         {
             driverJoy1 = new LogitechJoystick(0);
-            if (numSticks == 2)
+            if (stickType.endsWith("2"))
             {
-                driverJoy2 = new LogitechJoystick(1);
+                driverJoy2 = new LogitechJoystick(2);
+            }
+            else
+            {
+                driverJoy2 = null;
             }
             // The port for the button panel is one higher than the last joystick.
-            buttonPanel = new ButtonPanel2015(numSticks, false); // Last joystick
-            this.numSticks = numSticks;
         }
-        if (type == JoystickType.PLAYSTATION)
+        else if (stickType.startsWith("PS"))
         {
-            driverJoy1 = new PlayStationJoystickMain(0);
-            if (numSticks == 2)
-            {
-                driverJoy2 = new PlayStationJoystickRight(0);
-            }
+            driverJoy1 = new PlayStationJoystickMain(3);
+            driverJoy2 = new PlayStationJoystickRight(3);
             // The port for the button panel is one higher than the last joystick.
-            buttonPanel = new ButtonPanel2015(1, false); // Last joystick
-            this.numSticks = numSticks;
+        }
+        else
+        {
+            LOGGER.error("Auto Selector must have LT for Logitech or PS for Playstation");
         }
     }
 
@@ -99,6 +110,8 @@ public class DriverStation2015
      */
     public void readInputs()
     {
+        makeJoysticks();
+        
         driverJoy1.readInputs();
         if (driverJoy2 != null)
         {

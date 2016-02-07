@@ -43,7 +43,8 @@ public class PlayStationJoystickRight implements RightJoystick467
         }
         // Simply square the input to provide acceleration
         // ensuring that the sign of the input is preserved
-        return input * Math.abs(input);
+//        return input * Math.abs(input);
+      return input;
     }
 
     @Override

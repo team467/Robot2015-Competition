@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -111,6 +112,9 @@ public class Robot extends IterativeRobot
         vision.updateContours();
 //        gyro.update();
         ledStrip.setMode(Mode.BLUE_AND_GOLD);
+
+        String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
+        SmartDashboard.putString("DB/String 5", stickType);
     }
 
     @Override
@@ -165,7 +169,8 @@ public class Robot extends IterativeRobot
 //        }
 //        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
         
-        LOGGER.info("Distance: " + ultrasonic.getRangeInches());
+//        LOGGER.info("Distance: " + ultrasonic.getRangeInches());
+        SmartDashboard.putString("DB/String 9", String.valueOf(ultrasonic.getRangeInches()));
         if (driverstation.getCalibrate())
         {
             // Calibrate Mode

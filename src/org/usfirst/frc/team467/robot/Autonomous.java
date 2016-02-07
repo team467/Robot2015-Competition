@@ -7,6 +7,7 @@ import java.util.List;
 import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
 
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.apache.log4j.Logger;
 
@@ -295,12 +296,14 @@ public class Autonomous
             return false;
         }
         
-        final double minTurnSpeed = 0.35;
-        final double maxTurnSpeed = 0.45;
+//        final double minTurnSpeed = Double.parseDouble(SmartDashboard.getString("DB/String 3", "0.0"));
+//        final double maxTurnSpeed = Double.parseDouble(SmartDashboard.getString("DB/String 4", "0.0"));
+        final double minTurnSpeed = 0.3; // Double.parseDouble(SmartDashboard.getString("DB/String 3", "0.0"));
+        final double maxTurnSpeed = 0.45; // Double.parseDouble(SmartDashboard.getString("DB/String 4", "0.0"));
         final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
         final double horizontalCenter = vision.getHorizontalCenter();
         
-        LOGGER.debug("start seekWidestContour()");
+        LOGGER.debug("start seekWidestContour() minTurnSpeed=" + minTurnSpeed + " maxTurnSpeed=" + maxTurnSpeed);
         List<VisionProcessor.Contour> contours = vision.getContours();
         LOGGER.debug("Found " + contours.size() + "contours");
         
