@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.LEDStrip.Mode;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Ultrasonic;
@@ -44,6 +45,7 @@ public class Robot extends IterativeRobot
     private Claw claw;
 //    private Gyro2015 gyro;
     private Ultrasonic ultrasonic;
+    private DigitalInput robotID;
 
     int session;
     
@@ -67,10 +69,21 @@ public class Robot extends IterativeRobot
         CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
         CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
         CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+//        robotID = new DigitalInput(9);
+
+        // Robot id 0 = swerve
+        // Robot id 1 = kitbot tank
+        int robotID = new DigitalInput(9).get() ? 1 : 0;
         
-        // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
-//        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-        drive = TankDrive.makeTalonTank(1, 0, 2, 3);
+        if(robotID == 1) {
+            drive = TankDrive.makeTalonTank(1, 0, 2, 3);
+            LOGGER.info("Tank Set");
+            
+        }
+        else if (robotID == 0){
+            drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+            LOGGER.info("Swerve Set");
+        }
         
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
