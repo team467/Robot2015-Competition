@@ -212,12 +212,12 @@ public class Autonomous
         LOGGER.info("Beginning action: " + actions.get(0).getDescription());
     }
 
-    private void initGrabCan()
+    public void initGrabCan()
     {
         // Start facing the wall in front of an item (container or tote), pick it up
         // and carry it rolling backwards to the auto zone.
-        Gyro2015.getInstance().reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
-//        addAction("Drive until angle reaches 8 degrees");
+        
+        Gyro2016.getInstance();//.reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
         addAction("Move while flat",
                 () -> gyro.isFlat(),
                 () -> {
@@ -305,8 +305,9 @@ public class Autonomous
 
     private void initDriveOnly()
     {
-        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);// reset to upfield
+//        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);// reset to upfield
         // Drive to auto zone. Starts on the very edge and just creeps into the zone
+        Gyro2016.getInstance();
         addAction("Drive into auto zone", 
                 () -> forDurationSecs(2.0f), 
                 () -> {
@@ -329,7 +330,8 @@ public class Autonomous
     private void initHookAndPush(float sidewaysSecs)
     {
         // Starts facing left, reset to upfield.
-        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);
+//        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);
+        Gyro2016.getInstance();
         addAction("Raise lifter up and turn wheels sideways", 
                 () -> forDurationSecs(2.0f), 
                 () -> {
@@ -363,7 +365,8 @@ public class Autonomous
     private void initStayInPlace()
     {
         // Stay in place. Reset to upfield.
-        Gyro2015.getInstance().reset();
+//        Gyro2015.getInstance().reset();
+          Gyro2016.getInstance();
         addAction("Stop driving", 
                 () -> forever(), 
                 () -> {

@@ -9,13 +9,13 @@ public class Gyro2016
     private static Gyro2016 instance = null;  
     private AnalogGyro gyro = null;  
     
-    private Gyro2016(){
+    public Gyro2016(){
         gyro = new AnalogGyro(1);
         
     }
     
     public static Gyro2016 getInstance(){
-        LOGGER.info("getting instance");
+        LOGGER.info("getting instance of Gyro 2016");
         if(instance == null)
         {
             LOGGER.info("null Gyro");

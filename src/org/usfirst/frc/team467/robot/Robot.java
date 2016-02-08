@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
+//import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.Ultrasonic;
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,7 +29,7 @@ public class Robot extends IterativeRobot
 
     private static final double MIN_DRIVE_SPEED = 0.1;
     
-//    Gyro2016 gyro2016 = new Gyro2016();
+    Gyro2016 gyro2016 = new Gyro2016();
 
     // Robot objects
     private DriverStation2015 driverstation;
@@ -41,13 +41,14 @@ public class Robot extends IterativeRobot
     private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
     
+    private Gyro2016 gyro;
+    
     private Lifter lifter;
     private Claw claw;
     private Ultrasonic ultrasonic;
-
-    private Gyro gyro;
-    int session;
     
+    int session;
+        
     private LEDStrip ledStrip = new LEDStrip();
 
     /**
@@ -59,10 +60,11 @@ public class Robot extends IterativeRobot
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+    
     public void robotInit()
     {
         // Initialize logging framework.
-        Logging.init();
+        Logging.init(); 
         
         CANTalon frontleft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
         CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
@@ -82,7 +84,7 @@ public class Robot extends IterativeRobot
         vision = VisionProcessor.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
- //       gyro = gyro2016.getInstance();
+        gyro = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic(1, 0);
         ledStrip.setMode(Mode.OFF);
         
@@ -109,13 +111,13 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
         LOGGER.info("Robot disabled");
-//        gyro2016.reset();
+        gyro.reset();
     }
 
     public void disabledPeriodic()
     {
         vision.updateContours();
- //       gyro.update();
+//        gyro.update();
         ledStrip.setMode(Mode.BLUE_AND_GOLD);
         
 //        double angle = gyro2016.autonomous();
@@ -159,6 +161,8 @@ public class Robot extends IterativeRobot
         autonomous.updateAutonomousPeriodic();
         
         ledStrip.setMode(Mode.RAINBOW);
+        
+        autonomous.initAutonomous();
     }
 
     /**
