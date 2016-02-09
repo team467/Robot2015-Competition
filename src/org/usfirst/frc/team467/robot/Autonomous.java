@@ -26,6 +26,7 @@ public class Autonomous
     private Lifter lifter = null;
     private VisionProcessor vision = null;
     private Ultrasonic ultrasonic = null;
+    private TankDrive tank = null;
 
     long actionStartTimeMS = -1;
 
@@ -156,6 +157,10 @@ public class Autonomous
     {
         this.drive = drive;
     }
+    public void setTank(TankDrive tank)
+    {
+        this.tank = tank;
+    }
     public void setUltrasonic(Ultrasonic ultra)
     {
         this.ultrasonic = ultra;
@@ -221,20 +226,20 @@ public class Autonomous
         addAction("Move while flat",
                 () -> gyro.isFlat(),
                 () -> {
-                    drive.arcadeDrive(0, 0.5, false);
+                    tank.arcadeDrive(0, 0.5, false);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move forward until gyro is 7 degrees",
                 () -> gyro.up(),
                 () -> {
-                    drive.arcadeDrive(0, 0.5, false);
+                    tank.arcadeDrive(0, 0.5, false);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move",
                 () -> forDurationSecs(0.25f),
                 () -> {
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
-                    drive.arcadeDrive(0, 0.5, false);
+                    tank.arcadeDrive(0, 0.5, false);
                 });
         addAction("Do nothing",
                 () -> forDurationSecs(0.1f),
@@ -244,20 +249,20 @@ public class Autonomous
         addAction("Move foward until gyro is 0 degrees",
                 () -> gyro.down(),
                 () ->{
-                    drive.arcadeDrive(0, 0.5, false);
+                    tank.arcadeDrive(0, 0.5, false);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move",
                 () -> forDurationSecs(0.25f),
                 () -> {
-                    drive.arcadeDrive(0, 0.5, false);
+                    tank.arcadeDrive(0, 0.5, false);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Stop moving",
                 () -> gyro.isFlat(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
-                    drive.stop();
+                    tank.stop();
                 });
 /*        addAction("Close claw to grip container or tote",
                 () -> claw.isClosed(),
@@ -299,7 +304,7 @@ public class Autonomous
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.stop();
+                    tank.stop();
                 });
     }
 

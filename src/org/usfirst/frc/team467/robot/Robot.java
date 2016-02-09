@@ -29,6 +29,8 @@ public class Robot extends IterativeRobot
 
     private static final double MIN_DRIVE_SPEED = 0.1;
     
+    private static Robot instance = null;
+    
     Gyro2016 gyro2016 = new Gyro2016();
 
     // Robot objects
@@ -60,6 +62,13 @@ public class Robot extends IterativeRobot
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+    
+    public Robot getInstance(){
+        if (instance == null){
+            instance = new Robot();
+        }
+        return instance;
+    }
     
     public void robotInit()
     {
