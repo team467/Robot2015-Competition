@@ -18,9 +18,7 @@ public class Autonomous
 
     private static Autonomous autonomous = null;
 
-    Gyro2016 gyro = null;
-    private AnalogGyro Agyro = null;
-    
+    Gyro2016 gyro = null;    
     private Driveable drive = null;
     private Claw claw = null;
     private Lifter lifter = null;
@@ -75,7 +73,7 @@ public class Autonomous
 
         boolean isDone()
         {
-            return whileCondition.call();
+            return !whileCondition.call();
         }
     }
 
@@ -222,24 +220,24 @@ public class Autonomous
         // Start facing the wall in front of an item (container or tote), pick it up
         // and carry it rolling backwards to the auto zone.
         
-        Gyro2016.getInstance();//.reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
+        Gyro2016 Agyro = Gyro2016.getInstance();//.reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
         addAction("Move while flat",
-                () -> gyro.isFlat(),
+                () -> forDurationSecs(1.0f),
                 () -> {
-                    tank.arcadeDrive(0, 0.5, false);
+                    drive.strafeDrive(Direction.FRONT);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move forward until gyro is 7 degrees",
                 () -> gyro.up(),
                 () -> {
-                    tank.arcadeDrive(0, 0.5, false);
+                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move",
                 () -> forDurationSecs(0.25f),
                 () -> {
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
-                    tank.arcadeDrive(0, 0.5, false);
+                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
                 });
         addAction("Do nothing",
                 () -> forDurationSecs(0.1f),
@@ -249,20 +247,20 @@ public class Autonomous
         addAction("Move foward until gyro is 0 degrees",
                 () -> gyro.down(),
                 () ->{
-                    tank.arcadeDrive(0, 0.5, false);
+                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move",
                 () -> forDurationSecs(0.25f),
                 () -> {
-                    tank.arcadeDrive(0, 0.5, false);
+                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Stop moving",
                 () -> gyro.isFlat(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
-                    tank.stop();
+                    drive.stop();
                 });
 /*        addAction("Close claw to grip container or tote",
                 () -> claw.isClosed(),
@@ -304,7 +302,7 @@ public class Autonomous
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    tank.stop();
+                    drive.stop();
                 });
     }
 

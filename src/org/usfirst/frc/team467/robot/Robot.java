@@ -13,7 +13,7 @@ import org.usfirst.frc.team467.robot.LEDStrip.Mode;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.AnalogGyro;
+//import edu.wpi.first.wpilibj.AnalogGyro;
 //import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.Ultrasonic;
 /**
@@ -28,10 +28,8 @@ public class Robot extends IterativeRobot
     private static final Logger LOGGER = Logger.getLogger(Robot.class);
 
     private static final double MIN_DRIVE_SPEED = 0.1;
-    
-    private static Robot instance = null;
-    
-    Gyro2016 gyro2016 = new Gyro2016();
+        
+    Gyro2016 gyro2016;
 
     // Robot objects
     private DriverStation2015 driverstation;
@@ -42,9 +40,7 @@ public class Robot extends IterativeRobot
   
     private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
-    
-    private Gyro2016 gyro;
-    
+        
     private Lifter lifter;
     private Claw claw;
     private Ultrasonic ultrasonic;
@@ -62,13 +58,6 @@ public class Robot extends IterativeRobot
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    
-    public Robot getInstance(){
-        if (instance == null){
-            instance = new Robot();
-        }
-        return instance;
-    }
     
     public void robotInit()
     {
@@ -93,7 +82,7 @@ public class Robot extends IterativeRobot
         vision = VisionProcessor.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
-        gyro = Gyro2016.getInstance();
+        gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic(1, 0);
         ledStrip.setMode(Mode.OFF);
         
@@ -120,7 +109,7 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
         LOGGER.info("Robot disabled");
-        gyro.reset();
+        gyro2016.reset();
     }
 
     public void disabledPeriodic()
@@ -170,8 +159,6 @@ public class Robot extends IterativeRobot
         autonomous.updateAutonomousPeriodic();
         
         ledStrip.setMode(Mode.RAINBOW);
-        
-        autonomous.initAutonomous();
     }
 
     /**
