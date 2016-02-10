@@ -229,6 +229,13 @@ public class Robot extends IterativeRobot
     private void updateDrive()
     {
         DriveMode driveMode = driverstation.getDriveMode();
+        LOGGER.info("Kart Mode: " + driverstation.kart);
+        if (driverstation.kart)
+        {
+            drive.cartDrive(driverstation.getDriveJoystick1());
+            LOGGER.info("Kart Drive");
+            return;
+        }
         switch (driveMode)
         {
             case UNWIND:
@@ -253,6 +260,7 @@ public class Robot extends IterativeRobot
                 
             case STRAFE_FRONT:
                 drive.strafeDrive(Direction.FRONT);
+                LOGGER.info("Strafe Front");
                 break;
                 
             case STRAFE_LEFT:

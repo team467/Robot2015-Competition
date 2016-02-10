@@ -24,6 +24,8 @@ public class DriverStation2015
     private static int GYRO_RESET_BUTTON = 8;
     
     private static int UNWIND_BUTTON = 10;
+    
+    public boolean kart = false;
 
     // CAL/AUTO
     public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
@@ -79,29 +81,36 @@ public class DriverStation2015
         {
             return;
         }
-        stickType = newStickType;
-        if (stickType.startsWith("LT"))
-        {
-            driverJoy1 = new LogitechJoystick(0);
-            if (stickType.endsWith("2"))
-            {
-                driverJoy2 = new LogitechJoystick(2);
-            }
-            else
-            {
+        stickType = newStickType.toUpperCase();
+        switch (stickType) {
+            case "LT1":
+                driverJoy1 = new LogitechJoystick(0);
                 driverJoy2 = null;
-            }
-            // The port for the button panel is one higher than the last joystick.
-        }
-        else if (stickType.startsWith("PS"))
-        {
-            driverJoy1 = new PlayStationJoystickMain(3);
-            driverJoy2 = new PlayStationJoystickRight(3);
-            // The port for the button panel is one higher than the last joystick.
-        }
-        else
-        {
-            LOGGER.error("Auto Selector must have LT for Logitech or PS for Playstation");
+                kart = false;
+                break;
+            case "LT2":
+                driverJoy1 = new LogitechJoystick(0);
+                driverJoy2 = new LogitechJoystick(2);
+                kart = false;
+                break;
+            case "PS1":
+                driverJoy1 = new PlayStationJoystickMain(3);
+                driverJoy2 = null;
+                kart = false;
+                break;
+            case "PS2":
+                driverJoy1 = new PlayStationJoystickMain(3);
+                driverJoy2 = new PlayStationJoystickRight(3);
+                kart = false;
+                break;
+            case "PSKART":
+                driverJoy1 = new PlayStationJoystickMain(3);
+                driverJoy2 = null;
+                kart = true;
+                break;
+            default:
+                LOGGER.error("Auto Selector must have LT for Logitech or PS for Playstation");
+                break;
         }
     }
 

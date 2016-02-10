@@ -1,6 +1,7 @@
 package org.usfirst.frc.team467.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Joystick.RumbleType;
 
 public class PlayStationJoystickMain implements MainJoystick467
 {
@@ -218,6 +219,13 @@ public class PlayStationJoystickMain implements MainJoystick467
     {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public void setRumble(float rumble)
+    {
+        joystick.setRumble(RumbleType.kLeftRumble, rumble);
+        joystick.setRumble(RumbleType.kRightRumble, rumble);
     }
 
 }

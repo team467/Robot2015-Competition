@@ -12,4 +12,5 @@ public interface Driveable
     void revolveDriveLarge(Direction direction);
     void revolveDriveSmall(Direction direction);
     void individualWheelDrive(double speed, int steeringId);
+    void cartDrive(MainJoystick467 joystick);
 }
