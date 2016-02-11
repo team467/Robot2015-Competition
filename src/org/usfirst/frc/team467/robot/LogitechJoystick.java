@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 /**
  *
  */
-public class Joystick467
+public class LogitechJoystick implements MainJoystick467, RightJoystick467
 {
     private Joystick joystick;
     private boolean[] buttons = new boolean[12];     // array of current button states
@@ -22,7 +22,7 @@ public class Joystick467
     private double twist = 0.0;
     private boolean flap = false;
 
-    public static final int TRIGGER = 1;
+    private static final int TRIGGER = 1;
     private static final double DEADZONE = 0.1;
 
     private static final int AXIS_X = 0;
@@ -36,24 +36,24 @@ public class Joystick467
      *
      * @param stick
      */
-    public Joystick467(int stick)
+    public LogitechJoystick(int stick)
     {
         joystick = new Joystick(stick);
     }
 
-    /**
-     * Returns the jaw joystick object inside Joystick467
-     * 
-     * @return
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#getJoystick()
      */
+    @Override
     public Joystick getJoystick()
     {
         return joystick;
     }
 
-    /**
-     * Read all inputs from the underlying joystick object.
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#readInputs()
      */
+    @Override
     public void readInputs()
     {
         // read all buttons
@@ -71,107 +71,111 @@ public class Joystick467
         pov = joystick.getPOV(POV_INDEX);
     }
 
-    /**
-     * Check if a specific button is being held down. Ignores first button
-     * press, but the robot loops too quickly for this to matter.
-     *
-     * @param button
-     * @return
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#buttonDown(int)
      */
+    @Override
     public boolean buttonDown(int button)
     {
         return buttons[(button) - 1];
     }
 
-    /**
-     * Check if a specific button has just been pressed. (Ignores holding.)
-     *
-     * @param button
-     * @return
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#buttonPressed(int)
      */
+    @Override
     public boolean buttonPressed(int button)
     {
         return buttons[button - 1] && !prevButtons[button - 1];
     }
 
-    /**
-     * Check if a specific button has just been released.
-     *
-     * @param button
-     * @return
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#buttonReleased(int)
      */
+    @Override
     public boolean buttonReleased(int button)
     {
         return !buttons[button - 1] && prevButtons[button - 1];
     }
 
-    /**
-     * Gets the X position of the stick. Left to right ranges from -1.0 to 1.0,
-     * with 0.0 in the middle. This value is accelerated.
-     * 
-     * @return
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#getPOV()
      */
-    public double getStickX()
+    @Override
+    public Direction getStrafeDirection()
     {
-        return stickX;
+        for (Direction dir : Direction.values())
+        {
+            if (pov == dir.angleDeg)
+            {
+                return dir;
+            }
+        }
+        return Direction.NONE;
     }
 
-    /**
-     * Gets the Y position of the stick. Up to down ranges from -1.0 to 1.0,
-     * with 0.0 in the middle. This value is accelerated.
-     * 
-     * @return
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#getFlap()
      */
-    public double getStickY()
-    {
-        return stickY;
-    }
-
-    /**
-     * 
-     * @return the angle of the POV in degrees, or -1 if the POV is not pressed.
-     */
-    public int getPOV()
-    {
-        return pov;
-    }
-
-    /**
-     * 
-     * 
-     * @return
-     */
-    public boolean getFlap()
+    @Override
+    public boolean getFieldAligned()
     {
         return flap;
     }
 
-    public double getTwist()
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#getTwist()
+     */
+    @Override
+    public double getTurn()
     {
         return twist;
     }
 
-    /**
-     * Calculate the distance of this stick from the center position.
-     *
-     * @return
+    @Override
+    public boolean getTurnButton()
+    {
+        return buttonDown(2);
+    }
+
+    @Override
+    public boolean getRevolveLargeLeft()
+    {
+        return buttonDown(3);
+    }
+
+    @Override
+    public boolean getRevolveLargeRight()
+    {
+        return buttonDown(4);
+    }
+
+    @Override
+    public boolean getRevolveSmallLeft()
+    {
+        return buttonDown(5);
+    }
+
+    @Override
+    public boolean getRevolveSmallRight()
+    {
+        return buttonDown(6);
+    }
+
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#getStickDistance()
      */
+    @Override
     public double getStickDistance()
     {
         return Math.sqrt(stickX * stickX + stickY * stickY);
     }
 
-    public boolean isInDeadzone()
-    {
-        return (Math.abs(stickX) < DEADZONE) && (Math.abs(stickY) < DEADZONE);
-    }
-
-    /**
-     * Calculate the angle of this joystick.
-     *
-     * @return Joystick Angle in range -PI to PI
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#getStickAngle()
      */
-    public double getStickAngle()
+    @Override
+    public double getAngle()
     {
         // This shouldn't be necessary, deadzone filtering should already
         // be performed - however it doesn't hurt to make sure.
@@ -179,22 +183,55 @@ public class Joystick467
         {
             return 0.0;
         }
-
+    
         if (stickY == 0.0)
         {
             // In Y deadzone avoid divide by zero error
             return (stickX > 0.0) ? Math.PI / 2 : -Math.PI / 2;
         }
-
+    
         // Return value in range -PI to PI
         double stickAngle = Math.atan(stickX / -stickY);
-
+    
         if (stickY > 0)
         {
             stickAngle += (stickX > 0) ? Math.PI : -Math.PI;
         }
-
+    
         return (stickAngle);
+    }
+
+    @Override
+    public double getTankTurn()
+    {
+        return stickX;
+    }
+
+    @Override
+    public double getTankSpeed()
+    {
+        return stickY;
+    }
+
+    /* (non-Javadoc)
+     * @see org.usfirst.frc.team467.robot.Joystick467#isInDeadzone()
+     */
+    @Override
+    public boolean isInDeadzone()
+    {
+        return (Math.abs(stickX) < DEADZONE) && (Math.abs(stickY) < DEADZONE);
+    }
+
+    @Override
+    public boolean getSlow()
+    {
+        return buttonDown(TRIGGER);
+    }
+
+    @Override
+    public boolean getTurbo()
+    {
+        return buttonDown(7);
     }
 
     /**
@@ -213,6 +250,18 @@ public class Joystick467
         }
         // Simply square the input to provide acceleration
         // ensuring that the sign of the input is preserved
-        return (input * Math.abs(input));
+        return input * Math.abs(input);
+    }
+
+    @Override
+    public boolean getCalibrateConfirm()
+    {
+        return buttonDown(TRIGGER);
+    }
+
+    @Override
+    public boolean getResetGyro()
+    {
+        return buttonDown(8);
     }
 }

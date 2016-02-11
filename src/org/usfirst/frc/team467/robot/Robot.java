@@ -11,11 +11,14 @@ import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.LEDStrip.Mode;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 //import edu.wpi.first.wpilibj.AnalogGyro;
 //import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -44,9 +47,11 @@ public class Robot extends IterativeRobot
     private Lifter lifter;
     private Claw claw;
     private Ultrasonic ultrasonic;
-    
+
+    private DigitalInput robotID;
+
     int session;
-        
+            
     private LEDStrip ledStrip = new LEDStrip();
 
     /**
@@ -68,10 +73,25 @@ public class Robot extends IterativeRobot
         CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
         CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
         CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+//        robotID = new DigitalInput(9);
+
+        // Robot id 0 = swerve
+        // Robot id 1 = kitbot tank
+        int robotID = new DigitalInput(9).get() ? 1 : 0;
         
         // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-        drive = new TankDrive(1, 0, 3, 2);
+//        drive = new makeTalonTank(1, 0, 3, 2);
+        
+        if(robotID == 1) {
+            drive = TankDrive.makeTalonTank(1, 0, 2, 3);
+            LOGGER.info("Tank Set");
+            
+        }
+        else if (robotID == 0){
+            drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+            LOGGER.info("Swerve Set");
+        }
         
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
@@ -120,6 +140,9 @@ public class Robot extends IterativeRobot
         
 //        double angle = gyro2016.autonomous();
 //        LOGGER.debug("GYRO angle : " +  angle);
+
+        String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
+        SmartDashboard.putString("DB/String 5", stickType);
     }
 
     @Override
@@ -172,6 +195,16 @@ public class Robot extends IterativeRobot
 
         LOGGER.info("Distance: " + ultrasonic.getRangeInches());
 
+//        gyro.update();
+//        if (driverstation.getGyroReset())
+//        {
+//            System.out.println("GYRO RESET");
+//            gyro.reset();
+//        }
+//        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
+        
+//        LOGGER.info("Distance: " + ultrasonic.getRangeInches());
+        SmartDashboard.putString("DB/String 9", String.valueOf(ultrasonic.getRangeInches()));
         if (driverstation.getCalibrate())
         {
             // Calibrate Mode
@@ -260,20 +293,32 @@ public class Robot extends IterativeRobot
                 break;
                 
             case TURN:
-                drive.turnDrive(-driverstation.getDriveJoystick().getTwist()/2);
+                drive.turnDrive(-driverstation.getDriveJoystick1().getTurn()/2);
                 break;
 
             case ARCADE_FA:
             case ARCADE_NO_FA:
-                if (driverstation.getDriveJoystick().getStickDistance() < MIN_DRIVE_SPEED)
+                if (driverstation.getDriveJoystick2() == null)
                 {
-                    // Don't start driving until commanded speed greater than minimum
-                    drive.stop();
+                    if (driverstation.getDriveJoystick1().getStickDistance() < MIN_DRIVE_SPEED)
+                    {
+                        // Don't start driving until commanded speed greater than minimum
+                        drive.stop();
+                    }
+                    else
+                    {
+//                        drive.arcadeDrive(
+//                                  driverstation.getDriveJoystick().getStickAngle(),
+//                                  driverstation.getDriveJoystick().getStickDistance(),
+//                                  (driveMode == DriveMode.ARCADE_FA));
+                        drive.oneStickDrive(
+                                driverstation.getDriveJoystick1(),
+                                (driveMode == DriveMode.ARCADE_FA));
+                    }
                 }
                 else
                 {
-                    drive.arcadeDrive(driverstation.getDriveJoystick().getStickAngle(), driverstation.getDriveJoystick()
-                            .getStickDistance(), (driveMode == DriveMode.ARCADE_FA));
+                    drive.twoStickDrive(driverstation.getDriveJoystick1(), driverstation.getDriveJoystick2());
                 }
                 break;
         }        

@@ -15,7 +15,7 @@ public class VisionProcessor
     private NetworkTable contourTable;
     private NetworkTable sizeTable;
     private static VisionProcessor instance;
-    private List<Contour> list;
+    private List<Contour> list = new ArrayList<Contour>();
 //    private double height;
     private double width = 0.0;
     private boolean isEnabled = false;
@@ -74,7 +74,7 @@ public class VisionProcessor
     {
         if (width == 0.0)
         {
-            throw new IllegalStateException();
+            throw new IllegalStateException("width is zero");
         }
         return width/2;
     }
@@ -103,10 +103,11 @@ public class VisionProcessor
 //            LOGGER.debug("Made list");
 
             // If we get no data, return empty list.
-            if (widths == null) {
+            if (widths == null || centerXs == null) {
                 LOGGER.debug("Empty contour list");
                 return;
             }
+            
             else
             {
                 for (int i = 0; i < widths.length; i++)

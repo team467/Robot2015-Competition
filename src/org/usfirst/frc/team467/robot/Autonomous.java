@@ -9,6 +9,7 @@ import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.apache.log4j.Logger;
 
@@ -192,18 +193,6 @@ public class Autonomous
         // Set up gyro and create actions list.
         switch (autonomousType)
         {
-            case GRAB_CAN:
-                initGrabCan();
-                break;
-            case DRIVE_ONLY:
-                initDriveOnly();
-                break;
-            case HOOK_AND_PUSH_OVER_RAMP:
-                initHookAndPush(4.5f);
-                break;
-            case HOOK_AND_PUSH:
-                initHookAndPush(3.75f);
-                break;
             case AIM:
                 initAim();
                 break;
@@ -222,22 +211,22 @@ public class Autonomous
         
         Gyro2016 Agyro = Gyro2016.getInstance();//.reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
         addAction("Move while flat",
-                () -> forDurationSecs(1.0f),
+                () -> gyro.isFlat(),
                 () -> {
-                    drive.strafeDrive(Direction.FRONT);
+                    drive.arcadeDrive(0.0, 0.5);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move forward until gyro is 7 degrees",
                 () -> gyro.up(),
                 () -> {
-                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
+                    drive.arcadeDrive(0.0, 0.5);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move",
                 () -> forDurationSecs(0.25f),
                 () -> {
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
-                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
+                    drive.arcadeDrive(0.0, 0.5);
                 });
         addAction("Do nothing",
                 () -> forDurationSecs(0.1f),
@@ -247,13 +236,13 @@ public class Autonomous
         addAction("Move foward until gyro is 0 degrees",
                 () -> gyro.down(),
                 () ->{
-                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
+                    drive.arcadeDrive(0.0, 0.5);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move",
                 () -> forDurationSecs(0.25f),
                 () -> {
-                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
+                    drive.arcadeDrive(0.0, 0.5);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Stop moving",
@@ -316,7 +305,7 @@ public class Autonomous
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
+                    drive.arcadeDrive(0.0, 0.5);
                 });
         addAction("Stop driving", 
                 () -> forever(), 
@@ -340,14 +329,14 @@ public class Autonomous
                 () -> {
                     lifter.driveLifter(LifterDirection.UP, Speed.FAST);
                     claw.stop();
-                    drive.arcadeDrive(Math.PI / 2, 0, false);
+                    drive.arcadeDrive(0.0, 0.5);
                 });
         addAction("Stop lifting and drive sideways", 
                 () -> forDurationSecs(sidewaysSecs),
                 () -> {
                     lifter.stop();
                     claw.stop();
-                    drive.arcadeDrive(Math.PI / 2, 0.5, false);
+                    drive.arcadeDrive(0.0, 0.5);
                 });
         addAction("Lower lifter and stop driving", 
                 () -> forDurationSecs(0.5f), 
@@ -419,14 +408,16 @@ public class Autonomous
             return false;
         }
         
-        final double minTurnSpeed = 0.20;
-        final double maxTurnSpeed = 0.26;
+//        final double minTurnSpeed = Double.parseDouble(SmartDashboard.getString("DB/String 3", "0.0"));
+//        final double maxTurnSpeed = Double.parseDouble(SmartDashboard.getString("DB/String 4", "0.0"));
+        final double minTurnSpeed = 0.3; // Double.parseDouble(SmartDashboard.getString("DB/String 3", "0.0"));
+        final double maxTurnSpeed = 0.45; // Double.parseDouble(SmartDashboard.getString("DB/String 4", "0.0"));
         final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
         final double horizontalCenter = vision.getHorizontalCenter();
         
-        LOGGER.debug("start seekWidestContour()");
+        LOGGER.debug("start seekWidestContour() minTurnSpeed=" + minTurnSpeed + " maxTurnSpeed=" + maxTurnSpeed);
         List<VisionProcessor.Contour> contours = vision.getContours();
-        LOGGER.debug("found contours");
+        LOGGER.debug("Found " + contours.size() + "contours");
         
         if (contours.size() == 0)
         {
@@ -437,9 +428,9 @@ public class Autonomous
         LOGGER.debug("Has contours");
         // Find the widest contour
         VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
-        LOGGER.debug("Found widest contour");
         final double centerX = widest.getCenterX();
         final double delta = Math.abs(centerX - horizontalCenter);
+        LOGGER.debug("Found widest contour, centerX=" + centerX + " delta=" + delta);
         if (delta < marginOfError)
         {
             // Found target
@@ -522,6 +513,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH_OVER_RAMP, HOOK_AND_PUSH, AIM
+        NO_AUTO, AIM, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH, HOOK_AND_PUSH_OVER_RAMP
     }
 }
