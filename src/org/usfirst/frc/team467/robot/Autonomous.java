@@ -196,6 +196,9 @@ public class Autonomous
             case AIM:
                 initAim();
                 break;
+            case GRAB_CAN:
+                initGrabCan();
+                break;
             default:
                 initStayInPlace();
                 break;
@@ -213,36 +216,39 @@ public class Autonomous
         addAction("Move while flat",
                 () -> gyro.isFlat(),
                 () -> {
-                    drive.arcadeDrive(0.0, 0.5);
+                    drive.arcadeDrive(0.0, -0.7);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move forward until gyro is 7 degrees",
                 () -> gyro.up(),
                 () -> {
-                    drive.arcadeDrive(0.0, 0.5);
+                    drive.arcadeDrive(0.0, -0.7);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
+        if(gyro.isFlat()){
+            addAction("Do nothing",
+                    () -> forDurationSecs(1.0f),
+                    () ->{
+                        drive.stop();
+                        LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                    });
+        }
         addAction("Move",
-                () -> forDurationSecs(0.25f),
+                () -> gyro.isFlat(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
-                    drive.arcadeDrive(0.0, 0.5);
+                    drive.arcadeDrive(0.0, -0.5);
                 });
-        addAction("Do nothing",
-                () -> forDurationSecs(0.1f),
-                () ->{
-                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
-                });
-        addAction("Move foward until gyro is 0 degrees",
+        addAction("Move foward while gyro is pointing down",
                 () -> gyro.down(),
                 () ->{
-                    drive.arcadeDrive(0.0, 0.5);
+                    drive.arcadeDrive(0.0, -0.5);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Move",
-                () -> forDurationSecs(0.25f),
+                () -> forDurationSecs(1.0f),
                 () -> {
-                    drive.arcadeDrive(0.0, 0.5);
+                    drive.arcadeDrive(0.0, -0.5);
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                 });
         addAction("Stop moving",
