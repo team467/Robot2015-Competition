@@ -2,6 +2,7 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.Autonomous.AutoType;
+import org.usfirst.frc.team467.robot.tBar.tBarDirection;
 
 public class DriverStation2015
 {
@@ -342,6 +343,12 @@ public class DriverStation2015
         {
             return LifterDirection.STOP;
         }
+    }
+    public tBarDirection getTBarDirection()
+    {
+        //for the meantime
+        return tBarDirection.STOP;
+        
     }
 
 //    /**
