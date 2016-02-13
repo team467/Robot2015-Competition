@@ -98,9 +98,9 @@ public class Calibration
     private static int getWheelDial(int prevSelectedWheel)
     {
         DriverStation2015 driverstation = DriverStation2015.getInstance();
-        if (driverstation.getCalibrate())
+        if (false) // driverstation.getCalibrate()
         {
-            return driverstation.getCalibrateWheel();
+            return 1; //driverstation.getCalibrateWheel();
         }
         else
         {

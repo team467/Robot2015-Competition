@@ -186,17 +186,17 @@ public class Robot extends IterativeRobot
         
 //        LOGGER.info("Distance: " + ultrasonic.getRangeInches());
         SmartDashboard.putString("DB/String 9", String.valueOf(ultrasonic.getRangeInches()));
-        if (driverstation.getCalibrate())
-        {
-            // Calibrate Mode
-            Calibration.updateCalibrate();
-        }
-        else
-        {
+//        if (driverstation.getCalibrate())
+//        {
+//            // Calibrate Mode
+//            Calibration.updateCalibrate();
+//        }
+//        else
+//        {
             // Drive Mode
             updateDrive();
             updateNavigator();
-        }
+//        }
         
         double time = DriverStation.getInstance().getMatchTime();
         if (time > 40)
@@ -315,7 +315,7 @@ public class Robot extends IterativeRobot
     private void updateNavigator()
     {
         board.update();
-        lifter.driveLifter(driverstation.getLiftDirection());
-        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
+//        lifter.driveLifter(driverstation.getLiftDirection());
+//        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
     }
 }
