@@ -174,8 +174,8 @@ public class Robot extends IterativeRobot
     public void autonomousPeriodic()
     {
 //        LOGGER.info("Autonomous");
-//        vision.updateContours();
-//        LOGGER.debug("Contours updated");
+        vision.updateContours();
+        LOGGER.debug("Contours updated");
 //        
         driverstation.readInputs();
         LOGGER.debug("Read driverStation");
@@ -184,7 +184,7 @@ public class Robot extends IterativeRobot
         autonomous.updateAutonomousPeriodic();
         
         autonomous.initGrabCan();
-        LOGGER.info("Gyro angle: " + Agyro.getAngle());
+        LOGGER.debug("Gyro angle: " + Agyro.getAngle());
         
 //        ledStrip.setMode(Mode.RAINBOW);
     }

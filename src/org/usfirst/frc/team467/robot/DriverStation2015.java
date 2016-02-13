@@ -79,7 +79,7 @@ public class DriverStation2015
         {
             newStickType = "LT1";
         }
-        LOGGER.info(newStickType);
+        LOGGER.debug(newStickType);
         if (newStickType.equals(stickType))
         {
             return;

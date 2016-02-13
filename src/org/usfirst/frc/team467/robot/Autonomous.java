@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.apache.log4j.Logger;
@@ -17,18 +19,19 @@ public class Autonomous
 
     private static Autonomous autonomous = null;
 
+    Gyro2016 gyro = null;    
     private Driveable drive = null;
     private Claw claw = null;
     private Lifter lifter = null;
     private VisionProcessor vision = null;
     private Ultrasonic ultrasonic = null;
-
+    
     long actionStartTimeMS = -1;
 
     /**
-     * Run the said action until this returns true.
+     * Run the said action while the condition returns true.
      */
-    private interface DoneCondition
+    private interface WhileCondition
     {
         boolean call();
     }
@@ -46,15 +49,15 @@ public class Autonomous
 
     private static class Activity
     {
-        // The doneCondition should return false until then condition is met, then return true.
+        // The WhileCondition should return true until the action returns false.
         private final String description;
-        private final DoneCondition doneCondition;
+        private final WhileCondition whileCondition;
         private final Action action;
 
-        private Activity(String description, DoneCondition doneCondition, Action action)
+        private Activity(String description, WhileCondition whileCondition, Action action)
         {
             this.description = description;
-            this.doneCondition = doneCondition;
+            this.whileCondition = whileCondition;
             this.action = action;
         }
 
@@ -70,18 +73,18 @@ public class Autonomous
 
         boolean isDone()
         {
-            return doneCondition.call();
+            return !whileCondition.call();
         }
     }
 
     List<Activity> actions = new LinkedList<Activity>();
 
-    private void addAction(String description, DoneCondition doneCondition, Action action)
+    private void addAction(String description, WhileCondition whileCondition, Action action)
     {
-        actions.add(new Activity(description, doneCondition, action));
+        actions.add(new Activity(description, whileCondition, action));
     }
 
-    // Returns false for durationSecs, then returns true.
+    // Returns true for durationSecs, then returns false.
     private boolean forDurationSecs(float durationSecs)
     {
         LOGGER.debug("forDurationSecs durationSecs=" + durationSecs);
@@ -93,14 +96,14 @@ public class Autonomous
 
         final long now = System.currentTimeMillis();
         final long durationMS = (long) (1000 * durationSecs);
-        return now > actionStartTimeMS + durationMS;
+        return now < actionStartTimeMS + durationMS;
     }
     
-    private boolean untilWidestCentered(int marginOfError)
+    private boolean whileWidestNotCentered(int marginOfError)
     {
         if (!vision.isEnabled())
         {
-            return false;
+            return true;
         }
             
         try
@@ -111,12 +114,12 @@ public class Autonomous
             final double centerX = contour.getCenterX();
             final double delta = Math.abs(centerX - vision.getHorizontalCenter());
             LOGGER.debug("untilCentered centerY=" + centerX + " delta=" + delta);
-            return delta < marginOfError;
+            return delta > marginOfError;
         }
         catch (Exception e)
         {
             LOGGER.info("Missed contour: " + e);
-            return false;
+            return true;
         }
     }
     
@@ -129,7 +132,7 @@ public class Autonomous
     private boolean forever()
     {
         // Never done.
-        return false;
+        return true;
     }
 
     /**
@@ -143,7 +146,7 @@ public class Autonomous
         {
             autonomous = new Autonomous(
                     Claw.getInstance(),
-                    Lifter.getInstance(), VisionProcessor.getInstance());
+                    Lifter.getInstance(), VisionProcessor.getInstance(), Gyro2016.getInstance());
         }
         return autonomous;
     }
@@ -152,6 +155,7 @@ public class Autonomous
     {
         this.drive = drive;
     }
+
     public void setUltrasonic(Ultrasonic ultra)
     {
         this.ultrasonic = ultra;
@@ -159,13 +163,15 @@ public class Autonomous
 
     /**
      * Private constructor to setup the Autonomous
+     * @param gyro2 
      */
-    private Autonomous(Claw claw, Lifter lifter, VisionProcessor vision)
+    private Autonomous(Claw claw, Lifter lifter, VisionProcessor vision, Gyro2016 gyro)
     {
         // TODO Change drive, claw, and lifter to generics implementing respective interfaces
         this.claw = claw;
         this.lifter = lifter;
         this.vision = vision;
+        this.gyro = gyro;
     }
 
     /**
@@ -186,6 +192,9 @@ public class Autonomous
             case AIM:
                 initAim();
                 break;
+            case GRAB_CAN:
+                initGrabCan();
+                break;
             default:
                 initStayInPlace();
                 break;
@@ -194,59 +203,164 @@ public class Autonomous
         LOGGER.info("Beginning action: " + actions.get(0).getDescription());
     }
 
-//    private void initGrabCan()
-//    {
-//        // Start facing the wall in front of an item (container or tote), pick it up
-//        // and carry it rolling backwards to the auto zone.
-//        Gyro2015.getInstance().reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
-//        addAction("Close claw to grip container or tote",
-//                () -> claw.isClosed(),
-//                () -> {
-//                    lifter.stop();
-//                    claw.moveClaw(ClawMoveDirection.CLOSE, false);
-//                    drive.stop();
-//                });
-//        addAction("Lift container", 
-//                () -> forDurationSecs(0.5f),
-//                () -> {
-//                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
-//                    claw.stop();
-//                    drive.stop();
-//                });
-//        addAction("Lift container and drive backwards", 
-//                () -> forDurationSecs(1.25f),
-//                () -> {
-//                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
-//                    claw.stop();
-//                    drive.arcadeDrive(null, false);
-//                });
-//        addAction("Drive backwards", 
-//                () -> forDurationSecs(1.75f),
-//                () -> {
-//                    lifter.stop();
-//                    claw.stop();
-//                    drive.arcadeDrive(null, false);
-//                });
-//        addAction("Turn in place", 
-//                () -> forDurationSecs(0.7f),
-//                () -> {
-//                    lifter.stop();
-//                    claw.stop();
-//                    drive.turnDrive(0.6);
-//                });
-//        addAction("Done",
-//                () -> forever(), 
-//                () -> {
-//                    lifter.stop();
-//                    claw.stop();
-//                    drive.stop();
-//                });
-//    }
+    public void initGrabCan()
+    {
+        // Start facing the wall in front of an item (container or tote), pick it up
+        // and carry it rolling backwards to the auto zone.
+        
+        Gyro2016 Agyro = Gyro2016.getInstance();//.reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
+        addAction("Move while flat",
+                () -> gyro.isFlat(),
+                () -> {
+                    drive.arcadeDrive(0.0, -0.7);
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                });
+        addAction("Move forward until gyro is 7 degrees",
+                () -> gyro.up(),
+                () -> {
+                    drive.arcadeDrive(0.0, -0.7);
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                });
+        if(gyro.isFlat()){
+            addAction("Do nothing",
+                    () -> forDurationSecs(1.0f),
+                    () ->{
+                        drive.stop();
+                        LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                    });
+        }
+        addAction("Move",
+                () -> gyro.isFlat(),
+                () -> {
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                    drive.arcadeDrive(0.0, -0.5);
+                });
+        addAction("Move foward while gyro is pointing down",
+                () -> gyro.down(),
+                () ->{
+                    drive.arcadeDrive(0.0, -0.5);
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                });
+        addAction("Move",
+                () -> forDurationSecs(1.0f),
+                () -> {
+                    drive.arcadeDrive(0.0, -0.5);
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                });
+        addAction("Stop moving",
+                () -> gyro.isFlat(),
+                () -> {
+                    LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+                    drive.stop();
+                });
+/*        addAction("Close claw to grip container or tote",
+                () -> claw.isClosed(),
+                () -> {
+                    lifter.stop();
+                    claw.moveClaw(ClawMoveDirection.CLOSE, false);
+                    drive.stop();
+                });
+        addAction("Lift container", 
+                () -> forDurationSecs(0.5f),
+                () -> {
+                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
+                    claw.stop();
+                    drive.stop();
+                });
+        addAction("Lift container and drive backwards", 
+                () -> forDurationSecs(1.25f),
+                () -> {
+                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
+                    claw.stop();
+                    drive.arcadeDrive(Math.PI, 0.6, false);
+                });
+        addAction("Drive backwards", 
+                () -> forDurationSecs(1.75f),
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.arcadeDrive(Math.PI, 0.6, false);
+                });
+        addAction("Turn in place", 
+                () -> forDurationSecs(0.7f),
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.turnDrive(0.6);
+                });*/
+        addAction("Done",
+                () -> forever(), 
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.stop();
+                });
+    }
+
+    private void initDriveOnly()
+    {
+//        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);// reset to upfield
+        // Drive to auto zone. Starts on the very edge and just creeps into the zone
+        Gyro2016.getInstance();
+        addAction("Drive into auto zone", 
+                () -> forDurationSecs(2.0f), 
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.arcadeDrive(0.0, 0.5);
+                });
+        addAction("Stop driving", 
+                () -> forever(), 
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.stop();
+                });
+    }
+    
+    /**
+     * @param sidewaysSecs - time for driving sideways
+     */
+    private void initHookAndPush(float sidewaysSecs)
+    {
+        // Starts facing left, reset to upfield.
+//        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);
+        Gyro2016.getInstance();
+        addAction("Raise lifter up and turn wheels sideways", 
+                () -> forDurationSecs(2.0f), 
+                () -> {
+                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
+                    claw.stop();
+                    drive.arcadeDrive(0.0, 0.5);
+                });
+        addAction("Stop lifting and drive sideways", 
+                () -> forDurationSecs(sidewaysSecs),
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.arcadeDrive(0.0, 0.5);
+                });
+        addAction("Lower lifter and stop driving", 
+                () -> forDurationSecs(0.5f), 
+                () -> {
+                    lifter.driveLifter(LifterDirection.DOWN, Speed.SLOW);
+                    claw.stop();
+                    drive.stop();
+                });
+        addAction("Done",
+                () -> forever(), 
+                () -> {
+                    lifter.stop();
+                    claw.stop();
+                    drive.stop();
+                    });
+    }
 
     private void initStayInPlace()
     {
         // Stay in place. Reset to upfield.
-        Gyro2015.getInstance().reset();
+//        Gyro2015.getInstance().reset();
+          Gyro2016.getInstance();
         addAction("Stop driving", 
                 () -> forever(), 
                 () -> {
@@ -260,7 +374,7 @@ public class Autonomous
     {
         final int marginOfError = 30;
         
-        addAction("Rotate until square with widest is centered",
+        addAction("Rotate while square with widest is not centered",
 //                () -> untilWidestCentered(marginOfError),
                 () -> forever(),
                 () -> {
@@ -277,6 +391,7 @@ public class Autonomous
     private void seekWidestContour(int marginOfError)
     {
         final boolean targetIsCentered = seekAngle(marginOfError);
+        SmartDashboard.putString("DB/String 8", "Centered: " + targetIsCentered);
         if (targetIsCentered)
         {
             approach(40);
@@ -305,7 +420,7 @@ public class Autonomous
         
         LOGGER.debug("start seekWidestContour() minTurnSpeed=" + minTurnSpeed + " maxTurnSpeed=" + maxTurnSpeed);
         List<VisionProcessor.Contour> contours = vision.getContours();
-        LOGGER.debug("Found " + contours.size() + "contours");
+        LOGGER.debug("Found " + contours.size() + " contours");
         
         if (contours.size() == 0)
         {
@@ -313,7 +428,6 @@ public class Autonomous
             drive.stop();
             return false;
         }
-        LOGGER.debug("Has contours");
         // Find the widest contour
         VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
         final double centerX = widest.getCenterX();
@@ -327,9 +441,8 @@ public class Autonomous
 //        if (widest.getCenterX() - vision.getHorizontalCenter()) 
         int direction = widest.getCenterX() > horizontalCenter ? -1 : 1;
         final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/horizontalCenter));
-        LOGGER.info("Calculated direction, turnSpeed=" + turnSpeed);
         drive.turnDrive(turnSpeed);
-        LOGGER.debug("Turned");
+        LOGGER.info("Turned with turnSpeed " + turnSpeed);
         LOGGER.debug("end seekWidestContour()");
         
         // Target seen but not centered
@@ -401,6 +514,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, AIM
+        NO_AUTO, AIM, DRIVE_ONLY, GRAB_CAN, HOOK_AND_PUSH, HOOK_AND_PUSH_OVER_RAMP
     }
 }
