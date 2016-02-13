@@ -76,7 +76,9 @@ public class Robot extends IterativeRobot
         int robotID = new DigitalInput(9).get() ? 1 : 0;
         
         if(robotID == 1) {
-            drive = TankDrive.makeTalonTank(1, 0, 2, 3);
+            //this is for the kitbot
+            //drive = TankDrive.makeTalonTank(1, 0, 2, 3);
+            drive = TankDrive.makeCANTalonTank(2, 5, 1, 6);
             LOGGER.info("Tank Set");
             
         }
