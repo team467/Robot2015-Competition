@@ -74,44 +74,56 @@ public class DriverStation2015
     private void makeJoysticks()
     {
         buttonPanel = new ButtonPanel2015(1, false); // Last joystick
-        String newStickType = SmartDashboard.getString("DB/String 0", "EMPTY");
-        SmartDashboard.putString("DB/String 5", newStickType);
+        String newStickType = SmartDashboard.getString("DB/String 0", "LT1"); //Assume LT1
+        if (newStickType.isEmpty())
+        {
+            newStickType = "LT1";
+        }
         LOGGER.info(newStickType);
         if (newStickType.equals(stickType))
         {
             return;
         }
         stickType = newStickType.toUpperCase();
-        switch (stickType) {
+        String stickTypeDescription;
+        switch (stickType)
+        {
             case "LT1":
                 driverJoy1 = new LogitechJoystick(0);
                 driverJoy2 = null;
                 kart = false;
+                stickTypeDescription = "Logitech 1-stick";
                 break;
             case "LT2":
                 driverJoy1 = new LogitechJoystick(0);
                 driverJoy2 = new LogitechJoystick(2);
                 kart = false;
+                stickTypeDescription = "Logitech 2-stick";
                 break;
             case "PS1":
                 driverJoy1 = new PlayStationJoystickMain(3);
                 driverJoy2 = null;
                 kart = false;
+                stickTypeDescription = "Playstation 1-stick";
                 break;
             case "PS2":
                 driverJoy1 = new PlayStationJoystickMain(3);
                 driverJoy2 = new PlayStationJoystickRight(3);
                 kart = false;
+                stickTypeDescription = "Playstation 2-stick";
                 break;
             case "PSKART":
                 driverJoy1 = new PlayStationJoystickMain(3);
                 driverJoy2 = null;
                 kart = true;
+                stickTypeDescription = "Playstation Kart";
                 break;
             default:
-                LOGGER.error("Auto Selector must have LT for Logitech or PS for Playstation");
+                LOGGER.info("Auto Selector must be LT1, LT2, PS1, PS2, or PSKART");
+                stickTypeDescription = "Invalid";
                 break;
         }
+        SmartDashboard.putString("DB/String 5", "Stick type " + stickTypeDescription);
     }
 
     /**
