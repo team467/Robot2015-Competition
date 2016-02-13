@@ -3,6 +3,9 @@ package org.usfirst.frc.team467.robot;
 import org.apache.log4j.Logger;
 
 import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.RobotDrive;
 
 /**
  *
@@ -20,6 +23,9 @@ public class Gyro2015
     private final int BAUD_RATE = 57600;
 
     private SerialPort sp = null;
+    
+    private RobotDrive myRobot;
+    private Gyro gyro;
 
     /**
      * Singleton instance of the Gyro
@@ -41,6 +47,7 @@ public class Gyro2015
      * @param port
      *            : Analog port gyro is connected to
      */
+    
     private Gyro2015(int port)
     {
         try
@@ -50,6 +57,7 @@ public class Gyro2015
         catch (Exception ex)
         {
             // eaten
+            LOGGER.debug("sp null");
         }
     }
 
@@ -67,6 +75,7 @@ public class Gyro2015
             catch (Exception ex)
             {
                 // eaten
+                LOGGER.debug("sp null");
             }
             return trustedAngle;
         }
@@ -97,7 +106,7 @@ public class Gyro2015
                 {
                     double val = Double.parseDouble(dataSubstring);
                     LOGGER.debug("RAW DATA: " + data + " PARSED: " + val);
-                    return val - resetSubtractAngle;
+                    return (val - resetSubtractAngle);
                 }
                 catch (Exception ex)
                 {
@@ -111,16 +120,15 @@ public class Gyro2015
                 return trustedAngle;
             }
         }
-
     }
 
     public void update()
     {
         trustedAngle = wrapAngle(getSerialPortAngle());
-        LOGGER.debug("GYRO ANGLE: " + getAngle());
+//        LOGGER.debug("GYRO ANGLE: " + trustedAngle);
     }
 
-    public double getAngle()
+   public double getAngle()
     {
         return trustedAngle;
     }

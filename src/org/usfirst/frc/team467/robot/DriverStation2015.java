@@ -170,7 +170,21 @@ public class DriverStation2015
     {
 //        return AutoType.AIM;
         // Dial positions are mutually exclusive
-        return AutoType.NO_AUTO;
+//        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_2)) return AutoType.DRIVE_ONLY;                       
+//        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_3)) return AutoType.GRAB_CAN;
+//        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_4)) return AutoType.HOOK_AND_PUSH;
+//        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_5)) return AutoType.HOOK_AND_PUSH_OVER_RAMP;
+//        if (buttonPanel.isButtonDown(ButtonPanel2015.DIAL_POS_1)) return AutoType.AIM;
+        String mode = SmartDashboard.getString("Auto Selector", "invalid").toUpperCase();
+        
+        switch(mode) {
+            case "AIM":
+                return AutoType.AIM;
+            case "GRAB CAN":
+                return AutoType.GRAB_CAN;
+            default:
+                return AutoType.NO_AUTO;
+        }
     }
 
 //    /**

@@ -68,7 +68,7 @@ public class TankDrive implements Driveable
     
     private void drive(double leftSpeed, double rightSpeed)
     {
-        LOGGER.info("leftSpeed=" + (int)(100*leftSpeed) + " rightSpeed=" + (int)(100*rightSpeed));
+        LOGGER.debug("leftSpeed=" + (int)(100*leftSpeed) + " rightSpeed=" + (int)(100*rightSpeed));
         fl.set(square(-leftSpeed));
         fr.set(square(rightSpeed));
         bl.set(square(-leftSpeed));
@@ -87,10 +87,10 @@ public class TankDrive implements Driveable
     {
         final double turn = joystick.getTankTurn();
         final double speed = joystick.getTankSpeed();
-        arcadeDrive(speed, turn);
+        arcadeDrive(turn, speed);
     }
-    
-    private void arcadeDrive(double speed, double turn)
+
+    public void arcadeDrive(double turn, double speed)
     {
         final double left;
         final double right;

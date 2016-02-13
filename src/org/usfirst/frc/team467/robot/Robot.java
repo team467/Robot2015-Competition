@@ -14,9 +14,10 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+//import edu.wpi.first.wpilibj.AnalogGyro;
+//import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,6 +31,8 @@ public class Robot extends IterativeRobot
     private static final Logger LOGGER = Logger.getLogger(Robot.class);
 
     private static final double MIN_DRIVE_SPEED = 0.1;
+        
+    Gyro2016 gyro2016;
 
     // Robot objects
     private DriverStation2015 driverstation;
@@ -37,18 +40,18 @@ public class Robot extends IterativeRobot
     public Driveable drive;
     private PowerDistroBoard467 board;
     private Autonomous autonomous;
-
+  
     private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
-    
+        
     private Lifter lifter;
     private Claw claw;
-//    private Gyro2015 gyro;
     private Ultrasonic ultrasonic;
+    private Gyro2016 Agyro;
     private DigitalInput robotID;
 
     int session;
-    
+            
     private LEDStrip ledStrip = new LEDStrip();
 
     /**
@@ -60,10 +63,11 @@ public class Robot extends IterativeRobot
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+    
     public void robotInit()
     {
         // Initialize logging framework.
-        Logging.init();
+        Logging.init(); 
         
         CANTalon frontleft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
         CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
@@ -74,6 +78,10 @@ public class Robot extends IterativeRobot
         // Robot id 0 = swerve
         // Robot id 1 = kitbot tank
         int robotID = new DigitalInput(9).get() ? 1 : 0;
+        
+        // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
+//        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+//        drive = new makeTalonTank(1, 0, 3, 2);
         
         if(robotID == 1) {
             
@@ -91,18 +99,21 @@ public class Robot extends IterativeRobot
         driverstation = DriverStation2015.getInstance();
         autonomous = Autonomous.getInstance();
         autonomous.setDrive(drive);
-        
+        Agyro = Gyro2016.getInstance();
         board = PowerDistroBoard467.getInstance();
         vision = VisionProcessor.getInstance();
         lifter = Lifter.getInstance();
         claw = Claw.getInstance();
-//        gyro = Gyro2015.getInstance();
+        gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic(1, 0);
         ledStrip.setMode(Mode.OFF);
         
         autonomous.setDrive(drive);
         autonomous.setUltrasonic(ultrasonic);
-
+        
+        ledStrip.setMode(Mode.OFF);
+        
+       
         // Initialize the camera dashboard and launch in separate thread.
 //        cameraDashboard = CameraDashboard.getInstance();
 //        cameraDashboard.setDrive(drive);
@@ -120,6 +131,7 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
         LOGGER.info("Robot disabled");
+        gyro2016.reset();
     }
 
     public void disabledPeriodic()
@@ -127,6 +139,9 @@ public class Robot extends IterativeRobot
         vision.updateContours();
 //        gyro.update();
         ledStrip.setMode(Mode.BLUE_AND_GOLD);
+        
+//        double angle = gyro2016.autonomous();
+//        LOGGER.debug("GYRO angle : " +  angle);
 
         String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
         SmartDashboard.putString("DB/String 5", stickType);
@@ -142,6 +157,9 @@ public class Robot extends IterativeRobot
     public void teleopInit()
     {
         LOGGER.info("Teleop init");
+        
+//        gyro2016.reset();
+        
     }
 
     public void testInit()
@@ -155,17 +173,20 @@ public class Robot extends IterativeRobot
 
     public void autonomousPeriodic()
     {
-        LOGGER.info("Autonomous");
-        vision.updateContours();
-        LOGGER.debug("Contours updated");
-        
+//        LOGGER.info("Autonomous");
+//        vision.updateContours();
+//        LOGGER.debug("Contours updated");
+//        
         driverstation.readInputs();
         LOGGER.debug("Read driverStation");
         board.update();
         LOGGER.debug("Update powerDistroBoard");
         autonomous.updateAutonomousPeriodic();
         
-        ledStrip.setMode(Mode.RAINBOW);
+        autonomous.initGrabCan();
+        LOGGER.info("Gyro angle: " + Agyro.getAngle());
+        
+//        ledStrip.setMode(Mode.RAINBOW);
     }
 
     /**
@@ -176,6 +197,9 @@ public class Robot extends IterativeRobot
         vision.updateContours();
         // Read driverstation inputs
         driverstation.readInputs();
+
+        LOGGER.info("Distance: " + ultrasonic.getRangeInches());
+
 //        gyro.update();
 //        if (driverstation.getGyroReset())
 //        {
@@ -213,6 +237,8 @@ public class Robot extends IterativeRobot
                     ledStrip.setMode(Mode.BLUE_AND_GOLD);
                     break;
             }
+//            double angle = gyro2016.autonomous();
+//            LOGGER.debug("GYRO angle : " +  angle);
         }
         else if (time > 20)
         {
@@ -222,6 +248,8 @@ public class Robot extends IterativeRobot
         {
             ledStrip.setMode(Mode.RAINBOW);
         }
+        
+//        LOGGER.debug("GYRO angle : " + gyro2016.autonomous());
     }
 
     /**

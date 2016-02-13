@@ -105,6 +105,7 @@ public class VisionProcessor
             // If we get no data, return empty list.
             if (widths == null || centerXs == null) {
                 LOGGER.debug("Empty contour list");
+                return;
             }
             
             else

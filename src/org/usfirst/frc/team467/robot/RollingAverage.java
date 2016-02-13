@@ -52,6 +52,6 @@ public class RollingAverage {
      */
     public double getAverage()
     {
-        return total / size;
+        return (total / size);
     }   
 }
