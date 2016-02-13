@@ -2,37 +2,30 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Talon;
 
-public class tBar
+public class TBar
 {
-    private static final Logger LOGGER = Logger.getLogger(tBar.class);
+    private static final Logger LOGGER = Logger.getLogger(TBar.class);
     
-    private static tBar mrT = null;
+    private static TBar mrT = null;
     
-    private Talon tMotor = null;
+    private CANTalon tMotor = null;
     
-    private PowerDistroBoard467 board = null;
-    
-    public boolean tUp;
-    public boolean tDown;
-    
-    
-    public static tBar getInstance() {
+    public static TBar getInstance() {
         
         if(mrT == null) {
             
-            mrT = new tBar();
+            mrT = new TBar();
             
         }
         return mrT;
     }
     
-    private tBar() {
+    private TBar() {
         
-        tMotor = new Talon(RobotMap.TBAR_MOTOR_CHANNEL);
-        
-        board = PowerDistroBoard467.getInstance();
+        //tMotor = new CANTalon(0); //switch to actual port number
     }
     public void stop() {
         tMotor.set(0);
