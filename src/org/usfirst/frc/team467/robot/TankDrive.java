@@ -2,7 +2,6 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
-import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
@@ -32,15 +31,6 @@ public class TankDrive implements Driveable
         Talon frMotor = new Talon(fr);
         Talon blMotor = new Talon(bl);
         Talon brMotor = new Talon(br);
-        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
-    }
-    
-    public static TankDrive makeCANTalonTank(int fl, int fr, int bl, int br)
-    {
-        CANTalon flMotor = new CANTalon(fl);
-        CANTalon frMotor = new CANTalon(fr);
-        CANTalon blMotor = new CANTalon(bl);
-        CANTalon brMotor = new CANTalon(br);
         return new TankDrive(flMotor, frMotor, blMotor, brMotor);
     }
     
