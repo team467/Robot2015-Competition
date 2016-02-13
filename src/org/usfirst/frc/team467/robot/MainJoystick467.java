@@ -40,6 +40,8 @@ public interface MainJoystick467
      * @return
      */
     boolean buttonReleased(int button);
+    
+    void setRumble(float rumble);
 
     /**
      * Gets the X position of the stick. Left to right ranges from -1.0 to 1.0,

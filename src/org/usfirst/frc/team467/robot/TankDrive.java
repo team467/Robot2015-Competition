@@ -14,6 +14,8 @@ public class TankDrive implements Driveable
     SpeedController fr;
     SpeedController bl;
     SpeedController br;
+    
+    private double cartSpeed = 0.0;
 
     private TankDrive(SpeedController fl, SpeedController fr, SpeedController bl, SpeedController br)
     {
@@ -77,12 +79,11 @@ public class TankDrive implements Driveable
         arcadeDrive(turn, speed);
     }
 
-    public void arcadeDrive(final double turn, final double speed)
+    private void arcadeDrive(double turn, double speed)
     {
         final double left;
         final double right;
         LOGGER.debug("turn=" + turn + " speed=" + speed);
-        
         if (speed > 0.0) {
             if (turn > 0.0)
             {
@@ -173,6 +174,68 @@ public class TankDrive implements Driveable
     {
         // Not Applicable
 
+    }
+
+    @Override
+    public void cartDrive(MainJoystick467 joystick)
+    {
+        Direction direction = Direction.NONE;
+        if (joystick.buttonDown(1))
+        {
+            direction = Direction.FRONT;
+        }
+        else if (joystick.buttonDown(2))
+        {
+            direction = Direction.BACK;
+        }
+        double turn = joystick.getTankTurn();
+        boolean brake = joystick.buttonDown(4);
+        LOGGER.info("cartDrive direction=" + direction + " turn=" + turn + " brake=" + brake);
+        double acceleration = 0.02;
+        double breakIncrement = 0.1;
+        double minDiff = 0.02;
+        switch (direction)
+        {
+            case FRONT:
+                if (brake)
+                {
+                    cartSpeed = (cartSpeed > 0.0) ? cartSpeed - breakIncrement : cartSpeed + breakIncrement;
+                    break;
+                }
+                cartSpeed = (cartSpeed < 1.0) ? cartSpeed + acceleration : 1.0;
+                LOGGER.info("Front cartSpeed=" + cartSpeed);
+                break;
+            case BACK:
+                if (brake)
+                {
+                    cartSpeed = (cartSpeed > 0.0) ? cartSpeed - breakIncrement : cartSpeed + breakIncrement;
+                    break;
+                }
+                cartSpeed = (cartSpeed > -1.0) ? cartSpeed - acceleration : -1.0;
+                LOGGER.info("Back cartSpeed=" + cartSpeed);
+                break;
+            case NONE:
+                if (Math.abs(cartSpeed) > minDiff)
+                {
+                    if (brake)
+                    {
+                        cartSpeed = (cartSpeed > 0.0) ? cartSpeed - breakIncrement : cartSpeed + breakIncrement;
+                    }
+                    cartSpeed = (cartSpeed > 0.0) ? cartSpeed - acceleration : cartSpeed + acceleration;
+                }
+                else
+                {
+                    cartSpeed = 0.0;
+                }
+                LOGGER.info("None cartSpeed=" + cartSpeed);
+                break;
+            default:
+                cartSpeed = 0.0;
+                LOGGER.info("Default: Stop");
+                break;
+        }
+        joystick.setRumble((float)cartSpeed);
+        arcadeDrive(cartSpeed, turn);
     }
 
 }

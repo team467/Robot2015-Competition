@@ -264,4 +264,11 @@ public class LogitechJoystick implements MainJoystick467, RightJoystick467
     {
         return buttonDown(8);
     }
+
+    @Override
+    public void setRumble(float rumble)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }
