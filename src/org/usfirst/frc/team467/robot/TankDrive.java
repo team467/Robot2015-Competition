@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TankDrive implements Driveable
 {
@@ -190,23 +191,25 @@ public class TankDrive implements Driveable
     public void cartDrive(MainJoystick467 joystick)
     {
         Direction direction = Direction.NONE;
-        if (joystick.buttonDown(1))
+        if (joystick.buttonDown(2))
         {
             direction = Direction.FRONT;
         }
-        else if (joystick.buttonDown(2))
+        else if (joystick.buttonDown(3))
         {
             direction = Direction.BACK;
         }
         double turn = joystick.getTankTurn();
-        boolean brake = joystick.buttonDown(4);
+        boolean brake = joystick.buttonDown(4) || joystick.buttonDown(1);
         LOGGER.info("cartDrive direction=" + direction + " turn=" + turn + " brake=" + brake);
-        double acceleration = 0.02;
-        double breakIncrement = 0.1;
+        double acceleration = 0.02; //Double.valueOf(SmartDashboard.getString("DB/String 1", "INVALID"));
+        double breakIncrement = 0.1; //Double.valueOf(SmartDashboard.getString("DB/String 2", "INVALID"));
+        SmartDashboard.putString("DB/String 6", String.valueOf(acceleration));
+        SmartDashboard.putString("DB/String 7", String.valueOf(breakIncrement));
         double minDiff = 0.02;
         switch (direction)
         {
-            case FRONT:
+            case BACK:
                 if (brake)
                 {
                     cartSpeed = (cartSpeed > 0.0) ? cartSpeed - breakIncrement : cartSpeed + breakIncrement;
@@ -215,7 +218,7 @@ public class TankDrive implements Driveable
                 cartSpeed = (cartSpeed < 1.0) ? cartSpeed + acceleration : 1.0;
                 LOGGER.info("Front cartSpeed=" + cartSpeed);
                 break;
-            case BACK:
+            case FRONT:
                 if (brake)
                 {
                     cartSpeed = (cartSpeed > 0.0) ? cartSpeed - breakIncrement : cartSpeed + breakIncrement;
