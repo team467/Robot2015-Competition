@@ -2,7 +2,7 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.Autonomous.AutoType;
-import org.usfirst.frc.team467.robot.tBar.tBarDirection;
+import org.usfirst.frc.team467.robot.TBar.tBarDirection;
 
 public class DriverStation2015
 {

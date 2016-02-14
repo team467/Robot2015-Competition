@@ -40,8 +40,8 @@ public class Robot extends IterativeRobot
     private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
     
-    private Lifter lifter;
-    private Claw claw;
+//    private Lifter lifter;
+//    private Claw claw;
 //    private Gyro2015 gyro;
     private Ultrasonic ultrasonic;
     private DigitalInput robotID;
@@ -94,8 +94,8 @@ public class Robot extends IterativeRobot
         
         board = PowerDistroBoard467.getInstance();
         vision = VisionProcessor.getInstance();
-        lifter = Lifter.getInstance();
-        claw = Claw.getInstance();
+//        lifter = Lifter.getInstance();
+//        claw = Claw.getInstance();
 //        gyro = Gyro2015.getInstance();
         ultrasonic = new Ultrasonic(1, 0);
         ledStrip.setMode(Mode.OFF);
@@ -296,7 +296,7 @@ public class Robot extends IterativeRobot
     private void updateNavigator()
     {
         board.update();
-        lifter.driveLifter(driverstation.getLiftDirection());
-        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
+//        lifter.driveLifter(driverstation.getLiftDirection());
+//        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
     }
 }
