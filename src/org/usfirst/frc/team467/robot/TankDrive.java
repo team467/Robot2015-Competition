@@ -2,36 +2,146 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
-import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TankDrive implements Driveable
 {
     private static final Logger LOGGER = Logger.getLogger(TankDrive.class);
     
-    RobotDrive front;
-    RobotDrive back;
+    SpeedController fl;
+    SpeedController fr;
+    SpeedController bl;
+    SpeedController br;
+    
+    private double cartSpeed = 0.0;
 
-    public TankDrive(int frontLeftMotor, int frontRightMotor, int backLeftMotor, int backRightMotor)
+    private TankDrive(SpeedController fl, SpeedController fr, SpeedController bl, SpeedController br)
     {
-        front = new RobotDrive(frontLeftMotor, frontRightMotor);
-        back = new RobotDrive(backLeftMotor, backRightMotor);
+        this.fl = fl;
+        this.fr = fr;
+        this.bl = bl;
+        this.br = br;
     }
+    
+    public static TankDrive makeTalonTank(int fl, int fr, int bl, int br)
+    {
+        Talon flMotor = new Talon(fl);
+        Talon frMotor = new Talon(fr);
+        Talon blMotor = new Talon(bl);
+        Talon brMotor = new Talon(br);
+
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
+    }
+    public static TankDrive makeCANTalonTank(int fl, int fr, int bl, int br)
+    {
+        CANTalon flMotor = new CANTalon(fl);
+        CANTalon frMotor = new CANTalon(fr);
+        CANTalon blMotor = new CANTalon(bl);
+        CANTalon brMotor = new CANTalon(br);
+        
+        flMotor.setSafetyEnabled(true);
+        frMotor.setSafetyEnabled(true);
+        blMotor.setSafetyEnabled(true);
+        brMotor.setSafetyEnabled(true);
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
+    }
+
+    
+    public static TankDrive makeJaguarTank(int fl, int fr, int bl, int br)
+    {
+        Jaguar flMotor = new Jaguar(fl);
+        Jaguar frMotor = new Jaguar(fr);
+        Jaguar blMotor = new Jaguar(bl);
+        Jaguar brMotor = new Jaguar(br);
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
+    }
+    
+    private double square(double number)
+    {
+        if (number >= 0.0)
+        {
+            return number * number;
+        }
+        else
+        {
+            return -(number * number);
+        }
+    }
+    
+    private void drive(double leftSpeed, double rightSpeed)
+    {
+        LOGGER.debug("leftSpeed=" + (int)(100*leftSpeed) + " rightSpeed=" + (int)(100*rightSpeed));
+        fl.set(square(-leftSpeed));
+        fr.set(square(rightSpeed));
+        bl.set(square(-leftSpeed));
+        br.set(square(rightSpeed));
+    }
+
 
     @Override
     public void turnDrive(double speed)
     {
-        front.tankDrive(-speed, speed);
-        back.tankDrive(-speed, speed);
+        drive(speed, -speed);
     }
 
     @Override
-    public void arcadeDrive(Joystick467 joystick, boolean fieldAlign)
+    public void oneStickDrive(MainJoystick467 joystick, boolean fieldAlign)
     {
-        final double x = joystick.getStickX();
-        final double y = joystick.getStickY();
-        LOGGER.debug("x=" + x + " y=" + y);
-        front.arcadeDrive(-y, -x);
-        back.arcadeDrive(y, -x);
+        final double turn = joystick.getTankTurn();
+        final double speed = joystick.getTankSpeed();
+        arcadeDrive(turn, speed);
+    }
+
+    public void arcadeDrive(double turn, double speed)
+    {
+        final double left;
+        final double right;
+        final double maxTurn = 0.9; // Double.valueOf(SmartDashboard.getString("DB/String 1", "0.9"));
+        final double minTurn = 0.5; // Double.valueOf(SmartDashboard.getString("DB/String 2", "0.5"));
+        SmartDashboard.putString("DB/String 6", String.valueOf(maxTurn));
+        SmartDashboard.putString("DB/String 7", String.valueOf(minTurn));
+
+        turn *= (1.0 - Math.abs(speed)) * (maxTurn - minTurn) + minTurn;
+        SmartDashboard.putString("DB/String 8", String.valueOf(turn));
+        
+        // turn;
+        LOGGER.debug("turn=" + turn + " speed=" + speed);
+        if (speed > 0.0) {
+            if (turn > 0.0)
+            {
+              left = speed - turn;
+              right = Math.max(speed, turn);
+            }
+            else
+            {
+              left = Math.max(speed, -turn);
+              right = speed + turn;
+            }
+        }
+        else
+        {
+            if (turn > 0.0) {
+              left = -Math.max(-speed, turn);
+              right = speed + turn;
+            } else {
+              left = speed - turn;
+              right = -Math.max(-speed, -turn);
+            }
+        }
+        drive(left, right);
+    }
+
+    @Override
+    public void twoStickDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight)
+    {
+        final double speedLeft = joystickLeft.getTankSpeed();
+        final double speedRight = joystickRight.getTankSpeed();
+        LOGGER.debug("twoStickDrive speedLeft=" + speedLeft + " speedRight=" + speedRight);
+        drive(speedLeft, speedRight);
     }
 
     @Override
@@ -43,8 +153,7 @@ public class TankDrive implements Driveable
     @Override
     public void stop()
     {
-        front.tankDrive(0.0, 0.0);
-        back.tankDrive(0.0, 0.0);
+        drive(0.0, 0.0);
     }
 
     @Override
@@ -56,7 +165,7 @@ public class TankDrive implements Driveable
     @Override
     public void strafeDrive(Direction direction)
     {
-        double speed = -0.6;
+        double speed = 0.6;
         switch (direction)
         {
             case FRONT:
@@ -65,34 +174,102 @@ public class TankDrive implements Driveable
             case BACK:
                 speed = -speed;
                 break;
-            case LEFT:
-            case RIGHT:
+            default:
                 speed = 0.0;
                 return;
         }
-        front.tankDrive(-speed, -speed);
-        back.tankDrive(speed, speed);
+        drive(-speed, -speed);
     }
 
     @Override
     public void revolveDriveLarge(Direction direction)
     {
-        // TODO Auto-generated method stub
+        // Not applicable
 
     }
 
     @Override
     public void revolveDriveSmall(Direction direction)
     {
-        // TODO Auto-generated method stub
+        // Not applicable
 
     }
 
     @Override
     public void individualWheelDrive(double speed, int steeringId)
     {
-        // TODO Auto-generated method stub
+        // Not Applicable
 
+    }
+
+    @Override
+    public void cartDrive(MainJoystick467 joystick)
+    {
+        Direction direction = Direction.NONE;
+        if (joystick.buttonDown(2))
+        {
+            direction = Direction.FRONT;
+        }
+        else if (joystick.buttonDown(3))
+        {
+            direction = Direction.BACK;
+        }
+        double turn = joystick.getTankTurn();
+        boolean brake = joystick.buttonDown(4) || joystick.buttonDown(1);
+        LOGGER.info("cartDrive direction=" + direction + " turn=" + turn + " brake=" + brake);
+        double acceleration = 0.02; //Double.valueOf(SmartDashboard.getString("DB/String 1", "INVALID"));
+        double breakIncrement = 0.1; //Double.valueOf(SmartDashboard.getString("DB/String 2", "INVALID"));
+        SmartDashboard.putString("DB/String 6", String.valueOf(acceleration));
+        SmartDashboard.putString("DB/String 7", String.valueOf(breakIncrement));
+        double minDiff = 0.02;
+        switch (direction)
+        {
+            case BACK:
+                if (brake)
+                {
+                    cartSpeed = (cartSpeed > 0.0) ? cartSpeed - breakIncrement : cartSpeed + breakIncrement;
+                    break;
+                }
+                cartSpeed = (cartSpeed < 1.0) ? cartSpeed + acceleration : 1.0;
+                LOGGER.info("Front cartSpeed=" + cartSpeed);
+                break;
+            case FRONT:
+                if (brake)
+                {
+                    cartSpeed = (cartSpeed > 0.0) ? cartSpeed - breakIncrement : cartSpeed + breakIncrement;
+                    break;
+                }
+                cartSpeed = (cartSpeed > -1.0) ? cartSpeed - acceleration : -1.0;
+                LOGGER.info("Back cartSpeed=" + cartSpeed);
+                break;
+            case NONE:
+                if (Math.abs(cartSpeed) > minDiff)
+                {
+                    if (brake)
+                    {
+                        cartSpeed = (cartSpeed > 0.0) ? cartSpeed - breakIncrement : cartSpeed + breakIncrement;
+                    }
+                    cartSpeed = (cartSpeed > 0.0) ? cartSpeed - acceleration : cartSpeed + acceleration;
+                }
+                else
+                {
+                    cartSpeed = 0.0;
+                }
+                LOGGER.info("None cartSpeed=" + cartSpeed);
+                break;
+            default:
+                cartSpeed = 0.0;
+                LOGGER.info("Default: Stop");
+                break;
+        }
+        joystick.setRumble((float)cartSpeed);
+        arcadeDrive(turn, cartSpeed);
+    }
+
+    @Override
+    public void splitDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight)
+    {
+        arcadeDrive(joystickRight.getTankTurn(), joystickLeft.getTankSpeed());
     }
 
 }

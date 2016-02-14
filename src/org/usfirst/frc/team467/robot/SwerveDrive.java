@@ -296,9 +296,17 @@ public class SwerveDrive implements Driveable
      * @param fieldAlign
      *            Whether or not to use field align drive
      */
-    public void arcadeDrive(Joystick467 joystick, boolean fieldAlign)
+    public void oneStickDrive(MainJoystick467 joystick, boolean fieldAlign)
     {
-        crabDrive(joystick.getStickAngle(), joystick.getStickDistance(), fieldAlign);
+        crabDrive(joystick.getAngle(), joystick.getStickDistance(), fieldAlign);
+    }
+
+    @Override
+    public void twoStickDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight)
+    {
+        // TODO Auto-generated method stub
+        LOGGER.debug("twoStickDrive leftSpeed=" + joystickLeft.getTankSpeed() +
+                                " rightSpeed=" + joystickRight.getTankSpeed());
     }
 
     /**
@@ -549,6 +557,25 @@ public class SwerveDrive implements Driveable
     public double getNormalizedSteeringAngle(int steeringMotor)
     {
         return steering[steeringMotor].getSteeringAngle();
+    }
+
+    @Override
+
+    public void arcadeDrive( double turn, double speed)
+    {
+        // TODO Auto-generated method stub
+
+    }
+    public void cartDrive(MainJoystick467 joystick)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void splitDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight)
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

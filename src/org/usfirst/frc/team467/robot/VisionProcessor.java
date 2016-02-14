@@ -74,7 +74,7 @@ public class VisionProcessor
     {
         if (width == 0.0)
         {
-            throw new IllegalStateException();
+            throw new IllegalStateException("width is zero");
         }
         return width/2;
     }
@@ -105,6 +105,7 @@ public class VisionProcessor
             // If we get no data, return empty list.
             if (widths == null || centerXs == null) {
                 LOGGER.debug("Empty contour list");
+                return;
             }
             
             else

@@ -135,7 +135,7 @@ public class Claw
                 m_isFullyOpen = false;                
                 break;
         }
-        driverstation.setClawLED(m_isClosed || m_isFullyOpen);
+//        driverstation.setClawLED(m_isClosed || m_isFullyOpen);
     }
 
     /**
