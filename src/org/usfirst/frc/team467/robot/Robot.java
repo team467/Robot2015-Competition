@@ -75,7 +75,7 @@ public class Robot extends IterativeRobot
         CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
 //        robotID = new DigitalInput(9);
 
-        // Robot id 0 = swerve
+        // Robot id 0 = can tank
         // Robot id 1 = kitbot tank
         int robotID = new DigitalInput(9).get() ? 1 : 0;
         
@@ -92,7 +92,7 @@ public class Robot extends IterativeRobot
         else if (robotID == 0){
             //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
             drive = TankDrive.makeCANTalonTank(2, 5, 1, 6);
-            LOGGER.info("Swerve Set");
+            LOGGER.info("CANTalon Set");
         }
         
         // Make robot objects
@@ -259,11 +259,16 @@ public class Robot extends IterativeRobot
     private void updateDrive()
     {
         DriveMode driveMode = driverstation.getDriveMode();
-        LOGGER.info("Kart Mode: " + driverstation.kart);
         if (driverstation.kart)
         {
             drive.cartDrive(driverstation.getDriveJoystick1());
             LOGGER.info("Kart Drive");
+            return;
+        }
+        if (driverstation.split)
+        {
+            drive.splitDrive(driverstation.getDriveJoystick1(), driverstation.getDriveJoystick2());
+            LOGGER.info("Split Stick Drive");
             return;
         }
         switch (driveMode)

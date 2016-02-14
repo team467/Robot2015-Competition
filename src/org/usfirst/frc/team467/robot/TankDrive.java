@@ -33,6 +33,7 @@ public class TankDrive implements Driveable
         Talon frMotor = new Talon(fr);
         Talon blMotor = new Talon(bl);
         Talon brMotor = new Talon(br);
+
         return new TankDrive(flMotor, frMotor, blMotor, brMotor);
     }
     public static TankDrive makeCANTalonTank(int fl, int fr, int bl, int br)
@@ -41,6 +42,11 @@ public class TankDrive implements Driveable
         CANTalon frMotor = new CANTalon(fr);
         CANTalon blMotor = new CANTalon(bl);
         CANTalon brMotor = new CANTalon(br);
+        
+        flMotor.setSafetyEnabled(true);
+        frMotor.setSafetyEnabled(true);
+        blMotor.setSafetyEnabled(true);
+        brMotor.setSafetyEnabled(true);
         return new TankDrive(flMotor, frMotor, blMotor, brMotor);
     }
 
@@ -94,6 +100,15 @@ public class TankDrive implements Driveable
     {
         final double left;
         final double right;
+        final double maxTurn = 0.9; // Double.valueOf(SmartDashboard.getString("DB/String 1", "0.9"));
+        final double minTurn = 0.5; // Double.valueOf(SmartDashboard.getString("DB/String 2", "0.5"));
+        SmartDashboard.putString("DB/String 6", String.valueOf(maxTurn));
+        SmartDashboard.putString("DB/String 7", String.valueOf(minTurn));
+
+        turn *= (1.0 - Math.abs(speed)) * (maxTurn - minTurn) + minTurn;
+        SmartDashboard.putString("DB/String 8", String.valueOf(turn));
+        
+        // turn;
         LOGGER.debug("turn=" + turn + " speed=" + speed);
         if (speed > 0.0) {
             if (turn > 0.0)
@@ -248,7 +263,13 @@ public class TankDrive implements Driveable
                 break;
         }
         joystick.setRumble((float)cartSpeed);
-        arcadeDrive(cartSpeed, turn);
+        arcadeDrive(turn, cartSpeed);
+    }
+
+    @Override
+    public void splitDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight)
+    {
+        arcadeDrive(joystickRight.getTankTurn(), joystickLeft.getTankSpeed());
     }
 
 }

@@ -571,6 +571,13 @@ public class SwerveDrive implements Driveable
         // TODO Auto-generated method stub
     }
 
+    @Override
+    public void splitDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
 
 class WheelCorrection

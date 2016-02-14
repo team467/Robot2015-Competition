@@ -6,7 +6,9 @@ public class PlayStationJoystickRight implements RightJoystick467
 {
     private Joystick joystick;
     private double stickY = 0.0;
+    private double stickX = 0.0;
     private static final int AXIS_Y = 3;
+    private static final int AXIS_X = 2;
     private static final double DEADZONE = 0.1;
 
     
@@ -25,6 +27,7 @@ public class PlayStationJoystickRight implements RightJoystick467
     public void readInputs()
     {
         stickY = accelerateJoystickInput(joystick.getRawAxis(AXIS_Y));
+        stickX = accelerateJoystickInput(joystick.getRawAxis(AXIS_X));
     }
     
     /**
@@ -52,5 +55,12 @@ public class PlayStationJoystickRight implements RightJoystick467
     {
         // TODO Auto-generated method stub
         return stickY;
-    } 
+    }
+
+    @Override
+    public double getTankTurn()
+    {
+        // TODO Auto-generated method stub
+        return stickX;
+    }
 }

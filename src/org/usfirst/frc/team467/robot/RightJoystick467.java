@@ -23,4 +23,6 @@ public interface RightJoystick467
      * @return
      */
     double getTankSpeed();
+    
+    double getTankTurn();
 }

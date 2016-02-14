@@ -26,6 +26,7 @@ public class DriverStation2015
     private static int UNWIND_BUTTON = 10;
     
     public boolean kart = false;
+    public boolean split = false;
 
     // CAL/AUTO
     public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
@@ -92,31 +93,43 @@ public class DriverStation2015
                 driverJoy1 = new LogitechJoystick(0);
                 driverJoy2 = null;
                 kart = false;
+                split = false;
                 stickTypeDescription = "Logitech 1-stick";
                 break;
             case "LT2":
                 driverJoy1 = new LogitechJoystick(0);
                 driverJoy2 = new LogitechJoystick(2);
                 kart = false;
+                split = false;
                 stickTypeDescription = "Logitech 2-stick";
                 break;
             case "PS1":
                 driverJoy1 = new PlayStationJoystickMain(3);
                 driverJoy2 = null;
                 kart = false;
+                split = false;
                 stickTypeDescription = "Playstation 1-stick";
                 break;
             case "PS2":
                 driverJoy1 = new PlayStationJoystickMain(3);
                 driverJoy2 = new PlayStationJoystickRight(3);
                 kart = false;
+                split = false;
                 stickTypeDescription = "Playstation 2-stick";
                 break;
             case "PSKART":
                 driverJoy1 = new PlayStationJoystickMain(3);
                 driverJoy2 = null;
                 kart = true;
+                split = false;
                 stickTypeDescription = "Playstation Kart";
+                break;
+            case "PSSPLIT":
+                driverJoy1 = new PlayStationJoystickMain(3);
+                driverJoy2 = new PlayStationJoystickRight(3);
+                kart = false;
+                split = true;
+                stickTypeDescription = "Playstation split-stick";
                 break;
             default:
                 LOGGER.info("Auto Selector must be LT1, LT2, PS1, PS2, or PSKART");
