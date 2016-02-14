@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,6 +18,11 @@ public class TankDrive implements Driveable
     SpeedController bl;
     SpeedController br;
     
+    private MotorSafetyHelper FLsafety = null;
+    private MotorSafetyHelper FRsafety = null;
+    private MotorSafetyHelper BLsafety = null;
+    private MotorSafetyHelper BRsafety = null;
+    
     private double cartSpeed = 0.0;
 
     private TankDrive(SpeedController fl, SpeedController fr, SpeedController bl, SpeedController br)
@@ -25,6 +31,23 @@ public class TankDrive implements Driveable
         this.fr = fr;
         this.bl = bl;
         this.br = br;
+        
+        if (fl instanceof CANTalon)
+        {
+            FLsafety = new MotorSafetyHelper((CANTalon)fl);
+        }
+        if (fr instanceof CANTalon)
+        {
+            FRsafety = new MotorSafetyHelper((CANTalon)fr);
+        }
+        if (bl instanceof CANTalon)
+        {
+            BLsafety = new MotorSafetyHelper((CANTalon)bl);
+        }
+        if (br instanceof CANTalon)
+        {
+            BRsafety = new MotorSafetyHelper((CANTalon)br);
+        }
     }
     
     public static TankDrive makeTalonTank(int fl, int fr, int bl, int br)
@@ -36,6 +59,7 @@ public class TankDrive implements Driveable
 
         return new TankDrive(flMotor, frMotor, blMotor, brMotor);
     }
+    
     public static TankDrive makeCANTalonTank(int fl, int fr, int bl, int br)
     {
         CANTalon flMotor = new CANTalon(fl);
@@ -43,11 +67,7 @@ public class TankDrive implements Driveable
         CANTalon blMotor = new CANTalon(bl);
         CANTalon brMotor = new CANTalon(br);
         
-        flMotor.setSafetyEnabled(true);
-        frMotor.setSafetyEnabled(true);
-        blMotor.setSafetyEnabled(true);
-        brMotor.setSafetyEnabled(true);
-        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor);        
     }
 
     
@@ -58,6 +78,26 @@ public class TankDrive implements Driveable
         Jaguar blMotor = new Jaguar(bl);
         Jaguar brMotor = new Jaguar(br);
         return new TankDrive(flMotor, frMotor, blMotor, brMotor);
+    }
+    
+    private void feedMotors()
+    {
+        if (FLsafety != null)
+        {
+            FLsafety.feed();
+        }
+        if (FRsafety != null)
+        {
+            FRsafety.feed();
+        }
+        if (BLsafety != null)
+        {
+            BLsafety.feed();
+        }
+        if (BRsafety != null)
+        {
+            BRsafety.feed();
+        }
     }
     
     private double square(double number)
