@@ -246,16 +246,16 @@ public class TankDrive implements Driveable
     public void cartDrive(MainJoystick467 joystick)
     {
         Direction direction = Direction.NONE;
-        if (joystick.buttonDown(2))
+        if (joystick.getKartForward())
         {
             direction = Direction.FRONT;
         }
-        else if (joystick.buttonDown(3))
+        else if (joystick.getKartBackward())
         {
             direction = Direction.BACK;
         }
         double turn = joystick.getTankTurn();
-        boolean brake = joystick.buttonDown(4) || joystick.buttonDown(1);
+        boolean brake = joystick.getKartBrake();
         LOGGER.info("cartDrive direction=" + direction + " turn=" + turn + " brake=" + brake);
         double acceleration = 0.02; //Double.valueOf(SmartDashboard.getString("DB/String 1", "INVALID"));
         double breakIncrement = 0.1; //Double.valueOf(SmartDashboard.getString("DB/String 2", "INVALID"));
@@ -302,7 +302,7 @@ public class TankDrive implements Driveable
                 LOGGER.info("Default: Stop");
                 break;
         }
-        joystick.setRumble((float)cartSpeed);
+        joystick.setRumble((float)(cartSpeed / 2 + 0.5));
         arcadeDrive(turn, cartSpeed);
     }
 

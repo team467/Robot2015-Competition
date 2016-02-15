@@ -2,21 +2,20 @@ package org.usfirst.frc.team467.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-public class PlayStationJoystickRight implements RightJoystick467
+public class XBoxJoystickRight implements RightJoystick467
 {
     private Joystick joystick;
-    private double stickY = 0.0;
     private double stickX = 0.0;
-    private static final int AXIS_Y = 3;
-    private static final int AXIS_X = 2;
+    private double stickY = 0.0;
+    private static final int AXIS_X = 4;
+    private static final int AXIS_Y = 5;
     private static final double DEADZONE = 0.1;
-
     
-    public PlayStationJoystickRight(int stick)
+    public XBoxJoystickRight(int stick)
     {
         joystick = new Joystick(stick);
     }
-
+    
     @Override
     public Joystick getJoystick()
     {
@@ -53,12 +52,15 @@ public class PlayStationJoystickRight implements RightJoystick467
     @Override
     public double getTankSpeed()
     {
+        // TODO Auto-generated method stub
         return stickY;
     }
 
     @Override
     public double getTankTurn()
     {
+        // TODO Auto-generated method stub
         return stickX;
     }
+
 }

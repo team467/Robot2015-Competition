@@ -271,4 +271,25 @@ public class LogitechJoystick implements MainJoystick467, RightJoystick467
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public boolean getKartForward()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean getKartBackward()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean getKartBrake()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

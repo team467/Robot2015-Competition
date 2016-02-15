@@ -103,4 +103,8 @@ public interface MainJoystick467
     boolean getRevolveLargeRight();
     boolean getRevolveSmallLeft();
     boolean getRevolveSmallRight();
+    
+    boolean getKartForward();
+    boolean getKartBackward();
+    boolean getKartBrake();
 }

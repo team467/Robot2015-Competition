@@ -131,8 +131,37 @@ public class DriverStation2015
                 split = true;
                 stickTypeDescription = "Playstation split-stick";
                 break;
+            case "XB1":
+                driverJoy1 = new XBoxJoystickMain(4);
+                driverJoy2 = null;
+                kart = false;
+                split = false;
+                stickTypeDescription = "XBox 1-stick";
+                break;
+            case "XB2":
+                driverJoy1 = new XBoxJoystickMain(4);
+                driverJoy2 = new XBoxJoystickRight(4);
+                kart = false;
+                split = false;
+                stickTypeDescription = "XBox 2-stick";
+                break;
+            case "XBKART":
+                driverJoy1 = new XBoxJoystickMain(4);
+                driverJoy2 = null;
+                kart = true;
+                split = false;
+                stickTypeDescription = "XBox Kart";
+                break;
+            case "XBSPLIT":
+                driverJoy1 = new XBoxJoystickMain(4);
+                driverJoy2 = new XBoxJoystickRight(4);
+                kart = false;
+                split = true;
+                stickTypeDescription = "XBox split-stick";
+                break;
             default:
-                LOGGER.info("Auto Selector must be LT1, LT2, PS1, PS2, or PSKART");
+                LOGGER.info("Auto Selector must be LT1, LT2, PS1, PS2, PSKART, PSSPLIT, "
+                        + "XB1, XB2, XBKART, or XBSPLIT");
                 stickTypeDescription = "Invalid";
                 break;
         }

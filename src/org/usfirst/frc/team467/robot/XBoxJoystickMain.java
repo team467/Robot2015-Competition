@@ -3,7 +3,7 @@ package org.usfirst.frc.team467.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.RumbleType;
 
-public class PlayStationJoystickMain implements MainJoystick467
+public class XBoxJoystickMain implements MainJoystick467
 {
     private Joystick joystick;
     private double stickX = 0.0;
@@ -13,16 +13,15 @@ public class PlayStationJoystickMain implements MainJoystick467
     private static final int AXIS_Y = 1;
     private static final int POV_INDEX = 0;
     private static final double DEADZONE = 0.1;
-
     
-    private boolean[] buttons = new boolean[16];     // array of current button states
-    private boolean[] prevButtons = new boolean[16]; // array of previous button states, involved in edge detection.
+    private boolean[] buttons = new boolean[10];     // array of current button states
+    private boolean[] prevButtons = new boolean[10]; // array of previous button states, involved in edge detection.
     
-    public PlayStationJoystickMain(int stick)
+    public XBoxJoystickMain(int stick)
     {
         joystick = new Joystick(stick);
     }
-
+    
     @Override
     public Joystick getJoystick()
     {
@@ -32,7 +31,7 @@ public class PlayStationJoystickMain implements MainJoystick467
     @Override
     public void readInputs()
     {
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 10; i++)
         {
             prevButtons[i] = buttons[i];
             buttons[i] = joystick.getRawButton(i + 1);
@@ -81,6 +80,26 @@ public class PlayStationJoystickMain implements MainJoystick467
     }
 
     @Override
+    public void setRumble(float rumble)
+    {
+        joystick.setRumble(RumbleType.kLeftRumble,  rumble);
+        joystick.setRumble(RumbleType.kRightRumble, rumble);
+    }
+
+    @Override
+    public double getTankTurn()
+    {
+        return stickX;
+    }
+
+    @Override
+    public double getTankSpeed()
+    {
+        // TODO Auto-generated method stub
+        return stickY;
+    }
+
+    @Override
     public Direction getStrafeDirection()
     {
         for (Direction dir : Direction.values())
@@ -108,15 +127,29 @@ public class PlayStationJoystickMain implements MainJoystick467
     }
 
     @Override
+    public boolean getTurnButton()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
     public double getStickDistance()
     {
         return Math.sqrt(stickX * stickX + stickY * stickY);
     }
 
     @Override
+    public boolean isInDeadzone()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
     public double getAngle()
     {
-        // This shouldn't be necessary, deadzone filtering should already
+     // This shouldn't be necessary, deadzone filtering should already
         // be performed - however it doesn't hurt to make sure.
         if (isInDeadzone())
         {
@@ -138,24 +171,6 @@ public class PlayStationJoystickMain implements MainJoystick467
         }
     
         return (stickAngle);
-    }
-
-    @Override
-    public double getTankTurn()
-    {
-        return stickX;
-    }
-
-    @Override
-    public double getTankSpeed()
-    {
-        return stickY;
-    }
-
-    @Override
-    public boolean isInDeadzone()
-    {
-        return (Math.abs(stickX) < DEADZONE) && (Math.abs(stickY) < DEADZONE);
     }
 
     @Override
@@ -181,13 +196,6 @@ public class PlayStationJoystickMain implements MainJoystick467
 
     @Override
     public boolean getResetGyro()
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean getTurnButton()
     {
         // TODO Auto-generated method stub
         return false;
@@ -222,12 +230,6 @@ public class PlayStationJoystickMain implements MainJoystick467
     }
 
     @Override
-    public void setRumble(float rumble)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
     public boolean getKartForward()
     {
         return buttonDown(2);
@@ -236,13 +238,13 @@ public class PlayStationJoystickMain implements MainJoystick467
     @Override
     public boolean getKartBackward()
     {
-        return buttonDown(3);
+        return buttonDown(1);
     }
 
     @Override
     public boolean getKartBrake()
     {
-        return buttonDown(4) || buttonDown(1);
+        return buttonDown(3) || buttonDown(4);
     }
 
 }
