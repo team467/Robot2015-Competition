@@ -11,49 +11,117 @@ public class BallRollers
 {
     private static final Logger LOGGER = Logger.getLogger(BallRollers.class);
 
-    private final CANTalon motor;
-    private final MotorSafetyHelper safety;
-    private final double motorSpeed = 1;
+    private final CANTalon rollerMotor;
+    private final CANTalon manipMotor;
+    private final MotorSafetyHelper safetyRoller;
+    private final MotorSafetyHelper safetyManip;
+    private final double rollerMotorSpeed = 1;
+    private final double manipMotorSpeed = 0.2;
 
     // TODO Sensor
     
-    public BallRollers(int motorChannel)
+    public BallRollers(int motorChannelRoller, int motorChannelManip)
     {
-        motor = new CANTalon(motorChannel);
-        safety = new MotorSafetyHelper(motor);
+        rollerMotor = new CANTalon(motorChannelRoller);
+        manipMotor = new CANTalon(motorChannelManip);
+        safetyRoller = new MotorSafetyHelper(rollerMotor);
+        safetyManip = new MotorSafetyHelper(manipMotor);
     }
     
-    public void in()
+    public void stopRoller()
     {
-        if (isLoaded())
-        {
-            stop();
-            return;
+        rollerMotor.set(0.0);
+        safetyRoller.feed();
+        LOGGER.info("Troll");
+    }
+    public void stopManip()
+    {
+        manipMotor.set(0.0);
+        safetyManip.feed();
+        LOGGER.info("Troll");
+    }
+    
+    public void runRoller (RollerDirection rollerDirection) {
+        
+        switch(rollerDirection) {
+            case IN:
+                if (isLoaded())
+                {
+                    stopRoller();
+                    return;
+                }
+                LOGGER.info("IN");
+                rollerMotor.set(rollerMotorSpeed);
+                safetyRoller.feed();
+                LOGGER.info("Troll");
+                break;
+            case OUT:
+                LOGGER.info("OUT");
+                rollerMotor.set(-rollerMotorSpeed);
+                safetyRoller.feed();
+                LOGGER.info("Troll");
+                break;
+            case STOP:
+                stopRoller();
+                break;
         }
-        LOGGER.info("IN");
-        motor.set(motorSpeed);
-        safety.feed();
-        LOGGER.info("Troll");
     }
-    
-    public void out()
-    {
-        LOGGER.info("OUT");
-        motor.set(-motorSpeed);
-        safety.feed();
-        LOGGER.info("Troll");
+        
+    public void runManipulator (ManipPosition manipPosition) {
+        
+        
+        //for now, we just control the Manipulator arm manually until we can detect the position of the arm
+        switch(manipPosition) {
+            case UP:
+//                if (!isUp()) {
+//                    LOGGER.info("GOING UP");
+//                    manipMotor.set(manipMotorSpeed);
+//                    safetyManip.feed();
+//                }
+//                else {
+//                    LOGGER.info("IS UP");
+//                    stopManip();
+//                }
+                manipMotor.set(manipMotorSpeed);
+                break;
+            case DOWN:
+//                if (!isDown()) {
+//                    LOGGER.info("GOING DOWN");
+//                    manipMotor.set(-manipMotorSpeed);
+//                    safetyManip.feed();
+//                }
+//                else {
+//                    LOGGER.info("IS DOWN");
+//                    stopManip();
+//                }
+                stopManip();
+                break;
+            case STOP:
+                stopManip();
+                break;
+        }
     }
-    
-    public void stop()
-    {
-        motor.set(0.0);
-        safety.feed();
-        LOGGER.info("Troll");
-    }
+
     
     private boolean isLoaded()
     {
         // TODO Work with sensor
         return false;
+    }
+    private boolean isUp()
+    {
+        //we need to detect the position of the arm
+        return false;
+    }
+    private boolean isDown()
+    {
+      //we need to detect the position of the arm
+        return false;
+    }
+    enum RollerDirection {
+        IN, OUT, STOP
+    }
+    enum ManipPosition {
+        UP, DOWN, STOP
     }
 }

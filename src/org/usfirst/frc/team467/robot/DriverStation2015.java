@@ -2,6 +2,8 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.Autonomous.AutoType;
+import org.usfirst.frc.team467.robot.BallRollers.ManipPosition;
+import org.usfirst.frc.team467.robot.BallRollers.RollerDirection;
 import org.usfirst.frc.team467.robot.TBar.tBarDirection;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -52,8 +54,8 @@ public class DriverStation2015
     public static int HIGH_SHOOTER = ButtonPanel2016.RED_BUTTON;
     
     // TOGGLE
-    public static int INTAKE_UP = ButtonPanel2016.TOGGLE_UP;
-    public static int INTAKE_DOWN = ButtonPanel2016.TOGGLE_DOWN;
+    public static int MANIPULATOR_UP = ButtonPanel2016.TOGGLE_UP;
+    public static int MANIPULATOR_DOWN = ButtonPanel2016.TOGGLE_DOWN;
     
     //THREE SWITCH
     public static int TBAR_UP = ButtonPanel2016.SWITCH_UP;
@@ -444,9 +446,42 @@ public class DriverStation2015
 
     public tBarDirection getTBarDirection()
     {
-        //for the meantime
-        return tBarDirection.STOP;
+        if (buttonPanel.isButtonDown(TBAR_DOWN)) {
+            return tBarDirection.DOWN;
+        }
+        else if (buttonPanel.isButtonDown(TBAR_UP)) {
+            return tBarDirection.UP;
+        }
+        else {
+            return tBarDirection.STOP;
+        }
         
+        
+    }
+    public RollerDirection getRollerDirection()
+    {
+        if (buttonPanel.isButtonDown(INTAKE)) {
+            return RollerDirection.IN;
+        }
+        else if (buttonPanel.isButtonDown(LOW_SHOOTER)) {
+            return RollerDirection.OUT;
+        }
+        else {
+            return RollerDirection.STOP;
+        }
+    }
+    public ManipPosition getManipPosition()
+    {
+        if (buttonPanel.isButtonDown(MANIPULATOR_UP)) {
+            return ManipPosition.UP;
+        }
+        else if (buttonPanel.isButtonDown(MANIPULATOR_UP)) {
+            return ManipPosition.DOWN;
+        }
+        else {
+            //this should never happen ;P
+            return ManipPosition.STOP;
+        }
     }
 //    /**
 //     * Gets the lifter direction for lifting.

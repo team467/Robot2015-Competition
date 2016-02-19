@@ -45,6 +45,7 @@ public class Robot extends IterativeRobot
     private VisionProcessor vision = null;
 
     private BallRollers rollers;
+    private TBar tbar;
     
 //    private Lifter lifter;
 //    private Claw claw;
@@ -352,18 +353,10 @@ public class Robot extends IterativeRobot
     private void updateNavigator()
     {
         board.update();
-        if (driverstation.getDriveJoystick1().buttonDown(5))
-        {
-            rollers.in();
-        }
-        else if (driverstation.getDriveJoystick1().buttonDown(6))
-        {
-            rollers.out();
-        }
-        else
-        {
-            rollers.stop();
-        }
+        rollers.runRoller(driverstation.getRollerDirection());
+        rollers.runManipulator(driverstation.getManipPosition());
+        tbar.launchTBar(driverstation.getTBarDirection());
+        
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
     }
