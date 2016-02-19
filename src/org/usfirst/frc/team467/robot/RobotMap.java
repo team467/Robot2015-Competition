@@ -20,7 +20,7 @@ public class RobotMap
     // Array IDs
     //
 
-    // Steering motor ids in array (DO NOT ALTER)
+    // SwerveDrive Steering motor ids in array (DO NOT ALTER)
     public static final int FRONT_LEFT = 0;
     public static final int FRONT_RIGHT = 1;
     public static final int BACK_LEFT = 2;
@@ -37,9 +37,10 @@ public class RobotMap
     public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 3;
 
     // Game Piece Motor IDs - PWMTalon, RoboRio
-    public static final int LIFTER_MOTOR_CHANNEL_BOTTOM = 4;
-    public static final int LIFTER_MOTOR_CHANNEL_TOP = 6;
-    public static final int CLAW_MOTOR_CHANNEL = 5;
+    public static final int LIFTER_MOTOR_CHANNEL_BOTTOM = 4; // Lifter not used
+    public static final int LIFTER_MOTOR_CHANNEL_TOP = 6; // Lifter not used
+    public static final int TBAR_MOTOR_CHANNEL = 5;
+    public static final int CLAW_MOTOR_CHANNEL = 0; // Claw not used
 
     //
     // CAN IDs

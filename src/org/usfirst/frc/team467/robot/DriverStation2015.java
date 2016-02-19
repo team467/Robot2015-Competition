@@ -2,6 +2,7 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.Autonomous.AutoType;
+import org.usfirst.frc.team467.robot.TBar.tBarDirection;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -441,6 +442,12 @@ public class DriverStation2015
 //        }
 //    }
 
+    public tBarDirection getTBarDirection()
+    {
+        //for the meantime
+        return tBarDirection.STOP;
+        
+    }
 //    /**
 //     * Gets the lifter direction for lifting.
 //     * 
@@ -461,6 +468,7 @@ public class DriverStation2015
 //            return LifterDirection.STOP;
 //        }
 //    }
+
 
 //    /**
 //     * Checks to see if the speed change button is pressed.
