@@ -238,7 +238,7 @@ public class Robot extends IterativeRobot
                     ledStrip.setMode(Mode.PULSE_BLUE);
                     break;
                 case Invalid:
-                    ledStrip.setMode(Mode.BLUE_AND_GOLD);
+                    ledStrip.setMode(Mode.PULSE_YELLOW);
                     break;
             }
 //            double angle = gyro2016.autonomous();

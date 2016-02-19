@@ -13,7 +13,7 @@ public class DriverStation2015
 
     MainJoystick467 driverJoy1 = null;
     RightJoystick467 driverJoy2 = null;
-//    ButtonPanel2015 buttonPanel = null;
+    ButtonPanel2016 buttonPanel = null;
     String stickType;
     
     // Mapping of functions to Joystick Buttons for normal operation
@@ -45,6 +45,19 @@ public class DriverStation2015
     public static int LED_LIFTER_BOTTOM_STOP = 1;
     public static int LED_CLAW_STOPPED = 4;
     
+    // BUTTONS
+    public static int INTAKE = ButtonPanel2016.YELLOW_BUTTON;
+    public static int LOW_SHOOTER = ButtonPanel2016.GREEN_BUTTON;
+    public static int HIGH_SHOOTER = ButtonPanel2016.RED_BUTTON;
+    
+    // TOGGLE
+    public static int INTAKE_UP = ButtonPanel2016.TOGGLE_UP;
+    public static int INTAKE_DOWN = ButtonPanel2016.TOGGLE_DOWN;
+    
+    //THREE SWITCH
+    public static int TBAR_UP = ButtonPanel2016.SWITCH_UP;
+    public static int TBAR_DOWN = ButtonPanel2016.SWITCH_DOWN;
+    
     enum Speed 
     {
         SLOW, FAST
@@ -74,7 +87,7 @@ public class DriverStation2015
     
     private void makeJoysticks()
     {
-//        buttonPanel = new ButtonPanel2015(1, false);
+        buttonPanel = new ButtonPanel2016(1);
         String newStickType = SmartDashboard.getString("DB/String 0", "LT1"); //Assume LT1
         if (newStickType.isEmpty())
         {
@@ -180,8 +193,8 @@ public class DriverStation2015
         {
             driverJoy2.readInputs();
         }
-//        buttonPanel.readInputs();
-//        buttonPanel.updateLEDs();
+        buttonPanel.readInputs();
+        buttonPanel.updateLEDs();
     }
 
     /**
@@ -258,13 +271,13 @@ public class DriverStation2015
 //        return 0.2;
 //    }
 
-//    /**
-//     * Prints all pressed buttons to the console
-//     */
-//    public void printButtonPanelPressedButtons()
-//    {
-//        buttonPanel.printPressedButtons();
-//    }
+    /**
+     * Prints all pressed buttons to the console
+     */
+    public void printButtonPanelPressedButtons()
+    {
+        buttonPanel.printPressedButtons();
+    }
 
     /**
      * @return first joystick instance used by driver.
