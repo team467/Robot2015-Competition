@@ -8,9 +8,13 @@ public class XBoxJoystickMain implements MainJoystick467
     private Joystick joystick;
     private double stickX = 0.0;
     private double stickY = 0.0;
+    private double leftBumper;
+    private double rightBumper;
     private int pov = 0;
     private static final int AXIS_X = 0;
     private static final int AXIS_Y = 1;
+    private static final int LEFT_BUMPER = 2;
+    private static final int RIGHT_BUMPER = 3;
     private static final int POV_INDEX = 0;
     private static final double DEADZONE = 0.1;
     
@@ -31,13 +35,15 @@ public class XBoxJoystickMain implements MainJoystick467
     @Override
     public void readInputs()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 9; i++)
         {
             prevButtons[i] = buttons[i];
             buttons[i] = joystick.getRawButton(i + 1);
         }
         stickY = accelerateJoystickInput(joystick.getRawAxis(AXIS_Y));
         stickX = accelerateJoystickInput(joystick.getRawAxis(AXIS_X));
+        leftBumper = accelerateJoystickInput(joystick.getRawAxis(LEFT_BUMPER));
+        rightBumper = accelerateJoystickInput(joystick.getRawAxis(RIGHT_BUMPER));
         pov = joystick.getPOV(POV_INDEX);
     }
     
@@ -122,14 +128,12 @@ public class XBoxJoystickMain implements MainJoystick467
     @Override
     public double getTurn()
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return rightBumper - leftBumper;
     }
 
     @Override
     public boolean getTurnButton()
     {
-        // TODO Auto-generated method stub
         return false;
     }
 

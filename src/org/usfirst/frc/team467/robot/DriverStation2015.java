@@ -104,57 +104,57 @@ public class DriverStation2015
                 stickTypeDescription = "Logitech 2-stick";
                 break;
             case "PS1":
-                driverJoy1 = new PlayStationJoystickMain(3);
+                driverJoy1 = new PlayStationJoystickMain(4);
                 driverJoy2 = null;
                 kart = false;
                 split = false;
                 stickTypeDescription = "Playstation 1-stick";
                 break;
             case "PS2":
-                driverJoy1 = new PlayStationJoystickMain(3);
-                driverJoy2 = new PlayStationJoystickRight(3);
+                driverJoy1 = new PlayStationJoystickMain(4);
+                driverJoy2 = new PlayStationJoystickRight(4);
                 kart = false;
                 split = false;
                 stickTypeDescription = "Playstation 2-stick";
                 break;
             case "PSKART":
-                driverJoy1 = new PlayStationJoystickMain(3);
+                driverJoy1 = new PlayStationJoystickMain(4);
                 driverJoy2 = null;
                 kart = true;
                 split = false;
                 stickTypeDescription = "Playstation Kart";
                 break;
             case "PSSPLIT":
-                driverJoy1 = new PlayStationJoystickMain(3);
-                driverJoy2 = new PlayStationJoystickRight(3);
+                driverJoy1 = new PlayStationJoystickMain(4);
+                driverJoy2 = new PlayStationJoystickRight(4);
                 kart = false;
                 split = true;
                 stickTypeDescription = "Playstation split-stick";
                 break;
             case "XB1":
-                driverJoy1 = new XBoxJoystickMain(4);
+                driverJoy1 = new XBoxJoystickMain(3);
                 driverJoy2 = null;
                 kart = false;
                 split = false;
                 stickTypeDescription = "XBox 1-stick";
                 break;
             case "XB2":
-                driverJoy1 = new XBoxJoystickMain(4);
-                driverJoy2 = new XBoxJoystickRight(4);
+                driverJoy1 = new XBoxJoystickMain(3);
+                driverJoy2 = new XBoxJoystickRight(3);
                 kart = false;
                 split = false;
                 stickTypeDescription = "XBox 2-stick";
                 break;
             case "XBKART":
-                driverJoy1 = new XBoxJoystickMain(4);
+                driverJoy1 = new XBoxJoystickMain(3);
                 driverJoy2 = null;
                 kart = true;
                 split = false;
                 stickTypeDescription = "XBox Kart";
                 break;
             case "XBSPLIT":
-                driverJoy1 = new XBoxJoystickMain(4);
-                driverJoy2 = new XBoxJoystickRight(4);
+                driverJoy1 = new XBoxJoystickMain(3);
+                driverJoy2 = new XBoxJoystickRight(3);
                 kart = false;
                 split = true;
                 stickTypeDescription = "XBox split-stick";
