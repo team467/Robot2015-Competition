@@ -32,13 +32,11 @@ public class BallRollers
     {
         rollerMotor.set(0.0);
         safetyRoller.feed();
-        LOGGER.info("Troll");
     }
     public void stopManip()
     {
         manipMotor.set(0.0);
         safetyManip.feed();
-        LOGGER.info("Troll");
     }
     
     public void runRoller (RollerDirection rollerDirection) {
@@ -53,13 +51,11 @@ public class BallRollers
                 LOGGER.info("IN");
                 rollerMotor.set(rollerMotorSpeed);
                 safetyRoller.feed();
-                LOGGER.info("Troll");
                 break;
             case OUT:
                 LOGGER.info("OUT");
                 rollerMotor.set(-rollerMotorSpeed);
                 safetyRoller.feed();
-                LOGGER.info("Troll");
                 break;
             case STOP:
                 stopRoller();

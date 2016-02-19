@@ -26,7 +26,13 @@ public class TankDrive implements Driveable
     private MotorSafetyHelper BLsafety = null;
     private MotorSafetyHelper BRsafety = null;
     
-    private double cartSpeed = 0.0;
+    private double cartSpeed;
+    private final double ACCELERATION = 0.01;
+    private final double SPEED_SLOW_MODIFIER = 0.7;
+    private final double SPEED_MAX_MODIFIER = 1.0;
+    private final double SPEED_TURBO_MODIFIER = 1.0;
+    private double prevLeft;
+    private double prevRight;
 
     private TankDrive(SpeedController fl, SpeedController fr, SpeedController bl, SpeedController br, RobotID id)
     {
@@ -105,12 +111,63 @@ public class TankDrive implements Driveable
         }
     }
     
+    /**
+     * Limit the rate at which the robot can change speed once driving fast.
+     * This is to prevent causing mechanical damage - or tipping the robot
+     * through stopping too quickly.
+     *
+     * @param speed
+     *            desired speed for robot
+     * @param lastSpeed
+     *            the last speed
+     * @return returns rate-limited speed
+     */
+    private double limitSpeed(double speed, double lastSpeed)
+    {
+        // Apply speed modifiers first
+
+        if (DriverStation2015.getInstance().getSlow())
+        {
+            speed *= SPEED_SLOW_MODIFIER;
+        }
+        else if (DriverStation2015.getInstance().getTurbo())
+        {
+            speed *= SPEED_TURBO_MODIFIER;
+        }
+        else
+        {
+            // Limit maximum regular speed to specified Maximum.
+            speed *= SPEED_MAX_MODIFIER;
+        }
+
+        // Limit the rate at which robot can change speed once driving over 0.6
+        if (Math.abs(speed - lastSpeed) > ACCELERATION && Math.abs(lastSpeed) > 0.6)
+        {
+            if (speed > lastSpeed)
+            {
+                speed = lastSpeed + ACCELERATION;
+            }
+            else
+            {
+                speed = lastSpeed - ACCELERATION;
+            }
+        }
+        LOGGER.debug("LIMIT SPEED: " + speed);
+        return speed;
+    }
+    
     private void drive(double leftSpeed, double rightSpeed)
     {
         LOGGER.debug("leftSpeed=" + (int)(100*leftSpeed) + " rightSpeed=" + (int)(100*rightSpeed));
+
+        leftSpeed = limitSpeed(leftSpeed, prevLeft);
+        rightSpeed = limitSpeed(rightSpeed, prevRight);
+        prevLeft = leftSpeed;
+        prevRight = rightSpeed;
+
         fl.set(square(-leftSpeed));
-        fr.set(square(rightSpeed) * 95.0 / 100.0);
         bl.set(square(-leftSpeed));
+        fr.set(square(rightSpeed) * 95.0 / 100.0);
         br.set(square(rightSpeed) * 95.0 / 100.0);
         
         feedMotors();
