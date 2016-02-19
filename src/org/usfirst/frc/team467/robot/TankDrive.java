@@ -109,9 +109,11 @@ public class TankDrive implements Driveable
     {
         LOGGER.debug("leftSpeed=" + (int)(100*leftSpeed) + " rightSpeed=" + (int)(100*rightSpeed));
         fl.set(square(-leftSpeed));
-        fr.set(square(rightSpeed));
+        fr.set(square(rightSpeed) * 95.0 / 100.0);
         bl.set(square(-leftSpeed));
-        br.set(square(rightSpeed));
+        br.set(square(rightSpeed) * 95.0 / 100.0);
+        
+        feedMotors();
     }
 
 
@@ -139,6 +141,7 @@ public class TankDrive implements Driveable
         SmartDashboard.putString("DB/String 7", String.valueOf(minTurn));
 
         turn *= (1.0 - Math.abs(speed)) * (maxTurn - minTurn) + minTurn;
+        turn = square(turn);
         SmartDashboard.putString("DB/String 8", String.valueOf(turn));
         
         // turn;
