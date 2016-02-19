@@ -78,21 +78,21 @@ public class Robot extends IterativeRobot
 
         // Robot id 0 = can tank
         // Robot id 1 = kitbot tank
-        int robotID = new DigitalInput(9).get() ? 1 : 0;
+        RobotID robotID = new DigitalInput(9).get() ? RobotID.KITBOT : RobotID.TANK2016;
         
         // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
 //        drive = new makeTalonTank(1, 0, 3, 2);
         
-        if(robotID == 1) {
-            
-            drive = TankDrive.makeTalonTank(1, 0, 2, 3);
-            LOGGER.info("Tank Set");
-            
+        if(robotID == RobotID.KITBOT)
+        {    
+            drive = TankDrive.makeTalonTank(1, 0, 2, 3, robotID);
+            LOGGER.info("Kitbot Set");
         }
-        else if (robotID == 0){
+        else if (robotID == RobotID.TANK2016)
+        {
             //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-            drive = TankDrive.makeCANTalonTank(2, 5, 1, 6);
+            drive = TankDrive.makeCANTalonTank(7, 5, 2, 6, robotID);
             LOGGER.info("CANTalon Set");
         }
         
@@ -144,6 +144,8 @@ public class Robot extends IterativeRobot
         
 //        double angle = gyro2016.autonomous();
 //        LOGGER.debug("GYRO angle : " +  angle);
+        drive.stop();
+        drive.feedMotors();
 
         String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
         SmartDashboard.putString("DB/String 5", stickType);

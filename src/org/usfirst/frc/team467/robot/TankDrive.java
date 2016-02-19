@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
@@ -12,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TankDrive implements Driveable
 {
     private static final Logger LOGGER = Logger.getLogger(TankDrive.class);
+    
+    private final RobotID id;
     
     SpeedController fl;
     SpeedController fr;
@@ -25,62 +28,52 @@ public class TankDrive implements Driveable
     
     private double cartSpeed = 0.0;
 
-    private TankDrive(SpeedController fl, SpeedController fr, SpeedController bl, SpeedController br)
+    private TankDrive(SpeedController fl, SpeedController fr, SpeedController bl, SpeedController br, RobotID id)
     {
         this.fl = fl;
         this.fr = fr;
         this.bl = bl;
         this.br = br;
+        this.id = id;
         
-        if (fl instanceof CANTalon)
-        {
-            FLsafety = new MotorSafetyHelper((CANTalon)fl);
-        }
-        if (fr instanceof CANTalon)
-        {
-            FRsafety = new MotorSafetyHelper((CANTalon)fr);
-        }
-        if (bl instanceof CANTalon)
-        {
-            BLsafety = new MotorSafetyHelper((CANTalon)bl);
-        }
-        if (br instanceof CANTalon)
-        {
-            BRsafety = new MotorSafetyHelper((CANTalon)br);
-        }
+        FLsafety = new MotorSafetyHelper((MotorSafety)fl);
+        FRsafety = new MotorSafetyHelper((MotorSafety)fr);
+        BLsafety = new MotorSafetyHelper((MotorSafety)bl);
+        BRsafety = new MotorSafetyHelper((MotorSafety)br);
     }
     
-    public static TankDrive makeTalonTank(int fl, int fr, int bl, int br)
+    public static TankDrive makeTalonTank(int fl, int fr, int bl, int br, RobotID id)
     {
         Talon flMotor = new Talon(fl);
         Talon frMotor = new Talon(fr);
         Talon blMotor = new Talon(bl);
         Talon brMotor = new Talon(br);
 
-        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor, id);
     }
     
-    public static TankDrive makeCANTalonTank(int fl, int fr, int bl, int br)
+    public static TankDrive makeCANTalonTank(int fl, int fr, int bl, int br, RobotID id)
     {
         CANTalon flMotor = new CANTalon(fl);
         CANTalon frMotor = new CANTalon(fr);
         CANTalon blMotor = new CANTalon(bl);
         CANTalon brMotor = new CANTalon(br);
         
-        return new TankDrive(flMotor, frMotor, blMotor, brMotor);        
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor, id);        
     }
 
     
-    public static TankDrive makeJaguarTank(int fl, int fr, int bl, int br)
+    public static TankDrive makeJaguarTank(int fl, int fr, int bl, int br, RobotID id)
     {
         Jaguar flMotor = new Jaguar(fl);
         Jaguar frMotor = new Jaguar(fr);
         Jaguar blMotor = new Jaguar(bl);
         Jaguar brMotor = new Jaguar(br);
-        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor, id);
     }
     
-    private void feedMotors()
+    @Override
+    public void feedMotors()
     {
         if (FLsafety != null)
         {

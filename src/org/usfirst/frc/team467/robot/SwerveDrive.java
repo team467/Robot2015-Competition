@@ -186,7 +186,7 @@ public class SwerveDrive implements Driveable
         feedMotors();
     }
 
-    private void feedMotors()
+    public void feedMotors()
     {
         if (FLsafety != null)
         {
