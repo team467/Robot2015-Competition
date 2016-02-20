@@ -21,8 +21,8 @@ public class Autonomous
 
     Gyro2016 gyro = null;    
     private Driveable drive = null;
-    private Claw claw = null;
-    private Lifter lifter = null;
+//    private Claw claw = null;
+//    private Lifter lifter = null;
     private VisionProcessor vision = null;
     private Ultrasonic ultrasonic = null;
     
@@ -144,9 +144,7 @@ public class Autonomous
     {
         if (autonomous == null)
         {
-            autonomous = new Autonomous(
-                    Claw.getInstance(),
-                    Lifter.getInstance(), VisionProcessor.getInstance(), Gyro2016.getInstance());
+            autonomous = new Autonomous(VisionProcessor.getInstance(), Gyro2016.getInstance());
         }
         return autonomous;
     }
@@ -165,11 +163,11 @@ public class Autonomous
      * Private constructor to setup the Autonomous
      * @param gyro2 
      */
-    private Autonomous(Claw claw, Lifter lifter, VisionProcessor vision, Gyro2016 gyro)
+    private Autonomous(VisionProcessor vision, Gyro2016 gyro)
     {
         // TODO Change drive, claw, and lifter to generics implementing respective interfaces
-        this.claw = claw;
-        this.lifter = lifter;
+//        this.claw = claw;
+//        this.lifter = lifter;
         this.vision = vision;
         this.gyro = gyro;
     }
@@ -253,109 +251,8 @@ public class Autonomous
                     LOGGER.debug("Gyro angle: " + Agyro.getAngle());
                     drive.stop();
                 });
-/*        addAction("Close claw to grip container or tote",
-                () -> claw.isClosed(),
-                () -> {
-                    lifter.stop();
-                    claw.moveClaw(ClawMoveDirection.CLOSE, false);
-                    drive.stop();
-                });
-        addAction("Lift container", 
-                () -> forDurationSecs(0.5f),
-                () -> {
-                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
-                    claw.stop();
-                    drive.stop();
-                });
-        addAction("Lift container and drive backwards", 
-                () -> forDurationSecs(1.25f),
-                () -> {
-                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
-                    claw.stop();
-                    drive.arcadeDrive(Math.PI, 0.6, false);
-                });
-        addAction("Drive backwards", 
-                () -> forDurationSecs(1.75f),
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.arcadeDrive(Math.PI, 0.6, false);
-                });
-        addAction("Turn in place", 
-                () -> forDurationSecs(0.7f),
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.turnDrive(0.6);
-                });*/
-        addAction("Done",
-                () -> forever(), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.stop();
-                });
-    }
-
-    private void initDriveOnly()
-    {
-//        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);// reset to upfield
-        // Drive to auto zone. Starts on the very edge and just creeps into the zone
-        Gyro2016.getInstance();
-        addAction("Drive into auto zone", 
-                () -> forDurationSecs(2.0f), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.arcadeDrive(0.0, 0.5);
-                });
-        addAction("Stop driving", 
-                () -> forever(), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.stop();
-                });
     }
     
-    /**
-     * @param sidewaysSecs - time for driving sideways
-     */
-    private void initHookAndPush(float sidewaysSecs)
-    {
-        // Starts facing left, reset to upfield.
-//        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);
-        Gyro2016.getInstance();
-        addAction("Raise lifter up and turn wheels sideways", 
-                () -> forDurationSecs(2.0f), 
-                () -> {
-                    lifter.driveLifter(LifterDirection.UP, Speed.FAST);
-                    claw.stop();
-                    drive.arcadeDrive(0.0, 0.5);
-                });
-        addAction("Stop lifting and drive sideways", 
-                () -> forDurationSecs(sidewaysSecs),
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.arcadeDrive(0.0, 0.5);
-                });
-        addAction("Lower lifter and stop driving", 
-                () -> forDurationSecs(0.5f), 
-                () -> {
-                    lifter.driveLifter(LifterDirection.DOWN, Speed.SLOW);
-                    claw.stop();
-                    drive.stop();
-                });
-        addAction("Done",
-                () -> forever(), 
-                () -> {
-                    lifter.stop();
-                    claw.stop();
-                    drive.stop();
-                    });
-    }
-
     private void initStayInPlace()
     {
         // Stay in place. Reset to upfield.
@@ -364,8 +261,6 @@ public class Autonomous
         addAction("Stop driving", 
                 () -> forever(), 
                 () -> {
-                    lifter.stop();
-                    claw.stop();
                     drive.stop();
                 });
     }
