@@ -133,7 +133,7 @@ public class TankDrive implements Driveable
         catch (NumberFormatException e)
         {
             LOGGER.info("Invalid Acceleration in String 4, assuming 0.1");
-            ACCELERATION = 0.1;
+            SmartDashboard.putString("DB/String 4", "0.1");
         }
         
         if (DriverStation2015.getInstance().getSlow())
