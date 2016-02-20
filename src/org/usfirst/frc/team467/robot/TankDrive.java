@@ -27,7 +27,7 @@ public class TankDrive implements Driveable
     private MotorSafetyHelper BRsafety = null;
     
     private double cartSpeed;
-    private final double ACCELERATION = 0.01;
+    private double ACCELERATION = 0.05;
     private final double SPEED_SLOW_MODIFIER = 0.7;
     private final double SPEED_MAX_MODIFIER = 1.0;
     private final double SPEED_TURBO_MODIFIER = 1.0;
@@ -125,7 +125,8 @@ public class TankDrive implements Driveable
     private double limitSpeed(double speed, double lastSpeed)
     {
         // Apply speed modifiers first
-
+        
+//        ACCELERATION = SmartDashboard.getNumber("DB/Slider 0", 1.0);
         if (DriverStation2015.getInstance().getSlow())
         {
             speed *= SPEED_SLOW_MODIFIER;
