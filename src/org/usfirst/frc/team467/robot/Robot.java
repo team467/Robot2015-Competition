@@ -107,9 +107,13 @@ public class Robot extends IterativeRobot
         vision = VisionProcessor.getInstance();
 //        lifter = Lifter.getInstance();
 //        claw = Claw.getInstance();
+        rollers = new BallRollers(3);
+        //tbar = new TBar();
+        
         gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic(1, 0);
         ledStrip.setMode(Mode.OFF);
+        
         
         autonomous.setDrive(drive);
         autonomous.setUltrasonic(ultrasonic);
@@ -354,8 +358,8 @@ public class Robot extends IterativeRobot
     {
         board.update();
         rollers.runRoller(driverstation.getRollerDirection());
-        rollers.runManipulator(driverstation.getManipPosition());
-        tbar.launchTBar(driverstation.getTBarDirection());
+        //rollers.runManipulator(driverstation.getManipPosition());
+        //tbar.launchTBar(driverstation.getTBarDirection());
         
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());

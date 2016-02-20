@@ -12,32 +12,32 @@ public class BallRollers
     private static final Logger LOGGER = Logger.getLogger(BallRollers.class);
 
     private final CANTalon rollerMotor;
-    private final CANTalon manipMotor;
+    //private final CANTalon manipMotor;
     private final MotorSafetyHelper safetyRoller;
-    private final MotorSafetyHelper safetyManip;
-    private final double rollerMotorSpeed = 1;
-    private final double manipMotorSpeed = 0.2;
+    //private final MotorSafetyHelper safetyManip;
+    private final double rollerOutMotorSpeed = 1;
+    private final double rollerInMotorSpeed = -0.7;
+    //private final double manipMotorSpeed = 0.2;
 
     // TODO Sensor
     
-    public BallRollers(int motorChannelRoller, int motorChannelManip)
+    public BallRollers(int motorChannelRoller)
     {
         rollerMotor = new CANTalon(motorChannelRoller);
-        manipMotor = new CANTalon(motorChannelManip);
+        //manipMotor = new CANTalon(motorChannelManip);
         safetyRoller = new MotorSafetyHelper(rollerMotor);
-        safetyManip = new MotorSafetyHelper(manipMotor);
+        //safetyManip = new MotorSafetyHelper(manipMotor);
     }
     
     public void stopRoller()
     {
         rollerMotor.set(0.0);
         safetyRoller.feed();
-        LOGGER.info("Troll");
     }
     public void stopManip()
     {
-        manipMotor.set(0.0);
-        safetyManip.feed();
+        //manipMotor.set(0.0);
+        //safetyManip.feed();
         LOGGER.info("Troll");
     }
     
@@ -51,15 +51,13 @@ public class BallRollers
                     return;
                 }
                 LOGGER.info("IN");
-                rollerMotor.set(rollerMotorSpeed);
+                rollerMotor.set(-rollerInMotorSpeed);
                 safetyRoller.feed();
-                LOGGER.info("Troll");
                 break;
             case OUT:
                 LOGGER.info("OUT");
-                rollerMotor.set(-rollerMotorSpeed);
+                rollerMotor.set(rollerOutMotorSpeed);
                 safetyRoller.feed();
-                LOGGER.info("Troll");
                 break;
             case STOP:
                 stopRoller();
@@ -82,7 +80,7 @@ public class BallRollers
 //                    LOGGER.info("IS UP");
 //                    stopManip();
 //                }
-                manipMotor.set(manipMotorSpeed);
+                //manipMotor.set(manipMotorSpeed);
                 break;
             case DOWN:
 //                if (!isDown()) {
