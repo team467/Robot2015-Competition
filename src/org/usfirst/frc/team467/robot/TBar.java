@@ -13,7 +13,6 @@ public class TBar
     
     private CANTalon tMotor = null;
     
-    
     private TBar(int tMotorChannel)
     {    
         tMotor = new CANTalon(tMotorChannel); //switch to actual port number

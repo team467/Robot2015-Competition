@@ -50,7 +50,7 @@ public class Robot extends IterativeRobot
 //    private Lifter lifter;
 //    private Claw claw;
     private Ultrasonic ultrasonic;
-    private Gyro2016 Agyro;
+    private Gyro2016 gyro;
     private DigitalInput robotID;
     
     int session;
@@ -102,7 +102,7 @@ public class Robot extends IterativeRobot
         driverstation = DriverStation2015.getInstance();
         autonomous = Autonomous.getInstance();
         autonomous.setDrive(drive);
-        Agyro = Gyro2016.getInstance();
+        gyro = Gyro2016.getInstance();
         board = PowerDistroBoard467.getInstance();
         vision = VisionProcessor.getInstance();
 //        lifter = Lifter.getInstance();
@@ -192,8 +192,9 @@ public class Robot extends IterativeRobot
         LOGGER.debug("Update powerDistroBoard");
         autonomous.updateAutonomousPeriodic();
         
-        autonomous.initGrabCan();
-        LOGGER.debug("Gyro angle: " + Agyro.getAngle());
+        LOGGER.debug("Gyro angle: " + gyro.getYawAngle());
+        LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
+
         
 //        ledStrip.setMode(Mode.RAINBOW);
     }

@@ -238,8 +238,6 @@ public class DriverStation2015
         switch(mode) {
             case "AIM":
                 return AutoType.AIM;
-            case "GRAB CAN":
-                return AutoType.GRAB_CAN;
             default:
                 return AutoType.NO_AUTO;
         }
