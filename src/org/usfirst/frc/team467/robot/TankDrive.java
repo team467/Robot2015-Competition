@@ -125,8 +125,17 @@ public class TankDrive implements Driveable
     private double limitSpeed(double speed, double lastSpeed)
     {
         // Apply speed modifiers first
+        String strAccel = SmartDashboard.getString("DB/String 4", "");
+        try
+        {
+            ACCELERATION = strAccel.equals("") ? 0.1 : Double.valueOf(strAccel);
+        }
+        catch (NumberFormatException e)
+        {
+            LOGGER.info("Invalid Acceleration in String 4, assuming 0.1");
+            ACCELERATION = 0.1;
+        }
         
-//        ACCELERATION = SmartDashboard.getNumber("DB/Slider 0", 1.0);
         if (DriverStation2015.getInstance().getSlow())
         {
             speed *= SPEED_SLOW_MODIFIER;
