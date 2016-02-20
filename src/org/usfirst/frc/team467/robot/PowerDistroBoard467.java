@@ -50,7 +50,7 @@ public class PowerDistroBoard467
         lifterAverageCurrentBottom.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_BOTTOM));
         lifterAverageCurrentTop.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_TOP));
         clawAverageCurrent.add(getCurrent(RobotMap.CLAW_MOTOR_CHANNEL));
-        manipAverageCurrent.add(getCurrent(4));
+        manipAverageCurrent.add(getCurrent(11));
     }
 
     /**

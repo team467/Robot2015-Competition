@@ -359,7 +359,7 @@ public class Robot extends IterativeRobot
     {
         board.update();
         rollers.runRoller(driverstation.getRollerDirection());
-        //rollers.runManipulator(driverstation.getManipPosition());
+        rollers.runManipulator(driverstation.getManipPosition());
         //tbar.launchTBar(driverstation.getTBarDirection());
         
 //        lifter.driveLifter(driverstation.getLiftDirection());

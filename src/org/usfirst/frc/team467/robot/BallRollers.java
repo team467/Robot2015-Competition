@@ -41,8 +41,8 @@ public class BallRollers
     }
     public void stopManip()
     {
-        //manipMotor.set(0.0);
-        //safetyManip.feed();
+        manipMotor.set(0.0);
+        safetyManip.feed();
     }
     
     public void runRoller (RollerDirection rollerDirection) {
