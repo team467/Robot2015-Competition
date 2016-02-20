@@ -14,17 +14,20 @@ public class TBar
     private CANTalon tMotor = null;
     
     
-    private TBar(int tMotorChannel) {
-        
+    private TBar(int tMotorChannel)
+    {    
         tMotor = new CANTalon(tMotorChannel); //switch to actual port number
     }
-    public void stop() {
-        tMotor.set(0);
+    
+    public void stop()
+    {
+        tMotor.set(0.0);
     }
     
-    public void launchTBar(tBarDirection tBarDirection) {
-        
-        switch(tBarDirection) {
+    public void launchTBar(tBarDirection tBarDirection)
+    {
+        switch(tBarDirection)
+        {
             case DOWN:
                 tMotor.set(0.1);
                 break;
@@ -35,10 +38,9 @@ public class TBar
                 stop();
                 break;
         }
-        
-        
     }
-    enum tBarDirection {
+    enum tBarDirection
+    {
         DOWN, UP, STOP
     }
 

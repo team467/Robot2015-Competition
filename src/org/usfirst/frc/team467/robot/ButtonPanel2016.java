@@ -1,9 +1,13 @@
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
+
 import edu.wpi.first.wpilibj.Joystick;
 
 public class ButtonPanel2016
 {
+    private static final Logger LOGGER = Logger.getLogger(ButtonPanel2016.class);
+    
  // joystick object to read inputs off of
     Joystick buttonPanel = null;
 
@@ -89,17 +93,18 @@ public class ButtonPanel2016
     /**
      * Prints all pressed button numbers.
      */
-    public void printPressedButtons()
+    public void logPressedButtons()
     {
+        String log = "";
         // starts at 1 because buttons are 1 based
         for (int i = 1; i < buttons.length; i++)
         {
             if (buttons[i])
             {
-                System.out.print(i + " ");
+                log += (i + " ");
             }
         }
-        System.out.println();
+        LOGGER.info(log);
     }
 
     /**

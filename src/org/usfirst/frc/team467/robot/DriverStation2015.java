@@ -277,9 +277,9 @@ public class DriverStation2015
     /**
      * Prints all pressed buttons to the console
      */
-    public void printButtonPanelPressedButtons()
+    public void logButtonPanelPressedButtons()
     {
-        buttonPanel.printPressedButtons();
+        buttonPanel.logPressedButtons();
     }
 
     /**
