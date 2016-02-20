@@ -298,11 +298,16 @@ public class Autonomous
     }
     
     private void initSallyPort(){
+        addAction("turns backwards",
+                () -> gyro.shouldTurnLeft(170),
+                () -> {
+                    drive.turnDrive(0.5);
+                });
         addAction("Move while gyro is flat, up, or down",
                 () -> gyro.isFlat() || gyro.isUp() || gyro.isDown(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-                    drive.arcadeDrive(0.0, -0.7);
+                    drive.arcadeDrive(0.0, 0.7);
                 });
         addAction("Move TBar arm up while the robot is 3 feet from the port",
                 () -> ultrasonic.getRangeInches() == 36,
@@ -313,22 +318,22 @@ public class Autonomous
         addAction("Move 4 feet away from the port and keep the bar down",
                 () -> ultrasonic.getRangeInches() < 46,
                 () -> {
-                    drive.arcadeDrive(0.0, 0.4);
+                    drive.arcadeDrive(0.0, -0.4);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("Turn to the left to open the door",
                 () -> gyro.shouldTurnLeft(-60),
                 () -> {
-                    drive.turnDrive(0.4);
+                    drive.turnDrive(-0.4);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
-        addAction("Move fowards",
+        addAction("Move backwards",
                 () -> forDurationSecs(1.0f),
                 () -> {
-                    drive.arcadeDrive(0.0, -0.35);
+                    drive.arcadeDrive(0.0, 0.35);
                 });
         addAction("Turn right to straighten up",
-                () -> gyro.shouldTurnRight(0),
+                () -> gyro.shouldTurnRight(-10),
                 () -> {
                     drive.turnDrive(-0.4);
                     tbar.launchTBar(tBarDirection.UP);
@@ -337,7 +342,7 @@ public class Autonomous
                 () -> gyro.isFlat() ||  gyro.isDown(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-                    drive.arcadeDrive(0.0, -0.7);
+                    drive.arcadeDrive(0.0, 0.7);
                 });
         if (gyro.shouldTurnLeft(0)){
             addAction("Turn to zero degrees",
@@ -411,11 +416,16 @@ public class Autonomous
         // and carry it rolling backwards to the auto zone.
         //.reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
         
+        addAction("turns backwards",
+                () -> gyro.shouldTurnLeft(170),
+                () -> {
+                    drive.turnDrive(0.5);
+                });
         addAction("Move while gyro is flat",
                 () -> gyro.isFlat(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-                    drive.arcadeDrive(0.0, -0.7);
+                    drive.arcadeDrive(0.0, 0.7);
                 });
         addAction("while robot is not flat, lower TBar",
                 () -> !gyro.isFlat(),
@@ -423,10 +433,10 @@ public class Autonomous
                     drive.stop();
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
-        addAction("move fowards",
+        addAction("move backwards",
                 () -> forDurationSecs(0.7f),
                 () -> {
-                    drive.arcadeDrive(0.0, -0.4);
+                    drive.arcadeDrive(0.0, 0.4);
                 });
         addAction("lift bar",
                 () -> gyro.isUp(),
@@ -437,13 +447,13 @@ public class Autonomous
                 () -> gyro.isUp(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-                    drive.arcadeDrive(0.0, -0.7);
+                    drive.arcadeDrive(0.0, 0.7);
                 });
         addAction("Move while gyro is flat or when gyro is down",
-                () -> gyro.isFlat()|| gyro.isDown(),
+                () -> (gyro.isFlat()|| gyro.isDown()) && forDurationSecs(1.0f),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-                    drive.arcadeDrive(0.0, -0.7);
+                    drive.arcadeDrive(0.0, 0.7);
                 });
         if (gyro.shouldTurnLeft(0)){
             addAction("Turn to zero degrees",
