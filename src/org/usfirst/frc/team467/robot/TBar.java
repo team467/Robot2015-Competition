@@ -9,8 +9,6 @@ public class TBar
 {
     private static final Logger LOGGER = Logger.getLogger(TBar.class);
     
-    private static TBar mrT = null;
-    
     private CANTalon tMotor = null;
     
     private TBar(int tMotorChannel) {

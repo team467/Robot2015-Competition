@@ -25,7 +25,7 @@ public class Autonomous
     private Ultrasonic ultrasonic = null;
     
     private TBar tbar = null;
-    BallRollers roller = new BallRollers(3);
+    BallRollers roller = new BallRollers(3, 4);
     
     long actionStartTimeMS = -1;
 
@@ -208,6 +208,9 @@ public class Autonomous
                 break;
             case HIGH_GOAL:
                 initHighGoal();
+                break;
+            case STAY_IN_PLACE:
+                initStayInPlace();
                 break;
             default:
                 initStayInPlace();
