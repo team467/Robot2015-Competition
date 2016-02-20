@@ -38,7 +38,6 @@ public class BallRollers
     {
         //manipMotor.set(0.0);
         //safetyManip.feed();
-        LOGGER.info("Troll");
     }
     
     public void runRoller (RollerDirection rollerDirection) {
@@ -98,6 +97,31 @@ public class BallRollers
                 stopManip();
                 break;
         }
+        }
+
+    public void in(double motorSpeed)
+    {
+        if (isLoaded())
+        {
+            stop();
+            return;
+        }
+        LOGGER.info("IN");
+        rollerMotor.set(motorSpeed);
+        safetyRoller.feed();
+    }
+    
+    public void out(double motorSpeed)
+    {
+        LOGGER.info("OUT");
+        rollerMotor.set(-motorSpeed);
+        safetyRoller.feed();
+        }
+    
+    public void stop()
+    {
+        rollerMotor.set(0.0);
+        safetyRoller.feed();
     }
 
     

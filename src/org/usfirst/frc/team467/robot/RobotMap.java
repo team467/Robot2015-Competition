@@ -40,7 +40,7 @@ public class RobotMap
     public static final int LIFTER_MOTOR_CHANNEL_BOTTOM = 4; // Lifter not used
     public static final int LIFTER_MOTOR_CHANNEL_TOP = 6; // Lifter not used
     public static final int TBAR_MOTOR_CHANNEL = 5;
-    public static final int CLAW_MOTOR_CHANNEL = 0; // Claw not used
+    public static final int CLAW_MOTOR_CHANNEL = 0; //Claw not used
 
     //
     // CAN IDs
