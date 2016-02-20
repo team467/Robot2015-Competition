@@ -25,10 +25,10 @@ public class TBar
         
         switch(tBarDirection) {
             case DOWN:
-                tMotor.set(0.2);
+                tMotor.set(0.1);
                 break;
             case UP:
-                tMotor.set(-0.2);
+                tMotor.set(-0.1);
                 break;
             case STOP:
                 stop();

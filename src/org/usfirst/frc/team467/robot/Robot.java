@@ -107,7 +107,7 @@ public class Robot extends IterativeRobot
         vision = VisionProcessor.getInstance();
 //        lifter = Lifter.getInstance();
 //        claw = Claw.getInstance();
-        rollers = new BallRollers(3);
+        rollers = new BallRollers(3,4);
         //tbar = new TBar();
         
         gyro2016 = Gyro2016.getInstance();
