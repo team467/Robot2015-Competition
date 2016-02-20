@@ -2,7 +2,6 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
-
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 
@@ -12,21 +11,27 @@ public class BallRollers
     private static final Logger LOGGER = Logger.getLogger(BallRollers.class);
 
     private final CANTalon rollerMotor;
-    //private final CANTalon manipMotor;
+    private final CANTalon manipMotor;
     private final MotorSafetyHelper safetyRoller;
-    //private final MotorSafetyHelper safetyManip;
+    private final MotorSafetyHelper safetyManip;
     private final double rollerOutMotorSpeed = 1;
     private final double rollerInMotorSpeed = -0.7;
-    //private final double manipMotorSpeed = 0.2;
+    
+    private PowerDistroBoard467 board = null;
+    
+    private static final double MAX_CURRENT = 20;
+    private final double manipMotorSpeed = 0.3;
+    
+    boolean atTop;
 
     // TODO Sensor
     
-    public BallRollers(int motorChannelRoller)
+    public BallRollers(int motorChannelRoller, int motorChannelManip)
     {
         rollerMotor = new CANTalon(motorChannelRoller);
-        //manipMotor = new CANTalon(motorChannelManip);
+        manipMotor = new CANTalon(motorChannelManip);
         safetyRoller = new MotorSafetyHelper(rollerMotor);
-        //safetyManip = new MotorSafetyHelper(manipMotor);
+        safetyManip = new MotorSafetyHelper(manipMotor);
     }
     
     public void stopRoller()
@@ -71,27 +76,29 @@ public class BallRollers
         //for now, we just control the Manipulator arm manually until we can detect the position of the arm
         switch(manipPosition) {
             case UP:
-//                if (!isUp()) {
-//                    LOGGER.info("GOING UP");
-//                    manipMotor.set(manipMotorSpeed);
-//                    safetyManip.feed();
-//                }
-//                else {
-//                    LOGGER.info("IS UP");
-//                    stopManip();
-//                }
+                if (board.getManipCurrent() < MAX_CURRENT && !atTop) {
+                    LOGGER.info("GOING UP");
+                    manipMotor.set(manipMotorSpeed);
+                    safetyManip.feed();
+                }
+                else {
+                    LOGGER.info("IS UP");
+                    stopManip();
+                    atTop = true;
+                }
                 //manipMotor.set(manipMotorSpeed);
                 break;
             case DOWN:
-//                if (!isDown()) {
-//                    LOGGER.info("GOING DOWN");
-//                    manipMotor.set(-manipMotorSpeed);
-//                    safetyManip.feed();
-//                }
-//                else {
-//                    LOGGER.info("IS DOWN");
-//                    stopManip();
-//                }
+                if (board.getManipCurrent() < MAX_CURRENT && atTop) {
+                    LOGGER.info("GOING DOWN");
+                    manipMotor.set(-manipMotorSpeed);
+                    safetyManip.feed();
+                }
+                else {
+                    LOGGER.info("IS DOWN");
+                    stopManip();
+                    atTop = false;
+                }
                 stopManip();
                 break;
             case STOP:
@@ -104,16 +111,6 @@ public class BallRollers
     private boolean isLoaded()
     {
         // TODO Work with sensor
-        return false;
-    }
-    private boolean isUp()
-    {
-        //we need to detect the position of the arm
-        return false;
-    }
-    private boolean isDown()
-    {
-      //we need to detect the position of the arm
         return false;
     }
     enum RollerDirection {

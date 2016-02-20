@@ -11,6 +11,7 @@ public class PowerDistroBoard467
     private RollingAverage clawAverageCurrent = new RollingAverage(3);
     private RollingAverage lifterAverageCurrentBottom = new RollingAverage(3);
     private RollingAverage lifterAverageCurrentTop = new RollingAverage(3);
+    private RollingAverage manipAverageCurrent = new RollingAverage(3);
 
     /**
      * Gets the singleton instance of the board.
@@ -49,6 +50,7 @@ public class PowerDistroBoard467
         lifterAverageCurrentBottom.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_BOTTOM));
         lifterAverageCurrentTop.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_TOP));
         clawAverageCurrent.add(getCurrent(RobotMap.CLAW_MOTOR_CHANNEL));
+        manipAverageCurrent.add(getCurrent(4));
     }
 
     /**
@@ -75,6 +77,11 @@ public class PowerDistroBoard467
     public double getClawCurrent()
     {
         return clawAverageCurrent.getAverage();
+    }
+    
+    public double getManipCurrent()
+    {
+        return manipAverageCurrent.getAverage();
     }
 
     @Override
