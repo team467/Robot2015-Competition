@@ -13,19 +13,10 @@ public class TBar
     
     private CANTalon tMotor = null;
     
-    public static TBar getInstance() {
-        
-        if(mrT == null) {
-            
-            mrT = new TBar();
-            
-        }
-        return mrT;
-    }
     
-    private TBar() {
+    private TBar(int tMotorChannel) {
         
-        //tMotor = new CANTalon(0); //switch to actual port number
+        tMotor = new CANTalon(tMotorChannel); //switch to actual port number
     }
     public void stop() {
         tMotor.set(0);
