@@ -15,14 +15,15 @@ public class BallRollers
     private final MotorSafetyHelper safetyRoller;
     private final MotorSafetyHelper safetyManip;
     private final double rollerOutMotorSpeed = 1;
-    private final double rollerInMotorSpeed = -0.7;
+    private final double rollerInMotorSpeed = 0.7;
     
     private PowerDistroBoard467 board = null;
     
     private static final double MAX_CURRENT = 20;
     private final double manipMotorSpeed = 0.3;
     
-    boolean atTop;
+    boolean isRetracted = false;
+    boolean isExtended = false;
 
     // TODO Sensor
     
@@ -69,13 +70,13 @@ public class BallRollers
         }
     }
         
-    public void runManipulator (ManipPosition manipPosition) {
+    public void runManipulator (ManipIntent manipPosition) {
         
         
         //for now, we just control the Manipulator arm manually until we can detect the position of the arm
         switch(manipPosition) {
-            case UP:
-                if (board.getManipCurrent() < MAX_CURRENT && !atTop) {
+            case SHOULD_EXTEND:
+                if (board.getManipCurrent() < MAX_CURRENT && !isRetracted) {
                     LOGGER.info("GOING UP");
                     manipMotor.set(manipMotorSpeed);
                     safetyManip.feed();
@@ -83,12 +84,12 @@ public class BallRollers
                 else {
                     LOGGER.info("IS UP");
                     stopManip();
-                    atTop = true;
+                    isRetracted = true;
                 }
                 //manipMotor.set(manipMotorSpeed);
                 break;
-            case DOWN:
-                if (board.getManipCurrent() < MAX_CURRENT && atTop) {
+            case SHOULD_RETRACT:
+                if (board.getManipCurrent() < MAX_CURRENT && isRetracted) {
                     LOGGER.info("GOING DOWN");
                     manipMotor.set(-manipMotorSpeed);
                     safetyManip.feed();
@@ -96,14 +97,14 @@ public class BallRollers
                 else {
                     LOGGER.info("IS DOWN");
                     stopManip();
-                    atTop = false;
+                    isRetracted = false;
                 }
                 stopManip();
                 break;
-            case STOP:
+            case SHOULD_STOP:
                 stopManip();
                 break;
-        }
+            }
         }
 
     public void in(double motorSpeed)
@@ -140,7 +141,7 @@ public class BallRollers
     enum RollerDirection {
         IN, OUT, STOP
     }
-    enum ManipPosition {
-        UP, DOWN, STOP
+    enum ManipIntent {
+        SHOULD_EXTEND, SHOULD_RETRACT, SHOULD_STOP
     }
 }
