@@ -25,7 +25,8 @@ public class Autonomous
     private Ultrasonic ultrasonic = null;
     
     private TBar tbar = null;
-    BallRollers roller = new BallRollers(3, 5);
+
+    BallRollers roller = new BallRollers(3, 4);
     
     long actionStartTimeMS = -1;
 
@@ -145,9 +146,7 @@ public class Autonomous
     {
         if (autonomous == null)
         {
-            autonomous = new Autonomous(
-                    //Claw.getInstance(),
-                    Lifter.getInstance(), VisionProcessor.getInstance(), Gyro2016.getInstance());
+            autonomous = new Autonomous(VisionProcessor.getInstance(), Gyro2016.getInstance());
         }
         return autonomous;
     }
@@ -166,7 +165,7 @@ public class Autonomous
      * Private constructor to setup the Autonomous
      * @param gyro2 
      */
-    private Autonomous(/*Claw claw,*/ Lifter lifter, VisionProcessor vision, Gyro2016 gyro)
+    private Autonomous(VisionProcessor vision, Gyro2016 gyro)
     {
         // TODO Change drive, claw, and lifter to generics implementing respective interfaces
         this.vision = vision;
@@ -209,6 +208,9 @@ public class Autonomous
                 break;
             case HIGH_GOAL:
                 initHighGoal();
+                break;
+            case STAY_IN_PLACE:
+                initStayInPlace();
                 break;
             default:
                 initStayInPlace();
@@ -785,7 +787,7 @@ public class Autonomous
                 () -> forever(), 
                 () -> {
                     roller.stop();
-                    tbar.stop();
+//                    tbar.stop();
                     drive.stop();
                 });
     }
