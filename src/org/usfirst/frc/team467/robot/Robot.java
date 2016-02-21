@@ -107,8 +107,8 @@ public class Robot extends IterativeRobot
         vision = VisionProcessor.getInstance();
 //        lifter = Lifter.getInstance();
 //        claw = Claw.getInstance();
-        rollers = new BallRollers(4, 3);
-        //tbar = new TBar();
+        rollers = new BallRollers(3, 0);
+        tbar = new TBar(4);
         
         gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic(1, 0);
@@ -166,7 +166,7 @@ public class Robot extends IterativeRobot
     public void teleopInit()
     {
         LOGGER.info("Teleop init");
-        
+        rollers.reset();
 //        gyro2016.reset();
         
     }
@@ -361,7 +361,7 @@ public class Robot extends IterativeRobot
         rollers.runRoller(driverstation.getRollerDirection());
         SmartDashboard.putString("DB/String 8", driverstation.getManipPosition().toString());
         rollers.runManipulator(driverstation.getManipPosition());
-        //tbar.launchTBar(driverstation.getTBarDirection());
+        tbar.launchTBar(driverstation.getTBarDirection());
         
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());

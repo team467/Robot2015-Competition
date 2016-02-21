@@ -1,18 +1,17 @@
 package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
-
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 public class BallRollers
 {
     private static final Logger LOGGER = Logger.getLogger(BallRollers.class);
 
     private final CANTalon rollerMotor;
-    private final CANTalon manipMotor;
+    private final Talon manipMotor;
     private final MotorSafetyHelper safetyRoller;
     private final MotorSafetyHelper safetyManip;
     private final double rollerOutMotorSpeed = 1;
@@ -20,11 +19,12 @@ public class BallRollers
     
     private PowerDistroBoard467 board = null;
     
-    private static final double MAX_CURRENT = 10;
-    private final double manipMotorSpeed = 1.0;
+    private static final double MAX_CURRENT_OUT = 11;
+    private static final double MAX_CURRENT_IN = 11;
+    private final double manipMotorSpeed = 0.9;
     
-    boolean isRetracted = false;
-    boolean isExtended = false;
+    boolean isRetracted;
+    boolean isExtended;
 
     // TODO Sensor
     
@@ -32,9 +32,16 @@ public class BallRollers
     {
         board = PowerDistroBoard467.getInstance();
         rollerMotor = new CANTalon(motorChannelRoller);
-        manipMotor = new CANTalon(motorChannelManip);
+        manipMotor = new Talon(motorChannelManip);
         safetyRoller = new MotorSafetyHelper(rollerMotor);
         safetyManip = new MotorSafetyHelper(manipMotor);
+        reset();
+    }
+    
+    public void reset()
+    {
+        isRetracted = false;
+        isExtended = false;
     }
     
     public void stopRoller()
@@ -83,7 +90,7 @@ public class BallRollers
                     logstring = "Extended";
                     LOGGER.info(logstring);
                 }
-                else if (board.getManipCurrent() < MAX_CURRENT) {
+                else if (board.getManipCurrent() < MAX_CURRENT_OUT) {
                     logstring = "Extending:" + String.valueOf(board.getManipCurrent());
                     LOGGER.info(logstring);
                     manipMotor.set(-manipMotorSpeed);
@@ -101,7 +108,7 @@ public class BallRollers
                     logstring = "Retracted";
                     LOGGER.info(logstring);
                 }
-                else if (board.getManipCurrent() < MAX_CURRENT) {
+                else if (board.getManipCurrent() < MAX_CURRENT_IN) {
                     logstring = "Retracting:" + String.valueOf(board.getManipCurrent());
                     LOGGER.info(logstring);
                     manipMotor.set(manipMotorSpeed);
