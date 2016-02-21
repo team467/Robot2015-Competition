@@ -107,7 +107,7 @@ public class Robot extends IterativeRobot
         vision = VisionProcessor.getInstance();
 //        lifter = Lifter.getInstance();
 //        claw = Claw.getInstance();
-        rollers = new BallRollers(4,3);
+        rollers = new BallRollers(4, 3);
         //tbar = new TBar();
         
         gyro2016 = Gyro2016.getInstance();
@@ -208,7 +208,7 @@ public class Robot extends IterativeRobot
         // Read driverstation inputs
         driverstation.readInputs();
 
-        LOGGER.info("Distance: " + ultrasonic.getRangeInches());
+        //LOGGER.info("Distance: " + ultrasonic.getRangeInches());
 
 //        gyro.update();
 //        if (driverstation.getGyroReset())

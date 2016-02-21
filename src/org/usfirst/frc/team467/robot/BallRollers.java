@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class BallRollers
@@ -19,8 +20,8 @@ public class BallRollers
     
     private PowerDistroBoard467 board = null;
     
-    private static final double MAX_CURRENT = 20;
-    private final double manipMotorSpeed = 0.3;
+    private static final double MAX_CURRENT = 10;
+    private final double manipMotorSpeed = 1.0;
     
     boolean isRetracted = false;
     boolean isExtended = false;
@@ -29,6 +30,7 @@ public class BallRollers
     
     public BallRollers(int motorChannelRoller, int motorChannelManip)
     {
+        board = PowerDistroBoard467.getInstance();
         rollerMotor = new CANTalon(motorChannelRoller);
         manipMotor = new CANTalon(motorChannelManip);
         safetyRoller = new MotorSafetyHelper(rollerMotor);
@@ -71,41 +73,55 @@ public class BallRollers
     }
         
     public void runManipulator (ManipIntent manipPosition) {
-        
+        String logstring;
         
         //for now, we just control the Manipulator arm manually until we can detect the position of the arm
         switch(manipPosition) {
             case SHOULD_EXTEND:
-                if (board.getManipCurrent() < MAX_CURRENT && !isRetracted) {
-                    LOGGER.info("GOING UP");
-                    manipMotor.set(manipMotorSpeed);
-                    safetyManip.feed();
+                if (isExtended) {
+                    stopManip();
+                    logstring = "Extended";
+                    LOGGER.info(logstring);
+                }
+                else if (board.getManipCurrent() < MAX_CURRENT) {
+                    logstring = "Extending:" + String.valueOf(board.getManipCurrent());
+                    LOGGER.info(logstring);
+                    manipMotor.set(-manipMotorSpeed);
                 }
                 else {
-                    LOGGER.info("IS UP");
+                    logstring = "Extended";
+                    LOGGER.info(logstring);
+                    stopManip();
+                    isExtended = true;
+                }
+                break;
+            case SHOULD_RETRACT:
+                if (isRetracted) {
+                    stopManip();
+                    logstring = "Retracted";
+                    LOGGER.info(logstring);
+                }
+                else if (board.getManipCurrent() < MAX_CURRENT) {
+                    logstring = "Retracting:" + String.valueOf(board.getManipCurrent());
+                    LOGGER.info(logstring);
+                    manipMotor.set(manipMotorSpeed);
+                }
+                else {
+                    logstring = "Retracted";
+                    LOGGER.info(logstring);
                     stopManip();
                     isRetracted = true;
                 }
-                //manipMotor.set(manipMotorSpeed);
                 break;
-            case SHOULD_RETRACT:
-                if (board.getManipCurrent() < MAX_CURRENT && isRetracted) {
-                    LOGGER.info("GOING DOWN");
-                    manipMotor.set(-manipMotorSpeed);
-                    safetyManip.feed();
-                }
-                else {
-                    LOGGER.info("IS DOWN");
-                    stopManip();
-                    isRetracted = false;
-                }
-                stopManip();
-                break;
-            case SHOULD_STOP:
+            default:
+                logstring = "Is Stopped";
+                LOGGER.info(logstring);
                 stopManip();
                 break;
             }
-        }
+        SmartDashboard.putString("DB/String 9", logstring);
+        safetyManip.feed();
+    }
 
     public void in(double motorSpeed)
     {

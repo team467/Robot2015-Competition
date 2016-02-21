@@ -473,7 +473,7 @@ public class DriverStation2015
         if (buttonPanel.isButtonDown(MANIPULATOR_UP)) {
             return ManipIntent.SHOULD_EXTEND;
         }
-        else if (buttonPanel.isButtonDown(MANIPULATOR_UP)) {
+        else if (buttonPanel.isButtonDown(MANIPULATOR_DOWN)) {
             return ManipIntent.SHOULD_RETRACT;
         }
         else {
