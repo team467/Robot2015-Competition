@@ -27,7 +27,7 @@ public class TankDrive implements Driveable
     private MotorSafetyHelper BRsafety = null;
     
     private double cartSpeed;
-    private double ACCELERATION = 0.05;
+    private double ACCELERATION = 0.1;
     private final double SPEED_SLOW_MODIFIER = 0.7;
     private final double SPEED_MAX_MODIFIER = 1.0;
     private final double SPEED_TURBO_MODIFIER = 1.0;
@@ -125,16 +125,16 @@ public class TankDrive implements Driveable
     private double limitSpeed(double speed, double lastSpeed)
     {
         // Apply speed modifiers first
-        String strAccel = SmartDashboard.getString("DB/String 4", "");
-        try
-        {
-            ACCELERATION = strAccel.equals("") ? 0.1 : Double.valueOf(strAccel);
-        }
-        catch (NumberFormatException e)
-        {
-            LOGGER.info("Invalid Acceleration in String 4, assuming 0.1");
-            SmartDashboard.putString("DB/String 4", "0.1");
-        }
+//        String strAccel = SmartDashboard.getString("DB/String 4", "");
+//        try
+//        {
+//            ACCELERATION = strAccel.equals("") ? 0.1 : Double.valueOf(strAccel);
+//        }
+//        catch (NumberFormatException e)
+//        {
+//            LOGGER.info("Invalid Acceleration in String 4, assuming 0.1");
+//            SmartDashboard.putString("DB/String 4", "0.1");
+//        }
         
         if (DriverStation2015.getInstance().getSlow())
         {
@@ -177,8 +177,8 @@ public class TankDrive implements Driveable
 
         fl.set(square(-leftSpeed));
         bl.set(square(-leftSpeed));
-        fr.set(square(rightSpeed) * 95.0 / 100.0);
-        br.set(square(rightSpeed) * 95.0 / 100.0);
+        fr.set(square(rightSpeed) * 90.0 / 100.0);
+        br.set(square(rightSpeed) * 90.0 / 100.0);
         
         feedMotors();
     }
