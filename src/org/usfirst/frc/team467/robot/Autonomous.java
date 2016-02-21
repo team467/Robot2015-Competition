@@ -25,7 +25,7 @@ public class Autonomous
     private Ultrasonic ultrasonic = null;
     
     private TBar tbar = null;
-    BallRollers roller = new BallRollers(3);
+    BallRollers roller = new BallRollers(3, 5);
     
     long actionStartTimeMS = -1;
 
@@ -178,7 +178,8 @@ public class Autonomous
      */
     public void initAutonomous()
     {
-        AutoType autonomousType = DriverStation2015.getInstance().getAutoType();
+//        AutoType autonomousType = DriverStation2015.getInstance().getAutoType();
+        AutoType autonomousType = AutoType.STAY_IN_PLACE;
         LOGGER.info("AUTO MODE " + autonomousType);
 
         // Reset actions.
@@ -523,11 +524,16 @@ public class Autonomous
     
     private void initDrawBridge()
     {
+        addAction("turns backwards",
+                () -> gyro.shouldTurnLeft(170),
+                () -> {
+                    drive.turnDrive(0.5);
+                });
         addAction("Move while gyro is flat, up, or down",
                 () -> gyro.isFlat() || gyro.isUp() || gyro.isDown(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-                    drive.arcadeDrive(0.0, -0.7);
+                    drive.arcadeDrive(0.0, 0.7);
                 });
         addAction("Move TBar arm up while the robot is 4 feet from the drawbridge",
                 () -> ultrasonic.getRangeInches() == 46,
@@ -535,17 +541,12 @@ public class Autonomous
                     drive.stop();
                     tbar.launchTBar(tBarDirection.UP);
                 });
-        addAction("Move while gyro is flat or up",
-                () -> gyro.isFlat() || gyro.isUp(),
-                () -> {
-                    LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-                    drive.arcadeDrive(0.0, -0.7);
-                    tbar.launchTBar(tBarDirection.UP);
-                });
         addAction("approach",
                 () -> ultrasonic.getRangeInches() > 24,
                 () -> {
                     drive.arcadeDrive(0.0, 0.4);
+                    tbar.launchTBar(tBarDirection.UP);
+
                 });
        
         addAction("lower bar", 
@@ -563,7 +564,7 @@ public class Autonomous
         addAction("move ahead",
                 () -> (gyro.isDown() || gyro.isFlat() || gyro.isUp() ) && forDurationSecs(2.0f),
                 () -> {
-                    drive.arcadeDrive(0.0, -0.6);
+                    drive.arcadeDrive(0.0, 0.6);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
         if (gyro.shouldTurnLeft(0)){
@@ -636,14 +637,19 @@ public class Autonomous
     
     private void initChevalDeFrise()
     {
+        addAction("turns backwards",
+                () -> gyro.shouldTurnLeft(170),
+                () -> {
+                    drive.turnDrive(0.5);
+                });
         addAction("move while flat",
                 () -> gyro.isFlat(),
                 () -> {
-                    drive.arcadeDrive(0.0, -0.5);
+                    drive.arcadeDrive(0.0, 0.5);
                     tbar.launchTBar(tBarDirection.UP);
                 });
         addAction("while up",
-                () -> gyro.isUp(),
+                () -> gyro.isDown(),
                 () -> {
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
@@ -651,13 +657,13 @@ public class Autonomous
                 () -> gyro.isUp() || gyro.isDown(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-                    drive.arcadeDrive(0.0, -0.7);
+                    drive.arcadeDrive(0.0, 0.7);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("move while flat and raise bar",
                 () -> gyro.isFlat(),
                 () -> {
-                    drive.arcadeDrive(0.0, -0.7);
+                    drive.arcadeDrive(0.0, 0.7);
                     tbar.launchTBar(tBarDirection.UP);
                 });
         if (gyro.shouldTurnLeft(0)){

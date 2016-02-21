@@ -238,8 +238,8 @@ public class DriverStation2015
         switch(mode) {
             case "AIM":
                 return AutoType.AIM;
-            case "GRAB CAN":
-                return AutoType.GRAB_CAN;
+            case "STAY_IN_PLACE":
+                return AutoType.STAY_IN_PLACE;
             default:
                 return AutoType.NO_AUTO;
         }
