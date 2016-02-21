@@ -2,7 +2,7 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.Autonomous.AutoType;
-import org.usfirst.frc.team467.robot.BallRollers.ManipPosition;
+import org.usfirst.frc.team467.robot.BallRollers.ManipIntent;
 import org.usfirst.frc.team467.robot.BallRollers.RollerDirection;
 import org.usfirst.frc.team467.robot.TBar.tBarDirection;
 
@@ -468,17 +468,17 @@ public class DriverStation2015
             return RollerDirection.STOP;
         }
     }
-    public ManipPosition getManipPosition()
+    public ManipIntent getManipPosition()
     {
         if (buttonPanel.isButtonDown(MANIPULATOR_UP)) {
-            return ManipPosition.UP;
+            return ManipIntent.SHOULD_RETRACT;
         }
-        else if (buttonPanel.isButtonDown(MANIPULATOR_UP)) {
-            return ManipPosition.DOWN;
+        else if (buttonPanel.isButtonDown(MANIPULATOR_DOWN)) {
+            return ManipIntent.SHOULD_EXTEND;
         }
         else {
             //this should never happen ;P
-            return ManipPosition.STOP;
+            return ManipIntent.SHOULD_STOP;
         }
     }
 //    /**

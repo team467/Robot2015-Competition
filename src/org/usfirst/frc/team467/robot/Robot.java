@@ -219,7 +219,7 @@ public class Robot extends IterativeRobot
 //        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
         
 //        LOGGER.info("Distance: " + ultrasonic.getRangeInches());
-        SmartDashboard.putString("DB/String 9", String.valueOf(ultrasonic.getRangeInches()));
+//        SmartDashboard.putString("DB/String 9", String.valueOf(ultrasonic.getRangeInches()));
 //        if (driverstation.getCalibrate())
 //        {
 //            // Calibrate Mode
@@ -359,6 +359,7 @@ public class Robot extends IterativeRobot
     {
         board.update();
         rollers.runRoller(driverstation.getRollerDirection());
+        SmartDashboard.putString("DB/String 8", driverstation.getManipPosition().toString());
         rollers.runManipulator(driverstation.getManipPosition());
         //tbar.launchTBar(driverstation.getTBarDirection());
         
