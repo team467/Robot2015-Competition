@@ -177,8 +177,8 @@ public class TankDrive implements Driveable
 
         fl.set(square(-leftSpeed));
         bl.set(square(-leftSpeed));
-        fr.set(square(rightSpeed) * 90.0 / 100.0);
-        br.set(square(rightSpeed) * 90.0 / 100.0);
+        fr.set(square(rightSpeed) * 85.0 / 100.0);
+        br.set(square(rightSpeed) * 85.0 / 100.0);
         
         feedMotors();
     }

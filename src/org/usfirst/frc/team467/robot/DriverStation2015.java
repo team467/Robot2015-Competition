@@ -471,10 +471,10 @@ public class DriverStation2015
     public ManipIntent getManipPosition()
     {
         if (buttonPanel.isButtonDown(MANIPULATOR_UP)) {
-            return ManipIntent.SHOULD_RETRACT;
+            return ManipIntent.SHOULD_EXTEND;
         }
         else if (buttonPanel.isButtonDown(MANIPULATOR_DOWN)) {
-            return ManipIntent.SHOULD_EXTEND;
+            return ManipIntent.SHOULD_RETRACT;
         }
         else {
             //this should never happen ;P
