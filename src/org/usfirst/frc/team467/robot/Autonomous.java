@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.usfirst.frc.team467.robot.BallRollers.ManipIntent;
 import org.usfirst.frc.team467.robot.BallRollers.RollerDirection;
 import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
 import org.usfirst.frc.team467.robot.TBar.tBarDirection;
@@ -19,10 +20,10 @@ public class Autonomous
 
     private static Autonomous autonomous = null;
 
-    Gyro2016 gyro = null;    
+    private Gyro2016 gyro = null;    
     private Driveable drive = null;
     private VisionProcessor vision = null;
-    private Ultrasonic ultrasonic = null;
+    private Ultrasonic2016 ultrasonic = null;
     
     private TBar tbar = null;
 
@@ -156,7 +157,7 @@ public class Autonomous
         this.drive = drive;
     }
 
-    public void setUltrasonic(Ultrasonic ultra)
+    public void setUltrasonic(Ultrasonic2016 ultra)
     {
         this.ultrasonic = ultra;
     }
@@ -194,11 +195,17 @@ public class Autonomous
             case SALLY_PORT:
                 initSallyPort();
                 break;
+            case NEW_PORTCULLIS:
+                initNewPortcullis();
+                break;
             case PORTCULLIS:
                 initPortcullis();
                 break;
             case DRAWBRIDGE:
                 initDrawBridge();
+                break;
+            case CHEVAL_DE_FRISE:
+                initChevalDeFrise();
                 break;
             case DRIVE_ONLY:
                 initDriveOnly();
@@ -225,32 +232,40 @@ public class Autonomous
         //Moves over barriers using the tilt gyrometer to detect when the robot is going up, down, or driving flat
         //Moves towards the walls using the ultrasonic sensor, and turns (counter)clockwise with the yaw gyrometer to line up for the low shoot
         addAction("Move while gyro is up",
-                () -> gyro.isUp(),
+                () -> gyro.isUp() || gyro.isFlat(),
+                () -> {
+                    LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                    drive.arcadeDrive(0.0, -0.7);
+                });
+        addAction("Move while gyro is down",
+                () -> gyro.isDown(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
                     drive.arcadeDrive(0.0, -0.7);
                 });
-        addAction("Move while gyro is flat or when gyro is down",
-                () -> gyro.isFlat()|| gyro.isDown(),
-                () -> {
-                    LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-                    drive.arcadeDrive(0.0, -0.7);
-                });
-        if (gyro.shouldTurnLeft(0)){
+        if (!gyro.isFlat()){
+            addAction("go fowards while not flat and for 1 second",
+                    () -> !gyro.isFlat() && forDurationSecs(1.0f),
+                    () -> {
+                        drive.arcadeDrive(0.0, -0.5);
+                    });
+        }
+        if (gyro.shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(0),
+                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(0),
+                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
         }
-        addAction("Move while the Ultrasonic is more than 5 feet from the castle",
-                () -> ultrasonic.getRangeInches() > 60,
+        addAction("Move while the Ultrasonic is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
@@ -260,10 +275,10 @@ public class Autonomous
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
-        addAction("Move ahead while the robot is more than 12 inches from the wall",
-                () -> ultrasonic.getRangeInches() > 12,
+        addAction("Move ahead while the robot is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
                 () -> {
-                    drive.arcadeDrive(0.0, -0.3);
+                    drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
                 () -> gyro.shouldTurnLeft(10), 
@@ -272,23 +287,23 @@ public class Autonomous
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
         addAction("Move ahead while the robot is more than 3 feet from the wall",
-                () -> ultrasonic.getRangeInches() > 36,
+                () -> ultrasonic.getFrontRangeInches() > 36,
                 () -> {
                     drive.arcadeDrive(0.0, -0.3);
                 });
-        addAction("Turn 90 degrees (counterclockwise)",
+        addAction("Turn (counterclockwise)",
                 () -> gyro.shouldTurnLeft(-40), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
-        addAction ("Drive fowards while robot is not flat",
+        addAction ("Drive fowards while robot is not up",
                 () -> !gyro.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Shoot the low goal",
-                () -> gyro.getYawAngle() == -40 && gyro.getTiltAngle() > 4.0,
+                () -> gyro.getYawAngle() <= -40 && gyro.getTiltAngle() > 4.0,
                 () -> {
                     drive.stop();
                     roller.runRoller(RollerDirection.OUT);
@@ -297,6 +312,8 @@ public class Autonomous
                 () -> forever(), 
                 () -> {
                     drive.stop();
+                    roller.stop();
+                    tbar.stop();
                 });
     }
     
@@ -305,21 +322,23 @@ public class Autonomous
                 () -> gyro.shouldTurnLeft(170),
                 () -> {
                     drive.turnDrive(0.5);
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                    tbar.launchTBar(tBarDirection.UP);
                 });
         addAction("Move while gyro is flat, up, or down",
-                () -> gyro.isFlat() || gyro.isUp() || gyro.isDown(),
+                () -> (gyro.isFlat() || gyro.isUp() || gyro.isDown()) && ultrasonic.getBackRangeInches() > 12,
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
                     drive.arcadeDrive(0.0, 0.7);
                 });
-        addAction("Move TBar arm up while the robot is 3 feet from the port",
-                () -> ultrasonic.getRangeInches() == 36,
+        addAction("Move TBar arm down while the robot is 12 inches from the port",
+                () -> ultrasonic.getBackRangeInches() <= 12,
                 () -> {
                     drive.stop();
-                    tbar.launchTBar(tBarDirection.UP);
+                    tbar.launchTBar(tBarDirection.DOWN);
                 });
-        addAction("Move 4 feet away from the port and keep the bar down",
-                () -> ultrasonic.getRangeInches() < 46,
+        addAction("Move 3 feet away from the port and keep the bar down",
+                () -> ultrasonic.getBackRangeInches() < 36,
                 () -> {
                     drive.arcadeDrive(0.0, -0.4);
                     tbar.launchTBar(tBarDirection.DOWN);
@@ -327,7 +346,7 @@ public class Autonomous
         addAction("Turn to the left to open the door",
                 () -> gyro.shouldTurnLeft(-60),
                 () -> {
-                    drive.turnDrive(-0.4);
+                    drive.turnDrive(0.4);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("Move backwards",
@@ -341,27 +360,34 @@ public class Autonomous
                     drive.turnDrive(-0.4);
                     tbar.launchTBar(tBarDirection.UP);
                 });
-        addAction("Move while gyro is flat or down",
-                () -> gyro.isFlat() ||  gyro.isDown(),
+        addAction("Move while gyro is flat, up, or down",
+                () -> ( gyro.isFlat() || gyro.isUp() || gyro.isDown() ) && forDurationSecs(1.5f),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
                     drive.arcadeDrive(0.0, 0.7);
                 });
-        if (gyro.shouldTurnLeft(0)){
+        if (!gyro.isFlat()){
+            addAction("go fowards while not flat and for 1 second",
+                    () -> !gyro.isFlat() && forDurationSecs(1.0f),
+                    () -> {
+                        drive.arcadeDrive(0.0, 0.5);
+                    });
+        }
+        if (gyro.shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(0),
+                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(0),
+                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
         }
-        addAction("Move while the Ultrasonic is more than 5 feet from the tower",
-                () -> ultrasonic.getRangeInches() > 60,
+        addAction("Move while the Ultrasonic is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
@@ -371,8 +397,8 @@ public class Autonomous
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
-        addAction("Move ahead while the robot is more than 12 inches from the wall",
-                () -> ultrasonic.getRangeInches() > 12,
+        addAction("Move ahead while the robot is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
@@ -383,7 +409,7 @@ public class Autonomous
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
         addAction("Move ahead while the robot is more than 3 feet from the wall",
-                () -> ultrasonic.getRangeInches() > 36,
+                () -> ultrasonic.getFrontRangeInches() > 36,
                 () -> {
                     drive.arcadeDrive(0.0, -0.3);
                 });
@@ -393,13 +419,13 @@ public class Autonomous
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
-        addAction ("Drive fowards while robot is not flat",
+        addAction ("Drive fowards while robot is not up",
                 () -> !gyro.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Shoot the low goal",
-                () -> gyro.getYawAngle() == -40 && gyro.getTiltAngle() > 4.0,
+                () -> gyro.getYawAngle() <= -40 && gyro.getTiltAngle() > 4.0,
                 () -> {
                     drive.stop();
                     roller.runRoller(RollerDirection.OUT);
@@ -411,6 +437,101 @@ public class Autonomous
                     roller.stop();
                     tbar.stop();
                 });
+    }
+    
+    private void initNewPortcullis(){
+        addAction("turns backwards",
+                () -> gyro.shouldTurnLeft(170),
+                () -> {
+                    drive.turnDrive(0.5);
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                    tbar.launchTBar(tBarDirection.UP);
+                });
+        addAction("Move while gyro is down or flat",
+                () -> gyro.isDown() || gyro.isFlat(),
+                () -> {
+                    LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
+                    tbar.launchTBar(tBarDirection.DOWN);
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                    drive.arcadeDrive(0.0, 0.7);
+                });
+        addAction("Move while gyro is up",
+                () -> gyro.isUp(),
+                () -> {
+                    LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
+                    drive.arcadeDrive(0.0, 0.7);
+                });
+        if (!gyro.isFlat()){
+            addAction("go fowards while not flat and for 1 second",
+                    () -> !gyro.isFlat() && forDurationSecs(1.0f),
+                    () -> {
+                        drive.arcadeDrive(0.0, 0.5);
+                    });
+        }
+        if (gyro.shouldTurnLeft(10)){
+            addAction("Turn to zero degrees",
+                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
+                    () -> {
+                        drive.turnDrive(0.4);
+                    });
+        }else{
+            addAction("Turn to zero degrees",
+                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
+                    () -> {
+                        drive.turnDrive(-0.4);
+                    });
+        }
+        addAction("Move while the Ultrasonic is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
+                () -> {
+                    drive.arcadeDrive(0.0, -0.5);
+                });
+        addAction("Turn 90 degrees (clockwise)",
+                () -> gyro.shouldTurnRight(80), 
+                () -> {
+                    drive.turnDrive(-0.5);
+                    LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
+                });
+        addAction("Move ahead while the robot is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
+                () -> {
+                    drive.arcadeDrive(0.0, -0.5);
+                });
+        addAction("Turn 90 degrees (counterclockwise)",
+                () -> gyro.shouldTurnLeft(10), 
+                () -> {
+                    drive.turnDrive(0.5);
+                    LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
+                });
+        addAction("Move ahead while the robot is more than 3 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 36,
+                () -> {
+                    drive.arcadeDrive(0.0, -0.3);
+                });
+        addAction("Turn (counterclockwise)",
+                () -> gyro.shouldTurnLeft(-40), 
+                () -> {
+                    drive.turnDrive(0.5);
+                    LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
+                });
+        addAction ("Drive fowards while robot is not up",
+                () -> !gyro.isUp(),
+                () -> {
+                    drive.arcadeDrive(0.0, -0.5);
+                });
+        addAction("Shoot the low goal",
+                () -> gyro.getYawAngle() <= -40 && gyro.getTiltAngle() > 4.0,
+                () -> {
+                    drive.stop();
+                    roller.runRoller(RollerDirection.OUT);
+                });
+        addAction("Done",
+                () -> forever(), 
+                () -> {
+                    drive.stop();
+                    roller.stop();
+                    tbar.stop();
+                }); 
     }
     
     private void initPortcullis()
@@ -423,6 +544,8 @@ public class Autonomous
                 () -> gyro.shouldTurnLeft(170),
                 () -> {
                     drive.turnDrive(0.5);
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                    tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("Move while gyro is flat",
                 () -> gyro.isFlat(),
@@ -434,7 +557,6 @@ public class Autonomous
                 () -> !gyro.isFlat(),
                 () -> {
                     drive.stop();
-                    tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("move backwards",
                 () -> forDurationSecs(0.7f),
@@ -442,7 +564,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, 0.4);
                 });
         addAction("lift bar",
-                () -> gyro.isUp(),
+                () -> gyro.isDown() || gyro.isFlat(),
                 () -> {
                     tbar.launchTBar(tBarDirection.UP);
                 });
@@ -453,26 +575,33 @@ public class Autonomous
                     drive.arcadeDrive(0.0, 0.7);
                 });
         addAction("Move while gyro is flat or when gyro is down",
-                () -> (gyro.isFlat()|| gyro.isDown()) && forDurationSecs(1.0f),
+                () -> (gyro.isFlat()|| gyro.isDown()) && forDurationSecs(0.6f),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
                     drive.arcadeDrive(0.0, 0.7);
                 });
-        if (gyro.shouldTurnLeft(0)){
+        if (!gyro.isFlat()){
+            addAction("go fowards while not flat and for 1 second",
+                    () -> !gyro.isFlat() && forDurationSecs(1.0f),
+                    () -> {
+                        drive.arcadeDrive(0.0, 0.5);
+                    });
+        }
+        if (gyro.shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(0),
+                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(0),
+                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
         }
-        addAction("Move while the Ultrasonic is more than 5 feet from the castle",
-                () -> ultrasonic.getRangeInches() > 60,
+        addAction("Move while the Ultrasonic is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
@@ -482,10 +611,10 @@ public class Autonomous
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
-        addAction("Move ahead while the robot is more than 12 inches from the wall",
-                () -> ultrasonic.getRangeInches() > 12,
+        addAction("Move ahead while the robot is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
                 () -> {
-                    drive.arcadeDrive(0.0, -0.3);
+                    drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
                 () -> gyro.shouldTurnLeft(10), 
@@ -494,23 +623,23 @@ public class Autonomous
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
         addAction("Move ahead while the robot is more than 3 feet from the wall",
-                () -> ultrasonic.getRangeInches() > 36,
+                () -> ultrasonic.getFrontRangeInches() > 36,
                 () -> {
                     drive.arcadeDrive(0.0, -0.3);
                 });
-        addAction("Turn 90 degrees (counterclockwise)",
+        addAction("Turn (counterclockwise)",
                 () -> gyro.shouldTurnLeft(-40), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
-        addAction ("Drive fowards while robot is not flat",
+        addAction ("Drive fowards while robot is not up",
                 () -> !gyro.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Shoot the low goal",
-                () -> gyro.getYawAngle() == -40 && gyro.getTiltAngle() > 4.0,
+                () -> gyro.getYawAngle() <= -40 && gyro.getTiltAngle() > 4.0,
                 () -> {
                     drive.stop();
                     roller.runRoller(RollerDirection.OUT);
@@ -519,8 +648,8 @@ public class Autonomous
                 () -> forever(), 
                 () -> {
                     drive.stop();
-                    tbar.stop();
                     roller.stop();
+                    tbar.stop();
                 });
     }
     
@@ -530,62 +659,63 @@ public class Autonomous
                 () -> gyro.shouldTurnLeft(170),
                 () -> {
                     drive.turnDrive(0.5);
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                    tbar.launchTBar(tBarDirection.UP);
                 });
         addAction("Move while gyro is flat, up, or down",
-                () -> gyro.isFlat() || gyro.isUp() || gyro.isDown(),
+                () -> (gyro.isFlat() || gyro.isUp() || gyro.isDown()) && ultrasonic.getBackRangeInches() > 36,
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
                     drive.arcadeDrive(0.0, 0.7);
                 });
-        addAction("Move TBar arm up while the robot is 4 feet from the drawbridge",
-                () -> ultrasonic.getRangeInches() == 46,
-                () -> {
-                    drive.stop();
-                    tbar.launchTBar(tBarDirection.UP);
-                });
         addAction("approach",
-                () -> ultrasonic.getRangeInches() > 24,
-                () -> {
-                    drive.arcadeDrive(0.0, 0.4);
-                    tbar.launchTBar(tBarDirection.UP);
-
-                });
-       
-        addAction("lower bar", 
-                () -> ultrasonic.getRangeInches() == 24,
+                () -> ultrasonic.getBackRangeInches() <= 36,
                 () -> {
                     drive.stop();
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("open door",
-                () -> ultrasonic.getRangeInches() < 48,
+                () -> ultrasonic.getBackRangeInches() > 48,
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("move ahead",
-                () -> (gyro.isDown() || gyro.isFlat() || gyro.isUp() ) && forDurationSecs(2.0f),
+                () -> gyro.isFlat() || gyro.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.6);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
-        if (gyro.shouldTurnLeft(0)){
+        addAction("get off ramp",
+                () -> gyro.isDown(),
+                () -> {
+                    drive.arcadeDrive(0.0, 0.6);
+                    tbar.launchTBar(tBarDirection.DOWN);
+                });
+        if (!gyro.isFlat()){
+            addAction("go fowards while not flat and for 1 second",
+                    () -> !gyro.isFlat() && forDurationSecs(1.0f),
+                    () -> {
+                        drive.arcadeDrive(0.0, 0.5);
+                    });
+        }
+        if (gyro.shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(0),
+                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                         tbar.launchTBar(tBarDirection.UP);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(0),
+                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                         tbar.launchTBar(tBarDirection.UP);
                     });
         }
-        addAction("Move while the Ultrasonic is more than 5 feet from the castle",
-                () -> ultrasonic.getRangeInches() > 60,
+        addAction("Move while the Ultrasonic is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
@@ -595,10 +725,10 @@ public class Autonomous
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
-        addAction("Move ahead while the robot is more than 12 inches from the wall",
-                () -> ultrasonic.getRangeInches() > 12,
+        addAction("Move ahead while the robot is more than 5 feet from the wall",
+                () -> ultrasonic.getFrontRangeInches() > 60,
                 () -> {
-                    drive.arcadeDrive(0.0, -0.3);
+                    drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
                 () -> gyro.shouldTurnLeft(10), 
@@ -607,23 +737,23 @@ public class Autonomous
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
         addAction("Move ahead while the robot is more than 3 feet from the wall",
-                () -> ultrasonic.getRangeInches() > 36,
+                () -> ultrasonic.getFrontRangeInches() > 36,
                 () -> {
                     drive.arcadeDrive(0.0, -0.3);
                 });
-        addAction("Turn 90 degrees (counterclockwise)",
+        addAction("Turn (counterclockwise)",
                 () -> gyro.shouldTurnLeft(-40), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
-        addAction ("Drive fowards while robot is not flat",
+        addAction ("Drive fowards while robot is not up",
                 () -> !gyro.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Shoot the low goal",
-                () -> gyro.getYawAngle() == -40 && gyro.getTiltAngle() > 4.0,
+                () -> gyro.getYawAngle() <= -40 && gyro.getTiltAngle() > 4.0,
                 () -> {
                     drive.stop();
                     roller.runRoller(RollerDirection.OUT);
@@ -632,8 +762,8 @@ public class Autonomous
                 () -> forever(), 
                 () -> {
                     drive.stop();
-                    tbar.stop();
                     roller.stop();
+                    tbar.stop();
                 });
     }
     
@@ -643,19 +773,26 @@ public class Autonomous
                 () -> gyro.shouldTurnLeft(170),
                 () -> {
                     drive.turnDrive(0.5);
+                    roller.runManipulator(ManipIntent.SHOULD_RETRACT);
+                    tbar.launchTBar(tBarDirection.UP);
                 });
         addAction("move while flat",
                 () -> gyro.isFlat(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.5);
-                    tbar.launchTBar(tBarDirection.UP);
                 });
         addAction("while up",
                 () -> gyro.isDown(),
                 () -> {
+                    drive.stop();
+                });
+        addAction("move back while down",
+                () -> gyro.isDown(),
+                () -> {
+                    drive.arcadeDrive(0.0, -0.6);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
-        addAction("Move while gyro is up or down",
+        addAction("Move while robot is up or down",
                 () -> gyro.isUp() || gyro.isDown(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
@@ -668,6 +805,13 @@ public class Autonomous
                     drive.arcadeDrive(0.0, 0.7);
                     tbar.launchTBar(tBarDirection.UP);
                 });
+        if (!gyro.isFlat()){
+            addAction("go fowards while not flat and for 1 second",
+                    () -> !gyro.isFlat() && forDurationSecs(1.0f),
+                    () -> {
+                        drive.arcadeDrive(0.0, 0.5);
+                    });
+        }
         if (gyro.shouldTurnLeft(0)){
             addAction("Turn to zero degrees",
                     () -> gyro.isFlat() && gyro.shouldTurnLeft(0),
@@ -684,7 +828,7 @@ public class Autonomous
                     });
         }
         addAction("Move while the Ultrasonic is more than 5 feet from the castle",
-                () -> ultrasonic.getRangeInches() > 60,
+                () -> ultrasonic.getFrontRangeInches() > 60,
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
@@ -695,7 +839,7 @@ public class Autonomous
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
         addAction("Move ahead while the robot is more than 12 inches from the wall",
-                () -> ultrasonic.getRangeInches() > 12,
+                () -> ultrasonic.getFrontRangeInches() > 12,
                 () -> {
                     drive.arcadeDrive(0.0, -0.3);
                 });
@@ -706,7 +850,7 @@ public class Autonomous
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                 });
         addAction("Move ahead while the robot is more than 3 feet from the wall",
-                () -> ultrasonic.getRangeInches() > 36,
+                () -> ultrasonic.getFrontRangeInches() > 36,
                 () -> {
                     drive.arcadeDrive(0.0, -0.3);
                 });
@@ -738,6 +882,7 @@ public class Autonomous
     
     private void initHighGoal()
     {
+        // Move ahead over barrier, align to high goal, take shot
         final int marginOfError = 30;
         
         addAction("Rotate while square with widest is not centered",
@@ -745,10 +890,15 @@ public class Autonomous
                 () -> {
                     seekWidestContour(marginOfError);
                 });
+        addAction("extend ball roller",
+                () -> seekAngle(marginOfError),
+                () -> {
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                });
         addAction("Shoot the high goal",
                 () -> seekAngle(marginOfError),
                 ()-> {
-                    roller.out(1.0);
+                    roller.in(1.0);
                 });
         addAction("Stop driving",
                 () -> forever(),
@@ -759,7 +909,6 @@ public class Autonomous
 
     private void initDriveOnly()
     {
-//        Gyro2015.getInstance().reset(GyroResetDirection.FACE_LEFT);// reset to upfield
         // Drive to auto zone. Starts on the very edge and just creeps into the zone
         Gyro2016.getInstance();
         addAction("Drive into auto zone", 
@@ -781,7 +930,6 @@ public class Autonomous
     private void initStayInPlace()
     {
         // Stay in place. Reset to upfield.
-//        Gyro2015.getInstance().reset();
           Gyro2016.getInstance();
         addAction("Stop driving", 
                 () -> forever(), 
@@ -877,7 +1025,7 @@ public class Autonomous
      */
     private void approach(double desiredDistance)
     {
-        final double measuredDistance = ultrasonic.getRangeInches();
+        final double measuredDistance = ultrasonic.getFrontRangeInches();
         final double delta = Math.abs(measuredDistance - desiredDistance);
         if (delta > 12)
         {
@@ -936,6 +1084,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, PORTCULLIS, DRAWBRIDGE, SALLY_PORT, CROSS_BARRIER, HIGH_GOAL
+        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, PORTCULLIS, NEW_PORTCULLIS, DRAWBRIDGE, SALLY_PORT, CROSS_BARRIER, HIGH_GOAL, CHEVAL_DE_FRISE
     }
 }
