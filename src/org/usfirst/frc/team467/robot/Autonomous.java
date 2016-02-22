@@ -26,7 +26,7 @@ public class Autonomous
     
     private TBar tbar = null;
 
-    BallRollers roller = new BallRollers(3, 4);
+    BallRollers roller = null;
     
     long actionStartTimeMS = -1;
 
@@ -159,6 +159,11 @@ public class Autonomous
     public void setUltrasonic(Ultrasonic ultra)
     {
         this.ultrasonic = ultra;
+    }
+    
+    public void setRoller(BallRollers roller)
+    {
+        this.roller = roller;
     }
 
     /**

@@ -101,14 +101,13 @@ public class Robot extends IterativeRobot
         // Make robot objects
         driverstation = DriverStation2015.getInstance();
         autonomous = Autonomous.getInstance();
-        autonomous.setDrive(drive);
         gyro = Gyro2016.getInstance();
         board = PowerDistroBoard467.getInstance();
         vision = VisionProcessor.getInstance();
 //        lifter = Lifter.getInstance();
 //        claw = Claw.getInstance();
         rollers = new BallRollers(3, 0);
-        tbar = new TBar(4);
+//        tbar = new TBar(4);
         
         gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic(1, 0);
@@ -117,6 +116,7 @@ public class Robot extends IterativeRobot
         
         autonomous.setDrive(drive);
         autonomous.setUltrasonic(ultrasonic);
+        autonomous.setRoller(rollers);
         
         ledStrip.setMode(Mode.OFF);
         

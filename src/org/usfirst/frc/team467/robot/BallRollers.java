@@ -2,6 +2,7 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +17,8 @@ public class BallRollers
     private final MotorSafetyHelper safetyManip;
     private final double rollerOutMotorSpeed = 1;
     private final double rollerInMotorSpeed = 0.7;
+    
+    private DigitalInput isRetractedSwitch;
     
     private PowerDistroBoard467 board = null;
     
@@ -35,6 +38,11 @@ public class BallRollers
         manipMotor = new Talon(motorChannelManip);
         safetyRoller = new MotorSafetyHelper(rollerMotor);
         safetyManip = new MotorSafetyHelper(manipMotor);
+        try {
+            isRetractedSwitch = new DigitalInput(2);
+        } catch (Exception e) {
+            LOGGER.error("Cannot initialize retracted switch", e);
+        }
         reset();
     }
     
@@ -85,7 +93,7 @@ public class BallRollers
         //for now, we just control the Manipulator arm manually until we can detect the position of the arm
         switch(manipPosition) {
             case SHOULD_EXTEND:
-                if (isExtended) {
+                if (!isRetracted()) {
                     stopManip();
                     logstring = "Extended";
                     LOGGER.info(logstring);
@@ -99,19 +107,13 @@ public class BallRollers
                     logstring = "Extended";
                     LOGGER.info(logstring);
                     stopManip();
-                    isExtended = true;
                 }
                 break;
             case SHOULD_RETRACT:
-                if (isRetracted) {
+                if (isRetracted()) {
                     stopManip();
                     logstring = "Retracted";
                     LOGGER.info(logstring);
-                }
-                else if (board.getManipCurrent() < MAX_CURRENT_IN) {
-                    logstring = "Retracting:" + String.valueOf(board.getManipCurrent());
-                    LOGGER.info(logstring);
-                    manipMotor.set(manipMotorSpeed);
                 }
                 else {
                     logstring = "Retracted";
@@ -166,5 +168,10 @@ public class BallRollers
     }
     enum ManipIntent {
         SHOULD_EXTEND, SHOULD_RETRACT, SHOULD_STOP
+    }
+    public boolean isRetracted()
+    {
+        LOGGER.info("isRetracted=" + isRetractedSwitch.get());
+        return isRetractedSwitch.get();
     }
 }
