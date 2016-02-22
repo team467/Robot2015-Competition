@@ -361,7 +361,7 @@ public class Robot extends IterativeRobot
         rollers.runRoller(driverstation.getRollerDirection());
         SmartDashboard.putString("DB/String 8", driverstation.getManipPosition().toString());
         rollers.runManipulator(driverstation.getManipPosition());
-        tbar.launchTBar(driverstation.getTBarDirection());
+//        tbar.launchTBar(driverstation.getTBarDirection());
         
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
