@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.usfirst.frc.team467.robot.BallRollers.ManipIntent;
 import org.usfirst.frc.team467.robot.BallRollers.RollerDirection;
-import org.usfirst.frc.team467.robot.DriverStation2015.Speed;
+import org.usfirst.frc.team467.robot.DriverStation2016.Speed;
 import org.usfirst.frc.team467.robot.TBar.tBarDirection;
 
 import edu.wpi.first.wpilibj.Ultrasonic;

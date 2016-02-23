@@ -35,7 +35,7 @@ public class Robot extends IterativeRobot
     Gyro2016 gyro2016;
 
     // Robot objects
-    private DriverStation2015 driverstation;
+    private DriverStation2016 driverstation;
 
     public Driveable drive;
     private PowerDistroBoard467 board;
@@ -99,7 +99,7 @@ public class Robot extends IterativeRobot
         }
         
         // Make robot objects
-        driverstation = DriverStation2015.getInstance();
+        driverstation = DriverStation2016.getInstance();
         autonomous = Autonomous.getInstance();
         gyro = Gyro2016.getInstance();
         board = PowerDistroBoard467.getInstance();

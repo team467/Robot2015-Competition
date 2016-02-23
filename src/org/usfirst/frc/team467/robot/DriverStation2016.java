@@ -8,11 +8,11 @@ import org.usfirst.frc.team467.robot.TBar.tBarDirection;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class DriverStation2015
+public class DriverStation2016
 {
-    private static final Logger LOGGER = Logger.getLogger(DriverStation2015.class);
+    private static final Logger LOGGER = Logger.getLogger(DriverStation2016.class);
     
-    private static DriverStation2015 instance = null;
+    private static DriverStation2016 instance = null;
 
     MainJoystick467 driverJoy1 = null;
     RightJoystick467 driverJoy2 = null;
@@ -30,16 +30,6 @@ public class DriverStation2015
     
     public boolean kart = false;
     public boolean split = false;
-
-    // CAL/AUTO
-    public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
-
-    // JOYSTICK
-    public static int CHANGE_SPEED_BUTTON = ButtonPanel2015.JOY_TOP_BUTTON;
-    public static int CLAW_OPEN = ButtonPanel2015.JOY_RIGHT;
-    public static int CLAW_CLOSED = ButtonPanel2015.JOY_LEFT;
-    public static int ELEVATOR_UP = ButtonPanel2015.JOY_UP;
-    public static int ELEVATOR_DOWN = ButtonPanel2015.JOY_DOWN;
 
     // LED Ids
     public static int LED_LIFTER_TOP_STOP = 5;
@@ -71,11 +61,11 @@ public class DriverStation2015
      * 
      * @return
      */
-    public static DriverStation2015 getInstance()
+    public static DriverStation2016 getInstance()
     {
         if (instance == null)
         {
-            instance = new DriverStation2015();
+            instance = new DriverStation2016();
         }
         return instance;
     }
@@ -83,7 +73,7 @@ public class DriverStation2015
     /**
      * Private constructor
      */
-    private DriverStation2015()
+    private DriverStation2016()
     {
         makeJoysticks();
     }

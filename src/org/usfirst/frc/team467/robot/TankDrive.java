@@ -136,11 +136,11 @@ public class TankDrive implements Driveable
 //            SmartDashboard.putString("DB/String 4", "0.1");
 //        }
         
-        if (DriverStation2015.getInstance().getSlow())
+        if (DriverStation2016.getInstance().getSlow())
         {
             speed *= SPEED_SLOW_MODIFIER;
         }
-        else if (DriverStation2015.getInstance().getTurbo())
+        else if (DriverStation2016.getInstance().getTurbo())
         {
             speed *= SPEED_TURBO_MODIFIER;
         }
