@@ -9,11 +9,11 @@ public class TBar
 {
     private static final Logger LOGGER = Logger.getLogger(TBar.class);
     
-    private CANTalon tMotor = null;
+    private Talon tMotor = null;
     
     public TBar(int tMotorChannel)
     {    
-        tMotor = new CANTalon(tMotorChannel); //switch to actual port number
+        tMotor = new Talon(tMotorChannel); //switch to actual port number
     }
     
     public void stop()
@@ -26,10 +26,10 @@ public class TBar
         switch(tBarDirection)
         {
             case DOWN:
-                tMotor.set(0.1);
+                tMotor.set(0.4);
                 break;
             case UP:
-                tMotor.set(-0.1);
+                tMotor.set(-0.4);
                 break;
             case STOP:
                 stop();

@@ -70,6 +70,14 @@ public class BallRollers
     {
         manipMotor.set(-manipMotorSpeed);
     }
+    public void rollIn()
+    {
+        rollerMotor.set(-rollerInMotorSpeed);
+    }
+    public void rollOut()
+    {
+        rollerMotor.set(rollerOutMotorSpeed);
+    }
     
     public void runRoller (RollerDirection rollerDirection) {
         
@@ -81,12 +89,12 @@ public class BallRollers
                     return;
                 }
                 LOGGER.info("IN");
-                rollerMotor.set(-rollerInMotorSpeed);
+                rollIn();
                 safetyRoller.feed();
                 break;
             case OUT:
                 LOGGER.info("OUT");
-                rollerMotor.set(rollerOutMotorSpeed);
+                rollOut();
                 safetyRoller.feed();
                 break;
             case STOP:
