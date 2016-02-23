@@ -52,14 +52,6 @@ public class Gyro2016
         return getTiltAngle() <= -4.0;
     }
     
-    public boolean shouldTurnRight(double angle){
-        return (getYawAngle() < angle);
-    }
-    
-    public boolean shouldTurnLeft(double angle){
-        return (getYawAngle() > angle);
-    }
-    
     public double wrapAngle(double val)
     {
         double newVal = val % 360;

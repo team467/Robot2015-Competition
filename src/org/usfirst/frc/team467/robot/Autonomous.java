@@ -166,6 +166,14 @@ public class Autonomous
     {
         this.roller = roller;
     }
+    
+    public boolean shouldTurnRight(double angle){
+        return (gyro.getYawAngle() < angle);
+    }
+    
+    public boolean shouldTurnLeft(double angle){
+        return (gyro.getYawAngle() > angle);
+    }
 
     /**
      * Private constructor to setup the Autonomous
@@ -256,15 +264,15 @@ public class Autonomous
                         drive.arcadeDrive(0.0, -0.5);
                     });
         }
-        if (gyro.shouldTurnLeft(10)){
+        if (shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
+                    () -> gyro.isFlat() && shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
+                    () -> gyro.isFlat() && shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
@@ -275,7 +283,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (clockwise)",
-                () -> gyro.shouldTurnRight(80), 
+                () -> shouldTurnRight(80), 
                 () -> {
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -286,7 +294,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
-                () -> gyro.shouldTurnLeft(10), 
+                () -> shouldTurnLeft(10), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -297,7 +305,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.3);
                 });
         addAction("Turn (counterclockwise)",
-                () -> gyro.shouldTurnLeft(-40), 
+                () -> shouldTurnLeft(-40), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -324,7 +332,7 @@ public class Autonomous
     
     private void initSallyPort(){
         addAction("turns backwards",
-                () -> gyro.shouldTurnLeft(170),
+                () -> shouldTurnLeft(170),
                 () -> {
                     drive.turnDrive(0.5);
                     roller.runManipulator(ManipIntent.SHOULD_EXTEND);
@@ -349,7 +357,7 @@ public class Autonomous
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("Turn to the left to open the door",
-                () -> gyro.shouldTurnLeft(-60),
+                () -> shouldTurnLeft(-60),
                 () -> {
                     drive.turnDrive(0.4);
                     tbar.launchTBar(tBarDirection.DOWN);
@@ -360,7 +368,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, 0.35);
                 });
         addAction("Turn right to straighten up",
-                () -> gyro.shouldTurnRight(-10),
+                () -> shouldTurnRight(-10),
                 () -> {
                     drive.turnDrive(-0.4);
                     tbar.launchTBar(tBarDirection.UP);
@@ -378,15 +386,15 @@ public class Autonomous
                         drive.arcadeDrive(0.0, 0.5);
                     });
         }
-        if (gyro.shouldTurnLeft(10)){
+        if (shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
+                    () -> gyro.isFlat() && shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
+                    () -> gyro.isFlat() && shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
@@ -397,7 +405,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (clockwise)",
-                () -> gyro.shouldTurnRight(80), 
+                () -> shouldTurnRight(80), 
                 () -> {
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -408,7 +416,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
-                () -> gyro.shouldTurnLeft(10), 
+                () -> shouldTurnLeft(10), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -419,7 +427,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.3);
                 });
         addAction("Turn (counterclockwise)",
-                () -> gyro.shouldTurnLeft(-40), 
+                () -> shouldTurnLeft(-40), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -446,7 +454,7 @@ public class Autonomous
     
     private void initNewPortcullis(){
         addAction("turns backwards",
-                () -> gyro.shouldTurnLeft(170),
+                () -> shouldTurnLeft(170),
                 () -> {
                     drive.turnDrive(0.5);
                     roller.runManipulator(ManipIntent.SHOULD_EXTEND);
@@ -473,15 +481,15 @@ public class Autonomous
                         drive.arcadeDrive(0.0, 0.5);
                     });
         }
-        if (gyro.shouldTurnLeft(10)){
+        if (shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
+                    () -> gyro.isFlat() && shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
+                    () -> gyro.isFlat() && shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
@@ -492,7 +500,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (clockwise)",
-                () -> gyro.shouldTurnRight(80), 
+                () -> shouldTurnRight(80), 
                 () -> {
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -503,7 +511,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
-                () -> gyro.shouldTurnLeft(10), 
+                () -> shouldTurnLeft(10), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -514,7 +522,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.3);
                 });
         addAction("Turn (counterclockwise)",
-                () -> gyro.shouldTurnLeft(-40), 
+                () -> shouldTurnLeft(-40), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -546,7 +554,7 @@ public class Autonomous
         //.reset(GyroResetDirection.FACE_TOWARD);// reset to upfield
         
         addAction("turns backwards",
-                () -> gyro.shouldTurnLeft(170),
+                () -> shouldTurnLeft(170),
                 () -> {
                     drive.turnDrive(0.5);
                     roller.runManipulator(ManipIntent.SHOULD_EXTEND);
@@ -592,15 +600,15 @@ public class Autonomous
                         drive.arcadeDrive(0.0, 0.5);
                     });
         }
-        if (gyro.shouldTurnLeft(10)){
+        if (shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
+                    () -> gyro.isFlat() && shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
+                    () -> gyro.isFlat() && shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
@@ -611,7 +619,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (clockwise)",
-                () -> gyro.shouldTurnRight(80), 
+                () -> shouldTurnRight(80), 
                 () -> {
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -622,7 +630,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
-                () -> gyro.shouldTurnLeft(10), 
+                () -> shouldTurnLeft(10), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -633,7 +641,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.3);
                 });
         addAction("Turn (counterclockwise)",
-                () -> gyro.shouldTurnLeft(-40), 
+                () -> shouldTurnLeft(-40), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -661,7 +669,7 @@ public class Autonomous
     private void initDrawBridge()
     {
         addAction("turns backwards",
-                () -> gyro.shouldTurnLeft(170),
+                () -> shouldTurnLeft(170),
                 () -> {
                     drive.turnDrive(0.5);
                     roller.runManipulator(ManipIntent.SHOULD_EXTEND);
@@ -704,16 +712,16 @@ public class Autonomous
                         drive.arcadeDrive(0.0, 0.5);
                     });
         }
-        if (gyro.shouldTurnLeft(10)){
+        if (shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(10),
+                    () -> gyro.isFlat() && shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                         tbar.launchTBar(tBarDirection.UP);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(-10),
+                    () -> gyro.isFlat() && shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                         tbar.launchTBar(tBarDirection.UP);
@@ -725,7 +733,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (clockwise)",
-                () -> gyro.shouldTurnRight(80), 
+                () -> shouldTurnRight(80), 
                 () -> {
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -736,7 +744,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
-                () -> gyro.shouldTurnLeft(10), 
+                () -> shouldTurnLeft(10), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -747,7 +755,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.3);
                 });
         addAction("Turn (counterclockwise)",
-                () -> gyro.shouldTurnLeft(-40), 
+                () -> shouldTurnLeft(-40), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -775,7 +783,7 @@ public class Autonomous
     private void initChevalDeFrise()
     {
         addAction("turns backwards",
-                () -> gyro.shouldTurnLeft(170),
+                () -> shouldTurnLeft(170),
                 () -> {
                     drive.turnDrive(0.5);
                     roller.runManipulator(ManipIntent.SHOULD_RETRACT);
@@ -817,16 +825,16 @@ public class Autonomous
                         drive.arcadeDrive(0.0, 0.5);
                     });
         }
-        if (gyro.shouldTurnLeft(0)){
+        if (shouldTurnLeft(0)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnLeft(0),
+                    () -> gyro.isFlat() && shouldTurnLeft(0),
                     () -> {
                         drive.turnDrive(0.4);
                         tbar.launchTBar(tBarDirection.UP);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && gyro.shouldTurnRight(0),
+                    () -> gyro.isFlat() && shouldTurnRight(0),
                     () -> {
                         drive.turnDrive(-0.4);
                         tbar.launchTBar(tBarDirection.UP);
@@ -838,7 +846,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn 90 degrees (clockwise)",
-                () -> gyro.shouldTurnRight(80), 
+                () -> shouldTurnRight(80), 
                 () -> {
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -849,7 +857,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.3);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
-                () -> gyro.shouldTurnLeft(10), 
+                () -> shouldTurnLeft(10), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -860,7 +868,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.3);
                 });
         addAction("Turn 90 degrees (counterclockwise)",
-                () -> gyro.shouldTurnLeft(-40), 
+                () -> shouldTurnLeft(-40), 
                 () -> {
                     drive.turnDrive(0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
