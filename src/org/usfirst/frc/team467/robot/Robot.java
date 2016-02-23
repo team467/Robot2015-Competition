@@ -49,7 +49,7 @@ public class Robot extends IterativeRobot
     
 //    private Lifter lifter;
 //    private Claw claw;
-    private Ultrasonic ultrasonic;
+    private Ultrasonic2016 ultrasonic;
     private Gyro2016 gyro;
     private DigitalInput robotID;
     
@@ -110,14 +110,13 @@ public class Robot extends IterativeRobot
         tbar = new TBar(1);
         
         gyro2016 = Gyro2016.getInstance();
-        ultrasonic = new Ultrasonic(1, 0);
+        ultrasonic = new Ultrasonic2016();
         ledStrip.setMode(Mode.OFF);
         
         
         autonomous.setDrive(drive);
-        autonomous.setUltrasonic(ultrasonic);
         autonomous.setRoller(rollers);
-        
+        autonomous.setUltrasonic(ultrasonic);
         ledStrip.setMode(Mode.OFF);
         
        
