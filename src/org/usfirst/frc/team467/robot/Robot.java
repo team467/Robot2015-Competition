@@ -104,8 +104,6 @@ public class Robot extends IterativeRobot
         gyro = Gyro2016.getInstance();
         board = PowerDistroBoard467.getInstance();
         vision = VisionProcessor.getInstance();
-//        lifter = Lifter.getInstance();
-//        claw = Claw.getInstance();
         rollers = new BallRollers(3, 0);
         tbar = new TBar(1);
         
