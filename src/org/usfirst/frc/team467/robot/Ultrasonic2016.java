@@ -14,7 +14,7 @@ public class Ultrasonic2016
     public Ultrasonic2016()
     {
         frontUltra = new Ultrasonic(1, 0);
-        backUltra = new Ultrasonic(1, 0);
+        //backUltra = new Ultrasonic(1, 0);
     }
     
     public static Ultrasonic2016 getInstance()
@@ -31,9 +31,9 @@ public class Ultrasonic2016
         return frontUltra.getRangeInches();
     }
     
-    public double getBackRangeInches()
-    {
-        return backUltra.getRangeInches();
-    }    
+//    public double getBackRangeInches()
+//    {
+//        //return backUltra.getRangeInches();
+//    }    
 
 }

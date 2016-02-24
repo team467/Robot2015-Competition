@@ -2,6 +2,7 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Talon;
 
@@ -10,6 +11,8 @@ public class TBar
     private static final Logger LOGGER = Logger.getLogger(TBar.class);
     
     private Talon tMotor = null;
+    
+    public AnalogInput rotationSensor = new AnalogInput(3);
     
     public TBar(int tMotorChannel)
     {    
@@ -26,19 +29,32 @@ public class TBar
         switch(tBarDirection)
         {
             case DOWN:
-                tMotor.set(0.4);
+                LOGGER.info("want DOWN");
+                if (rotationSensor.getAverageValue() > 1600) {
+                    LOGGER.info("going down");
+                    tMotor.set(-0.4);
+                }
                 break;
             case UP:
-                tMotor.set(-0.4);
+                LOGGER.info("want UP");
+                if (rotationSensor.getAverageValue() < 1800) {
+                    LOGGER.info("going up");
+                    tMotor.set(0.4);
+                }
                 break;
             case STOP:
+                LOGGER.info("stopping");
                 stop();
-                break;
+                break;  
         }
+        LOGGER.info("Rotation Sensor: " + rotationSensor.getAverageValue());
     }
     enum tBarDirection
     {
         DOWN, UP, STOP
     }
+    //3216 is the top
+    //381 is the bottom
+    
 
 }

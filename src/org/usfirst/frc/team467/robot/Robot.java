@@ -46,16 +46,18 @@ public class Robot extends IterativeRobot
 
     private BallRollers rollers;
     private TBar tbar;
+    //private HighShooter highShooter;
     
 //    private Lifter lifter;
 //    private Claw claw;
     private Ultrasonic2016 ultrasonic;
     private Gyro2016 gyro;
+    private Infrared infra;
     private DigitalInput robotID;
     
     int session;
             
-    private LEDStrip ledStrip = new LEDStrip();
+    //private LEDStrip ledStrip = new LEDStrip();
 
     /**
      * Time in milliseconds
@@ -69,58 +71,62 @@ public class Robot extends IterativeRobot
     
     public void robotInit()
     {
-        // Initialize logging framework.
-        Logging.init(); 
-        
-        CANTalon frontleft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
-        CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
-        CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
-        CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
+        try
+        {
+            // Initialize logging framework.
+            Logging.init(); 
+            
+            CANTalon frontleft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
+            CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
+            CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
+            CANTalon backright = new CANTalon(RobotMap.BACK_RIGHT_MOTOR_CHANNEL);
 //        robotID = new DigitalInput(9);
 
-        // Robot id 0 = can tank
-        // Robot id 1 = kitbot tank
-        RobotID robotID = new DigitalInput(9).get() ? RobotID.KITBOT : RobotID.TANK2016;
-        
-        // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
+            // Robot id 0 = can tank
+            // Robot id 1 = kitbot tank
+            RobotID robotID = new DigitalInput(9).get() ? RobotID.KITBOT : RobotID.TANK2016;
+            
+            // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
 //        drive = new makeTalonTank(1, 0, 3, 2);
-        
-        if(robotID == RobotID.KITBOT)
-        {    
-            drive = TankDrive.makeTalonTank(1, 0, 2, 3, robotID);
-            LOGGER.info("Kitbot Set");
-        }
-        else if (robotID == RobotID.TANK2016)
-        {
-            //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-            drive = TankDrive.makeCANTalonTank(7, 5, 2, 6, robotID);
-            LOGGER.info("CANTalon Set");
-        }
-        
-        // Make robot objects
-        driverstation = DriverStation2015.getInstance();
-        autonomous = Autonomous.getInstance();
-        gyro = Gyro2016.getInstance();
-        board = PowerDistroBoard467.getInstance();
-        vision = VisionProcessor.getInstance();
-//        lifter = Lifter.getInstance();
-//        claw = Claw.getInstance();
-        rollers = new BallRollers(3, 0);
-        tbar = new TBar(1);
-        
-        gyro2016 = Gyro2016.getInstance();
-        ultrasonic = new Ultrasonic2016();
-        ledStrip.setMode(Mode.OFF);
-        
-        
-        autonomous.setDrive(drive);
-        autonomous.setRoller(rollers);
-        autonomous.setUltrasonic(ultrasonic);
-        ledStrip.setMode(Mode.OFF);
-        
-       
-        // Initialize the camera dashboard and launch in separate thread.
+            
+            if(robotID == RobotID.KITBOT)
+            {    
+                drive = TankDrive.makeTalonTank(1, 0, 2, 3, robotID);
+                LOGGER.info("Kitbot Set");
+            }
+            else if (robotID == RobotID.TANK2016)
+            {
+                //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+                drive = TankDrive.makeCANTalonTank(7, 5, 2, 6, robotID);
+                LOGGER.info("CANTalon Set");
+            }
+            
+            // Make robot objects
+            driverstation = DriverStation2015.getInstance();
+            autonomous = Autonomous.getInstance();
+            gyro = Gyro2016.getInstance();
+            board = PowerDistroBoard467.getInstance();
+            vision = VisionProcessor.getInstance();
+            infra = new Infrared(4);
+            gyro2016 = Gyro2016.getInstance();
+            ultrasonic = new Ultrasonic2016();
+            //ledStrip.setMode(Mode.OFF);
+            
+            rollers = new BallRollers(3, 0, infra, driverstation);
+            tbar = new TBar(1);
+            //highShooter = new HighShooter(6, 5, driverstation);
+            
+            
+            
+            
+            autonomous.setDrive(drive);
+            autonomous.setRoller(rollers);
+            autonomous.setUltrasonic(ultrasonic);
+            //ledStrip.setMode(Mode.OFF);
+            
+      
+            // Initialize the camera dashboard and launch in separate thread.
 //        cameraDashboard = CameraDashboard.getInstance();
 //        cameraDashboard.setDrive(drive);
 //        if (cameraDashboard.cameraExists()) 
@@ -128,10 +134,15 @@ public class Robot extends IterativeRobot
 //            LOGGER.debug("Camera Starting");
 //            cameraDashboard.start();
 //        }
-        
-        Calibration.init(drive);
-        
-        LOGGER.info("Initialized robot");
+            
+            Calibration.init(drive);
+            
+            LOGGER.info("Initialized robot");
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("robotInit: " , e);
+        }
     }
 
     public void disabledInit()
@@ -144,7 +155,7 @@ public class Robot extends IterativeRobot
     {
         vision.updateContours();
 //        gyro.update();
-        ledStrip.setMode(Mode.BLUE_AND_GOLD);
+        //ledStrip.setMode(Mode.BLUE_AND_GOLD);
         
 //        double angle = gyro2016.autonomous();
 //        LOGGER.debug("GYRO angle : " +  angle);
@@ -153,6 +164,7 @@ public class Robot extends IterativeRobot
 
         String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
         SmartDashboard.putString("DB/String 5", stickType);
+        //LOGGER.info("Rotation Sensor: " + tbar.rotationSensor.getAverageValue());
     }
 
     @Override
@@ -165,7 +177,7 @@ public class Robot extends IterativeRobot
     public void teleopInit()
     {
         LOGGER.info("Teleop init");
-        rollers.reset();
+        //rollers.reset();
 //        gyro2016.reset();
         
     }
@@ -206,6 +218,8 @@ public class Robot extends IterativeRobot
         vision.updateContours();
         // Read driverstation inputs
         driverstation.readInputs();
+        
+        //LOGGER.info("Detected: " + infra.getInfrared());
 
         //LOGGER.info("Distance: " + ultrasonic.getRangeInches());
 
@@ -237,13 +251,13 @@ public class Robot extends IterativeRobot
             switch (DriverStation.getInstance().getAlliance()) 
             {
                 case Red:
-                    ledStrip.setMode(Mode.PULSE_RED);
+                    //ledStrip.setMode(Mode.PULSE_RED);
                     break;
                 case Blue:
-                    ledStrip.setMode(Mode.PULSE_BLUE);
+                    //ledStrip.setMode(Mode.PULSE_BLUE);
                     break;
                 case Invalid:
-                    ledStrip.setMode(Mode.PULSE_YELLOW);
+                    //ledStrip.setMode(Mode.PULSE_YELLOW);
                     break;
             }
 //            double angle = gyro2016.autonomous();
@@ -251,11 +265,11 @@ public class Robot extends IterativeRobot
         }
         else if (time > 20)
         {
-            ledStrip.setMode(Mode.PULSE_YELLOW);
+            //ledStrip.setMode(Mode.PULSE_YELLOW);
         }
         else
         {
-            ledStrip.setMode(Mode.RAINBOW);
+            //ledStrip.setMode(Mode.RAINBOW);
         }
         
 //        LOGGER.debug("GYRO angle : " + gyro2016.autonomous());
@@ -361,6 +375,8 @@ public class Robot extends IterativeRobot
         SmartDashboard.putString("DB/String 8", driverstation.getManipPosition().toString());
         rollers.runManipulator(driverstation.getManipPosition());
         tbar.launchTBar(driverstation.getTBarDirection());
+        driverstation.setIntakeLED(infra.getInfrared());
+        //highShooter.shoot();
         
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
