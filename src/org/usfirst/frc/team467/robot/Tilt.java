@@ -7,14 +7,9 @@ public class Tilt
 {
     private Accelerometer accel;
     
-    Tilt (Accelerometer accel)
+    Tilt(Accelerometer accel)
     {
         this.accel = accel;
-    }
-    
-    Tilt ()
-    {
-        
     }
     
     public double calc(double xVal, double yVal, double zVal)

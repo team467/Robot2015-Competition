@@ -27,21 +27,31 @@ public class RobotMap
     public static final int BACK_RIGHT = 3;
 
     //
-    // PWM IDs
+    // Motor Channels
     //
 
-    // Steering motors - Talon, roboRio
+    // 2015 Swerve Steering motors - Talon, roboRio
     public static final int FRONT_LEFT_STEERING_MOTOR_CHANNEL = 0;
     public static final int FRONT_RIGHT_STEERING_MOTOR_CHANNEL = 1;
     public static final int BACK_LEFT_STEERING_MOTOR_CHANNEL = 2;
     public static final int BACK_RIGHT_STEERING_MOTOR_CHANNEL = 3;
-
+    
+    // Kitbot Motors
+    public static final int FRONT_LEFT_KITBOT = 1;
+    public static final int FRONT_RIGHT_KITBOT = 0;
+    public static final int BACK_LEFT_KITBOT = 2;
+    public static final int BACK_RIGHT_KITBOT = 3;
+    
+    // 2016 Tank Motors
+    public static final int FRONT_LEFT_2016 = 7;
+    public static final int FRONT_RIGHT_2016 = 5;
+    public static final int BACK_LEFT_2016 = 2;
+    public static final int BACK_RIGHT_2016 = 6;
+    
     // Game Piece Motor IDs - PWMTalon, RoboRio
-    public static final int LIFTER_MOTOR_CHANNEL_BOTTOM = 4; // Lifter not used
-    public static final int LIFTER_MOTOR_CHANNEL_TOP = 6; // Lifter not used
     public static final int TBAR_MOTOR_CHANNEL = 5;
-    public static final int CLAW_MOTOR_CHANNEL = 0; //Claw not used
-
+    public static final int MANIPULATOR_MOTOR_CHANNEL = 4;
+    public static final int ROLLER_MOTOR_CHANNEL = 3;
     //
     // CAN IDs
     //

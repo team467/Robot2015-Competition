@@ -90,11 +90,11 @@ public class VisionProcessor
             setupTables();
             double[] centerXs = contourTable.getNumberArray("centerX", (double[])null);
 //            LOGGER.debug("Got centerXs: " + centerXs);
-//            double[] centerYs = table.getNumberArray("centerY", (double[])null);
+//            double[] centerYs = contourTable.getNumberArray("centerY", (double[])null);
 //            LOGGER.debug("Got centerYs: " + centerYs);
-//            double[] areas    = table.getNumberArray("area",    (double[])null);
+//            double[] areas    = contourTable.getNumberArray("area",    (double[])null);
 //            LOGGER.debug("Got areas: " + areas);
-//            double[] heights  = table.getNumberArray("height",  (double[])null);
+//            double[] heights  = contourTable.getNumberArray("height",  (double[])null);
 //            LOGGER.debug("Got heights: " + heights);
             double[] widths   = contourTable.getNumberArray("width",   (double[])null);
 //            LOGGER.debug("Got widths: " + widths);

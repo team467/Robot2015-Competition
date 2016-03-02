@@ -904,15 +904,15 @@ public class Autonomous
                     seekWidestContour(marginOfError);
                 });
         addAction("extend ball roller",
-                () -> seekAngle(marginOfError),
+                () -> aim(marginOfError),
                 () -> {
                     roller.runManipulator(ManipIntent.SHOULD_EXTEND);
                 });
         addAction("Shoot the high goal",
-                () -> seekAngle(marginOfError),
+                () -> aim(marginOfError),
                 ()-> {
                     roller.in(1.0);
-                    
+                    // TODO Shoot
                 });
         addAction("Stop driving",
                 () -> forever(),
@@ -974,7 +974,7 @@ public class Autonomous
 
     private void seekWidestContour(int marginOfError)
     {
-        final boolean targetIsCentered = seekAngle(marginOfError);
+        final boolean targetIsCentered = aim(marginOfError);
         SmartDashboard.putString("DB/String 8", "Centered: " + targetIsCentered);
         if (targetIsCentered)
         {
@@ -987,7 +987,7 @@ public class Autonomous
      * @param marginOfError
      * @return if robot successfully centered on target
      */
-    private boolean seekAngle(int marginOfError)
+    private boolean aim(int marginOfError)
     {
         if (!vision.isEnabled())
         {

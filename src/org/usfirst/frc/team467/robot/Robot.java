@@ -88,13 +88,21 @@ public class Robot extends IterativeRobot
         
         if(robotID == RobotID.KITBOT)
         {    
-            drive = TankDrive.makeTalonTank(1, 0, 2, 3, robotID);
+            drive = TankDrive.makeTalonTank(
+                    RobotMap.FRONT_LEFT_KITBOT,
+                    RobotMap.FRONT_RIGHT_KITBOT,
+                    RobotMap.BACK_LEFT_KITBOT,
+                    RobotMap.BACK_RIGHT_KITBOT);
             LOGGER.info("Kitbot Set");
         }
         else if (robotID == RobotID.TANK2016)
         {
             //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-            drive = TankDrive.makeCANTalonTank(7, 5, 2, 6, robotID);
+            drive = TankDrive.makeCANTalonTank(
+                    RobotMap.FRONT_LEFT_2016,
+                    RobotMap.FRONT_RIGHT_2016,
+                    RobotMap.BACK_LEFT_2016,
+                    RobotMap.BACK_RIGHT_2016);
             LOGGER.info("CANTalon Set");
         }
         
@@ -104,10 +112,8 @@ public class Robot extends IterativeRobot
         gyro = Gyro2016.getInstance();
         board = PowerDistroBoard467.getInstance();
         vision = VisionProcessor.getInstance();
-//        lifter = Lifter.getInstance();
-//        claw = Claw.getInstance();
-        rollers = new BallRollers(3, 0);
-        tbar = new TBar(1);
+        rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL);
+        tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
         
         gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic2016();
