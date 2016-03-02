@@ -34,6 +34,6 @@ public class Ultrasonic2016
     public double getBackRangeInches()
     {
         return backUltra.getRangeInches();
-    }    
+    }
 
 }

@@ -9,6 +9,7 @@ public enum DriveMode
     STRAFE_LEFT, 	            // Drive left Slowly
     STRAFE_RIGHT,               // Drive Right Slowly
     STRAFE_BACK,                // Drive Backwards Slowly
+    ALIGN,
     REVOLVE_LARGE_LEFT,	        // Revolve Drive (rotate left around a center outside robot)
     REVOLVE_LARGE_RIGHT,        // Revolve Drive (rotate right around a center outside robot)
     REVOLVE_SMALL_LEFT,         // Revolve Drive (rotate left around a center near robot)

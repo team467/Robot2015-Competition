@@ -8,6 +8,7 @@ public interface Driveable
     void individualSteeringDrive(double angle, int steeringId);
     void cartDrive(MainJoystick467 joystick);
     void splitDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight);
+    void alignToAngle(double angle);
     void stop();
     
     void unwind();

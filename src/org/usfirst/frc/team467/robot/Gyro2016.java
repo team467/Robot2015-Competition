@@ -1,7 +1,11 @@
 package org.usfirst.frc.team467.robot;
-import org.apache.log4j.Logger;
 
+import org.apache.log4j.Logger;
 import edu.wpi.first.wpilibj.AnalogGyro;
+
+/**
+ * Measures in degrees
+ */
 public class Gyro2016
 {
     private static final Logger LOGGER = Logger.getLogger(Gyro2016.class);
@@ -10,13 +14,14 @@ public class Gyro2016
     private AnalogGyro tiltGyro = null;  
     private AnalogGyro yawGyro = null;
     
-    
-    public Gyro2016(){
+    private Gyro2016()
+    {
         tiltGyro = new AnalogGyro(1);
         yawGyro = new AnalogGyro(0);
     }
     
-    public static Gyro2016 getInstance(){
+    public static Gyro2016 getInstance()
+    {
         LOGGER.debug("getting instance of Gyro2016s");
         if(instance == null)
         {
@@ -27,28 +32,34 @@ public class Gyro2016
         return instance;
     }
    
-    public double getTiltAngle(){
+    public double getTiltAngle()
+    {
        return tiltGyro.getAngle();
     }
     
-    public double getYawAngle(){
+    public double getYawAngle()
+    {
        return yawGyro.getAngle();
     }
     
-    public void reset(){
+    public void reset()
+    {
         tiltGyro.reset();
         yawGyro.reset();
     }
     
-    public boolean isUp(){
+    public boolean isUp()
+    {
         return getTiltAngle() >= 4.0;
     }
     
-    public boolean isFlat(){
+    public boolean isFlat()
+    {
         return Math.abs(getTiltAngle()) <= 4.0;
     }
     
-    public boolean isDown(){
+    public boolean isDown()
+    {
         return getTiltAngle() <= -4.0;
     }
     

@@ -578,6 +578,17 @@ public class SwerveDrive implements Driveable
         
     }
 
+    @Override
+    public void alignToAngle(double angle)
+    {
+        final double minTurnSpeed = 0.3; // Double.parseDouble(SmartDashboard.getString("DB/String 3", "0.0"));
+        final double maxTurnSpeed = 0.45; // Double.parseDouble(SmartDashboard.getString("DB/String 4", "0.0"));
+        final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
+        final double delta = Math.abs(angle - gyro.getYawAngle());
+        
+        int direction = angle > gyro.getYawAngle() ? -1 : 1;
+        final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/gyro.getYawAngle()));
+    }
 }
 
 class WheelCorrection

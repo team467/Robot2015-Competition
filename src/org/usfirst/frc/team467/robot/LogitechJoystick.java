@@ -102,7 +102,7 @@ public class LogitechJoystick implements MainJoystick467, RightJoystick467
      * @see org.usfirst.frc.team467.robot.Joystick467#getPOV()
      */
     @Override
-    public Direction getStrafeDirection()
+    public Direction getPOV()
     {
         for (Direction dir : Direction.values())
         {

@@ -106,7 +106,7 @@ public class XBoxJoystickMain implements MainJoystick467
     }
 
     @Override
-    public Direction getStrafeDirection()
+    public Direction getPOV()
     {
         for (Direction dir : Direction.values())
         {

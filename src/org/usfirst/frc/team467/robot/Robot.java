@@ -31,8 +31,6 @@ public class Robot extends IterativeRobot
     private static final Logger LOGGER = Logger.getLogger(Robot.class);
 
     private static final double MIN_DRIVE_SPEED = 0.1;
-        
-    Gyro2016 gyro2016;
 
     // Robot objects
     private DriverStation2016 driverstation;
@@ -96,12 +94,10 @@ public class Robot extends IterativeRobot
             //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
             drive = TankDrive.makeCANTalonTank(7, 5, 2, 6, robotID);
             LOGGER.info("CANTalon Set");
-        }
-        
+        }        
         // Make robot objects
         driverstation = DriverStation2016.getInstance();
         autonomous = Autonomous.getInstance();
-        gyro = Gyro2016.getInstance();
         board = PowerDistroBoard467.getInstance();
         vision = VisionProcessor.getInstance();
 //        lifter = Lifter.getInstance();
@@ -109,7 +105,8 @@ public class Robot extends IterativeRobot
         rollers = new BallRollers(3, 0);
         tbar = new TBar(1);
         
-        gyro2016 = Gyro2016.getInstance();
+        gyro = Gyro2016.getInstance();
+        gyro.reset();
         ultrasonic = new Ultrasonic2016();
         ledStrip.setMode(Mode.OFF);
         
@@ -137,7 +134,7 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
         LOGGER.info("Robot disabled");
-        gyro2016.reset();
+        gyro.reset();
     }
 
     public void disabledPeriodic()
@@ -160,13 +157,14 @@ public class Robot extends IterativeRobot
     {
         LOGGER.info("Autonomous init");
         autonomous.initAutonomous();
+        gyro.reset();
     }
 
     public void teleopInit()
     {
         LOGGER.info("Teleop init");
         rollers.reset();
-//        gyro2016.reset();
+        gyro.reset();
         
     }
 
@@ -318,7 +316,9 @@ public class Robot extends IterativeRobot
             case STRAFE_BACK:
                 drive.strafeDrive(Direction.BACK);
                 break;
-                
+            case ALIGN:
+                drive.alignToAngle(driverstation.getDriveJoystick1().getPOV().angleDeg);
+                break;
             case TURN:
                 drive.turnDrive(-driverstation.getDriveJoystick1().getTurn()/2);
                 break;

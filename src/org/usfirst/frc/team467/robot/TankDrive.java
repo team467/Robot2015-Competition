@@ -26,6 +26,8 @@ public class TankDrive implements Driveable
     private MotorSafetyHelper BLsafety = null;
     private MotorSafetyHelper BRsafety = null;
     
+    private Gyro2016 gyro;
+    
     private double cartSpeed;
     private double ACCELERATION = 0.1;
     private final double SPEED_SLOW_MODIFIER = 0.7;
@@ -46,6 +48,8 @@ public class TankDrive implements Driveable
         FRsafety = new MotorSafetyHelper((MotorSafety)fr);
         BLsafety = new MotorSafetyHelper((MotorSafety)bl);
         BRsafety = new MotorSafetyHelper((MotorSafety)br);
+        
+        gyro = Gyro2016.getInstance();
     }
     
     public static TankDrive makeTalonTank(int fl, int fr, int bl, int br, RobotID id)
@@ -375,4 +379,18 @@ public class TankDrive implements Driveable
         arcadeDrive(joystickRight.getTankTurn(), joystickLeft.getTankSpeed());
     }
 
+    @Override
+    public void alignToAngle(double angle)
+    {
+        final double gyroAngle = gyro.wrapAngle(gyro.getYawAngle());
+        final double minTurnSpeed = 0.3; // Double.parseDouble(SmartDashboard.getString("DB/String 3", "0.0"));
+        final double maxTurnSpeed = 0.6; // Double.parseDouble(SmartDashboard.getString("DB/String 4", "0.0"));
+        final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
+        final double delta = Math.abs(angle - gyroAngle);
+        
+        int direction = angle > gyro.getYawAngle() ? -1 : 1;
+        final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/gyroAngle));
+        
+        turnDrive(turnSpeed);
+    }
 }

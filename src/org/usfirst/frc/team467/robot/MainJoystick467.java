@@ -61,9 +61,9 @@ public interface MainJoystick467
 
     /**
      * 
-     * @return the angle of the POV in degrees, or -1 if the POV is not pressed.
+     * @return the direction of the POV, or -1 if the POV is not pressed.
      */
-    Direction getStrafeDirection();
+    Direction getPOV();
 
     /**
      * 

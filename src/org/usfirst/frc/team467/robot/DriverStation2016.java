@@ -309,7 +309,7 @@ public class DriverStation2016
     public DriveMode getDriveMode()
     {
         boolean fieldAligned = getDriveJoystick1().getFieldAligned();
-        Direction strafe = getDriveJoystick1().getStrafeDirection();
+        Direction pov = getDriveJoystick1().getPOV();
 
         DriveMode drivemode = DriveMode.ARCADE_NO_FA;  // default is regular crab drive
         
@@ -323,22 +323,16 @@ public class DriverStation2016
             drivemode = DriveMode.TURN;
         }
         
-        switch (strafe)
+        switch (pov)
         {
             case FRONT:
-                drivemode = DriveMode.STRAFE_FRONT;
-                break;
             case LEFT:
-                drivemode = DriveMode.STRAFE_LEFT;
-                break;
             case BACK:
-                drivemode = DriveMode.STRAFE_BACK;
-                break;
             case RIGHT:
-                drivemode = DriveMode.STRAFE_RIGHT;
+                drivemode = DriveMode.ALIGN;
                 break;
             default:
-                // Eat default, nothing happens here
+                // Use other drivemode
                 break;
         }
         
