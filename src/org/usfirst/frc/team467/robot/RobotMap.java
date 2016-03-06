@@ -52,6 +52,9 @@ public class RobotMap
     public static final int TBAR_MOTOR_CHANNEL = 5;
     public static final int MANIPULATOR_MOTOR_CHANNEL = 4;
     public static final int ROLLER_MOTOR_CHANNEL = 3;
+    public static final int LEFT_SHOOTER_MOTOR_CHANNEL = 0; //TODO
+    public static final int RIGHT_SHOOTER_MOTOR_CHANNEL = 0; //TODO
+    
     //
     // CAN IDs
     //

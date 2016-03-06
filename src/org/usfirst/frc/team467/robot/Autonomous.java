@@ -1,6 +1,5 @@
 package org.usfirst.frc.team467.robot;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,12 +21,12 @@ public class Autonomous
 
     private Gyro2016 gyro = null;    
     private Driveable drive = null;
-    private VisionProcessor vision = null;
     private Ultrasonic2016 ultrasonic = null;
     
     private TBar tbar = null;
 
-    BallRollers roller = null;
+    private BallRollers roller = null;
+    private Shooter467 shooter = null;
     
     long actionStartTimeMS = -1;
 
@@ -104,26 +103,7 @@ public class Autonomous
     
     private boolean whileWidestNotCentered(int marginOfError)
     {
-        if (!vision.isEnabled())
-        {
-            return true;
-        }
-            
-        try
-        {
-            List<VisionProcessor.Contour> contours = vision.getContours();
-            VisionProcessor.Contour contour;
-            contour = Collections.max(contours, new VisionProcessor.WidthComp());
-            final double centerX = contour.getCenterX();
-            final double delta = Math.abs(centerX - vision.getHorizontalCenter());
-            LOGGER.debug("untilCentered centerY=" + centerX + " delta=" + delta);
-            return delta > marginOfError;
-        }
-        catch (Exception e)
-        {
-            LOGGER.info("Missed contour: " + e);
-            return true;
-        }
+        return !shooter.aim(marginOfError);
     }
     
     private void resetActionStartTime()
@@ -147,7 +127,7 @@ public class Autonomous
     {
         if (autonomous == null)
         {
-            autonomous = new Autonomous(VisionProcessor.getInstance(), Gyro2016.getInstance());
+            autonomous = new Autonomous(Gyro2016.getInstance());
         }
         return autonomous;
     }
@@ -167,6 +147,11 @@ public class Autonomous
         this.roller = roller;
     }
     
+    public void setShooter(Shooter467 shooter)
+    {
+        this.shooter = shooter;
+    }
+    
     public boolean shouldTurnRight(double angle){
         return (gyro.getYawAngle() < angle);
     }
@@ -179,10 +164,9 @@ public class Autonomous
      * Private constructor to setup the Autonomous
      * @param gyro2 
      */
-    private Autonomous(VisionProcessor vision, Gyro2016 gyro)
+    private Autonomous(Gyro2016 gyro)
     {
         // TODO Change drive, claw, and lifter to generics implementing respective interfaces
-        this.vision = vision;
         this.gyro = gyro;
     }
 
@@ -904,12 +888,12 @@ public class Autonomous
                     seekWidestContour(marginOfError);
                 });
         addAction("extend ball roller",
-                () -> aim(marginOfError),
+                () -> shooter.aim(marginOfError),
                 () -> {
                     roller.runManipulator(ManipIntent.SHOULD_EXTEND);
                 });
         addAction("Shoot the high goal",
-                () -> aim(marginOfError),
+                () -> shooter.aim(marginOfError),
                 ()-> {
                     roller.in(1.0);
                     // TODO Shoot
@@ -974,63 +958,12 @@ public class Autonomous
 
     private void seekWidestContour(int marginOfError)
     {
-        final boolean targetIsCentered = aim(marginOfError);
+        final boolean targetIsCentered = shooter.aim(marginOfError);
         SmartDashboard.putString("DB/String 8", "Centered: " + targetIsCentered);
         if (targetIsCentered)
         {
             approach(40);
         }
-    }
-    
-    /**
-     * 
-     * @param marginOfError
-     * @return if robot successfully centered on target
-     */
-    private boolean aim(int marginOfError)
-    {
-        if (!vision.isEnabled())
-        {
-            drive.stop();
-            return false;
-        }
-        
-//        final double minTurnSpeed = Double.parseDouble(SmartDashboard.getString("DB/String 3", "0.0"));
-//        final double maxTurnSpeed = Double.parseDouble(SmartDashboard.getString("DB/String 4", "0.0"));
-        final double minTurnSpeed = 0.3; // Double.parseDouble(SmartDashboard.getString("DB/String 3", "0.0"));
-        final double maxTurnSpeed = 0.45; // Double.parseDouble(SmartDashboard.getString("DB/String 4", "0.0"));
-        final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
-        final double horizontalCenter = vision.getHorizontalCenter();
-        
-        LOGGER.debug("start seekWidestContour() minTurnSpeed=" + minTurnSpeed + " maxTurnSpeed=" + maxTurnSpeed);
-        List<VisionProcessor.Contour> contours = vision.getContours();
-        LOGGER.debug("Found " + contours.size() + " contours");
-        
-        if (contours.size() == 0)
-        {
-            // Still haven't found what I'm looking for
-            drive.stop();
-            return false;
-        }
-        // Find the widest contour
-        VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
-        final double centerX = widest.getCenterX();
-        final double delta = Math.abs(centerX - horizontalCenter);
-        LOGGER.debug("Found widest contour, centerX=" + centerX + " delta=" + delta);
-        if (delta < marginOfError)
-        {
-            // Found target
-            return true;
-        }
-//        if (widest.getCenterX() - vision.getHorizontalCenter()) 
-        int direction = widest.getCenterX() > horizontalCenter ? -1 : 1;
-        final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/horizontalCenter));
-        drive.turnDrive(turnSpeed);
-        LOGGER.info("Turned with turnSpeed " + turnSpeed);
-        LOGGER.debug("end seekWidestContour()");
-        
-        // Target seen but not centered
-        return false;
     }
     
     /**
