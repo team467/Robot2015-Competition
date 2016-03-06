@@ -46,7 +46,7 @@ public class Robot extends IterativeRobot
 
     private BallRollers rollers;
     private TBar tbar;
-    //private HighShooter highShooter;
+    private HighShooter highShooter;
     
 //    private Lifter lifter;
 //    private Claw claw;
@@ -89,15 +89,8 @@ public class Robot extends IterativeRobot
             // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
 //        drive = new makeTalonTank(1, 0, 3, 2);
-        
-        gyro2016 = Gyro2016.getInstance();
-        ultrasonic = new Ultrasonic2016();
         //ledStrip.setMode(Mode.OFF);
         
-        
-        autonomous.setDrive(drive);
-        autonomous.setRoller(rollers);
-        autonomous.setUltrasonic(ultrasonic);
         //ledStrip.setMode(Mode.OFF);
         
        
@@ -129,7 +122,7 @@ public class Robot extends IterativeRobot
             
             rollers = new BallRollers(3, 0, infra, driverstation);
             tbar = new TBar(1);
-            //highShooter = new HighShooter(6, 5, driverstation);
+            highShooter = new HighShooter(2, 3, driverstation);
             
             
             
@@ -390,7 +383,7 @@ public class Robot extends IterativeRobot
         rollers.runManipulator(driverstation.getManipPosition());
         tbar.launchTBar(driverstation.getTBarDirection());
         driverstation.setIntakeLED(infra.getInfrared());
-        //highShooter.shoot();
+        highShooter.shoot();
         
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());

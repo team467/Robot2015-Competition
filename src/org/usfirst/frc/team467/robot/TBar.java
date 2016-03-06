@@ -16,9 +16,12 @@ public class TBar
     
     private PowerDistroBoard467 board = null;
     
+    int MAX_CURRENT = 0;
+    
     public TBar(int tMotorChannel)
     {    
         tMotor = new Talon(tMotorChannel); //switch to actual port number
+        board = PowerDistroBoard467.getInstance();
     }
     
     public void stop()
@@ -31,12 +34,13 @@ public class TBar
 //        if (board.getTBarCurrent() > MAX_CURRENT) {
 //          tBarDirection = tBarDirection.STOP;
 //        }
+        LOGGER.info(board.getTBarCurrent());
         
         switch(tBarDirection)
         {       
             case DOWN:
                 LOGGER.info("want DOWN");
-                if (rotationSensor.getAverageValue() > 1600) {
+                if (rotationSensor.getAverageValue() > 581) {
                     LOGGER.info("going down");
                     tMotor.set(-0.4);
                 }
@@ -46,7 +50,7 @@ public class TBar
                 break;
             case UP:
                 LOGGER.info("want UP");
-                if (rotationSensor.getAverageValue() < 1800) {
+                if (rotationSensor.getAverageValue() < 3016) {
                     LOGGER.info("going up");
                     tMotor.set(0.4);
                 }
@@ -55,7 +59,7 @@ public class TBar
                 }
                 break;
             case STOP:
-                LOGGER.info("stopping");
+                //LOGGER.info("stopping");
                 stop();
                 break;  
         }

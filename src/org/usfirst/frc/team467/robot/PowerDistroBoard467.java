@@ -1,9 +1,13 @@
 package org.usfirst.frc.team467.robot;
 
+import org.apache.log4j.Logger;
+
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class PowerDistroBoard467
 {
+    private static final Logger LOGGER = Logger.getLogger(PowerDistroBoard467.class);
+
     private static PowerDistroBoard467 board = null;
 
     private PowerDistributionPanel pdp = null;
@@ -12,7 +16,7 @@ public class PowerDistroBoard467
     private RollingAverage lifterAverageCurrentBottom = new RollingAverage(3);
     private RollingAverage lifterAverageCurrentTop = new RollingAverage(3);
     private RollingAverage manipAverageCurrent = new RollingAverage(5);
-    // private RollingAverage tBarAverageCurrent = new RollingAverage(5);
+    private RollingAverage tBarAverageCurrent = new RollingAverage(5);
 
     /**
      * Gets the singleton instance of the board.
@@ -51,8 +55,11 @@ public class PowerDistroBoard467
         lifterAverageCurrentBottom.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_BOTTOM));
         lifterAverageCurrentTop.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_TOP));
         clawAverageCurrent.add(getCurrent(RobotMap.CLAW_MOTOR_CHANNEL));
-        manipAverageCurrent.add(getCurrent(4));
-        //tBarAverageCurrent.add(getCurrent(4));
+        manipAverageCurrent.add(getCurrent(11));
+        tBarAverageCurrent.add(getCurrent(3));
+
+        LOGGER.info("manipAvgCurrent=" + manipAverageCurrent.getAverage()
+            + " tBarAverageCurrent=" + tBarAverageCurrent.getAverage());
     }
 
     /**
@@ -86,10 +93,10 @@ public class PowerDistroBoard467
         return manipAverageCurrent.getAverage();
     }
     
-//    public double getTBarCurrent()
-//    {
-//        return tBarAverageCurrent.getAverage();
-//    }
+    public double getTBarCurrent()
+    {
+        return tBarAverageCurrent.getAverage();
+    }
 
     @Override
     public String toString()
