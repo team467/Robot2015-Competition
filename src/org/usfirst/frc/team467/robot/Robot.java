@@ -89,38 +89,16 @@ public class Robot extends IterativeRobot
             // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
 //        drive = new makeTalonTank(1, 0, 3, 2);
-<<<<<<< HEAD
-        
-        if(robotID == RobotID.KITBOT)
-        {    
-            drive = TankDrive.makeTalonTank(1, 0, 2, 3, robotID);
-            LOGGER.info("Kitbot Set");
-        }
-        else if (robotID == RobotID.TANK2016)
-        {
-            //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-            drive = TankDrive.makeCANTalonTank(7, 5, 2, 6, robotID);
-            LOGGER.info("CANTalon Set");
-        }
-        
-        // Make robot objects
-        driverstation = DriverStation2015.getInstance();
-        autonomous = Autonomous.getInstance();
-        gyro = Gyro2016.getInstance();
-        board = PowerDistroBoard467.getInstance();
-        vision = VisionProcessor.getInstance();
-        rollers = new BallRollers(3, 0);
-        tbar = new TBar(1);
         
         gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic2016();
-        ledStrip.setMode(Mode.OFF);
+        //ledStrip.setMode(Mode.OFF);
         
         
         autonomous.setDrive(drive);
         autonomous.setRoller(rollers);
         autonomous.setUltrasonic(ultrasonic);
-        ledStrip.setMode(Mode.OFF);
+        //ledStrip.setMode(Mode.OFF);
         
        
         // Initialize the camera dashboard and launch in separate thread.
@@ -163,7 +141,6 @@ public class Robot extends IterativeRobot
             
       
             // Initialize the camera dashboard and launch in separate thread.
->>>>>>> 7f03b2e6395e2625b9c2d9a5d8a47bee6594f3f4
 //        cameraDashboard = CameraDashboard.getInstance();
 //        cameraDashboard.setDrive(drive);
 //        if (cameraDashboard.cameraExists()) 
