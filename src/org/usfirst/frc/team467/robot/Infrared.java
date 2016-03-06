@@ -1,14 +1,19 @@
 package org.usfirst.frc.team467.robot;
 
-import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Infrared
 {
-    AnalogInput infrared = new AnalogInput(0);
+    DigitalInput infrared;
     
-    public double newBall()
+    public Infrared(int port)
     {
-        return infrared.getAverageValue();
+        infrared = new DigitalInput(port); 
+    }
+    
+    public boolean getInfrared()
+    {
+        return infrared.get();
     }
 
 }

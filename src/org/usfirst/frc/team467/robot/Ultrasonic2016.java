@@ -28,5 +28,4 @@ public class Ultrasonic2016
     {
         return frontUltra.getRangeInches();
     }
-
 }

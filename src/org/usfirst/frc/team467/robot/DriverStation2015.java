@@ -61,6 +61,9 @@ public class DriverStation2015
     public static int TBAR_UP = ButtonPanel2016.SWITCH_UP;
     public static int TBAR_DOWN = ButtonPanel2016.SWITCH_DOWN;
     
+    //LED
+    public static int INTAKE_LED = 2;
+    
     enum Speed 
     {
         SLOW, FAST
@@ -469,6 +472,16 @@ public class DriverStation2015
         else {
             return RollerDirection.STOP;
         }
+        
+    }
+    public boolean highShooterReady()
+    {
+        if (buttonPanel.isButtonDown(HIGH_SHOOTER)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     public ManipIntent getManipPosition()
     {
@@ -482,6 +495,10 @@ public class DriverStation2015
             //this should never happen ;P
             return ManipIntent.SHOULD_STOP;
         }
+    }
+    public void setIntakeLED(boolean state)
+    {
+        buttonPanel.setLED(INTAKE_LED, state);
     }
 //    /**
 //     * Gets the lifter direction for lifting.

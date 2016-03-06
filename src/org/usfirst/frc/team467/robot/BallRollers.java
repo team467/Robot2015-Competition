@@ -1,6 +1,7 @@
 package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
@@ -16,7 +17,12 @@ public class BallRollers
     private final MotorSafetyHelper safetyRoller;
     private final MotorSafetyHelper safetyManip;
     private final double rollerOutMotorSpeed = 1;
-    private final double rollerInMotorSpeed = 0.7;
+    private final double rollerInMotorSpeed = 1;
+    
+    private DriverStation2015 driverstation;
+    
+    boolean prepare = false;
+    private final Infrared infra;
     
     private DigitalInput isRetractedSwitch;
     
@@ -31,19 +37,21 @@ public class BallRollers
 
     // TODO Sensor
     
-    public BallRollers(int motorChannelRoller, int motorChannelManip)
+    public BallRollers(int motorChannelRoller, int motorChannelManip, Infrared infra,  DriverStation2015 driverstation)
     {
         board = PowerDistroBoard467.getInstance();
         rollerMotor = new CANTalon(motorChannelRoller);
         manipMotor = new Talon(motorChannelManip);
         safetyRoller = new MotorSafetyHelper(rollerMotor);
         safetyManip = new MotorSafetyHelper(manipMotor);
+        this.infra = infra;
+        this.driverstation = driverstation;
         try {
             isRetractedSwitch = new DigitalInput(2);
         } catch (Exception e) {
             LOGGER.error("Cannot initialize retracted switch", e);
         }
-        reset();
+        //reset();
     }
     
     public void reset()
@@ -83,14 +91,15 @@ public class BallRollers
         
         switch(rollerDirection) {
             case IN:
-                if (isLoaded())
+                if (!isLoaded() || driverstation.highShooterReady())
                 {
-                    stopRoller();
-                    return;
+                    LOGGER.info("IN");
+                    rollIn();
+                    safetyRoller.feed();
                 }
-                LOGGER.info("IN");
-                rollIn();
-                safetyRoller.feed();
+                else {
+                    stopRoller();
+                }
                 break;
             case OUT:
                 LOGGER.info("OUT");
@@ -192,10 +201,10 @@ public class BallRollers
     private boolean isLoaded()
     {
         // TODO Work with sensor
-        return false;
+        return !infra.getInfrared();
     }
     enum RollerDirection {
-        IN, OUT, STOP
+        IN, OUT, PREPARE, STOP
     }
     enum ManipIntent {
         SHOULD_EXTEND, SHOULD_RETRACT, SHOULD_STOP
