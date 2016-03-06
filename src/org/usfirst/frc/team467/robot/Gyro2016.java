@@ -52,9 +52,4 @@ public class Gyro2016
         return getTiltAngle() <= -4.0;
     }
     
-    public double wrapAngle(double val)
-    {
-        double newVal = val % 360;
-        return (newVal < 0) ? 360 + newVal : newVal;
-    }
 }

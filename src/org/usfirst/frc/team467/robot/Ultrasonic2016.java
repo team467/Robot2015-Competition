@@ -24,7 +24,7 @@ public class Ultrasonic2016
         return instance;
     }
     
-    public double getFrontRangeInches()
+    public double getRangeInches()
     {
         return frontUltra.getRangeInches();
     }
