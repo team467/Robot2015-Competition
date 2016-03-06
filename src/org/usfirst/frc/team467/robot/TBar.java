@@ -14,6 +14,8 @@ public class TBar
     
     public AnalogInput rotationSensor = new AnalogInput(3);
     
+    private PowerDistroBoard467 board = null;
+    
     public TBar(int tMotorChannel)
     {    
         tMotor = new Talon(tMotorChannel); //switch to actual port number
@@ -26,13 +28,20 @@ public class TBar
     
     public void launchTBar(tBarDirection tBarDirection)
     {
+//        if (board.getTBarCurrent() > MAX_CURRENT) {
+//          tBarDirection = tBarDirection.STOP;
+//        }
+        
         switch(tBarDirection)
-        {
+        {       
             case DOWN:
                 LOGGER.info("want DOWN");
                 if (rotationSensor.getAverageValue() > 1600) {
                     LOGGER.info("going down");
                     tMotor.set(-0.4);
+                }
+                else {
+                    stop();
                 }
                 break;
             case UP:
@@ -40,6 +49,9 @@ public class TBar
                 if (rotationSensor.getAverageValue() < 1800) {
                     LOGGER.info("going up");
                     tMotor.set(0.4);
+                }
+                else {
+                    stop();
                 }
                 break;
             case STOP:

@@ -9,6 +9,7 @@ public class PowerDistroBoard467
     private PowerDistributionPanel pdp = null;
     
     private RollingAverage manipAverageCurrent = new RollingAverage(5);
+    // private RollingAverage tBarAverageCurrent = new RollingAverage(5);
 
     /**
      * Gets the singleton instance of the board.
@@ -45,6 +46,7 @@ public class PowerDistroBoard467
     public void update()
     {
         manipAverageCurrent.add(getCurrent(RobotMap.MANIPULATOR_MOTOR_CHANNEL));
+        //tBarAverageCurrent.add(getCurrent(4));
     }
 
     /**
@@ -62,6 +64,11 @@ public class PowerDistroBoard467
     {
         return manipAverageCurrent.getAverage();
     }
+    
+//    public double getTBarCurrent()
+//    {
+//        return tBarAverageCurrent.getAverage();
+//    }
 
     @Override
     public String toString()
