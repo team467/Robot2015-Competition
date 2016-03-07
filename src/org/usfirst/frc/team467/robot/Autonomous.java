@@ -24,7 +24,6 @@ public class Autonomous
     private Ultrasonic2016 ultrasonic = null;
     
     private TBar tbar = null;
-
     private BallRollers roller = null;
     private Shooter467 shooter = null;
     
@@ -146,12 +145,12 @@ public class Autonomous
     {
         this.roller = roller;
     }
-    
+
     public void setShooter(Shooter467 shooter)
     {
         this.shooter = shooter;
     }
-    
+
     public boolean shouldTurnRight(double angle){
         return (gyro.getYawAngle() < angle);
     }
@@ -322,24 +321,24 @@ public class Autonomous
                     roller.runManipulator(ManipIntent.SHOULD_EXTEND);
                     tbar.launchTBar(tBarDirection.UP);
                 });
-//        addAction("Move while gyro is flat, up, or down",
-//                () -> (gyro.isFlat() || gyro.isUp() || gyro.isDown()) && ultrasonic.getBackRangeInches() > 12,
-//                () -> {
-//                    LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-//                    drive.arcadeDrive(0.0, 0.7);
-//                });
-//        addAction("Move TBar arm down while the robot is 12 inches from the port",
-//                () -> ultrasonic.getBackRangeInches() <= 12,
-//                () -> {
-//                    drive.stop();
-//                    tbar.launchTBar(tBarDirection.DOWN);
-//                });
-//        addAction("Move 3 feet away from the port and keep the bar down",
-//                () -> ultrasonic.getBackRangeInches() < 36,
-//                () -> {
-//                    drive.arcadeDrive(0.0, -0.4);
-//                    tbar.launchTBar(tBarDirection.DOWN);
-//                });
+        addAction("Move while gyro is flat",
+                () -> gyro.isFlat(), //&& ultrasonic.getBackRangeInches() > 12,
+                () -> {
+                    LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
+                    drive.arcadeDrive(0.0, 0.7);
+                });
+        addAction("Move TBar arm down while the robot is 12 inches from the port",
+                () -> gyro.isDown(),//ultrasonic.getBackRangeInches() <= 12,
+                () -> {
+                    drive.stop();
+                    tbar.launchTBar(tBarDirection.DOWN);
+                });
+        addAction("Move 3 feet away from the port and keep the bar down",
+                () -> !gyro.isFlat(),
+                () -> {
+                    drive.arcadeDrive(0.0, -0.4);
+                    tbar.launchTBar(tBarDirection.DOWN);
+                });
         addAction("Turn to the left to open the door",
                 () -> shouldTurnLeft(-60),
                 () -> {
@@ -659,32 +658,32 @@ public class Autonomous
                     roller.runManipulator(ManipIntent.SHOULD_EXTEND);
                     tbar.launchTBar(tBarDirection.UP);
                 });
-//        addAction("Move while gyro is flat, up, or down",
-//                () -> (gyro.isFlat() || gyro.isUp() || gyro.isDown()) && ultrasonic.getBackRangeInches() > 36,
-//                () -> {
-//                    LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
-//                    drive.arcadeDrive(0.0, 0.7);
-//                });
-//        addAction("approach",
-//                () -> ultrasonic.getBackRangeInches() <= 36,
-//                () -> {
-//                    drive.stop();
-//                    tbar.launchTBar(tBarDirection.DOWN);
-//                });
-//        addAction("open door",
-//                () -> ultrasonic.getBackRangeInches() > 48,
-//                () -> {
-//                    drive.arcadeDrive(0.0, -0.5);
-//                    tbar.launchTBar(tBarDirection.DOWN);
-//                });
+        addAction("Move while gyro is flat",
+                () -> gyro.isFlat(), //|| gyro.isUp() || gyro.isDown()) && ultrasonic.getBackRangeInches() > 36,
+                () -> {
+                    LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
+                    drive.arcadeDrive(0.0, 0.7);
+                });
+        addAction("approach",
+                () -> gyro.isDown(),
+                () -> {
+                    drive.stop();
+                    tbar.launchTBar(tBarDirection.DOWN);
+                });
+        addAction("open door",
+                () -> gyro.isDown(),
+                () -> {
+                    drive.arcadeDrive(0.0, -0.5);
+                    tbar.launchTBar(tBarDirection.DOWN);
+                });
         addAction("move ahead",
-                () -> gyro.isFlat() || gyro.isUp(),
+                () -> gyro.isFlat() || gyro.isDown(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.6);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("get off ramp",
-                () -> gyro.isDown(),
+                () -> gyro.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.6);
                     tbar.launchTBar(tBarDirection.DOWN);

@@ -47,7 +47,7 @@ public class Robot extends IterativeRobot
 
     private BallRollers rollers;
     private TBar tbar;
-    //private HighShooter highShooter;
+    private HighShooter highShooter;
     
 //    private Lifter lifter;
 //    private Claw claw;
@@ -382,7 +382,7 @@ public class Robot extends IterativeRobot
         rollers.runManipulator(driverstation.getManipPosition());
         tbar.launchTBar(driverstation.getTBarDirection());
         driverstation.setIntakeLED(infra.getInfrared());
-        //highShooter.shoot();
+        highShooter.shoot();
         
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());

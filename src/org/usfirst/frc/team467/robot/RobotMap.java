@@ -55,6 +55,10 @@ public class RobotMap
     public static final int LEFT_SHOOTER_MOTOR_CHANNEL = 2; //TODO
     public static final int RIGHT_SHOOTER_MOTOR_CHANNEL = 3; //TODO
     
+    // Game Piece Motor Power Channels
+    public static final int TBAR_POWER_CHANNEL = 3;
+    public static final int MANIPULATOR_POWER_CHANNEL = 11;
+    
     //
     // CAN IDs
     //
