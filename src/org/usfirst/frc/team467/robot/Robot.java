@@ -47,7 +47,8 @@ public class Robot extends IterativeRobot
 
     private BallRollers rollers;
     private TBar tbar;
-    private HighShooter highShooter;
+//    private HighShooter highShooter;
+    private Shooter467 shooter;
     
 //    private Lifter lifter;
 //    private Claw claw;
@@ -120,6 +121,7 @@ public class Robot extends IterativeRobot
         infra = new Infrared(4);
         rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL, infra, driverstation);
         tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
+        shooter = new Shooter467(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, drive, rollers, vision);
         
         gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic2016();
@@ -377,12 +379,20 @@ public class Robot extends IterativeRobot
     private void updateNavigator()
     {
         board.update();
-        rollers.runRoller(driverstation.getRollerDirection());
+        if (driverstation.highShooterReady())
+        {
+            rollers.extendManip();
+            shooter.aimAndShoot();
+        }
+        else
+        {
+            shooter.stop();
+            rollers.runRoller(driverstation.getRollerDirection());
+            rollers.runManipulator(driverstation.getManipPosition());
+        }
         SmartDashboard.putString("DB/String 8", driverstation.getManipPosition().toString());
-        rollers.runManipulator(driverstation.getManipPosition());
         tbar.launchTBar(driverstation.getTBarDirection());
         driverstation.setIntakeLED(infra.getInfrared());
-        highShooter.shoot();
         
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());

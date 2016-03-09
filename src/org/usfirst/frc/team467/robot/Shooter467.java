@@ -139,4 +139,10 @@ public class Shooter467
             roller.rollIn();
         }
     }
+    
+    public void stop()
+    {
+        leftMotor.stopMotor();
+        rightMotor.stopMotor();
+    }
 }
