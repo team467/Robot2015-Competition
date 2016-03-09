@@ -84,7 +84,7 @@ public class DriverStation2016
     private void makeJoysticks()
     {
         buttonPanel = new ButtonPanel2016(1);
-        String newStickType = SmartDashboard.getString("DB/String 0", "LT1"); //Assume LT1
+        String newStickType = SmartDashboard.getString("DB/String 0", "XBSplit"); //Assume LT1
         if (newStickType.isEmpty())
         {
             newStickType = "LT1";
@@ -171,7 +171,13 @@ public class DriverStation2016
             default:
                 LOGGER.info("Auto Selector must be LT1, LT2, PS1, PS2, PSKART, PSSPLIT, "
                         + "XB1, XB2, XBKART, or XBSPLIT");
-                stickTypeDescription = "Invalid";
+                stickTypeDescription = "Invalid(XBSplit)";
+                LOGGER.info("Assuming XBSplit");
+                driverJoy1 = new XBoxJoystickMain(3);
+                driverJoy2 = new XBoxJoystickRight(3);
+                kart = false;
+                split = true;
+                stickTypeDescription = "XBox split-stick";
                 break;
         }
         SmartDashboard.putString("DB/String 5", "Stick type " + stickTypeDescription);
