@@ -535,6 +535,19 @@ public class DriverStation2016
     {
         return driverJoy1.getResetGyro();
     }
+    
+    public CameraDashboard.CamView getView()
+    {
+        boolean shooterViewActivated = SmartDashboard.getBoolean("DB/Button 1");
+        if (shooterViewActivated)
+        {
+            return CameraDashboard.CamView.SHOOTER;
+        }
+        else
+        {
+            return CameraDashboard.CamView.TANK;
+        }
+    }
 
 //    /**
 //     * Sets the state of the claw LED

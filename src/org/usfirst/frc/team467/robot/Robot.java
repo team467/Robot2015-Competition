@@ -40,9 +40,9 @@ public class Robot extends IterativeRobot
     public Driveable drive;
     private PowerDistroBoard467 board;
     private Autonomous autonomous;
-    private LEDStrip ledStrip;
+//    private LEDStrip ledStrip;
     
-//    private CameraDashboard cameraDashboard;
+    private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
 
     private BallRollers rollers;
@@ -123,23 +123,22 @@ public class Robot extends IterativeRobot
         
         gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic2016();
-        ledStrip.setMode(Mode.OFF);
         
         
         autonomous.setDrive(drive);
         autonomous.setRoller(rollers);
         autonomous.setUltrasonic(ultrasonic);
-        ledStrip.setMode(Mode.OFF);
+//        ledStrip.setMode(Mode.OFF);
         
        
         // Initialize the camera dashboard and launch in separate thread.
-//        cameraDashboard = CameraDashboard.getInstance();
-//        cameraDashboard.setDrive(drive);
-//        if (cameraDashboard.cameraExists()) 
-//        {
-//            LOGGER.debug("Camera Starting");
-//            cameraDashboard.start();
-//        }
+        cameraDashboard = CameraDashboard.getInstance();
+        cameraDashboard.setDrive(drive);
+        if (cameraDashboard.cameraExists()) 
+        {
+            LOGGER.debug("Camera Starting");
+            cameraDashboard.start();
+        }
             
             Calibration.init(drive);
             
