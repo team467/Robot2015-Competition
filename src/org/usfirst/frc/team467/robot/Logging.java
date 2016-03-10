@@ -26,6 +26,7 @@ public class Logging
         Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Shooter467.class).setLevel(Level.DEBUG);
     }
     
     private static void setupDefaultLogging()

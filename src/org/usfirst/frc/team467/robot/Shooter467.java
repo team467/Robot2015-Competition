@@ -47,6 +47,7 @@ public class Shooter467
     {
         if (!vision.isEnabled())
         {
+            LOGGER.debug("aim no vision");
             drive.stop();
             return false;
         }
@@ -64,6 +65,8 @@ public class Shooter467
         
         if (contours.size() == 0)
         {
+            LOGGER.debug("aim no contours");
+
             // Still haven't found what I'm looking for
             drive.stop();
             return false;
@@ -75,6 +78,8 @@ public class Shooter467
         LOGGER.debug("Found widest contour, centerX=" + centerX + " delta=" + delta);
         if (delta < marginOfError)
         {
+            LOGGER.debug("aim found target");
+
             // Found target
             return true;
         }
@@ -82,10 +87,8 @@ public class Shooter467
         int direction = widest.getCenterX() > horizontalCenter ? -1 : 1;
         final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/horizontalCenter));
         drive.turnDrive(turnSpeed);
-        LOGGER.info("Turned with turnSpeed " + turnSpeed);
-        LOGGER.debug("end seekWidestContour()");
         
-        // Target seen but not centered
+        LOGGER.debug("aim target seen but not centered");
         return false;
     }
     
@@ -98,6 +101,8 @@ public class Shooter467
     {
         if (isPrimed)
         {
+            LOGGER.debug("prime isPrimed");
+            // Don't slow down when you are primed
             leftMotor.set(LEFT_SPEED);
             rightMotor.set(RIGHT_SPEED);
             return true;
@@ -106,6 +111,7 @@ public class Shooter467
         if (isPriming)
         {
             final long now = System.currentTimeMillis();
+            LOGGER.debug("prime isPriming timePrimeStarted=" + timePrimeStarted + " now=" + now);
             if ((time * 1000) > now - timePrimeStarted)
             {
                 isPrimed = true;
@@ -116,6 +122,7 @@ public class Shooter467
         }
         
         // Wasn't priming or primed
+        LOGGER.debug("prime begin priming");
         timePrimeStarted = System.currentTimeMillis();
         isPriming = true;
         return false;
@@ -131,18 +138,28 @@ public class Shooter467
     
     public void aimAndShoot()
     {
+        LOGGER.debug("aimAndShoot aiming");
+        
         // Bypass short-circuit logic on &&
         final boolean isOnTarget = aim(30);
         final boolean isPrimed = prime(5.0);
+
+        LOGGER.debug("aimAndShoot aiming isOnTarget=" + isOnTarget + " isPrimed=" + isPrimed);
         if (isOnTarget && isPrimed)
         {
+            LOGGER.debug("aimAndShoot shooting");
             roller.rollIn();
         }
     }
     
     public void stop()
     {
+        LOGGER.debug("stop");
+        
         leftMotor.stopMotor();
         rightMotor.stopMotor();
+        
+        isPrimed = false;
+        isPriming = false;
     }
 }
