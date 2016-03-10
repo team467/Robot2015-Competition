@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 
 public class Shooter467
@@ -73,7 +74,16 @@ public class Shooter467
         }
         // Find the widest contour
         VisionProcessor.Contour widest = Collections.max(contours, new VisionProcessor.WidthComp());
-        final double centerX = widest.getCenterX();
+        double offset;
+        try
+        {
+            offset = Double.valueOf(SmartDashboard.getString("DB/String 1"));
+        }
+        catch (Exception e)
+        {
+            offset = 0.0;
+        }
+        final double centerX = widest.getCenterX() + offset;
         final double delta = Math.abs(centerX - horizontalCenter);
         LOGGER.debug("Found widest contour, centerX=" + centerX + " delta=" + delta);
         if (delta < marginOfError)
