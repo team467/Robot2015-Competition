@@ -7,7 +7,7 @@ public class HighShooter
     private Talon rightMotor;
     private Talon leftMotor;
     
-    private double motorSpeed = 0.5;
+    private double motorSpeed = 0.8;
     
     private DriverStation2015 driverstation;
     
