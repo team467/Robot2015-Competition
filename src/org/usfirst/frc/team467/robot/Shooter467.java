@@ -25,8 +25,8 @@ public class Shooter467
     private boolean isPriming = false;
     private boolean isPrimed = false;
     
-    private double LEFT_SPEED = 0.8;
-    private double RIGHT_SPEED = 0.8;
+    private double LEFT_SPEED = -1.0;
+    private double RIGHT_SPEED = 1.0;
     
     public Shooter467(int leftMotorChannel, int rightMotorChannel, Driveable drive, BallRollers roller, VisionProcessor vision)
     {
