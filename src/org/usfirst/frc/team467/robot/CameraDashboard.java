@@ -9,6 +9,7 @@ import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.vision.USBCamera;
 
 public class CameraDashboard extends Thread
 {
@@ -35,6 +36,7 @@ public class CameraDashboard extends Thread
     private long lastTimeStamp = System.currentTimeMillis();
     
     Image frame;
+    USBCamera cam;
     CameraServer cameraServer;
     int session;
 
@@ -81,8 +83,8 @@ public class CameraDashboard extends Thread
             frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
             // the camera name (ex "cam0") can be found through the roborio web interface
-            session = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-            NIVision.IMAQdxConfigureGrab(session);
+            cam = new USBCamera("cam1");
+            cameraServer.startAutomaticCapture(cam);
             
             cameraExists = true;
             LOGGER.debug("Camera initialized");
@@ -110,7 +112,7 @@ public class CameraDashboard extends Thread
             drawTimerBar(viewWidth, viewHeight);
         }
         drawCrossHairs(viewWidth, viewHeight);
-        drawAngleMonitors(viewWidth, viewHeight);
+//        drawAngleMonitors(viewWidth, viewHeight);
 
         cameraServer.setImage(frame);
     }
@@ -286,7 +288,7 @@ public class CameraDashboard extends Thread
                 {   
                     try
                     {
-                        renderImage();
+//                        renderImage();
                     }
                     catch (Exception e)
                     {
