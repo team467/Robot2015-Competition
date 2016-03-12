@@ -382,7 +382,7 @@ public class Robot extends IterativeRobot
         if (driverstation.highShooterReady())
         {
             rollers.extendManip();
-            shooter.aimAndShoot();
+            shooter.shootNow();
         }
         else
         {

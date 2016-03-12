@@ -140,7 +140,7 @@ public class Shooter467
     
     public void shootNow()
     {
-        if (prime(5.0))
+        if (prime(3.0))
         {
             roller.rollIn();
         }
