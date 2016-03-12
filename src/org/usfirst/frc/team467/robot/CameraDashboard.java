@@ -53,8 +53,9 @@ public class CameraDashboard extends Thread
         libStation = DriverStation.getInstance();
         customStation = DriverStation2016.getInstance();
         vision = VisionProcessor.getInstance();
-        initUSBCamera();
+        frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 //        initAxisCamera();
+        initUSBCamera();
     }
 
     public static CameraDashboard getInstance()
@@ -88,16 +89,15 @@ public class CameraDashboard extends Thread
     {
         try
         {
-            driveCam = new USBCamera("cam0");
+            driveCam = new USBCamera("cam1");
+            driveCam.setFPS(30);
+            driveCam.openCamera();
+            driveCam.startCapture();
             cameraServer = CameraServer.getInstance();
 //            cameraServer.setQuality(50);
-
-            frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
+            
             // the camera name (ex "cam0") can be found through the roborio web interface
             cameraServer.startAutomaticCapture(driveCam);
-            driveCam.setExposureAuto();
-            driveCam.setWhiteBalanceAuto();
             
             cameraExists = true;
             LOGGER.debug("Camera initialized");
@@ -111,9 +111,16 @@ public class CameraDashboard extends Thread
     
     private void initAxisCamera()
     {
-        shooterCam = new AxisCamera(""); // TODO Use actual IP
-        frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-        cameraExists = true;
+        try
+        {
+            shooterCam = new AxisCamera("169.254.15.123"); // TODO Use actual IP
+            cameraExists = true;
+        }
+        catch (Exception e)
+        {
+            LOGGER.info("No camera detected: " + e.getMessage());
+            cameraExists = false;
+        }
     }
 
     public void renderImage()
@@ -345,7 +352,7 @@ public class CameraDashboard extends Thread
                 {   
                     try
                     {
-                        renderImage();
+//                        renderImage();
                     }
                     catch (Exception e)
                     {
