@@ -7,7 +7,6 @@ import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.vision.USBCamera;
 
@@ -37,7 +36,7 @@ public class CameraDashboard extends Thread
     
     Image frame;
     USBCamera cam;
-    CameraServer cameraServer;
+    CameraServer467 cameraServer;
     int session;
 
     private CameraDashboard()
@@ -77,13 +76,20 @@ public class CameraDashboard extends Thread
     {
         try
         {
-            cameraServer = CameraServer.getInstance();
+            try
+            {
+                cam = new USBCamera("cam1");
+            }
+            catch (Exception e)
+            {
+                LOGGER.info("Failed to find USBCamera at cam1, trying cam0");
+                cam = new USBCamera("cam0");
+            }
+            cameraServer = CameraServer467.getInstance();
             cameraServer.setQuality(50);
 
             frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
-            // the camera name (ex "cam0") can be found through the roborio web interface
-            cam = new USBCamera("cam1");
             cameraServer.startAutomaticCapture(cam);
             
             cameraExists = true;

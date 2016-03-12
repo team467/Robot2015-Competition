@@ -129,6 +129,7 @@ public class Robot extends IterativeRobot
             
             autonomous.setDrive(drive);
             autonomous.setRoller(rollers);
+            autonomous.setTBar(tbar);
             autonomous.setUltrasonic(ultrasonic);
             //ledStrip.setMode(Mode.OFF);
             
@@ -210,8 +211,8 @@ public class Robot extends IterativeRobot
         LOGGER.debug("Update powerDistroBoard");
         autonomous.updateAutonomousPeriodic();
         
-        LOGGER.debug("Gyro angle: " + gyro.getYawAngle());
-        LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
+        LOGGER.debug("Yaw angle: " + gyro.getYawAngle());
+        LOGGER.debug("Tilt angle: " + gyro.getTiltAngle());
 
         
 //        ledStrip.setMode(Mode.RAINBOW);

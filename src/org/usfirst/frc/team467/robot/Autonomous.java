@@ -167,6 +167,11 @@ public class Autonomous
         this.roller = roller;
     }
     
+    public void setTBar(TBar tbar)
+    {
+        this.tbar = tbar;
+    }
+    
     public boolean shouldTurnRight(double angle){
         return (gyro.getYawAngle() < angle);
     }
@@ -192,12 +197,13 @@ public class Autonomous
     public void initAutonomous()
     {
 //        AutoType autonomousType = DriverStation2015.getInstance().getAutoType();
-        AutoType autonomousType = AutoType.STAY_IN_PLACE;
+        AutoType autonomousType = AutoType.DRIVE_ONLY;
         LOGGER.info("AUTO MODE " + autonomousType);
 
         // Reset actions.
         actions.clear();
         resetActionStartTime();
+        gyro.reset();
         
         // Set up gyro and create actions list.
         switch (autonomousType)
@@ -925,11 +931,11 @@ public class Autonomous
     {
         // Drive until tilted up; aka on defense ramp
         addAction("Drive into auto zone", 
-                () -> gyro.isUp(), 
+                () -> gyro.isFlat(), 
                 () -> {
                     roller.stop();
                     tbar.stop();
-                    drive.arcadeDrive(0.0, 0.5);
+                    drive.arcadeDrive(0.0, -0.8);
                 });
         addAction("Stop driving", 
                 () -> forever(), 

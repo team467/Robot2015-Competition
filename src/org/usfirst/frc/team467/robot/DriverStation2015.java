@@ -239,11 +239,15 @@ public class DriverStation2015
         String mode = SmartDashboard.getString("Auto Selector", "invalid").toUpperCase();
         
         switch(mode) {
-            case "AIM":
-                return AutoType.AIM;
+//            case "AIM":
+//                return AutoType.AIM;
             case "STAY_IN_PLACE":
                 return AutoType.STAY_IN_PLACE;
+            case "DRIVE":
+                LOGGER.debug("DRIVE ONLY");
+                return AutoType.DRIVE_ONLY;
             default:
+                LOGGER.debug("NO_AUTO");
                 return AutoType.NO_AUTO;
         }
     }
