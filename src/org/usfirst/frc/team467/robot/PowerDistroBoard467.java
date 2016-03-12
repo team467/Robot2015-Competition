@@ -12,9 +12,6 @@ public class PowerDistroBoard467
 
     private PowerDistributionPanel pdp = null;
     
-    private RollingAverage clawAverageCurrent = new RollingAverage(3);
-    private RollingAverage lifterAverageCurrentBottom = new RollingAverage(3);
-    private RollingAverage lifterAverageCurrentTop = new RollingAverage(3);
     private RollingAverage manipAverageCurrent = new RollingAverage(5);
     private RollingAverage tBarAverageCurrent = new RollingAverage(5);
 
@@ -52,11 +49,9 @@ public class PowerDistroBoard467
     
     public void update()
     {
-        lifterAverageCurrentBottom.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_BOTTOM));
-        lifterAverageCurrentTop.add(getCurrent(RobotMap.LIFTER_MOTOR_CHANNEL_TOP));
-        clawAverageCurrent.add(getCurrent(RobotMap.CLAW_MOTOR_CHANNEL));
-        manipAverageCurrent.add(getCurrent(11));
-        tBarAverageCurrent.add(getCurrent(3));
+        manipAverageCurrent.add(getCurrent(RobotMap.MANIPULATOR_POWER_CHANNEL));
+
+        tBarAverageCurrent.add(getCurrent(RobotMap.TBAR_POWER_CHANNEL));
 
         LOGGER.info("manipAvgCurrent=" + manipAverageCurrent.getAverage()
             + " tBarAverageCurrent=" + tBarAverageCurrent.getAverage());
@@ -71,21 +66,6 @@ public class PowerDistroBoard467
     public double getCurrent(int channel)
     {
         return pdp.getCurrent(channel);
-    }
-
-    public double getLifterBottomCurrent()
-    {
-        return lifterAverageCurrentBottom.getAverage();
-    }
-    
-    public double getLifterTopCurrent()
-    {
-        return lifterAverageCurrentTop.getAverage();
-    }
-
-    public double getClawCurrent()
-    {
-        return clawAverageCurrent.getAverage();
     }
     
     public double getManipCurrent()

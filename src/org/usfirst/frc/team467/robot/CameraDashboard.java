@@ -1,5 +1,8 @@
 package org.usfirst.frc.team467.robot;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import com.ni.vision.NIVision;
@@ -9,6 +12,8 @@ import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.vision.AxisCamera;
+import edu.wpi.first.wpilibj.vision.USBCamera;
 
 public class CameraDashboard extends Thread
 {
@@ -21,13 +26,16 @@ public class CameraDashboard extends Thread
     private static final float BLUE = color(0, 0, 255);
     private static final float WHITE = color(255, 255, 255);
     
-    DriverStation station;
+    private final DriverStation libStation;
+    private final DriverStation2016 customStation;
+    private final VisionProcessor vision;
     
-    static CameraDashboard instance;
-    Steering flSteering;
-    Steering frSteering;
-    Steering blSteering;
-    Steering brSteering;
+    private static CameraDashboard instance;
+    
+    private Steering flSteering;
+    private Steering frSteering;
+    private Steering blSteering;
+    private Steering brSteering;
     final double maxTurns = Steering.getMaxTurns();
 
     private boolean cameraExists = false;
@@ -36,19 +44,25 @@ public class CameraDashboard extends Thread
     
     Image frame;
     CameraServer cameraServer;
-    int session;
+    private USBCamera driveCam;
+    private AxisCamera shooterCam;
+    private CamView view;
 
     private CameraDashboard()
     {
-        station = DriverStation.getInstance();
-        
-        initCamera();
+        libStation = DriverStation.getInstance();
+        customStation = DriverStation2016.getInstance();
+        vision = VisionProcessor.getInstance();
+        frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+//        initAxisCamera();
+        initUSBCamera();
     }
 
     public static CameraDashboard getInstance()
     {
         if (instance == null)
         {
+            // Default view drive
             instance = new CameraDashboard();
         }
         return instance;
@@ -71,21 +85,36 @@ public class CameraDashboard extends Thread
         return cameraExists;
     }
 
-    private void initCamera()
+    private void initUSBCamera()
     {
         try
         {
+            driveCam = new USBCamera("cam1");
+            driveCam.setFPS(30);
+            driveCam.openCamera();
+            driveCam.startCapture();
             cameraServer = CameraServer.getInstance();
-            cameraServer.setQuality(50);
-
-            frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
+//            cameraServer.setQuality(50);
+            
             // the camera name (ex "cam0") can be found through the roborio web interface
-            session = NIVision.IMAQdxOpenCamera("cam0", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-            NIVision.IMAQdxConfigureGrab(session);
+            cameraServer.startAutomaticCapture(driveCam);
             
             cameraExists = true;
             LOGGER.debug("Camera initialized");
+        }
+        catch (Exception e)
+        {
+            LOGGER.info("No camera detected: " + e.getMessage());
+            cameraExists = false;
+        }
+    }
+    
+    private void initAxisCamera()
+    {
+        try
+        {
+            shooterCam = new AxisCamera("169.254.15.123"); // TODO Use actual IP
+            cameraExists = true;
         }
         catch (Exception e)
         {
@@ -100,18 +129,46 @@ public class CameraDashboard extends Thread
 //        ImageInfo info = NIVision.imaqGetImageInfo(frame);
 //        int viewWidth = info.xRes; // 640
 //        int viewHeight = info.yRes; // 480
-        int viewWidth = 640;
-        int viewHeight = 480;
-
-        NIVision.IMAQdxGrab(session, frame, 1);
+        final int driveCamWidth    = 640;
+        final int driveCamHeight   = 480;
+        final int shooterCamWidth  = 320;
+        final int shooterCamHeight = 240;
         
-        if (station.isEnabled())
+        view = customStation.getView();
+        
+        switch (view)
         {
-            drawTimerBar(viewWidth, viewHeight);
-        }
-        drawCrossHairs(viewWidth, viewHeight);
-        drawAngleMonitors(viewWidth, viewHeight);
+            case SWERVE:
+                driveCam.getImage(frame);
+                drawCrossHairs(driveCamWidth, driveCamHeight);
+                drawAngleMonitors(driveCamWidth, driveCamHeight);
 
+                if (libStation.isEnabled())
+                {
+                    drawTimerBar(driveCamWidth, driveCamHeight);
+                }
+                break;
+            case SHOOTER:
+//                shooterCam.getImage(frame);
+                driveCam.getImage(frame);
+                drawCrossHairs(shooterCamWidth, shooterCamHeight);
+                drawWidestContour(shooterCamWidth, shooterCamHeight);
+                if (libStation.isEnabled())
+                {
+                    drawTimerBar(shooterCamWidth, shooterCamHeight);
+                }
+                break;
+            case TANK:
+                driveCam.getImage(frame);
+                drawCrossHairs(driveCamWidth, driveCamHeight);
+                drawWidestContour(shooterCamWidth, shooterCamHeight);
+                
+                if (libStation.isEnabled())
+                {
+                    drawTimerBar(driveCamWidth, driveCamHeight);
+                }
+                break;
+        }
         cameraServer.setImage(frame);
     }
 
@@ -153,7 +210,7 @@ public class CameraDashboard extends Thread
         }
 
         double totalTime = 135; // Teleop
-        if (station.isAutonomous())
+        if (libStation.isAutonomous())
         {
             totalTime = 15;
         }
@@ -265,6 +322,15 @@ public class CameraDashboard extends Thread
         NIVision.imaqDrawShapeOnImage(frame, frame, blBar, DrawMode.PAINT_VALUE, RECT, blColor);
         NIVision.imaqDrawShapeOnImage(frame, frame, brBar, DrawMode.PAINT_VALUE, RECT, brColor);
     }
+    
+    private void drawWidestContour(int viewWidth, int viewHeight)
+    {
+        final ShapeMode RECT = ShapeMode.SHAPE_RECT;
+        final List<VisionProcessor.Contour> contours = vision.getContours();
+        final VisionProcessor.Contour contour = Collections.max(contours, new VisionProcessor.WidthComp());
+        NIVision.Rect rect = new NIVision.Rect(contour.getTop(), contour.getLeft(), contour.getHeight(), contour.getWidth());
+        NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, RECT, color(255, 255, 255));
+    }
 
     @Override
     public void run()
@@ -286,7 +352,7 @@ public class CameraDashboard extends Thread
                 {   
                     try
                     {
-                        renderImage();
+//                        renderImage();
                     }
                     catch (Exception e)
                     {
@@ -315,5 +381,10 @@ public class CameraDashboard extends Thread
         {
             LOGGER.error("Unexpected exception in run: " + e.getMessage());
         }
+    }
+    
+    static enum CamView
+    {
+        SWERVE, SHOOTER, TANK
     }
 }

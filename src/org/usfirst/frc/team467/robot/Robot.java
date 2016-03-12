@@ -35,13 +35,14 @@ public class Robot extends IterativeRobot
     Gyro2016 gyro2016;
 
     // Robot objects
-    private DriverStation2015 driverstation;
+    private DriverStation2016 driverstation;
 
     public Driveable drive;
     private PowerDistroBoard467 board;
     private Autonomous autonomous;
+//    private LEDStrip ledStrip;
     
-//    private CameraDashboard cameraDashboard;
+    private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
 
     private BallRollers rollers;
@@ -89,58 +90,55 @@ public class Robot extends IterativeRobot
             // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
 //        drive = new makeTalonTank(1, 0, 3, 2);
-        //ledStrip.setMode(Mode.OFF);
         
-        //ledStrip.setMode(Mode.OFF);
+        if(robotID == RobotID.KITBOT)
+        {    
+            drive = TankDrive.makeTalonTank(
+                    RobotMap.FRONT_LEFT_KITBOT,
+                    RobotMap.FRONT_RIGHT_KITBOT,
+                    RobotMap.BACK_LEFT_KITBOT,
+                    RobotMap.BACK_RIGHT_KITBOT);
+            LOGGER.info("Kitbot Set");
+        }
+        else if (robotID == RobotID.TANK2016)
+        {
+            //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+            drive = TankDrive.makeCANTalonTank(
+                    RobotMap.FRONT_LEFT_2016,
+                    RobotMap.FRONT_RIGHT_2016,
+                    RobotMap.BACK_LEFT_2016,
+                    RobotMap.BACK_RIGHT_2016);
+            LOGGER.info("CANTalon Set");
+        }
+        
+        // Make robot objects
+        driverstation = DriverStation2016.getInstance();
+        autonomous = Autonomous.getInstance();
+        board = PowerDistroBoard467.getInstance();
+        vision = VisionProcessor.getInstance();
+        infra = new Infrared(4);
+        rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL, infra, driverstation);
+        tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
+        highShooter = new HighShooter(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, driverstation);
+        
+        gyro2016 = Gyro2016.getInstance();
+        ultrasonic = new Ultrasonic2016();
+        
+        
+        autonomous.setDrive(drive);
+        autonomous.setRoller(rollers);
+        autonomous.setUltrasonic(ultrasonic);
+//        ledStrip.setMode(Mode.OFF);
         
        
         // Initialize the camera dashboard and launch in separate thread.
-
-            
-            if(robotID == RobotID.KITBOT)
-            {    
-                drive = TankDrive.makeTalonTank(1, 0, 2, 3, robotID);
-                LOGGER.info("Kitbot Set");
-            }
-            else if (robotID == RobotID.TANK2016)
-            {
-                //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-                drive = TankDrive.makeCANTalonTank(7, 5, 2, 6, robotID);
-                LOGGER.info("CANTalon Set");
-            }
-            
-            // Make robot objects
-            driverstation = DriverStation2015.getInstance();
-            autonomous = Autonomous.getInstance();
-            gyro = Gyro2016.getInstance();
-            board = PowerDistroBoard467.getInstance();
-            vision = VisionProcessor.getInstance();
-            infra = new Infrared(4);
-            gyro2016 = Gyro2016.getInstance();
-            ultrasonic = new Ultrasonic2016();
-            //ledStrip.setMode(Mode.OFF);
-            
-            rollers = new BallRollers(3, 0, infra, driverstation);
-            tbar = new TBar(1);
-            highShooter = new HighShooter(2, 3, driverstation);
-            
-            
-            
-            
-            autonomous.setDrive(drive);
-            autonomous.setRoller(rollers);
-            autonomous.setUltrasonic(ultrasonic);
-            //ledStrip.setMode(Mode.OFF);
-            
-      
-            // Initialize the camera dashboard and launch in separate thread.
-//        cameraDashboard = CameraDashboard.getInstance();
-//        cameraDashboard.setDrive(drive);
-//        if (cameraDashboard.cameraExists()) 
-//        {
-//            LOGGER.debug("Camera Starting");
-//            cameraDashboard.start();
-//        }
+        cameraDashboard = CameraDashboard.getInstance();
+        cameraDashboard.setDrive(drive);
+        if (cameraDashboard.cameraExists()) 
+        {
+            LOGGER.debug("Camera Starting");
+            cameraDashboard.start();
+        }
             
             Calibration.init(drive);
             

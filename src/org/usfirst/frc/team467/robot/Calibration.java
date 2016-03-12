@@ -74,7 +74,7 @@ public class Calibration
         drive.individualSteeringDrive(calibrationAngle, motorId);
 
         // Write and set new center if trigger is pressed
-        if (DriverStation2015.getInstance().getCalibrateConfirmSelection())
+        if (DriverStation2016.getInstance().getCalibrateConfirmSelection())
         {
             double currentAngle = drive.getSteeringAngle(motorId);
 
@@ -97,7 +97,7 @@ public class Calibration
      */
     private static int getWheelDial(int prevSelectedWheel)
     {
-        DriverStation2015 driverstation = DriverStation2015.getInstance();
+        DriverStation2016 driverstation = DriverStation2016.getInstance();
         if (false) // driverstation.getCalibrate()
         {
             return 1; //driverstation.getCalibrateWheel();
@@ -118,7 +118,7 @@ public class Calibration
     @SuppressWarnings("unused")   // used if/when joystick is used for calibration
     private static int getWheelStick(int prevSelectedWheel)
     {
-        MainJoystick467 joystick = DriverStation2015.getInstance().getCalibrationJoystick();
+        MainJoystick467 joystick = DriverStation2016.getInstance().getCalibrationJoystick();
         double stickAngle = joystick.getAngle();
 
         // Select motor being calibrated
@@ -165,11 +165,11 @@ public class Calibration
     {
 
         // If slow pressed on stick is pressed, slow down wheel calibration.
-        double rateMultiplier = (DriverStation2015.getInstance().getSlow()) ? 0.4 : 1;
+        double rateMultiplier = (DriverStation2016.getInstance().getSlow()) ? 0.4 : 1;
 
         // Drive motor based on twist angle
         // Increase wheel angle by a small amount based on joystick twist
-        prevCalibrationAngle += (DriverStation2015.getInstance().getCalibrationJoystick().getTurn() / 100.0) * rateMultiplier;
+        prevCalibrationAngle += (DriverStation2016.getInstance().getCalibrationJoystick().getTurn() / 100.0) * rateMultiplier;
 
         return prevCalibrationAngle;
     }

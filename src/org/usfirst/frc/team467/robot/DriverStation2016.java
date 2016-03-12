@@ -8,11 +8,11 @@ import org.usfirst.frc.team467.robot.TBar.tBarDirection;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class DriverStation2015
+public class DriverStation2016
 {
-    private static final Logger LOGGER = Logger.getLogger(DriverStation2015.class);
+    private static final Logger LOGGER = Logger.getLogger(DriverStation2016.class);
     
-    private static DriverStation2015 instance = null;
+    private static DriverStation2016 instance = null;
 
     MainJoystick467 driverJoy1 = null;
     RightJoystick467 driverJoy2 = null;
@@ -30,16 +30,6 @@ public class DriverStation2015
     
     public boolean kart = false;
     public boolean split = false;
-
-    // CAL/AUTO
-    public static int AUTO_CAL_SWITCH = ButtonPanel2015.COVERED_SWITCH;
-
-    // JOYSTICK
-    public static int CHANGE_SPEED_BUTTON = ButtonPanel2015.JOY_TOP_BUTTON;
-    public static int CLAW_OPEN = ButtonPanel2015.JOY_RIGHT;
-    public static int CLAW_CLOSED = ButtonPanel2015.JOY_LEFT;
-    public static int ELEVATOR_UP = ButtonPanel2015.JOY_UP;
-    public static int ELEVATOR_DOWN = ButtonPanel2015.JOY_DOWN;
 
     // LED Ids
     public static int LED_LIFTER_TOP_STOP = 5;
@@ -74,11 +64,11 @@ public class DriverStation2015
      * 
      * @return
      */
-    public static DriverStation2015 getInstance()
+    public static DriverStation2016 getInstance()
     {
         if (instance == null)
         {
-            instance = new DriverStation2015();
+            instance = new DriverStation2016();
         }
         return instance;
     }
@@ -86,7 +76,7 @@ public class DriverStation2015
     /**
      * Private constructor
      */
-    private DriverStation2015()
+    private DriverStation2016()
     {
         makeJoysticks();
     }
@@ -94,7 +84,7 @@ public class DriverStation2015
     private void makeJoysticks()
     {
         buttonPanel = new ButtonPanel2016(1);
-        String newStickType = SmartDashboard.getString("DB/String 0", "LT1"); //Assume LT1
+        String newStickType = SmartDashboard.getString("DB/String 0", "XBSplit"); //Assume LT1
         if (newStickType.isEmpty())
         {
             newStickType = "LT1";
@@ -181,7 +171,13 @@ public class DriverStation2015
             default:
                 LOGGER.info("Auto Selector must be LT1, LT2, PS1, PS2, PSKART, PSSPLIT, "
                         + "XB1, XB2, XBKART, or XBSPLIT");
-                stickTypeDescription = "Invalid";
+                stickTypeDescription = "Invalid(XBSplit)";
+                LOGGER.info("Assuming XBSplit");
+                driverJoy1 = new XBoxJoystickMain(3);
+                driverJoy2 = new XBoxJoystickRight(3);
+                kart = false;
+                split = true;
+                stickTypeDescription = "XBox split-stick";
                 break;
         }
         SmartDashboard.putString("DB/String 5", "Stick type " + stickTypeDescription);
@@ -544,6 +540,19 @@ public class DriverStation2015
     public boolean getResetGyro()
     {
         return driverJoy1.getResetGyro();
+    }
+    
+    public CameraDashboard.CamView getView()
+    {
+        boolean shooterViewActivated = SmartDashboard.getBoolean("DB/Button 1");
+        if (shooterViewActivated)
+        {
+            return CameraDashboard.CamView.SHOOTER;
+        }
+        else
+        {
+            return CameraDashboard.CamView.TANK;
+        }
     }
 
 //    /**

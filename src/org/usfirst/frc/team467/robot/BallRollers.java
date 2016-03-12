@@ -19,7 +19,7 @@ public class BallRollers
     private final double rollerOutMotorSpeed = 1;
     private final double rollerInMotorSpeed = 1;
     
-    private DriverStation2015 driverstation;
+    private DriverStation2016 driverstation;
     
     boolean prepare = false;
     private final Infrared infra;
@@ -37,7 +37,7 @@ public class BallRollers
 
     // TODO Sensor
     
-    public BallRollers(int motorChannelRoller, int motorChannelManip, Infrared infra,  DriverStation2015 driverstation)
+    public BallRollers(int motorChannelRoller, int motorChannelManip, Infrared infra,  DriverStation2016 driverstation)
     {
         board = PowerDistroBoard467.getInstance();
         rollerMotor = new CANTalon(motorChannelRoller);

@@ -20,7 +20,7 @@ public class SwerveDrive implements Driveable
 
     // Data storage object
     private DataStorage data;
-    private Gyro2015 gyro;
+    private Gyro2016 gyro;
 
     // Angle to turn at when rotating in place - initialized in constructor
     // takes the arctan of width over length in radians
@@ -84,7 +84,7 @@ public class SwerveDrive implements Driveable
 
         // Make objects
         data = DataStorage.getInstance();
-        gyro = Gyro2015.getInstance();
+        gyro = Gyro2016.getInstance();
 
         // Make steering array
         steering = new Steering[4];
@@ -260,11 +260,11 @@ public class SwerveDrive implements Driveable
     {
         // Apply speed modifiers first
 
-        if (DriverStation2015.getInstance().getSlow())
+        if (DriverStation2016.getInstance().getSlow())
         {
             speed *= SPEED_SLOW_MODIFIER;
         }
-        else if (DriverStation2015.getInstance().getTurbo())
+        else if (DriverStation2016.getInstance().getTurbo())
         {
             speed *= SPEED_TURBO_MODIFIER;
         }
@@ -321,7 +321,7 @@ public class SwerveDrive implements Driveable
      */
     private void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        double gyroAngle = (fieldAlign) ? gyro.getAngle() : 0; // if field aligned use gyro.getAngle(), else 0        
+        double gyroAngle = (fieldAlign) ? gyro.getYawAngle() : 0; // if field aligned use gyro.getAngle(), else 0        
 
         double gyroAngleRad = Math.toRadians(gyroAngle);
         // Calculate the wheel angle necessary to drive in the required direction.

@@ -89,13 +89,13 @@ public class VisionProcessor
         {
             setupTables();
             double[] centerXs = contourTable.getNumberArray("centerX", (double[])null);
-//            LOGGER.debug("Got centerXs: " + centerXs);
-//            double[] centerYs = table.getNumberArray("centerY", (double[])null);
-//            LOGGER.debug("Got centerYs: " + centerYs);
-//            double[] areas    = table.getNumberArray("area",    (double[])null);
+            LOGGER.debug("Got centerXs: " + centerXs);
+            double[] centerYs = contourTable.getNumberArray("centerY", (double[])null);
+            LOGGER.debug("Got centerYs: " + centerYs);
+            double[] areas    = contourTable.getNumberArray("area",    (double[])null);
 //            LOGGER.debug("Got areas: " + areas);
-//            double[] heights  = table.getNumberArray("height",  (double[])null);
-//            LOGGER.debug("Got heights: " + heights);
+            double[] heights  = contourTable.getNumberArray("height",  (double[])null);
+            LOGGER.debug("Got heights: " + heights);
             double[] widths   = contourTable.getNumberArray("width",   (double[])null);
 //            LOGGER.debug("Got widths: " + widths);
             
@@ -115,7 +115,9 @@ public class VisionProcessor
                     try
                     {
 //                        Contour contour = new Contour(centerXs[i], centerYs[i], areas[i], heights[i], widths[i]);
-                        Contour contour = new Contour(centerXs[i], widths[i]);
+//                        Contour contour = new Contour(centerXs[i], widths[i]);
+                        Contour contour = new Contour(centerXs[i], widths[i], centerYs[i], heights[i]);
+
 //                        Contour contour = new Contour(centerXs[i], centerYs[i], areas[i], 0.0,0.0);
                         list.add(contour);
                     LOGGER.debug("Contour " + i + ": " + list.get(i));
@@ -151,61 +153,65 @@ public class VisionProcessor
         public String toString()
         {
             return "Contour [centerX=" + centerX +
-//                   ", centerY="        + centerY +
+                   ", centerY="        + centerY +
 //                   ", area="           + area    +
-//                   ", height="         + height  +
+                   ", height="         + height  +
                    ", width="          + width   + "]";
         }
 
         private final double centerX;
-//        private final double centerY;
+        private final double centerY;
+        private final double top;
+        private final double left;
 //        private final double area;
-//        private final double height;
+        private final double height;
         private final double width;
         
-        public Contour(double centerX, double width)
+        public Contour(double centerX, double width, double centerY, double height)
         {
             this.centerX = centerX;
-//            this.centerY = centerY;
+            this.centerY = centerY;
+            this.top = centerY - height/2;
+            this.left = centerX - width/2;
 //            this.area = area;
-//            this.height = height;
+            this.height = height;
             this.width = width;
         }
         
-        public double getCenterX()
+        public int getCenterX()
         {
-            return centerX;
+            return (int)centerX;
         }
 
-//        public double getCenterY()
-//        {
-//            return centerY;
-//        }
+        public int getCenterY()
+        {
+            return (int)centerY;
+        }
 //
 //        public double getArea()
 //        {
 //            return area;
 //        }
 //
-//        public double getHeight()
-//        {
-//            return height;
-//        }
-
-        public double getWidth()
+        public int getHeight()
         {
-            return width;
+            return (int)height;
+        }
+
+        public int getWidth()
+        {
+            return (int)width;
         }
         
-//        public double getTop()
-//        {
-//            return centerY - (height / 2.0);
-//        }
-//        
-//        public double getLeft()
-//        {
-//            return centerX - (width / 2.0);
-//        }
+        public int getTop()
+        {
+            return (int)top;
+        }
+        
+        public int getLeft()
+        {
+            return (int)left;
+        }
     }
     
     public static class WidthComp implements Comparator<Contour>

@@ -7,12 +7,12 @@ public class HighShooter
     private Talon rightMotor;
     private Talon leftMotor;
     
-    private double motorSpeed = 0.5;
+    private double motorSpeed = 0.7;
     
-    private DriverStation2015 driverstation;
+    private DriverStation2016 driverstation;
     
     
-    public HighShooter(int rightMotorChannel, int leftMotorChannel, DriverStation2015 driverstation)
+    public HighShooter(int rightMotorChannel, int leftMotorChannel, DriverStation2016 driverstation)
     {
         rightMotor = new Talon(rightMotorChannel);
         leftMotor = new Talon(leftMotorChannel);
