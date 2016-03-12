@@ -114,12 +114,12 @@ public class Robot extends IterativeRobot
         // Make robot objects
         driverstation = DriverStation2016.getInstance();
         autonomous = Autonomous.getInstance();
-        gyro = Gyro2016.getInstance();
         board = PowerDistroBoard467.getInstance();
         vision = VisionProcessor.getInstance();
         infra = new Infrared(4);
         rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL, infra, driverstation);
         tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
+        highShooter = new HighShooter(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, driverstation);
         
         gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic2016();
