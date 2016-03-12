@@ -923,10 +923,9 @@ public class Autonomous
 
     private void initDriveOnly()
     {
-        // Drive to auto zone. Starts on the very edge and just creeps into the zone
-        Gyro2016.getInstance();
+        // Drive until tilted up; aka on defense ramp
         addAction("Drive into auto zone", 
-                () -> forDurationSecs(2.0f), 
+                () -> gyro.isUp(), 
                 () -> {
                     roller.stop();
                     tbar.stop();
