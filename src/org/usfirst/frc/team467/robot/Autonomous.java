@@ -930,11 +930,31 @@ public class Autonomous
     private void initDriveOnly()
     {
         // Drive until tilted up; aka on defense ramp
-        addAction("Drive into auto zone", 
+        addAction("Drive to defense ramp", 
                 () -> gyro.isFlat(), 
                 () -> {
                     roller.stop();
                     tbar.stop();
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Drive up defense ramp", 
+                () -> gyro.isUp(), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Cross defense", 
+                () -> forDurationSecs(2.0f), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Drive down defense ramp", 
+                () -> gyro.isDown(), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Drive off defense ramp", 
+                () -> forDurationSecs(1.0f), 
+                () -> {
                     drive.arcadeDrive(0.0, -0.8);
                 });
         addAction("Stop driving", 
