@@ -32,7 +32,6 @@ public class Robot extends IterativeRobot
 
     private static final double MIN_DRIVE_SPEED = 0.1;
         
-    Gyro2016 gyro2016;
 
     // Robot objects
     private DriverStation2016 driverstation;
@@ -121,13 +120,14 @@ public class Robot extends IterativeRobot
         tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
         highShooter = new HighShooter(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, driverstation);
         
-        gyro2016 = Gyro2016.getInstance();
+        gyro = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic2016();
         
         
         autonomous.setDrive(drive);
         autonomous.setRoller(rollers);
         autonomous.setUltrasonic(ultrasonic);
+        autonomous.setTBar(tbar);
 //        ledStrip.setMode(Mode.OFF);
         
        
@@ -153,14 +153,14 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
         LOGGER.info("Robot disabled");
-        gyro2016.reset();
+        gyro.reset();
     }
 
     public void disabledPeriodic()
     {
         vision.updateContours();
 //        gyro.update();
-        //ledStrip.setMode(Mode.BLUE_AND_GOLD);
+//          ledStrip.setMode(Mode.BLUE_AND_GOLD);
         
 //        double angle = gyro2016.autonomous();
 //        LOGGER.debug("GYRO angle : " +  angle);
@@ -169,7 +169,7 @@ public class Robot extends IterativeRobot
 
         String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
         SmartDashboard.putString("DB/String 5", stickType);
-        //LOGGER.info("Rotation Sensor: " + tbar.rotationSensor.getAverageValue());
+//        LOGGER.info("Rotation Sensor: " + tbar.rotationSensor.getAverageValue());
     }
 
     @Override
@@ -177,12 +177,13 @@ public class Robot extends IterativeRobot
     {
         LOGGER.info("Autonomous init");
         autonomous.initAutonomous();
+        gyro.reset();
     }
 
     public void teleopInit()
     {
         LOGGER.info("Teleop init");
-        //rollers.reset();
+//        rollers.reset();
 //        gyro2016.reset();
         
     }

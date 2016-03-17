@@ -65,12 +65,22 @@ public class TBar
         }
         LOGGER.info("Rotation Sensor: " + rotationSensor.getAverageValue());
     }
+    
+    public boolean isUp(){
+        return rotationSensor.getAverageValue() >= 3016;
+   }
+    
+    public boolean isDown(){
+        return rotationSensor.getAverageValue() <= 581;
+    }
+    
     enum tBarDirection
     {
         DOWN, UP, STOP
     }
+    
+    
     //3216 is the top
     //381 is the bottom
     
-
 }
