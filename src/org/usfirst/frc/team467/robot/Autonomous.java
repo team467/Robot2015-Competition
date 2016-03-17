@@ -196,8 +196,8 @@ public class Autonomous
      */
     public void initAutonomous()
     {
-//        AutoType autonomousType = DriverStation2015.getInstance().getAutoType();
-        AutoType autonomousType = AutoType.DRIVE_ONLY;
+        AutoType autonomousType = DriverStation2015.getInstance().getAutoType();
+//        AutoType autonomousType = AutoType.DRIVE_ONLY;
         LOGGER.info("AUTO MODE " + autonomousType);
 
         // Reset actions.
@@ -226,17 +226,17 @@ public class Autonomous
             case CHEVAL_DE_FRISE:
                 initChevalDeFrise();
                 break;
-            case DRIVE_ONLY:
-                initDriveOnly();
+            case CROSS_DEFENSE:
+                initCrossDefense();
+                break;
+            case APPROACH_DEFENSE:
+                initApproachDefense();
                 break;
             case AIM:
                 initAim();
                 break;
             case HIGH_GOAL:
                 initHighGoal();
-                break;
-            case STAY_IN_PLACE:
-                initStayInPlace();
                 break;
             default:
                 initStayInPlace();
@@ -926,8 +926,32 @@ public class Autonomous
                     drive.stop();
                 });
     }
+    
+    private void initApproachDefense()
+    {
+        // Drive until tilted up; aka on defense ramp
+        addAction("Drive to defense ramp", 
+                () -> gyro.isFlat(), 
+                () -> {
+                    roller.stop();
+                    tbar.stop();
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Drive up defense ramp", 
+                () -> gyro.isUp(), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Stop driving", 
+                () -> forever(), 
+                () -> {
+                    roller.stop();
+                    tbar.stop();
+                    drive.stop();
+                });
+    }
 
-    private void initDriveOnly()
+    private void initCrossDefense()
     {
         // Drive until tilted up; aka on defense ramp
         addAction("Drive to defense ramp", 
@@ -1123,6 +1147,6 @@ public class Autonomous
      */
     enum AutoType
     {
-        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, PORTCULLIS, NEW_PORTCULLIS, DRAWBRIDGE, SALLY_PORT, CROSS_BARRIER, HIGH_GOAL, CHEVAL_DE_FRISE
+        NO_AUTO, AIM, CROSS_DEFENSE, APPROACH_DEFENSE, PORTCULLIS, NEW_PORTCULLIS, DRAWBRIDGE, SALLY_PORT, CROSS_BARRIER, HIGH_GOAL, CHEVAL_DE_FRISE
     }
 }

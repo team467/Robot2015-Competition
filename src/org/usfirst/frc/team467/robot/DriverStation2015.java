@@ -241,14 +241,17 @@ public class DriverStation2015
         switch(mode) {
 //            case "AIM":
 //                return AutoType.AIM;
-            case "STAY_IN_PLACE":
-                return AutoType.STAY_IN_PLACE;
-            case "DRIVE":
-                LOGGER.debug("DRIVE ONLY");
-                return AutoType.DRIVE_ONLY;
+            case "CROSS":
+                LOGGER.debug("Cross defense");
+                return AutoType.CROSS_DEFENSE;
+            case "APPROACH":
+                LOGGER.debug("Approach defense");
+                return AutoType.APPROACH_DEFENSE;
+            case "NO_AUTO":
+                return AutoType.NO_AUTO;
             default:
                 LOGGER.debug("NO_AUTO");
-                return AutoType.NO_AUTO;
+                return AutoType.APPROACH_DEFENSE;
         }
     }
 
