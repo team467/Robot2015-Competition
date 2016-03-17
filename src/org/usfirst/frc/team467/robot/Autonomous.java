@@ -176,10 +176,27 @@ public class Autonomous
      */
     public void initAutonomous()
     {
-        AutoType autonomousType;
+        AutoType autonomousType = AutoType.NO_AUTO;
+        int pos = 1;
         try
         {
-            autonomousType = AutoType.valueOf(SmartDashboard.getString("DB/String 9"));
+            String sAutoType = SmartDashboard.getString("DB/String 9");
+            for (AutoType auto : AutoType.values())
+            {
+                if (sAutoType.contains(auto.key))
+                {
+                    autonomousType = auto;
+                }
+            }
+            for (int i = 1; i <= 5; i++)
+            {
+                if (sAutoType.contains(String.valueOf(i)))
+                {
+                    pos = i;
+                }
+            }
+            
+//            autonomousType = AutoType.valueOf(SmartDashboard.getString("DB/String 9"));
             LOGGER.info("AUTO MODE " + autonomousType);
         }
         catch (TableKeyNotDefinedException e)
@@ -195,80 +212,20 @@ public class Autonomous
         // Set up gyro and create actions list.
         switch (autonomousType)
         {
-            case CROSS_BARRIER_1:
-                initCrossBarrier(1);
+            case CROSS_BARRIER:
+                initCrossBarrier(pos);
                 break;   
-            case CROSS_BARRIER_2:
-                initCrossBarrier(2);
+            case SALLY_PORT:
+                initSallyPort(pos);
                 break;
-            case CROSS_BARRIER_3:
-                initCrossBarrier(3);
+            case PORTCULLIS:
+                initPortcullis(pos);
                 break;
-            case CROSS_BARRIER_4:
-                initCrossBarrier(4);
-                break; 
-            case CROSS_BARRIER_5:
-                initCrossBarrier(5);
+            case DRAWBRIDGE:
+                initDrawBridge(pos);
                 break;
-            case SALLY_PORT_1:
-                initSallyPort(1);
-                break;
-            case SALLY_PORT_2:
-                initSallyPort(2);
-                break;
-            case SALLY_PORT_3:
-                initSallyPort(3);
-                break;
-            case SALLY_PORT_4:
-                initSallyPort(4);
-                break;
-            case SALLY_PORT_5:
-                initSallyPort(5);
-                break;
-            case PORTCULLIS_1:
-                initPortcullis(1);
-                break;
-            case PORTCULLIS_2:
-                initPortcullis(2);
-                break;
-            case PORTCULLIS_3:
-                initPortcullis(3);
-                break;
-            case PORTCULLIS_4:
-                initPortcullis(4);
-                break;
-            case PORTCULLIS_5:
-                initPortcullis(5);
-                break;
-            case DRAWBRIDGE_1:
-                initDrawBridge(1);
-                break;
-            case DRAWBRIDGE_2:
-                initDrawBridge(2);
-                break;
-            case DRAWBRIDGE_3:
-                initDrawBridge(3);
-                break;
-            case DRAWBRIDGE_4:
-                initDrawBridge(4);
-                break;
-            case DRAWBRIDGE_5:
-                initDrawBridge(5);
-                break;
-            case CHEVAL_DE_FRISE_1:
-                initChevalDeFrise(1);
-                break;
-            case CHEVAL_DE_FRISE_2:
-                initChevalDeFrise(2);
-                break;
-            case CHEVAL_DE_FRISE_3:
-                initChevalDeFrise(3);
-                break;
-            case CHEVAL_DE_FRISE_4:
-                initChevalDeFrise(4);
-                break;
-            case CHEVAL_DE_FRISE_5:
-                initChevalDeFrise(5);
+            case CHEVAL_DE_FRISE:
+                initChevalDeFrise(pos);
                 break;
             case DRIVE_ONLY:
                 initDriveOnly();
@@ -962,11 +919,14 @@ public class Autonomous
      */
     enum  AutoType
     {
-        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, HIGH_GOAL, 
-        PORTCULLIS_1, PORTCULLIS_2, PORTCULLIS_3, PORTCULLIS_4, PORTCULLIS_5,
-        DRAWBRIDGE_1, DRAWBRIDGE_2, DRAWBRIDGE_3, DRAWBRIDGE_4, DRAWBRIDGE_5,
-        CROSS_BARRIER_1, CROSS_BARRIER_2, CROSS_BARRIER_3, CROSS_BARRIER_4, CROSS_BARRIER_5,
-        CHEVAL_DE_FRISE_1, CHEVAL_DE_FRISE_2, CHEVAL_DE_FRISE_3, CHEVAL_DE_FRISE_4, CHEVAL_DE_FRISE_5,
-        SALLY_PORT_1, SALLY_PORT_2, SALLY_PORT_3, SALLY_PORT_4, SALLY_PORT_5
+        NO_AUTO("NO_AUTO"), AIM("AIM"), DRIVE_ONLY("DRIVE"), STAY_IN_PLACE("STAY"), HIGH_GOAL("HIGH"),
+        PORTCULLIS("PORT"), DRAWBRIDGE("BRIDGE"), CROSS_BARRIER("CROSS"), CHEVAL_DE_FRISE("CHEVAL"), SALLY_PORT("SALLY");
+        
+        public String key;
+        
+        private AutoType(String key)
+        {
+            this.key = key;
+        }
     }
 }
