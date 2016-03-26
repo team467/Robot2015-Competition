@@ -47,7 +47,7 @@ public class Robot extends IterativeRobot
 
     private BallRollers rollers;
     private TBar tbar;
-    private HighShooter highShooter;
+    private Shooter467 highShooter;
     
 //    private Lifter lifter;
 //    private Claw claw;
@@ -119,7 +119,7 @@ public class Robot extends IterativeRobot
         infra = new Infrared(4);
         rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL, infra, driverstation);
         tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
-        highShooter = new HighShooter(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, driverstation);
+        highShooter = new Shooter467(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, drive, rollers, vision);
         
         gyro2016 = Gyro2016.getInstance();
         ultrasonic = new Ultrasonic2016();
@@ -128,6 +128,7 @@ public class Robot extends IterativeRobot
         autonomous.setDrive(drive);
         autonomous.setRoller(rollers);
         autonomous.setUltrasonic(ultrasonic);
+        autonomous.setShooter(highShooter);
 //        ledStrip.setMode(Mode.OFF);
         
        
@@ -381,7 +382,19 @@ public class Robot extends IterativeRobot
         rollers.runManipulator(driverstation.getManipPosition());
         tbar.launchTBar(driverstation.getTBarDirection());
         driverstation.setIntakeLED(infra.getInfrared());
-        highShooter.shoot();
+        
+        if (driverstation.aimShooterButton())
+        {
+            highShooter.aimAndShoot();
+        }
+        else if (driverstation.highShooterButton())
+        {
+            highShooter.shootNow();
+        }
+        else
+        {
+            highShooter.stop();
+        }
         
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());

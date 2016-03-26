@@ -24,14 +24,8 @@ public class HighShooter
     }
     public void shoot()
     {
-        if (driverstation.highShooterReady()) {
-            rightMotor.set(-motorSpeed);
-            leftMotor.set(motorSpeed);
-        }
-        else {
-            stop();
-        }
-        
+        rightMotor.set(-motorSpeed);
+        leftMotor.set(motorSpeed);
     }
 
 }

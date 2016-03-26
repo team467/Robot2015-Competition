@@ -99,7 +99,7 @@ public class Shooter467
         if (isPrimed)
         {
             leftMotor.set(LEFT_SPEED);
-            rightMotor.set(RIGHT_SPEED);
+            rightMotor.set(-RIGHT_SPEED);
             return true;
         }
         
@@ -111,7 +111,7 @@ public class Shooter467
                 isPrimed = true;
             }
             leftMotor.set(LEFT_SPEED);
-            rightMotor.set(RIGHT_SPEED);
+            rightMotor.set(-RIGHT_SPEED);
             return isPrimed;
         }
         
@@ -138,5 +138,13 @@ public class Shooter467
         {
             roller.rollIn();
         }
+    }
+    
+    public void stop()
+    {
+        leftMotor.set(0);
+        rightMotor.set(0);
+        isPriming = false;
+        isPrimed = false;
     }
 }

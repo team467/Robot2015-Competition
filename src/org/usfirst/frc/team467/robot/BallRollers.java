@@ -81,21 +81,22 @@ public class BallRollers
     public void rollIn()
     {
         rollerMotor.set(-rollerInMotorSpeed);
+        safetyRoller.feed();
     }
     public void rollOut()
     {
         rollerMotor.set(rollerOutMotorSpeed);
+        safetyRoller.feed();
     }
     
-    public void runRoller (RollerDirection rollerDirection) {
+    public void runRoller(RollerDirection rollerDirection) {
         
         switch(rollerDirection) {
             case IN:
-                if (!isLoaded() || driverstation.highShooterReady())
+                if (!isLoaded())
                 {
                     LOGGER.info("IN");
                     rollIn();
-                    safetyRoller.feed();
                 }
                 else {
                     stopRoller();
@@ -104,7 +105,6 @@ public class BallRollers
             case OUT:
                 LOGGER.info("OUT");
                 rollOut();
-                safetyRoller.feed();
                 break;
             case STOP:
                 stopRoller();
@@ -112,7 +112,7 @@ public class BallRollers
         }
     }
         
-    public void runManipulator (ManipIntent manipPosition) {
+    public void runManipulator(ManipIntent manipPosition) {
         String logstring;
         LOGGER.info("manipCurrent=" + board.getManipCurrent());
         
