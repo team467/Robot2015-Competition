@@ -89,7 +89,16 @@ public class Robot extends IterativeRobot
             // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
 //        drive = new makeTalonTank(1, 0, 3, 2);
-        
+            
+         // Make robot objects
+            driverstation = DriverStation2016.getInstance();
+            autonomous = Autonomous.getInstance();
+            board = PowerDistroBoard467.getInstance();
+            vision = VisionProcessor.getInstance();
+            infra = new Infrared(4);
+            rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL, infra, driverstation);
+            tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
+            
             if(robotID == RobotID.KITBOT)
             {    
                 drive = TankDrive.makeTalonTank(
@@ -98,6 +107,8 @@ public class Robot extends IterativeRobot
                         RobotMap.BACK_LEFT_KITBOT,
                         RobotMap.BACK_RIGHT_KITBOT);
                 LOGGER.info("Kitbot Set");
+                highShooter = new Shooter467(null, null, drive, rollers, vision);
+
             }
             else if (robotID == RobotID.TANK2016)
             {
@@ -108,17 +119,9 @@ public class Robot extends IterativeRobot
                         RobotMap.BACK_LEFT_2016,
                         RobotMap.BACK_RIGHT_2016);
                 LOGGER.info("CANTalon Set");
+                highShooter = new Shooter467(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, drive, rollers, vision);
+
             }
-            
-            // Make robot objects
-            driverstation = DriverStation2016.getInstance();
-            autonomous = Autonomous.getInstance();
-            board = PowerDistroBoard467.getInstance();
-            vision = VisionProcessor.getInstance();
-            infra = new Infrared(4);
-            rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL, infra, driverstation);
-            tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
-            highShooter = new Shooter467(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, drive, rollers, vision);
             
             gyro = Gyro2016.getInstance();
             ultrasonic = new Ultrasonic2016();
@@ -383,14 +386,14 @@ public class Robot extends IterativeRobot
         tbar.launchTBar(driverstation.getTBarDirection());
         driverstation.setIntakeLED(infra.getInfrared());
         
-        if (driverstation.aimShooterButton())
-        {
-            highShooter.aimAndShoot();
-        }
-        else if (driverstation.highShooterButton())
+        if (driverstation.highShooterButton())
         {
             highShooter.shootNow();
         }
+//        else if (driverstation.aimShooterButton())
+//        {
+//            highShooter.aimAndShoot();
+//        }
         else
         {
             highShooter.stop();

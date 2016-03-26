@@ -160,7 +160,7 @@ public class TankDrive implements Driveable
                 speed = lastSpeed - ACCELERATION;
             }
         }
-        MIN_SPEED = Double.valueOf((SmartDashboard.getString("DB/String 5")));
+        MIN_SPEED = Double.valueOf((SmartDashboard.getString("DB/String 1")));
         LOGGER.debug(MIN_SPEED);
         speed = (speed >= MIN_SPEED) ? speed : 0;
         LOGGER.debug("LIMITED SPEED: " + speed);
@@ -176,9 +176,9 @@ public class TankDrive implements Driveable
         prevLeft = leftSpeed;
         prevRight = rightSpeed;
 
-        final double LEFT_SCALE = Double.valueOf((SmartDashboard.getString("DB/String 5"))) / 100.0;
+        final double LEFT_SCALE = Double.valueOf((SmartDashboard.getString("DB/String 2"))) / 100.0;
         LOGGER.debug(LEFT_SCALE);
-        final double RIGHT_SCALE = Double.valueOf((SmartDashboard.getString("DB/String 5"))) / 100.0;
+        final double RIGHT_SCALE = Double.valueOf((SmartDashboard.getString("DB/String 3"))) / 100.0;
         LOGGER.debug(RIGHT_SCALE);
         fl.set(square(-leftSpeed) * LEFT_SCALE);
         bl.set(square(-leftSpeed) * LEFT_SCALE);
