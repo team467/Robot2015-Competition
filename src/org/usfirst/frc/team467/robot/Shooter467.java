@@ -80,6 +80,7 @@ public class Shooter467
         }
 //        if (widest.getCenterX() - vision.getHorizontalCenter()) 
         int direction = widest.getCenterX() > horizontalCenter ? -1 : 1;
+        LOGGER.debug("direction=" + direction);
         final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/horizontalCenter));
         drive.turnDrive(turnSpeed);
         LOGGER.info("Turned with turnSpeed " + turnSpeed);
@@ -90,14 +91,13 @@ public class Shooter467
     }
     
     /**
-     * xxxxxxxxxx
-     * 
      * @param time how long to prime before shooting, in seconds
      */
     private boolean prime(double time)
     {
         if (isPrimed)
         {
+            LOGGER.debug("Primed");
             leftMotor.set(LEFT_SPEED);
             rightMotor.set(-RIGHT_SPEED);
             return true;
@@ -105,6 +105,7 @@ public class Shooter467
         
         if (isPriming)
         {
+            LOGGER.debug("Primimg");
             final long now = System.currentTimeMillis();
             if ((time * 1000) > now - timePrimeStarted)
             {
@@ -116,6 +117,7 @@ public class Shooter467
         }
         
         // Wasn't priming or primed
+        LOGGER.debug("Start Priming");
         timePrimeStarted = System.currentTimeMillis();
         isPriming = true;
         return false;
@@ -123,25 +125,30 @@ public class Shooter467
     
     public void shootNow()
     {
+        LOGGER.debug("Prime and shoot");
         if (prime(5.0))
         {
+            LOGGER.debug("SHOOT!");
             roller.rollIn();
         }
     }
     
     public void aimAndShoot()
     {
+        LOGGER.debug("Aim, prime, and shoot");
         // Bypass short-circuit logic on &&
         final boolean isOnTarget = aim(30);
         final boolean isPrimed = prime(5.0);
         if (isOnTarget && isPrimed)
         {
+            LOGGER.debug("SHOOT!");
             roller.rollIn();
         }
     }
     
     public void stop()
     {
+        LOGGER.debug("stop");
         leftMotor.set(0);
         rightMotor.set(0);
         isPriming = false;
