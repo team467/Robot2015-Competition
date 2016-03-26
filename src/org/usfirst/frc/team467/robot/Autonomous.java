@@ -154,7 +154,8 @@ public class Autonomous
         this.shooter = shooter;
     }
 
-    public void setTBar(TBar tbar){
+    public void setTBar(TBar tbar)
+    {
         this.tbar = tbar;
     }
     
@@ -180,7 +181,7 @@ public class Autonomous
      */
     public void initAutonomous()
     {
-        AutoType autonomousType;
+//            AutoType autonomousType;
 //        try
 //        {
 //            autonomousType = AutoType.valueOf(SmartDashboard.getString("DB/String 2"));
@@ -192,11 +193,15 @@ public class Autonomous
 //            LOGGER.info("Doing AutoType STAY_IN_PLACE");
 //            autonomousType = AutoType.STAY_IN_PLACE;
 //        }
-        autonomousType = AutoType.CROSS_BARRIER_1;
+
+        AutoType autonomousType = DriverStation2016.getInstance().getAutoType();
+//        AutoType autonomousType = AutoType.DRIVE_ONLY;
+        LOGGER.info("AUTO MODE " + autonomousType);
 
         // Reset actions.
         actions.clear();
         resetActionStartTime();
+        gyro.reset();
         
         // create actions list.
         switch (autonomousType)
@@ -276,17 +281,17 @@ public class Autonomous
             case CHEVAL_DE_FRISE_5:
                 initChevalDeFrise(5);
                 break;
-            case DRIVE_ONLY:
-                initDriveOnly();
-                break;
             case AIM:
                 initAim();
+                break;
+            case STAY_IN_PLACE:
+                initStayInPlace();
                 break;
 //            case HIGH_GOAL:
 //                initHighGoal();
 //                break;
-            case STAY_IN_PLACE:
-                initStayInPlace();
+            case APPROACH_DEFENSE:
+                initApproachDefense();
                 break;
             default:
                 initStayInPlace();
@@ -763,17 +768,85 @@ public class Autonomous
 //                    drive.stop();
 //                });
 //    }
-
-    private void initDriveOnly()
+//    private void initHighGoal()
+//    {
+//        // Move ahead over barrier, align to high goal, take shot
+//        final int marginOfError = 30;
+//        
+//        addAction("Rotate while square with widest is not centered",
+//                () -> forever(),
+//                () -> {
+//                    seekWidestContour(marginOfError);
+//                });
+//        addAction("extend ball roller",
+//                () -> seekAngle(marginOfError),
+//                () -> {
+//                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+//                });
+//        addAction("Shoot the high goal",
+//                () -> seekAngle(marginOfError),
+//                ()-> {
+//                    //TODO
+//                    //Use the new high shooter method
+//                });
+//        addAction("Stop driving",
+//                () -> forever(),
+//                () -> {
+//                    drive.stop();
+//                });
+//    }
+    
+    private void initApproachDefense()
     {
-        // drive until robot is up aka on defense
-        
-        addAction("Drive into auto zone", 
+        // Drive until tilted up; aka on defense ramp
+        addAction("Drive to defense ramp", 
                 () -> gyro.isFlat(), 
                 () -> {
                     roller.stop();
                     tbar.stop();
-                    drive.arcadeDrive(0.0, -0.5);
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Drive up defense ramp", 
+                () -> gyro.isUp(), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Stop driving", 
+                () -> forever(), 
+                () -> {
+                    roller.stop();
+                    tbar.stop();
+                    drive.stop();
+                });
+    }
+
+    private void initCrossDefense()
+    {
+        // Drive until tilted up; aka on defense ramp
+        addAction("Drive to defense ramp", 
+                () -> gyro.isFlat(), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Drive up defense ramp", 
+                () -> gyro.isUp(), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Cross defense", 
+                () -> forDurationSecs(2.0f), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Drive down defense ramp", 
+                () -> gyro.isDown(), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
+                });
+        addAction("Drive off defense ramp", 
+                () -> forDurationSecs(1.0f), 
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
                 });
         addAction("Stop driving", 
                 () -> forever(), 
@@ -890,7 +963,7 @@ public class Autonomous
      */
     enum  AutoType
     {
-        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, HIGH_GOAL, 
+        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, HIGH_GOAL, APPROACH_DEFENSE,
         PORTCULLIS_1, PORTCULLIS_2, PORTCULLIS_3, PORTCULLIS_4, PORTCULLIS_5,
         DRAWBRIDGE_1, DRAWBRIDGE_2, DRAWBRIDGE_3, DRAWBRIDGE_4, DRAWBRIDGE_5,
         CROSS_BARRIER_1, CROSS_BARRIER_2, CROSS_BARRIER_3, CROSS_BARRIER_4, CROSS_BARRIER_5,

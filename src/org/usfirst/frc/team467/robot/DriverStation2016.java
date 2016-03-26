@@ -235,12 +235,19 @@ public class DriverStation2016
         String mode = SmartDashboard.getString("Auto Selector", "invalid").toUpperCase();
         
         switch(mode) {
-            case "AIM":
-                return AutoType.AIM;
-            case "STAY_IN_PLACE":
-                return AutoType.STAY_IN_PLACE;
-            default:
+//            case "AIM":
+//                return AutoType.AIM;
+            case "CROSS":
+                LOGGER.debug("Cross defense");
+                return AutoType.CROSS_BARRIER_1;
+            case "APPROACH":
+                LOGGER.debug("Approach defense");
+                return AutoType.APPROACH_DEFENSE;
+            case "NO_AUTO":
                 return AutoType.NO_AUTO;
+            default:
+                LOGGER.debug("NO_AUTO");
+                return AutoType.APPROACH_DEFENSE;
         }
     }
 

@@ -12,7 +12,9 @@ import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+
 import edu.wpi.first.wpilibj.vision.AxisCamera;
+
 import edu.wpi.first.wpilibj.vision.USBCamera;
 
 public class CameraDashboard extends Thread
@@ -98,7 +100,7 @@ public class CameraDashboard extends Thread
             
             // the camera name (ex "cam0") can be found through the roborio web interface
             cameraServer.startAutomaticCapture(driveCam);
-            
+
             cameraExists = true;
             LOGGER.debug("Camera initialized");
         }

@@ -132,6 +132,42 @@ public class Robot extends IterativeRobot
         
        
         // Initialize the camera dashboard and launch in separate thread.
+
+            
+            if(robotID == RobotID.KITBOT)
+            {    
+                drive = TankDrive.makeTalonTank(1, 0, 2, 3);
+                LOGGER.info("Kitbot Set");
+            }
+            else if (robotID == RobotID.TANK2016)
+            {
+                //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+                drive = TankDrive.makeCANTalonTank(7, 5, 2, 6);
+                LOGGER.info("CANTalon Set");
+            }
+            
+            // Make robot objects
+            driverstation = DriverStation2016.getInstance();
+            autonomous = Autonomous.getInstance();
+            gyro = Gyro2016.getInstance();
+            board = PowerDistroBoard467.getInstance();
+            vision = VisionProcessor.getInstance();
+            infra = new Infrared(4);
+            ultrasonic = new Ultrasonic2016();
+            //ledStrip.setMode(Mode.OFF);
+            
+            rollers = new BallRollers(3, 0, infra, driverstation);
+            tbar = new TBar(1);
+            highShooter = new HighShooter(2, 3, driverstation);
+
+            autonomous.setDrive(drive);
+            autonomous.setRoller(rollers);
+            autonomous.setTBar(tbar);
+            autonomous.setUltrasonic(ultrasonic);
+            //ledStrip.setMode(Mode.OFF);
+            
+      
+            // Initialize the camera dashboard and launch in separate thread.
         cameraDashboard = CameraDashboard.getInstance();
         cameraDashboard.setDrive(drive);
         if (cameraDashboard.cameraExists()) 
@@ -209,8 +245,8 @@ public class Robot extends IterativeRobot
         LOGGER.debug("Update powerDistroBoard");
         autonomous.updateAutonomousPeriodic();
         
-        LOGGER.debug("Gyro angle: " + gyro.getYawAngle());
-        LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
+        LOGGER.debug("Yaw angle: " + gyro.getYawAngle());
+        LOGGER.debug("Tilt angle: " + gyro.getTiltAngle());
 
         
 //        ledStrip.setMode(Mode.RAINBOW);
