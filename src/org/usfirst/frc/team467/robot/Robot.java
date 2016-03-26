@@ -32,7 +32,6 @@ public class Robot extends IterativeRobot
 
     private static final double MIN_DRIVE_SPEED = 0.1;
         
-    Gyro2016 gyro2016;
 
     // Robot objects
     private DriverStation2016 driverstation;
@@ -91,55 +90,55 @@ public class Robot extends IterativeRobot
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
 //        drive = new makeTalonTank(1, 0, 3, 2);
         
-        if(robotID == RobotID.KITBOT)
-        {    
-            drive = TankDrive.makeTalonTank(
-                    RobotMap.FRONT_LEFT_KITBOT,
-                    RobotMap.FRONT_RIGHT_KITBOT,
-                    RobotMap.BACK_LEFT_KITBOT,
-                    RobotMap.BACK_RIGHT_KITBOT);
-            LOGGER.info("Kitbot Set");
-        }
-        else if (robotID == RobotID.TANK2016)
-        {
-            //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
-            drive = TankDrive.makeCANTalonTank(
-                    RobotMap.FRONT_LEFT_2016,
-                    RobotMap.FRONT_RIGHT_2016,
-                    RobotMap.BACK_LEFT_2016,
-                    RobotMap.BACK_RIGHT_2016);
-            LOGGER.info("CANTalon Set");
-        }
-        
-        // Make robot objects
-        driverstation = DriverStation2016.getInstance();
-        autonomous = Autonomous.getInstance();
-        board = PowerDistroBoard467.getInstance();
-        vision = VisionProcessor.getInstance();
-        infra = new Infrared(4);
-        rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL, infra, driverstation);
-        tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
-        highShooter = new Shooter467(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, drive, rollers, vision);
-        
-        gyro2016 = Gyro2016.getInstance();
-        ultrasonic = new Ultrasonic2016();
-        
-        
-        autonomous.setDrive(drive);
-        autonomous.setRoller(rollers);
-        autonomous.setUltrasonic(ultrasonic);
-        autonomous.setShooter(highShooter);
-//        ledStrip.setMode(Mode.OFF);
-        
-       
-        // Initialize the camera dashboard and launch in separate thread.
-        cameraDashboard = CameraDashboard.getInstance();
-        cameraDashboard.setDrive(drive);
-        if (cameraDashboard.cameraExists()) 
-        {
-            LOGGER.debug("Camera Starting");
-            cameraDashboard.start();
-        }
+            if(robotID == RobotID.KITBOT)
+            {    
+                drive = TankDrive.makeTalonTank(
+                        RobotMap.FRONT_LEFT_KITBOT,
+                        RobotMap.FRONT_RIGHT_KITBOT,
+                        RobotMap.BACK_LEFT_KITBOT,
+                        RobotMap.BACK_RIGHT_KITBOT);
+                LOGGER.info("Kitbot Set");
+            }
+            else if (robotID == RobotID.TANK2016)
+            {
+                //drive = new SwerveDrive(frontleft, backleft, frontright, backright);
+                drive = TankDrive.makeCANTalonTank(
+                        RobotMap.FRONT_LEFT_2016,
+                        RobotMap.FRONT_RIGHT_2016,
+                        RobotMap.BACK_LEFT_2016,
+                        RobotMap.BACK_RIGHT_2016);
+                LOGGER.info("CANTalon Set");
+            }
+            
+            // Make robot objects
+            driverstation = DriverStation2016.getInstance();
+            autonomous = Autonomous.getInstance();
+            board = PowerDistroBoard467.getInstance();
+            vision = VisionProcessor.getInstance();
+            infra = new Infrared(4);
+            rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL, infra, driverstation);
+            tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
+            highShooter = new Shooter467(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, drive, rollers, vision);
+            
+            gyro = Gyro2016.getInstance();
+            ultrasonic = new Ultrasonic2016();
+            
+            
+            autonomous.setDrive(drive);
+            autonomous.setRoller(rollers);
+            autonomous.setUltrasonic(ultrasonic);
+            autonomous.setShooter(highShooter);
+            autonomous.setTBar(tbar);
+    //        ledStrip.setMode(Mode.OFF);
+            
+            // Initialize the camera dashboard and launch in separate thread.
+            cameraDashboard = CameraDashboard.getInstance();
+            cameraDashboard.setDrive(drive);
+            if (cameraDashboard.cameraExists()) 
+            {
+                LOGGER.debug("Camera Starting");
+                cameraDashboard.start();
+            }
             
             Calibration.init(drive);
             
@@ -154,14 +153,14 @@ public class Robot extends IterativeRobot
     public void disabledInit()
     {
         LOGGER.info("Robot disabled");
-        gyro2016.reset();
+        gyro.reset();
     }
 
     public void disabledPeriodic()
     {
         vision.updateContours();
 //        gyro.update();
-        //ledStrip.setMode(Mode.BLUE_AND_GOLD);
+//          ledStrip.setMode(Mode.BLUE_AND_GOLD);
         
 //        double angle = gyro2016.autonomous();
 //        LOGGER.debug("GYRO angle : " +  angle);
@@ -170,7 +169,7 @@ public class Robot extends IterativeRobot
 
         String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
         SmartDashboard.putString("DB/String 5", stickType);
-        //LOGGER.info("Rotation Sensor: " + tbar.rotationSensor.getAverageValue());
+//        LOGGER.info("Rotation Sensor: " + tbar.rotationSensor.getAverageValue());
     }
 
     @Override
@@ -178,12 +177,13 @@ public class Robot extends IterativeRobot
     {
         LOGGER.info("Autonomous init");
         autonomous.initAutonomous();
+        gyro.reset();
     }
 
     public void teleopInit()
     {
         LOGGER.info("Teleop init");
-        //rollers.reset();
+//        rollers.reset();
 //        gyro2016.reset();
         
     }
@@ -209,8 +209,8 @@ public class Robot extends IterativeRobot
         LOGGER.debug("Update powerDistroBoard");
         autonomous.updateAutonomousPeriodic();
         
-        LOGGER.debug("Gyro angle: " + gyro.getYawAngle());
-        LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
+        LOGGER.debug("Yaw angle: " + gyro.getYawAngle());
+        LOGGER.debug("Tilt angle: " + gyro.getTiltAngle());
 
         
 //        ledStrip.setMode(Mode.RAINBOW);

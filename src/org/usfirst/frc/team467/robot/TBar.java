@@ -31,6 +31,7 @@ public class TBar
     
     public void launchTBar(tBarDirection tBarDirection)
     {
+        LOGGER.info("tBarDirection=" + tBarDirection);
 //        if (board.getTBarCurrent() > MAX_CURRENT) {
 //          tBarDirection = tBarDirection.STOP;
 //        }
@@ -65,12 +66,22 @@ public class TBar
         }
         LOGGER.info("Rotation Sensor: " + rotationSensor.getAverageValue());
     }
+    
+    public boolean isUp(){
+        return rotationSensor.getAverageValue() >= 3016;
+   }
+    
+    public boolean isDown(){
+        return rotationSensor.getAverageValue() <= 581;
+    }
+    
     enum tBarDirection
     {
         DOWN, UP, STOP
     }
+    
+    
     //3216 is the top
     //381 is the bottom
     
-
 }
