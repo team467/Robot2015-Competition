@@ -468,59 +468,53 @@ public class Autonomous
         //back up to open door and then turn to the left to allow entrance
         //move in on an angle straighten out; move forwards; align with low goal and shoot
         
-        addAction("Move while gyro is flat",
+        addAction("Move backwards while gyro is flat",
                 () -> gyro.isFlat(), //||tbar.isDown(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.7);
                     tbar.launchTBar(tBarDirection.UP);
                 });
-        addAction("Move TBar arm down",
+        addAction("lower TBar",
                 () -> gyro.isDown() && forDurationSecs(1.0f), //tbar.isUp(),
                 () -> {
                     drive.stop();
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
-        addAction("move forwards",
+        addAction("drive away",
                 () -> forDurationSecs(0.3f), //tbar.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, -0.7);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
-        addAction("Turn to the left to open the door",
+        addAction("Turn left to open the door",
                 () -> shouldTurnLeft(-60), //||tbar.isUp(),
                 () -> {
                     drive.turnDrive(0.4);
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
-        addAction("Move backwards",
+        addAction("get into door",
                 () -> forDurationSecs(0.5f),
                 () -> {
                     drive.arcadeDrive(0.0, 0.5);
                 });
-        addAction("Turn right to straighten up",
+        addAction("Turn right to straighten",
                 () -> shouldTurnRight(-10), //||tbar.isDown(),
                 () -> {
                     drive.turnDrive(-0.4);
                     tbar.launchTBar(tBarDirection.UP);
                 });
-        addAction("Move while gyro is flat, up, or down",
-                () -> ( gyro.isFlat() || gyro.isUp() || gyro.isDown() ) && forDurationSecs(0.7f),
+        addAction("Move for 0.7 seconds",
+                () -> forDurationSecs(0.7f),
                 () -> {
                     drive.arcadeDrive(0.0, 0.8);
                 });
-        if (!gyro.isFlat()){
-            addAction("go fowards while not flat",
-                    () -> !gyro.isFlat(),
-                    () -> {
-                        drive.arcadeDrive(0.0, 0.5);
-                    });
-        }
         addAction("move ahead",
                 () -> forDurationSecs(0.7f),
                 () -> {
                     drive.arcadeDrive(0.0, 0.5);
                 });
         
+
         robotTurn180();
         
         if(position == 1 || position == 2){
@@ -550,30 +544,30 @@ public class Autonomous
         //move under portcullis with the arm down the whole time
         // return arm to position and align with low goal to shoot
         
-        addAction("Move while gyro is flat",
+        addAction("approach barrier",
                 () -> gyro.isFlat(), //||tbar.isUp();
                 () -> {
                     drive.arcadeDrive(0.0, 0.7);
                 });
-        addAction("for 1 sec lower TBar",
+        addAction("lower TBar",
                 () -> forDurationSecs(1.0f), //tbar.isUp(),
                 () -> {
                     drive.stop();
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
-        addAction("move backwards",
+        addAction("get TBar under",
                 () -> gyro.isDown(),//tbar.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.4);
                     tbar.launchTBar(tBarDirection.DOWN); 
                 });
-        addAction("lift tbar",
+        addAction("lift tbar and drive",
                 () -> (gyro.isFlat() || gyro.isUp()) && forDurationSecs(0.5f), //tbar.isDown()
                 () -> {
-                    drive.arcadeDrive(0.0, 0.5);
+                    drive.arcadeDrive(0.0, 0.8);
                     tbar.launchTBar(tBarDirection.UP);
                 });
-        addAction("go ahead",
+        addAction("completey cross barrier",
                 () -> forDurationSecs(0.5f),
                 () -> {
                     drive.arcadeDrive(0.0, 0.5);
@@ -609,13 +603,13 @@ public class Autonomous
         //lower tbar as robot moves away
         //go over bridge and align for low goal
         
-        addAction("Move while gyro is flat",
+        addAction("approach",
                 () -> gyro.isFlat(),
                 () -> {
                     LOGGER.debug("Gyro angle: " + gyro.getTiltAngle());
                     drive.arcadeDrive(0.0, 0.7);
                 });
-        addAction("approach",
+        addAction("lower tbar",
                 () -> forDurationSecs(1.0f), //||tbar.isUp(),
                 () -> {
                     drive.stop();
@@ -628,7 +622,7 @@ public class Autonomous
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
         addAction("move ahead",
-                () -> gyro.isFlat() || gyro.isDown(), //tbar.isUp(),
+                () -> forDurationSecs(0.6f),
                 () -> {
                     drive.arcadeDrive(0.0, 0.6);
                     tbar.launchTBar(tBarDirection.DOWN);
@@ -665,7 +659,7 @@ public class Autonomous
         }
         if (position == 5){
             shootToRight(5);
-        }
+        } 
         
 
         addAction("Done",
@@ -682,24 +676,24 @@ public class Autonomous
         //approach and lower tbar to bring plank down
         //move over barrier and align with low goal to shoot
         
-        addAction("move while flat",
+        addAction("approach",
                 () -> gyro.isFlat(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.5);
                 });
-        addAction("for 0.7 secs ",
+        addAction("lower tbar",
                 () -> forDurationSecs(0.7f),
                 () -> {
                     drive.stop();
                     tbar.launchTBar(tBarDirection.DOWN);
                 });
-        addAction("Move while robot is down",
+        addAction("cross barrier",
                 () -> forDurationSecs(0.7f), //||tbar.isDown(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.4);
                     tbar.launchTBar(tBarDirection.UP);
                 });
-        addAction("move arm up and move ahead while up",
+        addAction("raise tbar and continue crossing",
                 () -> gyro.isUp(), //||tbar.isDown(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.4);
@@ -712,7 +706,7 @@ public class Autonomous
                         drive.arcadeDrive(0.0, 0.5);
                     });
         }
-        addAction("move ahead",
+        addAction("distance self from barrier",
                 () -> forDurationSecs(0.7f),
                 () -> {
                     drive.arcadeDrive(0.0, 0.5);
