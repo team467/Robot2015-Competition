@@ -165,7 +165,7 @@ public class Robot extends IterativeRobot
 //        double angle = gyro2016.autonomous();
 //        LOGGER.debug("GYRO angle : " +  angle);
         drive.stop();
-        drive.feedMotors();
+        drive.feedMotorSafety();
 
         String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
         SmartDashboard.putString("DB/String 5", stickType);
