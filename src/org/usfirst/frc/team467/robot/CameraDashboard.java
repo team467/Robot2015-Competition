@@ -10,7 +10,6 @@ import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.vision.AxisCamera;
@@ -45,7 +44,7 @@ public class CameraDashboard extends Thread
     private long lastTimeStamp = System.currentTimeMillis();
     
     Image frame;
-    CameraServer cameraServer;
+    CameraServer467 cameraServer;
     private USBCamera driveCam;
     private AxisCamera shooterCam;
     private CamView view;
@@ -95,7 +94,7 @@ public class CameraDashboard extends Thread
             driveCam.setFPS(30);
             driveCam.openCamera();
             driveCam.startCapture();
-            cameraServer = CameraServer.getInstance();
+            cameraServer = CameraServer467.getInstance();
 //            cameraServer.setQuality(50);
             
             // the camera name (ex "cam0") can be found through the roborio web interface
