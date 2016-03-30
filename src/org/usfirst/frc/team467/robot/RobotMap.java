@@ -48,12 +48,12 @@ public class RobotMap
     public static final int BACK_LEFT_2016 = 2;
     public static final int BACK_RIGHT_2016 = 6;
     
-    // Game Piece Motor IDs - PWMTalon, RoboRio
-    public static final int TBAR_MOTOR_CHANNEL = 5;
-    public static final int MANIPULATOR_MOTOR_CHANNEL = 4;
-    public static final int ROLLER_MOTOR_CHANNEL = 3;
-    public static final int LEFT_SHOOTER_MOTOR_CHANNEL = 2; //TODO
-    public static final int RIGHT_SHOOTER_MOTOR_CHANNEL = 3; //TODO
+    // Game Piece Motor IDs - PWM
+    public static final int TBAR_MOTOR_CHANNEL = 1;
+    public static final int MANIPULATOR_MOTOR_CHANNEL = 0;
+    public static final int ROLLER_MOTOR_CHANNEL = 3; // CAN
+    public static final int LEFT_SHOOTER_MOTOR_CHANNEL = 2;
+    public static final int RIGHT_SHOOTER_MOTOR_CHANNEL = 3;
     
     // Game Piece Motor Power Channels
     public static final int TBAR_POWER_CHANNEL = 3;
