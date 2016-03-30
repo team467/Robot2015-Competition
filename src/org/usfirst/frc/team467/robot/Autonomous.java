@@ -320,13 +320,13 @@ public class Autonomous
     
     private void robotTurn180(){
         if (shouldTurnLeft(-170)){
-            addAction("Turn to zero degrees",
+            addAction("Turn fowards",
                     () -> gyro.isFlat() && shouldTurnLeft(-170),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
-            addAction("Turn to zero degrees",
+            addAction("Turn fowards",
                     () -> gyro.isFlat() && shouldTurnRight(170),
                     () -> {
                         drive.turnDrive(-0.4);
@@ -354,8 +354,8 @@ public class Autonomous
                         LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                     });
         }
-            addAction("move while the ultrasound is more than 12 inches from the wall",
-                    () -> ultrasonic.getRangeInches() > 12,
+            addAction("move while the ultrasound is more than 2 feet from the wall",
+                    () -> ultrasonic.getRangeInches() > 24,
                     () -> {
                         drive.arcadeDrive(0.0, -0.6);
                     });
@@ -396,8 +396,8 @@ public class Autonomous
                         LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
                     });
         }
-        addAction("move while the ultrasound is more than 12 inches from the wall",
-                () -> ultrasonic.getRangeInches() > 12,
+        addAction("move while the ultrasound is more than 2 feet from the wall",
+                () -> ultrasonic.getRangeInches() > 24,
                 () -> {
                     drive.arcadeDrive(0.0, -0.5);
                 });
@@ -420,17 +420,21 @@ public class Autonomous
                 });
     }
     
-    
     private void initCrossBarrier(int position){
         
         //Moves over barriers using the tilt gyrometer to detect when the robot is going up, down, or driving flat
         //Moves towards the walls using the ultrasonic sensor
         //and turns (counter)clockwise with the yaw gyrometer to line up for the low shoot
         
-        addAction("Move while gyro is up or flat",
-                () -> gyro.isFlat() || gyro.isUp(),
+        addAction("Move while gyro is up",
+                () -> gyro.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, -0.7);
+                });
+        addAction("drive for 1 seconds",
+                () -> forDurationSecs(1.0f),
+                () -> {
+                    drive.arcadeDrive(0.0, -0.8);
                 });
         addAction("Move while gyro is down",
                 () -> gyro.isDown(),

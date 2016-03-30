@@ -248,6 +248,57 @@ public class DriverStation2016
             default:
                 LOGGER.debug("NO_AUTO");
                 return AutoType.APPROACH_DEFENSE;
+                
+            case "CROSS_BARRIER_1":
+                return AutoType.CROSS_BARRIER_1;   
+            case "CROSS_BARRIER_2":
+                return AutoType.CROSS_BARRIER_2;
+            case "CROSS_BARRIER_3":
+                return AutoType.CROSS_BARRIER_3;
+            case "CROSS_BARRIER_4":
+                return AutoType.CROSS_BARRIER_4;
+            case "CROSS_BARRIER_5":
+                return AutoType.CROSS_BARRIER_5;
+            case "SALLY_PORT_1":
+                return AutoType.SALLY_PORT_1;
+            case "SALLY_PORT_2":
+                return AutoType.SALLY_PORT_2;
+            case "SALLY_PORT_3":
+                return AutoType.SALLY_PORT_3;
+            case "SALLY_PORT_4":
+                return AutoType.SALLY_PORT_3;
+            case "SALLY_PORT_5":
+                return AutoType.SALLY_PORT_5;
+            case "PORTCULLIS_1":
+                return AutoType.PORTCULLIS_1;
+            case "PORTCULLIS_2":
+                return AutoType.PORTCULLIS_2;
+            case "PORTCULLIS_3":
+                return AutoType.PORTCULLIS_3;
+            case "PORTCULLIS_4":
+                return AutoType.PORTCULLIS_4;
+            case "PORTCULLIS_5":
+                return AutoType.PORTCULLIS_5;
+            case "DRAWBRIDGE_1":
+                return AutoType.DRAWBRIDGE_1;
+            case "DRAWBRIDGE_2":
+                return AutoType.DRAWBRIDGE_2;
+            case "DRAWBRIDGE_3":
+                return AutoType.DRAWBRIDGE_3;
+            case "DRAWBRIDGE_4":
+                return AutoType.DRAWBRIDGE_4;
+            case "DRAWBRIDGE_5":
+                return AutoType.DRAWBRIDGE_5;
+            case "CHEVAL_DE_FRISE_1":
+                return AutoType.CHEVAL_DE_FRISE_1;
+            case "CHEVAL_DE_FRISE_2":
+                return AutoType.CHEVAL_DE_FRISE_2;
+            case "CHEVAL_DE_FRISE_3":
+                return AutoType.CHEVAL_DE_FRISE_3;
+            case "CHEVAL_DE_FRISE_4":
+                return AutoType.CHEVAL_DE_FRISE_4;
+            case "CHEVAL_DE_FRISE_5":
+                return AutoType.CHEVAL_DE_FRISE_5;
         }
     }
 
