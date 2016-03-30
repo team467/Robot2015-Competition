@@ -22,6 +22,7 @@ public class ButtonPanel2016
     public static final int RED_BUTTON = 14;
     public static final int YELLOW_BUTTON = 15;
     public static final int GREEN_BUTTON = 16;
+    public static final int BLUE_BUTTON = 9;
     
     public static final int SWITCH_DOWN = 17;
     public static final int SWITCH_UP = 18;
@@ -33,7 +34,6 @@ public class ButtonPanel2016
      * ButtonPanel for the 2015 driverstation
      * 
      * @param port
-     * @param allowJoystickDiagonals If false, diagonals do nothing.
      */
     public ButtonPanel2016(int port)
     {

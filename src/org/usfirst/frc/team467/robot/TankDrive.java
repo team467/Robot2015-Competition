@@ -29,6 +29,7 @@ public class TankDrive implements Driveable
     private final double SPEED_SLOW_MODIFIER = 0.7;
     private final double SPEED_MAX_MODIFIER = 1.0;
     private final double SPEED_TURBO_MODIFIER = 1.0;
+    private double MIN_SPEED = 0.1;
     private double prevLeft;
     private double prevRight;
 
@@ -76,7 +77,7 @@ public class TankDrive implements Driveable
     }
     
     @Override
-    public void feedMotors()
+    public void feedMotorSafety()
     {
         if (FLsafety != null)
         {
@@ -159,7 +160,10 @@ public class TankDrive implements Driveable
                 speed = lastSpeed - ACCELERATION;
             }
         }
-        LOGGER.debug("LIMIT SPEED: " + speed);
+        MIN_SPEED = Double.valueOf((SmartDashboard.getString("DB/String 1")));
+        LOGGER.debug(MIN_SPEED);
+        speed = (speed >= MIN_SPEED) ? speed : 0;
+        LOGGER.debug("LIMITED SPEED: " + speed);
         return speed;
     }
     
@@ -172,12 +176,16 @@ public class TankDrive implements Driveable
         prevLeft = leftSpeed;
         prevRight = rightSpeed;
 
-        fl.set(square(-leftSpeed));
-        bl.set(square(-leftSpeed));
-        fr.set(square(rightSpeed) * 85.0 / 100.0);
-        br.set(square(rightSpeed) * 85.0 / 100.0);
+        final double LEFT_SCALE = Double.valueOf((SmartDashboard.getString("DB/String 2"))) / 100.0;
+        LOGGER.debug(LEFT_SCALE);
+        final double RIGHT_SCALE = Double.valueOf((SmartDashboard.getString("DB/String 3"))) / 100.0;
+        LOGGER.debug(RIGHT_SCALE);
+        fl.set(square(-leftSpeed) * LEFT_SCALE);
+        bl.set(square(-leftSpeed) * LEFT_SCALE);
+        fr.set(square(rightSpeed) * RIGHT_SCALE);
+        br.set(square(rightSpeed) * RIGHT_SCALE);
         
-        feedMotors();
+        feedMotorSafety();
     }
 
 

@@ -16,5 +16,5 @@ public interface Driveable
     void revolveDriveSmall(Direction direction);
     void individualWheelDrive(double speed, int steeringId);
     void arcadeDrive(final double turn, final double speed);
-    void feedMotors();
+    void feedMotorSafety();
 }

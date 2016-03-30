@@ -183,10 +183,10 @@ public class SwerveDrive implements Driveable
         }
 
         LOGGER.debug("WHEEL SPEEDS: FL:" + frontLeftSpeed + ", FR:" +  frontRightSpeed + ", BL:" + backLeftSpeed + ", BR:" + backRightSpeed);
-        feedMotors();
+        feedMotorSafety();
     }
 
-    public void feedMotors()
+    public void feedMotorSafety()
     {
         if (FLsafety != null)
         {

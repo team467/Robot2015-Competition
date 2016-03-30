@@ -12,10 +12,10 @@ public class Shooter467
 {
     private static final Logger LOGGER = Logger.getLogger(Shooter467.class);
     
-    private Talon leftMotor;
-    private Talon rightMotor;
-    private MotorSafetyHelper leftSafety;
-    private MotorSafetyHelper rightSafety;
+    private Talon leftMotor = null;
+    private Talon rightMotor = null;
+    private MotorSafetyHelper leftSafety = null;
+    private MotorSafetyHelper rightSafety = null;
     private BallRollers roller;
     private VisionProcessor vision;
     private Driveable drive;
@@ -24,15 +24,19 @@ public class Shooter467
     private boolean isPriming = false;
     private boolean isPrimed = false;
     
-    private double LEFT_SPEED = 0.8;
-    private double RIGHT_SPEED = 0.8;
+    private double LEFT_SPEED = -1.0;
+    private double RIGHT_SPEED = 1.0;
     
-    public Shooter467(int leftMotorChannel, int rightMotorChannel, Driveable drive, BallRollers roller, VisionProcessor vision)
+    public Shooter467(Integer leftMotorChannel, Integer rightMotorChannel, Driveable drive, BallRollers roller, VisionProcessor vision)
     {
-        leftMotor = new Talon(leftMotorChannel);
-        leftSafety = new MotorSafetyHelper(leftMotor);
+        if (leftMotorChannel != null) {
+            leftMotor = new Talon(leftMotorChannel);
+            leftSafety = new MotorSafetyHelper(leftMotor);
+        }
+        if (rightMotorChannel != null) {
         rightMotor = new Talon(rightMotorChannel);
         rightSafety = new MotorSafetyHelper(rightMotor);
+        }
         this.drive = drive;
         this.roller = roller;
         this.vision = vision;
@@ -80,6 +84,7 @@ public class Shooter467
         }
 //        if (widest.getCenterX() - vision.getHorizontalCenter()) 
         int direction = widest.getCenterX() > horizontalCenter ? -1 : 1;
+        LOGGER.debug("direction=" + direction);
         final double turnSpeed = direction * (minTurnSpeed + turnSpeedRange * (delta/horizontalCenter));
         drive.turnDrive(turnSpeed);
         LOGGER.info("Turned with turnSpeed " + turnSpeed);
@@ -89,33 +94,51 @@ public class Shooter467
         return false;
     }
     
-    /**
-     * xxxxxxxxxx
-     * 
-     * @param time how long to prime before shooting, in seconds
-     */
-    private boolean prime(double time)
+    private void motorsOn()
     {
-        if (isPrimed)
+        if (leftMotor != null)
         {
             leftMotor.set(LEFT_SPEED);
+            leftSafety.feed();
+        }
+        if (rightMotor != null)
+        {
             rightMotor.set(RIGHT_SPEED);
+            rightSafety.feed();
+        }
+    }
+    
+    /**
+     * @param time how long to prime before shooting, in seconds
+     */
+    boolean prime(double time)
+    {
+        long lTime = (long)time*1000;
+        LOGGER.debug("isPrimed=" + isPrimed);
+        if (isPrimed)
+        {
+            LOGGER.debug("Primed");
+            motorsOn();
             return true;
         }
         
         if (isPriming)
         {
+            LOGGER.debug("Primimg");
             final long now = System.currentTimeMillis();
-            if ((time * 1000) > now - timePrimeStarted)
+            long delta = now - timePrimeStarted;
+            if (delta > lTime)
             {
+                LOGGER.debug("became primed, time=" + lTime + " now="
+                        + now+ " timePrimeStarted=" + timePrimeStarted);
                 isPrimed = true;
             }
-            leftMotor.set(LEFT_SPEED);
-            rightMotor.set(RIGHT_SPEED);
+            motorsOn();
             return isPrimed;
         }
         
         // Wasn't priming or primed
+        LOGGER.debug("Start Priming");
         timePrimeStarted = System.currentTimeMillis();
         isPriming = true;
         return false;
@@ -123,20 +146,41 @@ public class Shooter467
     
     public void shootNow()
     {
-        if (prime(5.0))
+        LOGGER.debug("Prime and shoot");
+        if (prime(3.0))
         {
+            LOGGER.debug("SHOOT!");
             roller.rollIn();
         }
     }
     
     public void aimAndShoot()
     {
+        LOGGER.debug("Aim, prime, and shoot");
         // Bypass short-circuit logic on &&
         final boolean isOnTarget = aim(30);
         final boolean isPrimed = prime(5.0);
         if (isOnTarget && isPrimed)
         {
+            LOGGER.debug("SHOOT!");
             roller.rollIn();
         }
+    }
+    
+    public void stop()
+    {
+        LOGGER.debug("stop");
+        if (leftMotor != null)
+        {
+            leftMotor.set(0);
+            leftSafety.feed();
+        }
+        if (rightMotor != null)
+        {
+            rightMotor.set(0);
+            rightSafety.feed();
+        }
+        isPriming = false;
+        isPrimed = false;
     }
 }

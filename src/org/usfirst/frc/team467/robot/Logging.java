@@ -15,7 +15,11 @@ public class Logging
     public static void init()
     {
         setupDefaultLogging();
+        configureLogLevels();
+    }
 
+    private static void configureLogLevels()
+    {
         // Enable extra logging for classes you want to debug
         Logger.getLogger(Robot.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Steering.class).setLevel(Level.DEBUG);
@@ -26,6 +30,7 @@ public class Logging
         Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
+      Logger.getLogger(Shooter467.class).setLevel(Level.DEBUG);
     }
     
     private static void setupDefaultLogging()
@@ -52,5 +57,20 @@ public class Logging
 
         // Set the default log level to INFO.
         Logger.getRootLogger().setLevel(Level.INFO); // changing log level
+    }
+
+    static void setupUnitTestLogging()
+    {
+        // Create a logging appender that writes our pattern to the console.
+        // Our pattern looks like the following:
+        // 42ms INFO MyClass - This is my info message
+        String pattern = "%rms %p %c - %m%n";
+        PatternLayout layout = new PatternLayout(pattern);
+        Logger.getRootLogger().addAppender(new ConsoleAppender(layout));
+
+        // Set the default log level to INFO.
+        Logger.getRootLogger().setLevel(Level.INFO); // changing log level
+
+        configureLogLevels();
     }
 }
