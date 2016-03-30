@@ -147,7 +147,7 @@ public class Shooter467
     public void shootNow()
     {
         LOGGER.debug("Prime and shoot");
-        if (prime(3.0))
+        if (prime(2.0))
         {
             LOGGER.debug("SHOOT!");
             roller.rollIn();
@@ -159,7 +159,7 @@ public class Shooter467
         LOGGER.debug("Aim, prime, and shoot");
         // Bypass short-circuit logic on &&
         final boolean isOnTarget = aim(30);
-        final boolean isPrimed = prime(5.0);
+        final boolean isPrimed = prime(2.0);
         if (isOnTarget && isPrimed)
         {
             LOGGER.debug("SHOOT!");
