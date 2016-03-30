@@ -114,13 +114,13 @@ public class TankDrive implements Driveable
      * This is to prevent causing mechanical damage - or tipping the robot
      * through stopping too quickly.
      *
-     * @param speed
+     * @param newSpeed
      *            desired speed for robot
      * @param lastSpeed
      *            the last speed
      * @return returns rate-limited speed
      */
-    private double limitSpeed(double speed, double lastSpeed)
+    private double limitSpeed(double newSpeed, double lastSpeed)
     {
         // Apply speed modifiers first
 //        String strAccel = SmartDashboard.getString("DB/String 4", "");
@@ -136,35 +136,34 @@ public class TankDrive implements Driveable
         
         if (DriverStation2016.getInstance().getSlow())
         {
-            speed *= SPEED_SLOW_MODIFIER;
+            newSpeed *= SPEED_SLOW_MODIFIER;
         }
         else if (DriverStation2016.getInstance().getTurbo())
         {
-            speed *= SPEED_TURBO_MODIFIER;
+            newSpeed *= SPEED_TURBO_MODIFIER;
         }
         else
         {
             // Limit maximum regular speed to specified Maximum.
-            speed *= SPEED_MAX_MODIFIER;
+            newSpeed *= SPEED_MAX_MODIFIER;
         }
-
         // Limit the rate at which robot can change speed once driving over 0.6
-        if (Math.abs(speed - lastSpeed) > ACCELERATION && Math.abs(lastSpeed) > 0.6)
+        if (Math.abs(newSpeed - lastSpeed) > ACCELERATION && Math.abs(lastSpeed) > 0.6)
         {
-            if (speed > lastSpeed)
+            if (newSpeed > lastSpeed) // Forwards
             {
-                speed = lastSpeed + ACCELERATION;
+                newSpeed = lastSpeed + ACCELERATION;
             }
-            else
+            else // Backwards
             {
-                speed = lastSpeed - ACCELERATION;
+                newSpeed = lastSpeed - ACCELERATION;
             }
         }
-        MIN_SPEED = Double.valueOf((SmartDashboard.getString("DB/String 1")));
-        LOGGER.debug(MIN_SPEED);
-        speed = (speed >= MIN_SPEED) ? speed : 0;
-        LOGGER.debug("LIMITED SPEED: " + speed);
-        return speed;
+        LOGGER.debug("LIMITED SPEED: " + newSpeed);
+        
+        // If speed is too slow just stop
+        newSpeed = (Math.abs(newSpeed) >= MIN_SPEED) ? newSpeed: 0.0;
+        return newSpeed;
     }
     
     private void drive(double leftSpeed, double rightSpeed)
@@ -176,9 +175,9 @@ public class TankDrive implements Driveable
         prevLeft = leftSpeed;
         prevRight = rightSpeed;
 
-        final double LEFT_SCALE = Double.valueOf((SmartDashboard.getString("DB/String 2"))) / 100.0;
+        final double LEFT_SCALE = 100.0; // Double.valueOf((SmartDashboard.getString("DB/String 2"))) / 100.0;
         LOGGER.debug(LEFT_SCALE);
-        final double RIGHT_SCALE = Double.valueOf((SmartDashboard.getString("DB/String 3"))) / 100.0;
+        final double RIGHT_SCALE = 100.0; // Double.valueOf((SmartDashboard.getString("DB/String 3"))) / 100.0;
         LOGGER.debug(RIGHT_SCALE);
         fl.set(square(-leftSpeed) * LEFT_SCALE);
         bl.set(square(-leftSpeed) * LEFT_SCALE);
