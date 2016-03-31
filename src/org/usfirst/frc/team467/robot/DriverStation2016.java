@@ -41,8 +41,8 @@ public class DriverStation2016
     // BUTTONS
     public static int INTAKE = ButtonPanel2016.YELLOW_BUTTON;
     public static int LOW_SHOOTER = ButtonPanel2016.GREEN_BUTTON;
-    public static int HIGH_SHOOTER = ButtonPanel2016.BLUE_BUTTON;
-    public static int AIM_SHOOTER = ButtonPanel2016.RED_BUTTON;
+    public static int HIGH_SHOOTER = ButtonPanel2016.RED_BUTTON;
+    public static int AIM_SHOOTER = ButtonPanel2016.BLUE_BUTTON;
     
     // TOGGLE
     public static int MANIPULATOR_UP = ButtonPanel2016.TOGGLE_UP;

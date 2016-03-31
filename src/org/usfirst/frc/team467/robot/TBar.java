@@ -31,16 +31,16 @@ public class TBar
     
     public void launchTBar(tBarDirection tBarDirection)
     {
-        LOGGER.info("tBarDirection=" + tBarDirection);
+        LOGGER.debug("tBarDirection=" + tBarDirection);
 //        if (board.getTBarCurrent() > MAX_CURRENT) {
 //          tBarDirection = tBarDirection.STOP;
 //        }
-        LOGGER.info(board.getTBarCurrent());
+        LOGGER.debug(board.getTBarCurrent());
         
         switch(tBarDirection)
         {       
             case DOWN:
-                LOGGER.info("want DOWN");
+                LOGGER.debug("want DOWN");
                 if (rotationSensor.getAverageValue() > 581) {
                     LOGGER.info("going down");
                     tMotor.set(-0.4);
@@ -50,7 +50,7 @@ public class TBar
                 }
                 break;
             case UP:
-                LOGGER.info("want UP");
+                LOGGER.debug("want UP");
                 if (rotationSensor.getAverageValue() < 3016) {
                     LOGGER.info("going up");
                     tMotor.set(0.4);
@@ -64,7 +64,7 @@ public class TBar
                 stop();
                 break;  
         }
-        LOGGER.info("Rotation Sensor: " + rotationSensor.getAverageValue());
+        LOGGER.debug("Rotation Sensor: " + rotationSensor.getAverageValue());
     }
     
     public boolean isUp(){

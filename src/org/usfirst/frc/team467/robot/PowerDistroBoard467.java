@@ -53,7 +53,7 @@ public class PowerDistroBoard467
 
         tBarAverageCurrent.add(getCurrent(RobotMap.TBAR_POWER_CHANNEL));
 
-        LOGGER.info("manipAvgCurrent=" + manipAverageCurrent.getAverage()
+        LOGGER.debug("manipAvgCurrent=" + manipAverageCurrent.getAverage()
             + " tBarAverageCurrent=" + tBarAverageCurrent.getAverage());
     }
 

@@ -95,7 +95,7 @@ public class BallRollers
             case IN:
                 if (!isLoaded())
                 {
-                    LOGGER.info("IN");
+                    LOGGER.debug("IN");
                     rollIn();
                 }
                 else {
@@ -103,7 +103,7 @@ public class BallRollers
                 }
                 break;
             case OUT:
-                LOGGER.info("OUT");
+                LOGGER.debug("OUT");
                 rollOut();
                 break;
             case STOP:
@@ -114,7 +114,7 @@ public class BallRollers
         
     public void runManipulator(ManipIntent manipPosition) {
         String logstring;
-        LOGGER.info("manipCurrent=" + board.getManipCurrent());
+        LOGGER.debug("manipCurrent=" + board.getManipCurrent());
         
         //for now, we just control the Manipulator arm manually until we can detect the position of the arm
         switch(manipPosition) {
@@ -164,7 +164,7 @@ public class BallRollers
                 stopManip();
                 break;
             }
-        LOGGER.info(logstring);
+        LOGGER.debug(logstring);
         SmartDashboard.putString("DB/String 9", logstring);
         safetyManip.feed();
     }
@@ -176,14 +176,14 @@ public class BallRollers
             stop();
             return;
         }
-        LOGGER.info("IN");
+        LOGGER.debug("IN");
         rollerMotor.set(motorSpeed);
         safetyRoller.feed();
     }
     
     public void out(double motorSpeed)
     {
-        LOGGER.info("OUT");
+        LOGGER.debug("OUT");
         rollerMotor.set(-motorSpeed);
         safetyRoller.feed();
         }
@@ -208,7 +208,7 @@ public class BallRollers
     }
     private boolean isRetracted()
     {
-        LOGGER.info("isRetracted=" + isRetractedSwitch.get());
+        LOGGER.debug("isRetracted=" + isRetractedSwitch.get());
         return isRetractedSwitch.get();
     }
 }

@@ -46,7 +46,7 @@ public class CameraDashboard extends Thread
     Image frame;
     CameraServer467 cameraServer;
     private USBCamera driveCam;
-    private AxisCamera shooterCam;
+//    private AxisCamesra aimCam;
     private CamView view;
 
     private CameraDashboard()
@@ -56,7 +56,7 @@ public class CameraDashboard extends Thread
         vision = VisionProcessor.getInstance();
         frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 //        initAxisCamera();
-        initUSBCamera();
+        initUSBCamera("cam1");
     }
 
     public static CameraDashboard getInstance()
@@ -86,11 +86,11 @@ public class CameraDashboard extends Thread
         return cameraExists;
     }
 
-    private void initUSBCamera()
+    private void initUSBCamera(String name)
     {
         try
         {
-            driveCam = new USBCamera("cam1");
+            driveCam = new USBCamera(name);
             driveCam.setFPS(30);
             driveCam.openCamera();
             driveCam.startCapture();
@@ -110,19 +110,19 @@ public class CameraDashboard extends Thread
         }
     }
     
-    private void initAxisCamera()
-    {
-        try
-        {
-            shooterCam = new AxisCamera("169.254.15.123"); // TODO Use actual IP
-            cameraExists = true;
-        }
-        catch (Exception e)
-        {
-            LOGGER.info("No camera detected: " + e.getMessage());
-            cameraExists = false;
-        }
-    }
+//    private void initAxisCamera()
+//    {
+//        try
+//        {
+//            aimCam = new AxisCamera("10.4.67.11"); // TODO Use actual IP
+//            cameraExists = true;
+//        }
+//        catch (Exception e)
+//        {
+//            LOGGER.info("No camera detected: " + e.getMessage());
+//            cameraExists = false;
+//        }
+//    }
 
     public void renderImage()
     {
@@ -150,7 +150,7 @@ public class CameraDashboard extends Thread
                 }
                 break;
             case SHOOTER:
-//                shooterCam.getImage(frame);
+//                aimCam.getImage(frame);
                 driveCam.getImage(frame);
                 drawCrossHairs(shooterCamWidth, shooterCamHeight);
                 drawWidestContour(shooterCamWidth, shooterCamHeight);
@@ -353,7 +353,7 @@ public class CameraDashboard extends Thread
                 {   
                     try
                     {
-//                        renderImage();
+                        renderImage();
                     }
                     catch (Exception e)
                     {

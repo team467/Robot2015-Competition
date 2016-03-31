@@ -21,20 +21,7 @@ public class VisionProcessor
     private boolean isEnabled = false;
     
     private VisionProcessor()
-    {
-//        LOGGER.info("Starting GRIP");
-//        try
-//        {
-//            // TODO Fix or remove
-//            Runtime.getRuntime().exec(new String[]
-//                    {"/usr/local/frc/JRE/bin/java", "-jar", "grip.jar", "Filter.grip"});
-//        }
-//        catch (IOException e)
-//        {
-//            LOGGER.error("Grip failed: " + e);
-//        }
-//        LOGGER.info("Started GRIP");
-        
+    {   
         setupTables();
         LOGGER.debug("Got GRIP table: " + contourTable);
         width = sizeTable.getNumber("x", 0.0);

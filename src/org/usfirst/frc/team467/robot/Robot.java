@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot
     private Autonomous autonomous;
 //    private LEDStrip ledStrip;
     
-    private CameraDashboard cameraDashboard;
+//    private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
 
     private BallRollers rollers;
@@ -135,13 +135,13 @@ public class Robot extends IterativeRobot
     //        ledStrip.setMode(Mode.OFF);
             
             // Initialize the camera dashboard and launch in separate thread.
-            cameraDashboard = CameraDashboard.getInstance();
-            cameraDashboard.setDrive(drive);
-            if (cameraDashboard.cameraExists()) 
-            {
-                LOGGER.debug("Camera Starting");
-                cameraDashboard.start();
-            }
+//            cameraDashboard = CameraDashboard.getInstance();
+//            cameraDashboard.setDrive(drive);
+//            if (cameraDashboard.cameraExists()) 
+//            {
+//                LOGGER.debug("Camera Starting");
+//                cameraDashboard.start();
+//            }
             
             Calibration.init(drive);
             
