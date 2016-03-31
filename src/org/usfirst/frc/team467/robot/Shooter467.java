@@ -150,7 +150,7 @@ public class Shooter467
         if (prime(2.5))
         {
             LOGGER.debug("SHOOT!");
-            roller.rollIn();
+            roller.rollIn(1.0);
         }
     }
     
@@ -163,7 +163,7 @@ public class Shooter467
         if (isOnTarget && isPrimed)
         {
             LOGGER.debug("SHOOT!");
-            roller.rollIn();
+            roller.rollIn(1.0);
         }
     }
     

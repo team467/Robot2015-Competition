@@ -83,6 +83,11 @@ public class BallRollers
         rollerMotor.set(-rollerInMotorSpeed);
         safetyRoller.feed();
     }
+    public void rollIn(double speed)
+    {
+        rollerMotor.set(-speed);
+        safetyRoller.feed();
+    }
     public void rollOut()
     {
         rollerMotor.set(rollerOutMotorSpeed);

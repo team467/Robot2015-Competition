@@ -46,7 +46,7 @@ public class CameraDashboard extends Thread
     Image frame;
     CameraServer467 cameraServer;
     private USBCamera driveCam;
-//    private AxisCamesra aimCam;
+    private AxisCamera aimCam;
     private CamView view;
 
     private CameraDashboard()
@@ -55,7 +55,7 @@ public class CameraDashboard extends Thread
         customStation = DriverStation2016.getInstance();
         vision = VisionProcessor.getInstance();
         frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-//        initAxisCamera();
+        initAxisCamera();
         initUSBCamera("cam1");
     }
 
@@ -98,7 +98,7 @@ public class CameraDashboard extends Thread
 //            cameraServer.setQuality(50);
             
             // the camera name (ex "cam0") can be found through the roborio web interface
-            cameraServer.startAutomaticCapture(driveCam);
+//            cameraServer.startAutomaticCapture(driveCam);
 
             cameraExists = true;
             LOGGER.debug("Camera initialized");
@@ -110,19 +110,19 @@ public class CameraDashboard extends Thread
         }
     }
     
-//    private void initAxisCamera()
-//    {
-//        try
-//        {
-//            aimCam = new AxisCamera("10.4.67.11"); // TODO Use actual IP
-//            cameraExists = true;
-//        }
-//        catch (Exception e)
-//        {
-//            LOGGER.info("No camera detected: " + e.getMessage());
-//            cameraExists = false;
-//        }
-//    }
+    private void initAxisCamera()
+    {
+        try
+        {
+            aimCam = new AxisCamera("10.4.67.11"); // TODO Use actual IP
+            cameraExists = true;
+        }
+        catch (Exception e)
+        {
+            LOGGER.info("No camera detected: " + e.getMessage());
+            cameraExists = false;
+        }
+    }
 
     public void renderImage()
     {
@@ -130,8 +130,8 @@ public class CameraDashboard extends Thread
 //        ImageInfo info = NIVision.imaqGetImageInfo(frame);
 //        int viewWidth = info.xRes; // 640
 //        int viewHeight = info.yRes; // 480
-        final int driveCamWidth    = 640;
-        final int driveCamHeight   = 480;
+        final int driveCamWidth    = 320;
+        final int driveCamHeight   = 240;
         final int shooterCamWidth  = 320;
         final int shooterCamHeight = 240;
         
@@ -141,7 +141,7 @@ public class CameraDashboard extends Thread
         {
             case SWERVE:
                 driveCam.getImage(frame);
-                drawCrossHairs(driveCamWidth, driveCamHeight);
+                drawCrossHairs(shooterCamWidth, shooterCamHeight);
                 drawAngleMonitors(driveCamWidth, driveCamHeight);
 
                 if (libStation.isEnabled())
@@ -153,16 +153,16 @@ public class CameraDashboard extends Thread
 //                aimCam.getImage(frame);
                 driveCam.getImage(frame);
                 drawCrossHairs(shooterCamWidth, shooterCamHeight);
-                drawWidestContour(shooterCamWidth, shooterCamHeight);
+//                drawWidestContour(shooterCamWidth, shooterCamHeight);
                 if (libStation.isEnabled())
                 {
-                    drawTimerBar(shooterCamWidth, shooterCamHeight);
+                    drawTimerBar(driveCamHeight, driveCamHeight);
                 }
                 break;
             case TANK:
                 driveCam.getImage(frame);
                 drawCrossHairs(driveCamWidth, driveCamHeight);
-                drawWidestContour(shooterCamWidth, shooterCamHeight);
+//                drawWidestContour(shooterCamWidth, shooterCamHeight);
                 
                 if (libStation.isEnabled())
                 {
@@ -357,7 +357,7 @@ public class CameraDashboard extends Thread
                     }
                     catch (Exception e)
                     {
-                        LOGGER.error("Couldn't render image: " + e.getMessage());
+                        LOGGER.error("Couldn't render image: ", e);
                     }
                 }
 

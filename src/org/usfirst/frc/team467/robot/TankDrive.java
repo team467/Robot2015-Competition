@@ -177,7 +177,7 @@ public class TankDrive implements Driveable
 
         final double LEFT_SCALE = 1; // Double.valueOf((SmartDashboard.getString("DB/String 2"))) / 100.0;
         LOGGER.debug(LEFT_SCALE);
-        final double RIGHT_SCALE = 1; // Double.valueOf((SmartDashboard.getString("DB/String 3"))) / 100.0;
+        final double RIGHT_SCALE = 0.88; // Double.valueOf((SmartDashboard.getString("DB/String 3"))) / 100.0;
         LOGGER.debug(RIGHT_SCALE);
         fl.set(square(-leftSpeed) * LEFT_SCALE);
         bl.set(square(-leftSpeed) * LEFT_SCALE);
