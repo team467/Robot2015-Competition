@@ -140,7 +140,7 @@ public class BallRollers
                 isRetracted = false;
                 break;
             case SHOULD_RETRACT:
-                if (isRetracted) {
+                if (isRetracted()) {
                     stopManip();
                     logstring = "Retracted";
                 }
