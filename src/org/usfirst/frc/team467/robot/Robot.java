@@ -137,11 +137,8 @@ public class Robot extends IterativeRobot
             // Initialize the camera dashboard and launch in separate thread.
             cameraDashboard = CameraDashboard.getInstance();
             cameraDashboard.setDrive(drive);
-            if (cameraDashboard.cameraExists()) 
-            {
-                LOGGER.debug("Camera Starting");
-                cameraDashboard.start();
-            }
+            LOGGER.debug("Camera Starting");
+            cameraDashboard.start();
             
             Calibration.init(drive);
             
@@ -185,6 +182,11 @@ public class Robot extends IterativeRobot
 
     public void teleopInit()
     {
+        if (!cameraDashboard.isAlive()) 
+        {
+            LOGGER.debug("Camera Starting");
+            cameraDashboard.start();
+        }
         LOGGER.info("Teleop init");
 //        rollers.reset();
 //        gyro2016.reset();

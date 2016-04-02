@@ -39,14 +39,16 @@ public class CameraDashboard extends Thread
     private Steering brSteering;
     final double maxTurns = Steering.getMaxTurns();
 
-    private boolean cameraExists = false;
+    private boolean driveCameraExists = false;
+    private boolean aimCameraExists = false;
     
     private long lastTimeStamp = System.currentTimeMillis();
     
     Image frame;
     CameraServer467 cameraServer;
-    private USBCamera driveCam;
-    private AxisCamera aimCam;
+//    private USBCamera driveCam;
+//    private AxisCamera aimCam;
+    private USBCamera aimCam;
     private CamView view;
 
     private CameraDashboard()
@@ -55,8 +57,9 @@ public class CameraDashboard extends Thread
         customStation = DriverStation2016.getInstance();
         vision = VisionProcessor.getInstance();
         frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-        initAxisCamera();
-        initUSBCamera("cam1");
+//        initAxisCamera();
+//        initDriveCamera("cam2");
+        initAimCamera("cam1");
     }
 
     public static CameraDashboard getInstance()
@@ -83,46 +86,71 @@ public class CameraDashboard extends Thread
 
     public boolean cameraExists()
     {
-        return cameraExists;
+//        return driveCameraExists && aimCameraExists;
+        return aimCameraExists;
     }
 
-    private void initUSBCamera(String name)
+//    private void initDriveCamera(String name)
+//    {
+//        try
+//        {
+//            driveCam = new USBCamera(name);
+//            driveCam.setFPS(30);
+//            driveCam.openCamera();
+//            driveCam.startCapture();
+////            cameraServer.setQuality(50);
+//            
+//            // the camera name (ex "cam0") can be found through the roborio web interface
+////            cameraServer.startAutomaticCapture(driveCam);
+//
+//            driveCameraExists = true;
+//            LOGGER.debug("Drive Camera initialized");
+//        }
+//        catch (Exception e)
+//        {
+//            driveCam = null;
+//            LOGGER.info("No drive camera detected: " + e.getMessage());
+//            driveCameraExists = false;
+//        }
+//    }
+    
+    private void initAimCamera(String name)
     {
         try
         {
-            driveCam = new USBCamera(name);
-            driveCam.setFPS(30);
-            driveCam.openCamera();
-            driveCam.startCapture();
-            cameraServer = CameraServer467.getInstance();
+            aimCam = new USBCamera(name);
+            aimCam.setFPS(30);
+            aimCam.openCamera();
+            aimCam.startCapture();
 //            cameraServer.setQuality(50);
             
             // the camera name (ex "cam0") can be found through the roborio web interface
 //            cameraServer.startAutomaticCapture(driveCam);
 
-            cameraExists = true;
-            LOGGER.debug("Camera initialized");
+            aimCameraExists = true;
+            LOGGER.debug("Aim Camera initialized");
         }
         catch (Exception e)
         {
-            LOGGER.info("No camera detected: " + e.getMessage());
-            cameraExists = false;
+            aimCam = null;
+            LOGGER.info("No aim camera detected: " + e.getMessage());
+            aimCameraExists = false;
         }
     }
     
-    private void initAxisCamera()
-    {
-        try
-        {
-            aimCam = new AxisCamera("10.4.67.11"); // TODO Use actual IP
-            cameraExists = true;
-        }
-        catch (Exception e)
-        {
-            LOGGER.info("No camera detected: " + e.getMessage());
-            cameraExists = false;
-        }
-    }
+//    private void initAxisCamera()
+//    {
+//        try
+//        {
+//            aimCam = new AxisCamera("10.4.67.11"); // TODO Use actual IP
+//            cameraExists = true;
+//        }
+//        catch (Exception e)
+//        {
+//            LOGGER.info("No camera detected: " + e.getMessage());
+//            cameraExists = false;
+//        }
+//    }
 
     public void renderImage()
     {
@@ -137,39 +165,40 @@ public class CameraDashboard extends Thread
         
         view = customStation.getView();
         
-        switch (view)
-        {
-            case SWERVE:
-                driveCam.getImage(frame);
-                drawCrossHairs(shooterCamWidth, shooterCamHeight);
-                drawAngleMonitors(driveCamWidth, driveCamHeight);
-
-                if (libStation.isEnabled())
-                {
-                    drawTimerBar(driveCamWidth, driveCamHeight);
-                }
-                break;
-            case SHOOTER:
-//                aimCam.getImage(frame);
-                driveCam.getImage(frame);
+//        switch (view)
+//        {
+//            case SWERVE:
+//                driveCam.getImage(frame);
+//                drawCrossHairs(shooterCamWidth, shooterCamHeight);
+//                drawAngleMonitors(driveCamWidth, driveCamHeight);
+//
+//                if (libStation.isEnabled())
+//                {
+//                    drawTimerBar(driveCamWidth, driveCamHeight);
+//                }
+//                break;
+//            case SHOOTER:
+                aimCam.getImage(frame);
+//                driveCam.getImage(frame);
                 drawCrossHairs(shooterCamWidth, shooterCamHeight);
 //                drawWidestContour(shooterCamWidth, shooterCamHeight);
                 if (libStation.isEnabled())
                 {
                     drawTimerBar(driveCamHeight, driveCamHeight);
                 }
-                break;
-            case TANK:
-                driveCam.getImage(frame);
-                drawCrossHairs(driveCamWidth, driveCamHeight);
-//                drawWidestContour(shooterCamWidth, shooterCamHeight);
-                
-                if (libStation.isEnabled())
-                {
-                    drawTimerBar(driveCamWidth, driveCamHeight);
-                }
-                break;
-        }
+//                break;
+//            case TANK:
+//                driveCam.getImage(frame);
+////                aimCam.getImage(frame);
+//                drawCrossHairs(driveCamWidth, driveCamHeight);
+////                drawWidestContour(shooterCamWidth, shooterCamHeight);
+//                
+//                if (libStation.isEnabled())
+//                {
+//                    drawTimerBar(driveCamWidth, driveCamHeight);
+//                }
+//                break;
+//        }
         cameraServer.setImage(frame);
     }
 
@@ -338,6 +367,7 @@ public class CameraDashboard extends Thread
     {
         try
         {
+            cameraServer = CameraServer467.getInstance();
             final double UPDATE_FREQ = 5; // Updates per second
             final long period = (long) (1000 / UPDATE_FREQ); // Update period in milliseconds
             
@@ -349,7 +379,7 @@ public class CameraDashboard extends Thread
                 lastTimeStamp = startTime;
 
                 // Do the actual work.
-                if (cameraExists)
+                if (cameraExists())
                 {   
                     try
                     {
@@ -358,6 +388,17 @@ public class CameraDashboard extends Thread
                     catch (Exception e)
                     {
                         LOGGER.error("Couldn't render image: ", e);
+                    }
+                }
+                else
+                {
+//                    if (driveCam == null)
+//                    {
+//                        initDriveCamera("cam2");
+//                    }
+                    if (aimCam == null)
+                    {
+                        initAimCamera("cam1");
                     }
                 }
 
