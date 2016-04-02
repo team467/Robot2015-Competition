@@ -240,7 +240,7 @@ public class DriverStation2016
 //                return AutoType.AIM;
             case "CROSS":
                 LOGGER.debug("Cross defense");
-                return AutoType.CROSS_BARRIER_1;
+                return AutoType.CROSS_DEFENSE;
             case "APPROACH":
                 LOGGER.debug("Approach defense");
                 return AutoType.APPROACH_DEFENSE;
