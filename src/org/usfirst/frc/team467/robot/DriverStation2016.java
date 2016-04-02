@@ -238,6 +238,8 @@ public class DriverStation2016
         switch(mode) {
 //            case "AIM":
 //                return AutoType.AIM;
+            case "CROSS_LOWBAR_SHOOT":
+                return AutoType.CROSS_LOWBAR_SHOOT;
             case "CROSS":
                 LOGGER.debug("Cross defense");
                 return AutoType.CROSS_DEFENSE;
@@ -248,7 +250,7 @@ public class DriverStation2016
                 return AutoType.NO_AUTO;
             default:
                 LOGGER.debug("NO_AUTO");
-                return AutoType.APPROACH_DEFENSE;
+                return AutoType.NO_AUTO;
                 
             case "CROSS_BARRIER_1":
                 return AutoType.CROSS_BARRIER_1;   

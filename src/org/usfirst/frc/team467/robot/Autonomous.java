@@ -296,6 +296,9 @@ public class Autonomous
             case CROSS_DEFENSE:
                 initCrossDefense();
                 break;
+            case CROSS_LOWBAR_SHOOT:
+                initCrossAndShootLow();
+                break;
             default:
                 initStayInPlace();
                 break;
@@ -314,6 +317,27 @@ public class Autonomous
         }else{
             addAction("Turn to zero degrees",
                     () -> gyro.isFlat() && shouldTurnRight(-10),
+                    () -> {
+                        drive.turnDrive(-0.4);
+                    });
+        }
+        gyro.reset();
+    }
+    
+    private void robotTurn(int angle)
+    {
+        int buffer = 10;
+        int max = angle + buffer;
+        int min = angle - buffer;
+        if (shouldTurnLeft(max)){
+            addAction("Turn to zero degrees",
+                    () -> gyro.isFlat() && shouldTurnLeft(max),
+                    () -> {
+                        drive.turnDrive(0.4);
+                    });
+        }else{
+            addAction("Turn to zero degrees",
+                    () -> gyro.isFlat() && shouldTurnRight(min),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
@@ -829,6 +853,44 @@ public class Autonomous
 
     private void initCrossDefense()
     {
+        crossDefense();
+    }
+    
+    private void initCrossAndShootLow()
+    {
+        addAction("Lower gamepieces",
+                () -> forDurationSecs(1.0f),
+                () ->
+                {
+                    tbar.launchTBar(tBarDirection.DOWN);
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                }
+                );
+        crossDefense();
+        robotTurnZero();
+        addAction("Approach Wall",
+                () -> untilClose(24.0),
+                () -> {
+                    approach(24.0);
+                }
+                );
+        robotTurn(90);
+        
+        addAction("Approach Goal",
+                () -> forDurationSecs(2.5f),
+                () -> {
+                    drive.strafeDrive(Direction.FRONT);
+                }
+                );
+        addAction("Shoot Low Goal",
+                () -> forDurationSecs(1f),
+                () -> {
+                    roller.runRoller(RollerDirection.OUT);
+                });
+    }
+    
+    private void crossDefense()
+    {
         // Drive until tilted up; aka on defense ramp
         addAction("Drive to defense ramp", 
                 () -> gyro.isFlat(), 
@@ -851,7 +913,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.8);
                 });
         addAction("Drive off defense ramp", 
-                () -> forDurationSecs(1.0f), 
+                () -> forDurationSecs(2.0f), 
                 () -> {
                     drive.arcadeDrive(0.0, -0.8);
                 });
@@ -905,6 +967,13 @@ public class Autonomous
 //        }
 //    }
     
+    boolean untilClose(double desiredDistance)
+    {
+        final double measuredDistance = ultrasonic.getRangeInches();
+        final double delta = Math.abs(measuredDistance - desiredDistance);
+        return (delta > 12);
+    }
+    
     /**
      * 
      * @param desiredDistance in inches
@@ -912,21 +981,13 @@ public class Autonomous
     private void approach(double desiredDistance)
     {
         final double measuredDistance = ultrasonic.getRangeInches();
-        final double delta = Math.abs(measuredDistance - desiredDistance);
-        if (delta > 12)
+        if (measuredDistance > desiredDistance)
         {
-            if (measuredDistance > desiredDistance)
-            {
-                drive.strafeDrive(Direction.FRONT);
-            }
-            else
-            {
-                drive.strafeDrive(Direction.BACK);
-            }
+            drive.strafeDrive(Direction.FRONT);
         }
         else
         {
-            drive.stop();
+            drive.strafeDrive(Direction.BACK);
         }
     }
     
@@ -970,7 +1031,7 @@ public class Autonomous
      */
     enum  AutoType
     {
-        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, HIGH_GOAL, APPROACH_DEFENSE, CROSS_DEFENSE,
+        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, HIGH_GOAL, APPROACH_DEFENSE, CROSS_DEFENSE, CROSS_LOWBAR_SHOOT,
         PORTCULLIS_1, PORTCULLIS_2, PORTCULLIS_3, PORTCULLIS_4, PORTCULLIS_5,
         DRAWBRIDGE_1, DRAWBRIDGE_2, DRAWBRIDGE_3, DRAWBRIDGE_4, DRAWBRIDGE_5,
         CROSS_BARRIER_1, CROSS_BARRIER_2, CROSS_BARRIER_3, CROSS_BARRIER_4, CROSS_BARRIER_5,

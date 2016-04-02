@@ -26,6 +26,8 @@ public class Ultrasonic2016
     
     public double getRangeInches()
     {
-        return frontUltra.getRangeInches();
+        double result = frontUltra.getRangeInches();
+        LOGGER.debug(result);
+        return result;
     }
 }
