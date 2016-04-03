@@ -213,7 +213,8 @@ public class BallRollers
     }
     private boolean isRetracted()
     {
-        LOGGER.debug("isRetracted=" + isRetractedSwitch.get());
-        return isRetractedSwitch.get();
+        boolean result = !isRetractedSwitch.get();
+        LOGGER.debug("isRetracted=" + result);
+        return result;
     }
 }
