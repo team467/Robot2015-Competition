@@ -316,13 +316,13 @@ public class Autonomous
     private void robotTurnZero(){
         if (shouldTurnLeft(10)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && shouldTurnLeft(10),
+                    () -> shouldTurnLeft(10),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && shouldTurnRight(-10),
+                    () -> shouldTurnRight(-10),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
@@ -337,15 +337,15 @@ public class Autonomous
         int min = angle - buffer;
         if (shouldTurnLeft(max)){
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && shouldTurnLeft(max),
+                    () -> shouldTurnLeft(max),
                     () -> {
-                        drive.turnDrive(0.4);
+                        drive.turnDrive(0.7);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> gyro.isFlat() && shouldTurnRight(min),
+                    () -> shouldTurnRight(min),
                     () -> {
-                        drive.turnDrive(-0.4);
+                        drive.turnDrive(-0.7);
                     });
         }
         gyro.reset();
@@ -354,13 +354,13 @@ public class Autonomous
     private void robotTurn180(){
         if (shouldTurnLeft(-170)){
             addAction("Turn fowards",
-                    () -> gyro.isFlat() && shouldTurnLeft(-170),
+                    () -> shouldTurnLeft(-170),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn fowards",
-                    () -> gyro.isFlat() && shouldTurnRight(170),
+                    () -> shouldTurnRight(170),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
@@ -889,12 +889,12 @@ public class Autonomous
         if (reverse)
         {
             crossDefenseReverse();
-            robotTurn180();
+            robotTurn(195);
         }
         else
         {
             crossDefense();
-            robotTurnZero();
+            robotTurn(15);
         }
         addAction("Extend Manipulator",
                 () -> forDurationSecs(1.0f),
@@ -912,25 +912,32 @@ public class Autonomous
 //                }
 //                );
         addAction("Drive into Wall",
-                () -> forDurationSecs(2),
+                () -> forDurationSecs(2.0f),
                 () -> {
-                    drive.arcadeDrive(0, -1);
+                    drive.arcadeDrive(0, -0.75);
                     roller.stop();
                 }
                 );
         addAction("Back off Wall",
-                () -> forDurationSecs(0.2f),
+                () -> forDurationSecs(0.5f),
                 () -> {
-                    drive.arcadeDrive(0, -0.5);
+                    drive.arcadeDrive(0, 0.5);
                     roller.stop();
                 }
                 );
-        robotTurn(90);
+        if (reverse)
+        {
+            robotTurn(270);
+        }
+        else
+        {
+            robotTurn(90);
+        }
         
         addAction("Approach Goal",
                 () -> forDurationSecs(2.5f),
                 () -> {
-                    drive.strafeDrive(Direction.FRONT);
+                    drive.arcadeDrive(0, -0.75);;
                 }
                 );
         addAction("Shoot Low Goal",
