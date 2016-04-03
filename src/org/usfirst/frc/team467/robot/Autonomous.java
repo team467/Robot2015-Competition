@@ -904,10 +904,24 @@ public class Autonomous
                     roller.runManipulator(ManipIntent.SHOULD_RETRACT);
                 }
                 );
-        addAction("Approach Wall",
-                () -> untilClose(24.0),
+//        addAction("Approach Wall",
+//                () -> untilClose(24.0),
+//                () -> {
+//                    approach(24.0);
+//                    roller.stop();
+//                }
+//                );
+        addAction("Drive into Wall",
+                () -> forDurationSecs(2),
                 () -> {
-                    approach(24.0);
+                    drive.arcadeDrive(0, -1);
+                    roller.stop();
+                }
+                );
+        addAction("Back off Wall",
+                () -> forDurationSecs(0.2f),
+                () -> {
+                    drive.arcadeDrive(0, -0.5);
                     roller.stop();
                 }
                 );
