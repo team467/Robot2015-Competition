@@ -244,6 +244,7 @@ public class DriverStation2016
                 return AutoType.CROSS_LOWBAR_SHOOT_REVERSE;
             case "CROSS":
                 LOGGER.debug("Cross defense");
+                return AutoType.CROSS_DEFENSE;
             case "CROSS_REVERSE":
                 LOGGER.debug("Cross defense reverse");
                 return AutoType.CROSS_DEFENSE_REVERSE;
