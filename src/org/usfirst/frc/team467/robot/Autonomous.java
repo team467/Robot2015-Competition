@@ -294,10 +294,16 @@ public class Autonomous
                 initApproachDefense();
                 break;
             case CROSS_DEFENSE:
-                initCrossDefense();
+                initCrossDefense(false);
+                break;
+            case CROSS_DEFENSE_REVERSE:
+                initCrossDefense(true);
                 break;
             case CROSS_LOWBAR_SHOOT:
-                initCrossAndShootLow();
+                initCrossAndShootLow(false);
+                break;
+            case CROSS_LOWBAR_SHOOT_REVERSE:
+                initCrossAndShootLow(true);
                 break;
             default:
                 initStayInPlace();
@@ -851,12 +857,26 @@ public class Autonomous
                 });
     }
 
-    private void initCrossDefense()
+    private void initCrossDefense(boolean reverse)
     {
-        crossDefense();
+        if (reverse)
+        {
+            crossDefenseReverse();
+        }
+        else
+        {
+            crossDefense();
+        }
+        addAction("Stop driving", 
+                () -> forever(), 
+                () -> {
+                    roller.stop();
+                    tbar.stop();
+                    drive.stop();
+                });
     }
     
-    private void initCrossAndShootLow()
+    private void initCrossAndShootLow(boolean reverse)
     {
         addAction("Lower gamepieces",
                 () -> forDurationSecs(1.0f),
@@ -866,12 +886,29 @@ public class Autonomous
                     roller.runManipulator(ManipIntent.SHOULD_EXTEND);
                 }
                 );
-        crossDefense();
-        robotTurnZero();
+        if (reverse)
+        {
+            crossDefenseReverse();
+            robotTurn180();
+        }
+        else
+        {
+            crossDefense();
+            robotTurnZero();
+        }
+        addAction("Extend Manipulator",
+                () -> forDurationSecs(1.0f),
+                () ->
+                {
+                    tbar.stop();
+                    roller.runManipulator(ManipIntent.SHOULD_RETRACT);
+                }
+                );
         addAction("Approach Wall",
                 () -> untilClose(24.0),
                 () -> {
                     approach(24.0);
+                    roller.stop();
                 }
                 );
         robotTurn(90);
@@ -886,6 +923,13 @@ public class Autonomous
                 () -> forDurationSecs(1f),
                 () -> {
                     roller.runRoller(RollerDirection.OUT);
+                });
+        addAction("Stop driving", 
+                () -> forever(), 
+                () -> {
+                    roller.stop();
+                    tbar.stop();
+                    drive.stop();
                 });
     }
     
@@ -917,12 +961,35 @@ public class Autonomous
                 () -> {
                     drive.arcadeDrive(0.0, -0.8);
                 });
-        addAction("Stop driving", 
-                () -> forever(), 
+    }
+    
+    private void crossDefenseReverse()
+    {
+        // Drive until tilted up; aka on defense ramp
+        addAction("Drive to defense ramp", 
+                () -> gyro.isFlat(), 
                 () -> {
-                    roller.stop();
-                    tbar.stop();
-                    drive.stop();
+                    drive.arcadeDrive(0.0, 0.8);
+                });
+        addAction("Drive up defense ramp", 
+                () -> gyro.isDown(), 
+                () -> {
+                    drive.arcadeDrive(0.0, 0.8);
+                });
+        addAction("Cross defense", 
+                () -> forDurationSecs(2.0f), 
+                () -> {
+                    drive.arcadeDrive(0.0, 0.8);
+                });
+        addAction("Drive down defense ramp", 
+                () -> gyro.isUp(), 
+                () -> {
+                    drive.arcadeDrive(0.0, 0.8);
+                });
+        addAction("Drive off defense ramp", 
+                () -> forDurationSecs(2.0f), 
+                () -> {
+                    drive.arcadeDrive(0.0, 0.8);
                 });
     }
 
@@ -1031,7 +1098,8 @@ public class Autonomous
      */
     enum  AutoType
     {
-        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, HIGH_GOAL, APPROACH_DEFENSE, CROSS_DEFENSE, CROSS_LOWBAR_SHOOT,
+        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, HIGH_GOAL, APPROACH_DEFENSE,
+        CROSS_DEFENSE, CROSS_DEFENSE_REVERSE, CROSS_LOWBAR_SHOOT, CROSS_LOWBAR_SHOOT_REVERSE,
         PORTCULLIS_1, PORTCULLIS_2, PORTCULLIS_3, PORTCULLIS_4, PORTCULLIS_5,
         DRAWBRIDGE_1, DRAWBRIDGE_2, DRAWBRIDGE_3, DRAWBRIDGE_4, DRAWBRIDGE_5,
         CROSS_BARRIER_1, CROSS_BARRIER_2, CROSS_BARRIER_3, CROSS_BARRIER_4, CROSS_BARRIER_5,
