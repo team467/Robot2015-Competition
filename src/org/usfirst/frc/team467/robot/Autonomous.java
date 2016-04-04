@@ -925,26 +925,26 @@ public class Autonomous
                     roller.stop();
                 }
                 );
-        if (reverse)
-        {
-            robotTurn(270);
-        }
-        else
-        {
-            robotTurn(90);
-        }
+//        if (reverse)
+//        {
+//            robotTurn(270);
+//        }
+//        else
+//        {
+//            robotTurn(90);
+//        }
         
-        addAction("Approach Goal",
-                () -> forDurationSecs(2.5f),
-                () -> {
-                    drive.arcadeDrive(0, -0.75);;
-                }
-                );
-        addAction("Shoot Low Goal",
-                () -> forDurationSecs(1f),
-                () -> {
-                    roller.runRoller(RollerDirection.OUT);
-                });
+//        addAction("Approach Goal",
+//                () -> forDurationSecs(2.5f),
+//                () -> {
+//                    drive.arcadeDrive(0, -0.75);
+//                }
+//                );
+//        addAction("Shoot Low Goal",
+//                () -> forDurationSecs(1f),
+//                () -> {
+//                    roller.runRoller(RollerDirection.OUT);
+//                });
         addAction("Stop driving", 
                 () -> forever(), 
                 () -> {
