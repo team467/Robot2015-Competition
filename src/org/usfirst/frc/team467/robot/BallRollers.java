@@ -211,7 +211,7 @@ public class BallRollers
     enum ManipIntent {
         SHOULD_EXTEND, SHOULD_RETRACT, SHOULD_STOP
     }
-    private boolean isRetracted()
+    public boolean isRetracted()
     {
         boolean result = !isRetractedSwitch.get();
         LOGGER.debug("isRetracted=" + result);

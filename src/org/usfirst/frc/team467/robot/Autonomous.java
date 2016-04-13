@@ -313,16 +313,33 @@ public class Autonomous
         LOGGER.info("Beginning action: " + actions.get(0).getDescription());
     }
     
+    private void robotTurn180(){
+        if (shouldTurnLeft(-180)){
+            addAction("Turn fowards",
+                    () -> shouldTurnLeft(-180),
+                    () -> {
+                        drive.turnDrive(0.4);
+                    });
+        }else{
+            addAction("Turn fowards",
+                    () -> shouldTurnRight(180),
+                    () -> {
+                        drive.turnDrive(-0.4);
+                    });
+        }
+        gyro.reset();
+    }
+    
     private void robotTurnZero(){
-        if (shouldTurnLeft(10)){
+        if (shouldTurnLeft(0)){
             addAction("Turn to zero degrees",
-                    () -> shouldTurnLeft(10),
+                    () -> shouldTurnLeft(0),
                     () -> {
                         drive.turnDrive(0.4);
                     });
         }else{
             addAction("Turn to zero degrees",
-                    () -> shouldTurnRight(-10),
+                    () -> shouldTurnRight(0),
                     () -> {
                         drive.turnDrive(-0.4);
                     });
@@ -351,27 +368,15 @@ public class Autonomous
         gyro.reset();
     }
     
-    private void robotTurn180(){
-        if (shouldTurnLeft(-170)){
-            addAction("Turn fowards",
-                    () -> shouldTurnLeft(-170),
-                    () -> {
-                        drive.turnDrive(0.4);
-                    });
-        }else{
-            addAction("Turn fowards",
-                    () -> shouldTurnRight(170),
-                    () -> {
-                        drive.turnDrive(-0.4);
-                    });
-        }
-        gyro.reset();
-    }
-    
     private void shootToRight(int position){
+        addAction("raise roller arm",
+                ()-> !roller.isRetracted(),
+                ()-> {
+                    roller.retractManip();
+                });
         if(position == 4){
             addAction("turn 90 degrees (clockwise)",
-                    () -> shouldTurnRight(80),
+                    () -> shouldTurnRight(90),
                     () -> {
                         drive.turnDrive(-0.5);
                     });
@@ -381,7 +386,7 @@ public class Autonomous
                         drive.arcadeDrive(0.0, -0.5);
                     });
             addAction("Turn 90 degrees (counterclockwise)",
-                    () -> shouldTurnLeft(-10), 
+                    () -> shouldTurnLeft(0), 
                     () -> {
                         drive.turnDrive(0.5);
                         LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -393,7 +398,7 @@ public class Autonomous
                         drive.arcadeDrive(0.0, -0.6);
                     });
             addAction("Turn (counterclockwise)",
-                    () -> shouldTurnLeft(-40), 
+                    () -> shouldTurnLeft(-50), 
                     () -> {
                         drive.turnDrive(0.5);
                     });
@@ -411,9 +416,14 @@ public class Autonomous
     }
     
     private void shootToLeft(int position){
+        addAction("raise roller arm",
+                ()-> !roller.isRetracted(),
+                ()-> {
+                    roller.retractManip();
+                });
         if(position == 3){
             addAction("turn 90 degrees (counterclockwise)",
-                    () -> shouldTurnLeft(-80),
+                    () -> shouldTurnLeft(-90),
                     () -> {
                         drive.turnDrive(0.5);
                     });
@@ -423,7 +433,7 @@ public class Autonomous
                         drive.arcadeDrive(0.0, -0.5);
                     });
             addAction("Turn 90 degrees (clockwise)",
-                    () -> shouldTurnLeft(-10), 
+                    () -> shouldTurnLeft(0), 
                     () -> {
                         drive.turnDrive(0.5);
                         LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -435,7 +445,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.5);
                 });
         addAction("Turn (clockwise)",
-                () -> shouldTurnRight(40), 
+                () -> shouldTurnRight(50), 
                 () -> {
                     drive.turnDrive(-0.5);
                     LOGGER.debug("GYRO YAW ANGLE = " + gyro.getYawAngle());
@@ -510,8 +520,14 @@ public class Autonomous
         //back up to open door and then turn to the left to allow entrance
         //move in on an angle straighten out; move forwards; align with low goal and shoot
         
+        addAction("lower roller and raise tbar",
+                ()-> tbar.isDown() || roller.isRetracted(),
+                () -> {
+                    tbar.launchTBar(tBarDirection.UP);
+                    roller.extendManip();
+                });
         addAction("Move backwards while gyro is flat",
-                () -> gyro.isFlat(), //||tbar.isDown(),
+                () -> gyro.isFlat(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.7);
                     tbar.launchTBar(tBarDirection.UP);
@@ -586,25 +602,25 @@ public class Autonomous
         //move under portcullis with the arm down the whole time
         // return arm to position and align with low goal to shoot
         
+        addAction("lower roller and tbar",
+                ()-> tbar.isUp() && roller.isRetracted(),
+                () -> {
+                    tbar.launchTBar(tBarDirection.DOWN);
+                    roller.extendManip();
+                });
         addAction("approach barrier",
-                () -> gyro.isFlat(), //||tbar.isUp();
+                () -> gyro.isFlat() || tbar.isUp(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.7);
                 });
-        addAction("lower TBar",
-                () -> forDurationSecs(1.0f), //tbar.isUp(),
-                () -> {
-                    drive.stop();
-                    tbar.launchTBar(tBarDirection.DOWN);
-                });
         addAction("get TBar under",
-                () -> gyro.isDown(),//tbar.isUp(),
+                () -> gyro.isDown(),
                 () -> {
                     drive.arcadeDrive(0.0, 0.4);
                     tbar.launchTBar(tBarDirection.DOWN); 
                 });
         addAction("lift tbar and drive",
-                () -> (gyro.isFlat() || gyro.isUp()) && forDurationSecs(0.5f), //tbar.isDown()
+                () -> (gyro.isFlat() || gyro.isUp()) && forDurationSecs(0.5f),
                 () -> {
                     drive.arcadeDrive(0.0, 0.8);
                     tbar.launchTBar(tBarDirection.UP);
@@ -644,7 +660,12 @@ public class Autonomous
         //drive up to bridge and lower tbar on to it
         //lower tbar as robot moves away
         //go over bridge and align for low goal
-        
+        addAction("lower roller and raise tbar",
+                ()-> roller.isRetracted() || tbar.isDown(),
+                ()-> {
+                    roller.extendManip();
+                    tbar.launchTBar(tBarDirection.DOWN);
+                });
         addAction("approach",
                 () -> gyro.isFlat(),
                 () -> {
@@ -652,7 +673,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, 0.7);
                 });
         addAction("lower tbar",
-                () -> forDurationSecs(1.0f), //||tbar.isUp(),
+                () -> forDurationSecs(1.0f),
                 () -> {
                     drive.stop();
                     tbar.launchTBar(tBarDirection.DOWN);
