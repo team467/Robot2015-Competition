@@ -619,15 +619,15 @@ public class DriverStation2016
     
     public CameraDashboard.CamView getView()
     {
-        boolean shooterViewActivated = SmartDashboard.getBoolean("DB/Button 1");
-        if (shooterViewActivated)
-        {
-            return CameraDashboard.CamView.SHOOTER;
-        }
-        else
-        {
+//        boolean shooterViewActivated = SmartDashboard.getBoolean("DB/Button 1");
+//        if (shooterViewActivated)
+//        {
+//            return CameraDashboard.CamView.SHOOTER;
+//        }
+//        else
+//        {
             return CameraDashboard.CamView.TANK;
-        }
+//        }
     }
 
 //    /**
