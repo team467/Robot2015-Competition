@@ -330,22 +330,57 @@ public class Autonomous
         gyro.reset();
     }
     
-    private void robotTurn(int angle)
+    private void robotTurnOld(int angle)
     {
-        int buffer = 10;
+        int buffer = 15;
         int max = angle + buffer;
         int min = angle - buffer;
+
         if (shouldTurnLeft(max)){
             addAction("Turn to zero degrees",
                     () -> shouldTurnLeft(max),
                     () -> {
-                        drive.turnDrive(0.7);
+                        drive.turnDrive(0.5);
                     });
         }else{
             addAction("Turn to zero degrees",
                     () -> shouldTurnRight(min),
                     () -> {
-                        drive.turnDrive(-0.7);
+                        drive.turnDrive(-0.5);
+                    });
+        }
+        gyro.reset();
+    }
+    
+    /**
+     * Does not work near 0 (yet)
+     * @param angle
+     */
+    private void robotTurn(int angle)
+    {
+        int buffer = 15;
+        int max = angle + buffer;
+        int min = angle - buffer;
+        final double minTurnSpeed = 0.5;
+        final double maxTurnSpeed = 0.8;
+        final double turnSpeedRange = maxTurnSpeed - minTurnSpeed;
+        final double maxSpeedAngle = 60; // Nearest angle at which the robot turns with max speed
+        
+        if (shouldTurnLeft(max)){
+            addAction("Turn to zero degrees",
+                    () -> shouldTurnLeft(max),
+                    () -> {
+                        double delta = Math.abs(gyro.getYawAngle() - angle);
+                        double turnSpeed = Math.min(maxTurnSpeed, minTurnSpeed + turnSpeedRange * (delta/maxSpeedAngle));
+                        drive.turnDrive(turnSpeed);
+                    });
+        }else{
+            addAction("Turn to zero degrees",
+                    () -> shouldTurnRight(min),
+                    () -> {
+                        double delta = Math.abs(gyro.getYawAngle() - angle);
+                        double turnSpeed = Math.min(maxTurnSpeed, minTurnSpeed + turnSpeedRange * (delta/maxSpeedAngle));
+                        drive.turnDrive(-turnSpeed);
                     });
         }
         gyro.reset();
