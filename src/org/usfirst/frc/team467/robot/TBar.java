@@ -26,7 +26,13 @@ public class TBar
     
     public void stop()
     {
+        LOGGER.debug("Rotation Sensor: " + rotationSensor.getAverageValue());
         tMotor.set(0.0);
+    }
+    
+    public double getSensorReading()
+    {
+        return rotationSensor.getAverageValue();
     }
     
     public void launchTBar(tBarDirection tBarDirection)
@@ -41,7 +47,7 @@ public class TBar
         {       
             case DOWN:
                 LOGGER.debug("want DOWN");
-                if (rotationSensor.getAverageValue() > 581) {
+                if (!isDown()) {
                     LOGGER.info("going down");
                     tMotor.set(-0.4);
                 }
@@ -51,7 +57,7 @@ public class TBar
                 break;
             case UP:
                 LOGGER.debug("want UP");
-                if (rotationSensor.getAverageValue() < 3016) {
+                if (!isUp()) {
                     LOGGER.info("going up");
                     tMotor.set(0.4);
                 }
@@ -68,11 +74,11 @@ public class TBar
     }
     
     public boolean isUp(){
-        return rotationSensor.getAverageValue() >= 3016;
+        return rotationSensor.getAverageValue() >= 3000;
    }
     
     public boolean isDown(){
-        return rotationSensor.getAverageValue() <= 581;
+        return (rotationSensor.getAverageValue() <= 300);
     }
     
     enum tBarDirection
