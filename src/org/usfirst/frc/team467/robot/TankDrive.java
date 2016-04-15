@@ -32,7 +32,15 @@ public class TankDrive implements Driveable
     private double MIN_SPEED = 0.1;
     private double prevLeft;
     private double prevRight;
-
+    
+    /**
+     * Use factory methods
+     * 
+     * @param fl Front Left Motor Controller
+     * @param fr Front Right Motor Controller
+     * @param bl Back Left Motor Controller
+     * @param br Back Right Motor Controller
+     */
     private TankDrive(SpeedController fl, SpeedController fr, SpeedController bl, SpeedController br)
     {
         this.fl = fl;
@@ -97,6 +105,12 @@ public class TankDrive implements Driveable
         }
     }
     
+    /**
+     * Squares a number but keeps the sign
+     * 
+     * @param number Usually speed
+     * @return Squared value
+     */
     private double square(double number)
     {
         if (number >= 0.0)
@@ -166,8 +180,15 @@ public class TankDrive implements Driveable
         return newSpeed;
     }
     
+    /**
+     * Tank Drive as per usual
+     * 
+     * @param leftSpeed
+     * @param rightSpeed
+     */
     private void drive(double leftSpeed, double rightSpeed)
     {
+        // Log speed percentage
         LOGGER.debug("leftSpeed=" + (int)(100*leftSpeed) + " rightSpeed=" + (int)(100*rightSpeed));
 
         leftSpeed = limitSpeed(leftSpeed, prevLeft);
@@ -177,6 +198,8 @@ public class TankDrive implements Driveable
 
         final double LEFT_SCALE = 1; // Double.valueOf((SmartDashboard.getString("DB/String 2"))) / 100.0;
         LOGGER.debug(LEFT_SCALE);
+        
+       // Drift control
         final double RIGHT_SCALE = 0.88; // Double.valueOf((SmartDashboard.getString("DB/String 3"))) / 100.0;
         LOGGER.debug(RIGHT_SCALE);
         fl.set(square(-leftSpeed) * LEFT_SCALE);
@@ -201,7 +224,13 @@ public class TankDrive implements Driveable
         final double speed = joystick.getTankSpeed();
         arcadeDrive(turn, speed);
     }
-
+    
+    /**
+     * Copied from WPILib
+     * 
+     * @param turn
+     * @param speed
+     */
     public void arcadeDrive(double turn, double speed)
     {
         final double left;
@@ -254,7 +283,7 @@ public class TankDrive implements Driveable
     @Override
     public void individualSteeringDrive(double angle, int steeringId)
     {
-        ; // Not applicable.
+        // Not applicable.
     }
 
     @Override
@@ -266,7 +295,7 @@ public class TankDrive implements Driveable
     @Override
     public void unwind()
     {
-        ; // Not applicable.
+        // Not applicable.
     }
 
     @Override
@@ -312,7 +341,7 @@ public class TankDrive implements Driveable
     @Override
     public void cartDrive(MainJoystick467 joystick)
     {
-        Direction direction = Direction.NONE;
+        Direction direction = Direction.NONE; // Default
         if (joystick.getKartForward())
         {
             direction = Direction.FRONT;

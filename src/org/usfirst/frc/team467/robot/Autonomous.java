@@ -358,7 +358,7 @@ public class Autonomous
      */
     private void robotTurn(int angle)
     {
-        int buffer = 15;
+        int buffer = 5;
         int max = angle + buffer;
         int min = angle - buffer;
         final double minTurnSpeed = 0.5;
@@ -955,35 +955,35 @@ public class Autonomous
                     roller.runManipulator(ManipIntent.SHOULD_RETRACT);
                 }
                 );
-//        addAction("Approach Wall",
-//                () -> untilClose(24.0),
+        addAction("Approach Wall",
+                () -> untilClose(12.0),
+                () -> {
+                    approach(12.0);
+                    roller.stop();
+                }
+                );
+//        addAction("Drive into Wall",
+//                () -> forDurationSecs(2.0f),
 //                () -> {
-//                    approach(24.0);
+//                    drive.arcadeDrive(0, -0.75);
+//                    roller.stop();
+//                    tbar.stop();
+//                }
+//                );
+//        addAction("Back off Wall",
+//                () -> forDurationSecs(0.5f),
+//                () -> {
+//                    drive.arcadeDrive(0, 0.5);
 //                    roller.stop();
 //                }
 //                );
-        addAction("Drive into Wall",
-                () -> forDurationSecs(2.0f),
-                () -> {
-                    drive.arcadeDrive(0, -0.75);
-                    roller.stop();
-                    tbar.stop();
-                }
-                );
-        addAction("Back off Wall",
-                () -> forDurationSecs(0.5f),
-                () -> {
-                    drive.arcadeDrive(0, 0.5);
-                    roller.stop();
-                }
-                );
         if (reverse)
         {
-            robotTurn(270);
+            robotTurn(240);
         }
         else
         {
-            robotTurn(90);
+            robotTurn(60);
         }
         
         addAction("Approach Goal",
@@ -993,17 +993,19 @@ public class Autonomous
                 }
                 );
         addAction("Shoot Low Goal",
-                () -> forDurationSecs(1f),
+                () -> forever(),
                 () -> {
                     roller.runRoller(RollerDirection.OUT);
-                });
-        addAction("Stop driving", 
-                () -> forever(), 
-                () -> {
-                    roller.stop();
                     tbar.stop();
                     drive.stop();
                 });
+//        addAction("Stop driving", 
+//                () -> forever(), 
+//                () -> {
+//                    roller.stop();
+//                    tbar.stop();
+//                    drive.stop();
+//                });
     }
     
     private void crossDefense(float finalDriveTime)
