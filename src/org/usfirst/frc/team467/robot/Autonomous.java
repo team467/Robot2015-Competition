@@ -404,14 +404,20 @@ public class Autonomous
     }
     
     private void shootToRight(int position){
+        addAction("raise tbar and ball roller",
+                () -> gyro.isFlat(),
+                () -> {
+                    tbar.launchTBar(tBarDirection.UP);
+                    roller.extendManip();
+                });
         if(position == 4){
             addAction("turn 90 degrees (clockwise)",
                     () -> shouldTurnRight(80),
                     () -> {
                         drive.turnDrive(-0.5);
                     });
-            addAction("Move while the Ultrasonic is more than 3 feet from the wall",
-                    () -> ultrasonic.getRangeInches() > 36,
+            addAction("Move while the Ultrasonic is more than 4 feet from the wall",
+                    () -> ultrasonic.getRangeInches() > 48,
                     () -> {
                         drive.arcadeDrive(0.0, -0.5);
                     });
@@ -446,14 +452,20 @@ public class Autonomous
     }
     
     private void shootToLeft(int position){
+        addAction("raise tbar and ball roller",
+                () -> gyro.isFlat(),
+                () -> {
+                    tbar.launchTBar(tBarDirection.UP);
+                    roller.extendManip();
+                });
         if(position == 3){
             addAction("turn 90 degrees (counterclockwise)",
                     () -> shouldTurnLeft(-80),
                     () -> {
                         drive.turnDrive(0.5);
                     });
-            addAction("Move while the Ultrasonic is more than 3 feet from the wall",
-                    () -> ultrasonic.getRangeInches() > 36,
+            addAction("Move while the Ultrasonic is more than 4 feet from the wall",
+                    () -> ultrasonic.getRangeInches() > 48,
                     () -> {
                         drive.arcadeDrive(0.0, -0.5);
                     });
@@ -493,7 +505,11 @@ public class Autonomous
         //Moves over barriers using the tilt gyrometer to detect when the robot is going up, down, or driving flat
         //Moves towards the walls using the ultrasonic sensor
         //and turns (counter)clockwise with the yaw gyrometer to line up for the low shoot
-        
+        addAction("Move while gyro is flat",
+                () -> gyro.isFlat(),
+                () -> {
+                    drive.arcadeDrive(0.0, -0.7);
+                });
         addAction("Move while gyro is up",
                 () -> gyro.isUp(),
                 () -> {
@@ -900,7 +916,7 @@ public class Autonomous
         }
         else
         {
-            crossDefense();
+            crossDefense(2.0f);
         }
         addAction("Stop driving", 
                 () -> forever(), 
@@ -928,14 +944,14 @@ public class Autonomous
         }
         else
         {
-            crossDefense();
+            crossDefense(0.25f);
             robotTurn(15);
         }
-        addAction("Extend Manipulator",
+        addAction("Raise gamepieces",
                 () -> forDurationSecs(1.0f),
                 () ->
                 {
-                    tbar.stop();
+                    tbar.launchTBar(tBarDirection.UP);
                     roller.runManipulator(ManipIntent.SHOULD_RETRACT);
                 }
                 );
@@ -951,6 +967,7 @@ public class Autonomous
                 () -> {
                     drive.arcadeDrive(0, -0.75);
                     roller.stop();
+                    tbar.stop();
                 }
                 );
         addAction("Back off Wall",
@@ -960,26 +977,26 @@ public class Autonomous
                     roller.stop();
                 }
                 );
-//        if (reverse)
-//        {
-//            robotTurn(270);
-//        }
-//        else
-//        {
-//            robotTurn(90);
-//        }
+        if (reverse)
+        {
+            robotTurn(270);
+        }
+        else
+        {
+            robotTurn(90);
+        }
         
-//        addAction("Approach Goal",
-//                () -> forDurationSecs(2.5f),
-//                () -> {
-//                    drive.arcadeDrive(0, -0.75);
-//                }
-//                );
-//        addAction("Shoot Low Goal",
-//                () -> forDurationSecs(1f),
-//                () -> {
-//                    roller.runRoller(RollerDirection.OUT);
-//                });
+        addAction("Approach Goal",
+                () -> forDurationSecs(2.5f),
+                () -> {
+                    drive.arcadeDrive(0, -0.75);
+                }
+                );
+        addAction("Shoot Low Goal",
+                () -> forDurationSecs(1f),
+                () -> {
+                    roller.runRoller(RollerDirection.OUT);
+                });
         addAction("Stop driving", 
                 () -> forever(), 
                 () -> {
@@ -989,7 +1006,7 @@ public class Autonomous
                 });
     }
     
-    private void crossDefense()
+    private void crossDefense(float finalDriveTime)
     {
         // Drive until tilted up; aka on defense ramp
         addAction("Drive to defense ramp", 
@@ -1013,7 +1030,7 @@ public class Autonomous
                     drive.arcadeDrive(0.0, -0.8);
                 });
         addAction("Drive off defense ramp", 
-                () -> forDurationSecs(2.0f), 
+                () -> forDurationSecs(finalDriveTime), 
                 () -> {
                     drive.arcadeDrive(0.0, -0.8);
                 });
