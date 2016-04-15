@@ -170,6 +170,7 @@ public class Robot extends IterativeRobot
         String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
         SmartDashboard.putString("DB/String 5", stickType);
 //        LOGGER.info("Rotation Sensor: " + tbar.rotationSensor.getAverageValue());
+        LOGGER.info("auto mode=" + SmartDashboard.getString("Auto Selector", "invalid").toUpperCase());
     }
 
     @Override
@@ -205,7 +206,7 @@ public class Robot extends IterativeRobot
     public void autonomousPeriodic()
     {
 //        LOGGER.info("Autonomous");
-        vision.updateContours();
+//        vision.updateContours();
         LOGGER.debug("Contours updated");
 //        
         driverstation.readInputs();

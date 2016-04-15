@@ -22,13 +22,13 @@ public class Logging
     {
         // Enable extra logging for classes you want to debug
         Logger.getLogger(Robot.class).setLevel(Level.DEBUG);
-        Logger.getLogger(Ultrasonic2016.class).setLevel(Level.DEBUG);
+//        Logger.getLogger(Ultrasonic2016.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Steering.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Calibration.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(TankDrive.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Lifter.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Claw.class).setLevel(Level.DEBUG);
-//        Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
+        Logger.getLogger(Autonomous.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Gyro2015.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(CameraDashboard.class).setLevel(Level.DEBUG);
 //        Logger.getLogger(Shooter467.class).setLevel(Level.DEBUG);
