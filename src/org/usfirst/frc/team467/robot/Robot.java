@@ -170,9 +170,9 @@ public class Robot extends IterativeRobot
         String stickType = SmartDashboard.getString("DB/String 0", "EMPTY");
         SmartDashboard.putString("DB/String 5", stickType);
 //        LOGGER.info("Rotation Sensor: " + tbar.rotationSensor.getAverageValue());
-        LOGGER.info("auto mode=" + SmartDashboard.getString("Auto Selector", "invalid").toUpperCase());
+        LOGGER.trace("auto mode=" + SmartDashboard.getString("Auto Selector", "invalid").toUpperCase());
         
-        LOGGER.debug("TBar Rotation Sensor: " + tbar.getSensorReading());
+        LOGGER.trace("TBar Rotation Sensor: " + tbar.getSensorReading());
     }
 
     @Override
