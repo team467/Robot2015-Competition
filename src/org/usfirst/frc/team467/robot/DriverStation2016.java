@@ -240,6 +240,8 @@ public class DriverStation2016
 //                return AutoType.AIM;
             case "CROSS_LOWBAR_SHOOT":
                 return AutoType.CROSS_LOWBAR_SHOOT;
+            case "CROSS_5_SHOOT":
+                return AutoType.CROSS_5_SHOOT;
             case "CROSS_LOWBAR_SHOOT_REVERSE":
                 return AutoType.CROSS_LOWBAR_SHOOT_REVERSE;
             case "CROSS":

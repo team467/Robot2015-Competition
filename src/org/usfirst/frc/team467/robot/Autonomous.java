@@ -300,10 +300,13 @@ public class Autonomous
                 initCrossDefense(true);
                 break;
             case CROSS_LOWBAR_SHOOT:
-                initCrossAndShootLow(false);
+                initCrossLowbarShootLow(false);
                 break;
             case CROSS_LOWBAR_SHOOT_REVERSE:
-                initCrossAndShootLow(true);
+                initCrossLowbarShootLow(true);
+                break;
+            case CROSS_5_SHOOT:
+                initCross5ShootLow(false);
                 break;
             default:
                 initStayInPlace();
@@ -927,7 +930,7 @@ public class Autonomous
                 });
     }
     
-    private void initCrossAndShootLow(boolean reverse)
+    private void initCrossLowbarShootLow(boolean reverse)
     {
         addAction("Lower gamepieces",
                 () -> forDurationSecs(1.0f),
@@ -956,6 +959,13 @@ public class Autonomous
                 }
                 );
         addAction("Approach Wall",
+                () -> forDurationSecs(1.0f),
+                () -> {
+                    drive.strafeDrive(Direction.FRONT);
+                    roller.stop();
+                }
+                );
+        addAction("Approach Wall Ultra",
                 () -> untilClose(12.0),
                 () -> {
                     approach(12.0);
@@ -990,6 +1000,98 @@ public class Autonomous
                 () -> forDurationSecs(2.5f),
                 () -> {
                     drive.arcadeDrive(0, -0.75);
+                }
+                );
+        addAction("Extend Manipulator",
+                () -> forDurationSecs(1.0f),
+                () -> {
+                    drive.stop();
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                }
+                );
+        addAction("Shoot Low Goal",
+                () -> forever(),
+                () -> {
+                    roller.runRoller(RollerDirection.OUT);
+                    tbar.stop();
+                    drive.stop();
+                });
+//        addAction("Stop driving", 
+//                () -> forever(), 
+//                () -> {
+//                    roller.stop();
+//                    tbar.stop();
+//                    drive.stop();
+//                });
+    }
+    
+    private void initCross5ShootLow(boolean reverse)
+    {
+        addAction("Lower gamepieces",
+                () -> forDurationSecs(1.0f),
+                () ->
+                {
+                    tbar.launchTBar(tBarDirection.DOWN);
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
+                }
+                );
+        addAction("Raise gamepieces",
+                () -> forDurationSecs(1.0f),
+                () ->
+                {
+                    tbar.launchTBar(tBarDirection.UP);
+                    roller.runManipulator(ManipIntent.SHOULD_RETRACT);
+                }
+                );
+        addAction("Approach Wall",
+                () -> forDurationSecs(1.0f),
+                () -> {
+                    drive.strafeDrive(Direction.FRONT);
+                    roller.stop();
+                }
+                );
+        addAction("Approach Wall",
+                () -> untilClose(12.0),
+                () -> {
+                    approach(12.0);
+                    roller.stop();
+                }
+                );
+//        addAction("Drive into Wall",
+//                () -> forDurationSecs(2.0f),
+//                () -> {
+//                    drive.arcadeDrive(0, -0.75);
+//                    roller.stop();
+//                    tbar.stop();
+//                }
+//                );
+//        addAction("Back off Wall",
+//                () -> forDurationSecs(0.5f),
+//                () -> {
+//                    drive.arcadeDrive(0, 0.5);
+//                    roller.stop();
+//                }
+//                );
+        if (reverse)
+        {
+            robotTurn(-240);
+        }
+        else
+        {
+            robotTurn(-60);
+        }
+        
+        addAction("Approach Goal",
+                () -> forDurationSecs(2.5f),
+                () -> {
+                    drive.arcadeDrive(0, -0.75);
+                }
+                );
+        addAction("Extend Manipulator",
+                () -> forDurationSecs(1.0f),
+                () -> {
+                    drive.stop();
+                    roller.runManipulator(ManipIntent.SHOULD_EXTEND);
                 }
                 );
         addAction("Shoot Low Goal",
@@ -1173,7 +1275,7 @@ public class Autonomous
      */
     enum  AutoType
     {
-        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, HIGH_GOAL, APPROACH_DEFENSE,
+        NO_AUTO, AIM, DRIVE_ONLY, STAY_IN_PLACE, HIGH_GOAL, APPROACH_DEFENSE, CROSS_5_SHOOT,
         CROSS_DEFENSE, CROSS_DEFENSE_REVERSE, CROSS_LOWBAR_SHOOT, CROSS_LOWBAR_SHOOT_REVERSE,
         PORTCULLIS_1, PORTCULLIS_2, PORTCULLIS_3, PORTCULLIS_4, PORTCULLIS_5,
         DRAWBRIDGE_1, DRAWBRIDGE_2, DRAWBRIDGE_3, DRAWBRIDGE_4, DRAWBRIDGE_5,
