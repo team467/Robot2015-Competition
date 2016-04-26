@@ -100,14 +100,14 @@ public class DriverStation2016
         switch (stickType)
         {
             case "LT1":
-                driverJoy1 = new LogitechJoystick(0);
+                driverJoy1 = new LogitechJoystick(3);
                 driverJoy2 = null;
                 kart = false;
                 split = false;
                 stickTypeDescription = "Logitech 1-stick";
                 break;
             case "LT2":
-                driverJoy1 = new LogitechJoystick(0);
+                driverJoy1 = new LogitechJoystick(3);
                 driverJoy2 = new LogitechJoystick(2);
                 kart = false;
                 split = false;
@@ -142,29 +142,29 @@ public class DriverStation2016
                 stickTypeDescription = "Playstation split-stick";
                 break;
             case "XB1":
-                driverJoy1 = new XBoxJoystickMain(3);
+                driverJoy1 = new XBoxJoystickMain(0);
                 driverJoy2 = null;
                 kart = false;
                 split = false;
                 stickTypeDescription = "XBox 1-stick";
                 break;
             case "XB2":
-                driverJoy1 = new XBoxJoystickMain(3);
-                driverJoy2 = new XBoxJoystickRight(3);
+                driverJoy1 = new XBoxJoystickMain(0);
+                driverJoy2 = new XBoxJoystickRight(0);
                 kart = false;
                 split = false;
                 stickTypeDescription = "XBox 2-stick";
                 break;
             case "XBKART":
-                driverJoy1 = new XBoxJoystickMain(3);
+                driverJoy1 = new XBoxJoystickMain(0);
                 driverJoy2 = null;
                 kart = true;
                 split = false;
                 stickTypeDescription = "XBox Kart";
                 break;
             case "XBSPLIT":
-                driverJoy1 = new XBoxJoystickMain(3);
-                driverJoy2 = new XBoxJoystickRight(3);
+                driverJoy1 = new XBoxJoystickMain(0);
+                driverJoy2 = new XBoxJoystickRight(0);
                 kart = false;
                 split = true;
                 stickTypeDescription = "XBox split-stick";
@@ -174,8 +174,8 @@ public class DriverStation2016
                         + "XB1, XB2, XBKART, or XBSPLIT");
                 stickTypeDescription = "Invalid(XBSplit)";
                 LOGGER.info("Assuming XBSplit");
-                driverJoy1 = new XBoxJoystickMain(3);
-                driverJoy2 = new XBoxJoystickRight(3);
+                driverJoy1 = new XBoxJoystickMain(0);
+                driverJoy2 = new XBoxJoystickRight(0);
                 kart = false;
                 split = true;
                 stickTypeDescription = "XBox split-stick";
@@ -240,6 +240,8 @@ public class DriverStation2016
 //                return AutoType.AIM;
             case "CROSS_LOWBAR_SHOOT":
                 return AutoType.CROSS_LOWBAR_SHOOT;
+            case "CROSS_5_SHOOT":
+                return AutoType.CROSS_5_SHOOT;
             case "CROSS_LOWBAR_SHOOT_REVERSE":
                 return AutoType.CROSS_LOWBAR_SHOOT_REVERSE;
             case "CROSS":
@@ -254,7 +256,7 @@ public class DriverStation2016
             case "NO_AUTO":
                 return AutoType.NO_AUTO;
             default:
-                LOGGER.debug("NO_AUTO");
+                LOGGER.debug("Default: mode="+mode);
                 return AutoType.NO_AUTO;
                 
             case "CROSS_BARRIER_1":
@@ -619,15 +621,15 @@ public class DriverStation2016
     
     public CameraDashboard.CamView getView()
     {
-        boolean shooterViewActivated = SmartDashboard.getBoolean("DB/Button 1");
-        if (shooterViewActivated)
-        {
-            return CameraDashboard.CamView.SHOOTER;
-        }
-        else
-        {
+//        boolean shooterViewActivated = SmartDashboard.getBoolean("DB/Button 1");
+//        if (shooterViewActivated)
+//        {
+//            return CameraDashboard.CamView.SHOOTER;
+//        }
+//        else
+//        {
             return CameraDashboard.CamView.TANK;
-        }
+//        }
     }
 
 //    /**
