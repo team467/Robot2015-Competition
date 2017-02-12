@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.RawData;
-import com.ni.vision.VisionException;
+//import com.ni.vision.NIVision;
+//import com.ni.vision.NIVision.Image;
+//import com.ni.vision.NIVision.RawData;
+//import com.ni.vision.VisionException;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.vision.USBCamera;
+//import edu.wpi.first.wpilibj.vision.USBCamera;
 
 // replicates CameraServer.cpp in java lib
 // Copied from WPILib with a change in capture

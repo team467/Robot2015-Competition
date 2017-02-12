@@ -1,7 +1,6 @@
 package org.usfirst.frc.team467.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Joystick.RumbleType;
 
 public class PlayStationJoystickMain implements MainJoystick467
 {
@@ -14,10 +13,10 @@ public class PlayStationJoystickMain implements MainJoystick467
     private static final int POV_INDEX = 0;
     private static final double DEADZONE = 0.1;
 
-    
+
     private boolean[] buttons = new boolean[16];     // array of current button states
     private boolean[] prevButtons = new boolean[16]; // array of previous button states, involved in edge detection.
-    
+
     public PlayStationJoystickMain(int stick)
     {
         joystick = new Joystick(stick);
@@ -41,7 +40,7 @@ public class PlayStationJoystickMain implements MainJoystick467
         stickX = accelerateJoystickInput(joystick.getRawAxis(AXIS_X));
         pov = joystick.getPOV(POV_INDEX);
     }
-    
+
     /**
      * Implement a dead zone for Joystick centering - and a non-linear
      * acceleration as the user moves away from the zero position.
@@ -122,21 +121,21 @@ public class PlayStationJoystickMain implements MainJoystick467
         {
             return 0.0;
         }
-    
+
         if (stickY == 0.0)
         {
             // In Y deadzone avoid divide by zero error
             return (stickX > 0.0) ? Math.PI / 2 : -Math.PI / 2;
         }
-    
+
         // Return value in range -PI to PI
         double stickAngle = Math.atan(stickX / -stickY);
-    
+
         if (stickY > 0)
         {
             stickAngle += (stickX > 0) ? Math.PI : -Math.PI;
         }
-    
+
         return (stickAngle);
     }
 

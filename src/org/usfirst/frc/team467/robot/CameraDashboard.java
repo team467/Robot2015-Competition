@@ -12,27 +12,27 @@ import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
-import edu.wpi.first.wpilibj.vision.AxisCamera;
-
-import edu.wpi.first.wpilibj.vision.USBCamera;
+//import edu.wpi.first.wpilibj.vision.AxisCamera;
+//
+//import edu.wpi.first.wpilibj.vision.USBCamera;
 
 public class CameraDashboard extends Thread
 {
     private static final Logger LOGGER = Logger.getLogger(CameraDashboard.class);
-    
+
     private static final float BLACK = color(0, 0, 0);
     private static final float RED = color(255, 0, 0);
     private static final float GREEN = color(0, 255, 0);
     @SuppressWarnings("unused")
     private static final float BLUE = color(0, 0, 255);
     private static final float WHITE = color(255, 255, 255);
-    
+
     private final DriverStation libStation;
     private final DriverStation2016 customStation;
     private final VisionProcessor vision;
-    
+
     private static CameraDashboard instance;
-    
+
     private Steering flSteering;
     private Steering frSteering;
     private Steering blSteering;
@@ -41,9 +41,9 @@ public class CameraDashboard extends Thread
 
     private boolean driveCameraExists = false;
     private boolean aimCameraExists = false;
-    
+
     private long lastTimeStamp = System.currentTimeMillis();
-    
+
     Image frame;
     CameraServer467 cameraServer;
 //    private USBCamera driveCam;
@@ -71,7 +71,7 @@ public class CameraDashboard extends Thread
         }
         return instance;
     }
-    
+
     public void setDrive(Driveable drive)
     {
         if (drive instanceof SwerveDrive)
@@ -99,7 +99,7 @@ public class CameraDashboard extends Thread
 //            driveCam.openCamera();
 //            driveCam.startCapture();
 ////            cameraServer.setQuality(50);
-//            
+//
 //            // the camera name (ex "cam0") can be found through the roborio web interface
 ////            cameraServer.startAutomaticCapture(driveCam);
 //
@@ -113,7 +113,7 @@ public class CameraDashboard extends Thread
 //            driveCameraExists = false;
 //        }
 //    }
-    
+
     private void initAimCamera(String name)
     {
         try
@@ -123,7 +123,7 @@ public class CameraDashboard extends Thread
             aimCam.openCamera();
             aimCam.startCapture();
 //            cameraServer.setQuality(50);
-            
+
             // the camera name (ex "cam0") can be found through the roborio web interface
 //            cameraServer.startAutomaticCapture(driveCam);
 
@@ -137,7 +137,7 @@ public class CameraDashboard extends Thread
             aimCameraExists = false;
         }
     }
-    
+
 //    private void initAxisCamera()
 //    {
 //        try
@@ -162,9 +162,9 @@ public class CameraDashboard extends Thread
         final int driveCamHeight   = 240;
         final int shooterCamWidth  = 320;
         final int shooterCamHeight = 240;
-        
+
         view = customStation.getView();
-        
+
 //        switch (view)
 //        {
 //            case SWERVE:
@@ -192,7 +192,7 @@ public class CameraDashboard extends Thread
 ////                aimCam.getImage(frame);
 //                drawCrossHairs(driveCamWidth, driveCamHeight);
 ////                drawWidestContour(shooterCamWidth, shooterCamHeight);
-//                
+//
 //                if (libStation.isEnabled())
 //                {
 //                    drawTimerBar(driveCamWidth, driveCamHeight);
@@ -205,7 +205,7 @@ public class CameraDashboard extends Thread
     /**
      * Color values are from 0 to 255<br>
      * e.g. white = (255, 255, 255)
-     * 
+     *
      * @param r - The red value
      * @param g - The green value
      * @param b - The blue value
@@ -216,10 +216,10 @@ public class CameraDashboard extends Thread
         // 24 bits, 8 bits for each color channel
         return b*256*256 + g*256 + r;
     }
-    
+
     /**
      * Draws Timer Bar on top of Camera Feed
-     * 
+     *
      * @param viewWidth
      * @param viewHeight
      */
@@ -244,20 +244,20 @@ public class CameraDashboard extends Thread
         {
             totalTime = 15;
         }
-        
+
         double scale = viewWidth / totalTime;
         double elapsedTime = (totalTime - matchTime);
-        
+
         if (elapsedTime < 0) {
             LOGGER.warn("elapsedTime is negative: " + elapsedTime);
             elapsedTime = 0;
         }
-        
+
         double barWidth = elapsedTime * scale;
-        
-        
+
+
         NIVision.Rect timerRect = new NIVision.Rect(0, 0, height, (int)barWidth);
-        
+
         if (matchTime < 20)
         {
             // Final 20 seconds: No throwing noodles!
@@ -273,16 +273,16 @@ public class CameraDashboard extends Thread
     private void drawCrossHairs(int viewWidth, int viewHeight)
     {
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
-        
+
         NIVision.Rect vertBlack = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 2, 80, 5);
         NIVision.Rect vertWhite = new NIVision.Rect(viewHeight / 2 - 40, viewWidth / 2 - 1, 80, 3);
-        
+
         NIVision.Rect horizBlack = new NIVision.Rect(viewHeight / 2 - 2, viewWidth / 2 - 40, 5, 80);
         NIVision.Rect horizWhite = new NIVision.Rect(viewHeight / 2 - 1, viewWidth / 2 - 40, 3, 80);
 
         NIVision.imaqDrawShapeOnImage(frame, frame, vertBlack, DrawMode.PAINT_VALUE, RECT, BLACK);
         NIVision.imaqDrawShapeOnImage(frame, frame, horizBlack, DrawMode.PAINT_VALUE, RECT, BLACK);
-        
+
         NIVision.imaqDrawShapeOnImage(frame, frame, vertWhite, DrawMode.PAINT_VALUE, RECT, WHITE);
         NIVision.imaqDrawShapeOnImage(frame, frame, horizWhite, DrawMode.PAINT_VALUE, RECT, WHITE);
     }
@@ -300,31 +300,31 @@ public class CameraDashboard extends Thread
         final int rightMargin = viewWidth - (leftMargin + rectWidth) - barWidth;
 
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
-        
+
         NIVision.Rect flRect = new NIVision.Rect(topMargin, leftMargin, rectHeight, rectWidth);
         NIVision.Rect flRect2 = new NIVision.Rect(topMargin-1, leftMargin-1, rectHeight+2, rectWidth+2);
-        
+
         NIVision.Rect frRect = new NIVision.Rect(topMargin, rightMargin, rectHeight, rectWidth);
         NIVision.Rect frRect2 = new NIVision.Rect(topMargin-1, rightMargin-1, rectHeight+2, rectWidth+2);
-        
+
         NIVision.Rect blRect = new NIVision.Rect(bottomMargin, leftMargin, rectHeight, rectWidth);
         NIVision.Rect blRect2 = new NIVision.Rect(bottomMargin-1, leftMargin-1, rectHeight+2, rectWidth+2);
-        
+
         NIVision.Rect brRect = new NIVision.Rect(bottomMargin, rightMargin, rectHeight, rectWidth);
         NIVision.Rect brRect2 = new NIVision.Rect(bottomMargin-1, rightMargin-1, rectHeight+2, rectWidth+2);
-        
+
         NIVision.imaqDrawShapeOnImage(frame, frame, flRect, DrawMode.DRAW_VALUE, RECT, WHITE);
         NIVision.imaqDrawShapeOnImage(frame, frame, flRect2, DrawMode.DRAW_VALUE, RECT, BLACK);
-        
+
         NIVision.imaqDrawShapeOnImage(frame, frame, frRect, DrawMode.DRAW_VALUE, RECT, WHITE);
         NIVision.imaqDrawShapeOnImage(frame, frame, frRect2, DrawMode.DRAW_VALUE, RECT, BLACK);
-        
+
         NIVision.imaqDrawShapeOnImage(frame, frame, blRect, DrawMode.DRAW_VALUE, RECT, WHITE);
         NIVision.imaqDrawShapeOnImage(frame, frame, blRect2, DrawMode.DRAW_VALUE, RECT, BLACK);
 
         NIVision.imaqDrawShapeOnImage(frame, frame, brRect, DrawMode.DRAW_VALUE, RECT, WHITE);
         NIVision.imaqDrawShapeOnImage(frame, frame, brRect2, DrawMode.DRAW_VALUE, RECT, BLACK);
-        
+
         double flSteeringAngle = flSteering.getSteeringAngle();
         double frSteeringAngle = frSteering.getSteeringAngle();
         double blSteeringAngle = blSteering.getSteeringAngle();
@@ -337,11 +337,11 @@ public class CameraDashboard extends Thread
         int brSteeringPosition = (int) (brSteeringAngle * (100 / ((2 * Math.PI) * (maxTurns * 2))) + 50);
 
         float flColor = (Math.abs(flSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED;
-        float frColor = (Math.abs(frSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED; 
-        float blColor = (Math.abs(blSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED; 
-        float brColor = (Math.abs(brSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED; 
+        float frColor = (Math.abs(frSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED;
+        float blColor = (Math.abs(blSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED;
+        float brColor = (Math.abs(brSteeringAngle) < (maxTurns * Math.PI * 2) - Math.PI) ? BLACK : RED;
 
-        
+
         NIVision.Rect flBar = new NIVision.Rect(topMargin, leftMargin + flSteeringPosition, rectHeight, barWidth);
         NIVision.Rect frBar = new NIVision.Rect(topMargin, rightMargin + frSteeringPosition, rectHeight, barWidth);
         NIVision.Rect blBar = new NIVision.Rect(bottomMargin, leftMargin + blSteeringPosition, rectHeight, barWidth);
@@ -352,7 +352,7 @@ public class CameraDashboard extends Thread
         NIVision.imaqDrawShapeOnImage(frame, frame, blBar, DrawMode.PAINT_VALUE, RECT, blColor);
         NIVision.imaqDrawShapeOnImage(frame, frame, brBar, DrawMode.PAINT_VALUE, RECT, brColor);
     }
-    
+
     private void drawWidestContour(int viewWidth, int viewHeight)
     {
         final ShapeMode RECT = ShapeMode.SHAPE_RECT;
@@ -370,17 +370,17 @@ public class CameraDashboard extends Thread
             cameraServer = CameraServer467.getInstance();
             final double UPDATE_FREQ = 5; // Updates per second
             final long period = (long) (1000 / UPDATE_FREQ); // Update period in milliseconds
-            
+
             while (true)
             {
                 long startTime = System.currentTimeMillis();
                 LOGGER.trace("delta=" + (startTime - lastTimeStamp));
-                
+
                 lastTimeStamp = startTime;
 
                 // Do the actual work.
                 if (cameraExists())
-                {   
+                {
                     try
                     {
                         renderImage();
@@ -424,7 +424,7 @@ public class CameraDashboard extends Thread
             LOGGER.error("Unexpected exception in run: " + e.getMessage());
         }
     }
-    
+
     static enum CamView
     {
         SWERVE, SHOOTER, TANK

@@ -2,7 +2,8 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.Talon;
@@ -18,25 +19,25 @@ public class BallRollers
     private final MotorSafetyHelper safetyManip;
     private final double rollerOutMotorSpeed = 1;
     private final double rollerInMotorSpeed = 1;
-    
+
     private DriverStation2016 driverstation;
-    
+
     boolean prepare = false;
     private final Infrared infra;
-    
+
     private DigitalInput isRetractedSwitch;
-    
+
     private PowerDistroBoard467 board = null;
-    
+
     private static final double MAX_CURRENT_OUT = 11;
     private static final double MAX_CURRENT_IN = 11;
     private final double manipMotorSpeed = 0.9;
-    
+
     boolean isRetracted;
     boolean isExtended;
 
     // TODO Sensor
-    
+
     public BallRollers(int motorChannelRoller, int motorChannelManip, Infrared infra,  DriverStation2016 driverstation)
     {
         board = PowerDistroBoard467.getInstance();
@@ -53,13 +54,13 @@ public class BallRollers
         }
         //reset();
     }
-    
+
     public void reset()
     {
         isRetracted = false;
         isExtended = false;
     }
-    
+
     public void stopRoller()
     {
         rollerMotor.set(0.0);
@@ -93,9 +94,9 @@ public class BallRollers
         rollerMotor.set(rollerOutMotorSpeed);
         safetyRoller.feed();
     }
-    
+
     public void runRoller(RollerDirection rollerDirection) {
-        
+
         switch(rollerDirection) {
             case IN:
                 if (!isLoaded())
@@ -116,11 +117,11 @@ public class BallRollers
                 break;
         }
     }
-        
+
     public void runManipulator(ManipIntent manipPosition) {
         String logstring;
         LOGGER.debug("manipCurrent=" + board.getManipCurrent());
-        
+
         //for now, we just control the Manipulator arm manually until we can detect the position of the arm
         switch(manipPosition) {
             case SHOULD_EXTEND:
@@ -185,21 +186,21 @@ public class BallRollers
         rollerMotor.set(motorSpeed);
         safetyRoller.feed();
     }
-    
+
     public void out(double motorSpeed)
     {
         LOGGER.debug("OUT");
         rollerMotor.set(-motorSpeed);
         safetyRoller.feed();
         }
-    
+
     public void stop()
     {
         rollerMotor.set(0.0);
         safetyRoller.feed();
     }
 
-    
+
     private boolean isLoaded()
     {
         // TODO Work with sensor

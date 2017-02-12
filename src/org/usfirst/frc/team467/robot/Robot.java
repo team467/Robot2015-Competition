@@ -10,7 +10,8 @@ package org.usfirst.frc.team467.robot;
 import org.apache.log4j.Logger;
 import org.usfirst.frc.team467.robot.LEDStrip.Mode;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -31,7 +32,7 @@ public class Robot extends IterativeRobot
     private static final Logger LOGGER = Logger.getLogger(Robot.class);
 
     private static final double MIN_DRIVE_SPEED = 0.1;
-        
+
 
     // Robot objects
     private DriverStation2016 driverstation;
@@ -40,23 +41,23 @@ public class Robot extends IterativeRobot
     private PowerDistroBoard467 board;
     private Autonomous autonomous;
 //    private LEDStrip ledStrip;
-    
+
     private CameraDashboard cameraDashboard;
     private VisionProcessor vision = null;
 
     private BallRollers rollers;
     private TBar tbar;
     private Shooter467 highShooter;
-    
+
 //    private Lifter lifter;
 //    private Claw claw;
     private Ultrasonic2016 ultrasonic;
     private Gyro2016 gyro;
     private Infrared infra;
     private DigitalInput robotID;
-    
+
     int session;
-            
+
     //private LEDStrip ledStrip = new LEDStrip();
 
     /**
@@ -68,14 +69,14 @@ public class Robot extends IterativeRobot
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    
+
     public void robotInit()
     {
         try
         {
             // Initialize logging framework.
-            Logging.init(); 
-            
+            Logging.init();
+
             CANTalon frontleft = new CANTalon(RobotMap.FRONT_LEFT_MOTOR_CHANNEL);
             CANTalon backleft = new CANTalon(RobotMap.BACK_LEFT_MOTOR_CHANNEL);
             CANTalon frontright = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR_CHANNEL);
@@ -85,11 +86,11 @@ public class Robot extends IterativeRobot
             // Robot id 0 = can tank
             // Robot id 1 = kitbot tank
             RobotID robotID = new DigitalInput(9).get() ? RobotID.KITBOT : RobotID.TANK2016;
-            
+
             // FIXME NOTE: You must create the correct type of drive for the robot you are driving.
 //        drive = new SwerveDrive(frontleft, backleft, frontright, backright);
 //        drive = new makeTalonTank(1, 0, 3, 2);
-            
+
          // Make robot objects
             driverstation = DriverStation2016.getInstance();
             autonomous = Autonomous.getInstance();
@@ -98,9 +99,9 @@ public class Robot extends IterativeRobot
             infra = new Infrared(4);
             rollers = new BallRollers(RobotMap.ROLLER_MOTOR_CHANNEL, RobotMap.MANIPULATOR_MOTOR_CHANNEL, infra, driverstation);
             tbar = new TBar(RobotMap.TBAR_MOTOR_CHANNEL);
-            
+
             if(robotID == RobotID.KITBOT)
-            {    
+            {
                 drive = TankDrive.makeTalonTank(
                         RobotMap.FRONT_LEFT_KITBOT,
                         RobotMap.FRONT_RIGHT_KITBOT,
@@ -122,26 +123,26 @@ public class Robot extends IterativeRobot
                 highShooter = new Shooter467(RobotMap.LEFT_SHOOTER_MOTOR_CHANNEL, RobotMap.RIGHT_SHOOTER_MOTOR_CHANNEL, drive, rollers, vision);
 
             }
-            
+
             gyro = Gyro2016.getInstance();
             ultrasonic = new Ultrasonic2016();
-            
-            
+
+
             autonomous.setDrive(drive);
             autonomous.setRoller(rollers);
             autonomous.setUltrasonic(ultrasonic);
             autonomous.setShooter(highShooter);
             autonomous.setTBar(tbar);
     //        ledStrip.setMode(Mode.OFF);
-            
+
             // Initialize the camera dashboard and launch in separate thread.
             cameraDashboard = CameraDashboard.getInstance();
             cameraDashboard.setDrive(drive);
             LOGGER.debug("Camera Starting");
             cameraDashboard.start();
-            
+
             Calibration.init(drive);
-            
+
             LOGGER.info("Initialized robot");
         }
         catch (Exception e)
@@ -161,7 +162,7 @@ public class Robot extends IterativeRobot
         vision.updateContours();
 //        gyro.update();
 //          ledStrip.setMode(Mode.BLUE_AND_GOLD);
-        
+
 //        double angle = gyro2016.autonomous();
 //        LOGGER.debug("GYRO angle : " +  angle);
         drive.stop();
@@ -171,7 +172,7 @@ public class Robot extends IterativeRobot
         SmartDashboard.putString("DB/String 5", stickType);
 //        LOGGER.info("Rotation Sensor: " + tbar.rotationSensor.getAverageValue());
         LOGGER.trace("auto mode=" + SmartDashboard.getString("Auto Selector", "invalid").toUpperCase());
-        
+
         LOGGER.trace("TBar Rotation Sensor: " + tbar.getSensorReading());
     }
 
@@ -185,7 +186,7 @@ public class Robot extends IterativeRobot
 
     public void teleopInit()
     {
-        if (!cameraDashboard.isAlive()) 
+        if (!cameraDashboard.isAlive())
         {
             LOGGER.debug("Camera Starting");
             cameraDashboard.start();
@@ -193,7 +194,7 @@ public class Robot extends IterativeRobot
         LOGGER.info("Teleop init");
 //        rollers.reset();
 //        gyro2016.reset();
-        
+
     }
 
     public void testInit()
@@ -210,17 +211,17 @@ public class Robot extends IterativeRobot
 //        LOGGER.info("Autonomous");
 //        vision.updateContours();
         LOGGER.debug("Contours updated");
-//        
+//
         driverstation.readInputs();
         LOGGER.debug("Read driverStation");
         board.update();
         LOGGER.debug("Update powerDistroBoard");
         autonomous.updateAutonomousPeriodic();
-        
+
         LOGGER.debug("Yaw angle: " + gyro.getYawAngle());
         LOGGER.debug("Tilt angle: " + gyro.getTiltAngle());
 
-        
+
 //        ledStrip.setMode(Mode.RAINBOW);
     }
 
@@ -232,7 +233,7 @@ public class Robot extends IterativeRobot
         vision.updateContours();
         // Read driverstation inputs
         driverstation.readInputs();
-        
+
         //LOGGER.info("Detected: " + infra.getInfrared());
 
         //LOGGER.info("Distance: " + ultrasonic.getRangeInches());
@@ -244,7 +245,7 @@ public class Robot extends IterativeRobot
 //            gyro.reset();
 //        }
 //        LOGGER.debug("GYRO ANGLE: " + gyro.getAngle());
-        
+
 //        LOGGER.info("Distance: " + ultrasonic.getRangeInches());
 //        SmartDashboard.putString("DB/String 9", String.valueOf(ultrasonic.getRangeInches()));
 //        if (driverstation.getCalibrate())
@@ -258,11 +259,11 @@ public class Robot extends IterativeRobot
             updateDrive();
             updateNavigator();
 //        }
-        
+
         double time = DriverStation.getInstance().getMatchTime();
         if (time > 40)
         {
-            switch (DriverStation.getInstance().getAlliance()) 
+            switch (DriverStation.getInstance().getAlliance())
             {
                 case Red:
                     //ledStrip.setMode(Mode.PULSE_RED);
@@ -285,7 +286,7 @@ public class Robot extends IterativeRobot
         {
             //ledStrip.setMode(Mode.RAINBOW);
         }
-        
+
 //        LOGGER.debug("GYRO angle : " + gyro2016.autonomous());
     }
 
@@ -317,24 +318,24 @@ public class Robot extends IterativeRobot
             case REVOLVE_LARGE_LEFT:
                 drive.revolveDriveLarge(Direction.LEFT);
                 break;
-            
+
             case REVOLVE_LARGE_RIGHT:
                 drive.revolveDriveLarge(Direction.RIGHT);
                 break;
-                
+
             case REVOLVE_SMALL_LEFT:
                 drive.revolveDriveSmall(Direction.LEFT);
                 break;
-                
+
             case REVOLVE_SMALL_RIGHT:
                 drive.revolveDriveSmall(Direction.RIGHT);
                 break;
-                
+
             case STRAFE_FRONT:
                 drive.strafeDrive(Direction.FRONT);
                 LOGGER.info("Strafe Front");
                 break;
-                
+
             case STRAFE_LEFT:
                 drive.strafeDrive(Direction.LEFT);
                 break;
@@ -342,11 +343,11 @@ public class Robot extends IterativeRobot
             case STRAFE_RIGHT:
                 drive.strafeDrive(Direction.RIGHT);
                 break;
-                
+
             case STRAFE_BACK:
                 drive.strafeDrive(Direction.BACK);
                 break;
-                
+
             case TURN:
                 drive.turnDrive(-driverstation.getDriveJoystick1().getTurn()/2);
                 break;
@@ -376,7 +377,7 @@ public class Robot extends IterativeRobot
                     drive.twoStickDrive(driverstation.getDriveJoystick1(), driverstation.getDriveJoystick2());
                 }
                 break;
-        }        
+        }
     }
 
     /**
@@ -390,7 +391,7 @@ public class Robot extends IterativeRobot
         rollers.runManipulator(driverstation.getManipPosition());
         tbar.launchTBar(driverstation.getTBarDirection());
         driverstation.setIntakeLED(infra.getInfrared());
-        
+
         if (driverstation.highShooterButton())
         {
             highShooter.shootNow();
@@ -403,7 +404,7 @@ public class Robot extends IterativeRobot
         {
             highShooter.stop();
         }
-        
+
 //        lifter.driveLifter(driverstation.getLiftDirection());
 //        claw.moveClaw(driverstation.getClawDirection(), driverstation.getLowerCurrent());
     }

@@ -1,6 +1,6 @@
 package org.usfirst.frc.team467.robot;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
 
 public class CANTalonSpeedControl extends CANTalon
 {
@@ -9,7 +9,7 @@ public class CANTalonSpeedControl extends CANTalon
 
     /**
      * CANTalon motor controller that implements speed control.
-     * 
+     *
      * @param deviceNumber
      *            - CAN ID of this CANTalon
      * @param reverseSensor
@@ -43,7 +43,6 @@ public class CANTalonSpeedControl extends CANTalon
         super.set(feedInSpeed);
     }
 
-    @Override
     public void set(double outputValue, byte thisValueDoesNotDoAnything)
     {
         this.set(outputValue);

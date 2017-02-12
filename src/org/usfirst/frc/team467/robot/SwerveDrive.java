@@ -6,10 +6,12 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
-import edu.wpi.first.wpilibj.*;
+import com.ctre.CANTalon;
+
+import edu.wpi.first.wpilibj.MotorSafetyHelper;
 
 /**
- * 
+ *
  */
 public class SwerveDrive implements Driveable
 {
@@ -35,7 +37,7 @@ public class SwerveDrive implements Driveable
     private static final boolean FRONT_RIGHT_DRIVE_INVERT = true;
     private static final boolean BACK_LEFT_DRIVE_INVERT = false;
     private static final boolean BACK_RIGHT_DRIVE_INVERT = true;
-    
+
     private final CANTalon frontLeftMotor;
     private final CANTalon frontRightMotor;
     private final CANTalon backLeftMotor;
@@ -60,7 +62,7 @@ public class SwerveDrive implements Driveable
     private static final double REVOLVE_LARGE_FRONT_SPEED = REVOLVE_LARGE_BACK_SPEED * (REVOLVE_LARGE_FRONT_RADIUS / REVOLVE_LARGE_BACK_RADIUS);
     private static final double REVOLVE_LARGE_FRONT_ANGLE = (Math.atan((2 * REVOLVE_LARGE_FRONT_RADIUS) / RobotMap.WIDTH));
     private static final double REVOLVE_LARGE_BACK_ANGLE = (Math.atan((2 * REVOLVE_LARGE_BACK_RADIUS) / RobotMap.WIDTH));
-    
+
     private static final double REVOLVE_SMALL_FRONT_RADIUS = 25;
     private static final double REVOLVE_SMALL_BACK_RADIUS = REVOLVE_SMALL_FRONT_RADIUS + RobotMap.LENGTH;
     private static final double REVOLVE_SMALL_BACK_SPEED = 0.5;
@@ -75,7 +77,7 @@ public class SwerveDrive implements Driveable
         this.frontRightMotor = frontRightMotor;
         this.backLeftMotor = backLeftMotor;
         this.backRightMotor = backRightMotor;
-        
+
         FLsafety = new MotorSafetyHelper(frontLeftMotor);
         FRsafety = new MotorSafetyHelper(frontRightMotor);
         BLsafety = new MotorSafetyHelper(backLeftMotor);
@@ -103,7 +105,7 @@ public class SwerveDrive implements Driveable
 
 //    /**
 //     * Gets the single instance of this class.
-//     * 
+//     *
 //     * @return The single instance.
 //     */
 //    public static Drive getInstance()
@@ -158,9 +160,9 @@ public class SwerveDrive implements Driveable
         {
             throw new NullPointerException("Null motor provided");
         }
-        
+
         final double MAX_DRIVE_ANGLE = Math.PI / 25;
-        
+
         // Don't drive until wheels are close to the commanded steering angle
         if (steering[RobotMap.FRONT_LEFT] .getAngleDelta() < MAX_DRIVE_ANGLE ||
             steering[RobotMap.FRONT_RIGHT].getAngleDelta() < MAX_DRIVE_ANGLE ||
@@ -168,18 +170,18 @@ public class SwerveDrive implements Driveable
             steering[RobotMap.BACK_RIGHT] .getAngleDelta() < MAX_DRIVE_ANGLE)
         {
             LOGGER.debug("DRIVE"); // TODO
-            frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed((frontLeftSpeed * 1.2), RobotMap.FRONT_LEFT), SYNC_GROUP);
-            frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT), SYNC_GROUP);
-            backLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT), SYNC_GROUP);
-            backRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT), SYNC_GROUP);
-        } 
+            frontLeftMotor.set((FRONT_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed((frontLeftSpeed * 1.2), RobotMap.FRONT_LEFT));
+            frontRightMotor.set((FRONT_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(frontRightSpeed, RobotMap.FRONT_RIGHT));
+            backLeftMotor.set((BACK_LEFT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backLeftSpeed, RobotMap.BACK_LEFT));
+            backRightMotor.set((BACK_RIGHT_DRIVE_INVERT ? -1 : 1) * limitSpeed(backRightSpeed, RobotMap.BACK_RIGHT));
+        }
         else
         {
             LOGGER.debug("NO DRIVE");
-            frontLeftMotor.set(0, SYNC_GROUP);
-            frontRightMotor.set(0, SYNC_GROUP);
-            backLeftMotor.set(0, SYNC_GROUP);
-            backRightMotor.set(0, SYNC_GROUP);
+            frontLeftMotor.set(0);
+            frontRightMotor.set(0);
+            backLeftMotor.set(0);
+            backRightMotor.set(0);
         }
 
         LOGGER.debug("WHEEL SPEEDS: FL:" + frontLeftSpeed + ", FR:" +  frontRightSpeed + ", BL:" + backLeftSpeed + ", BR:" + backRightSpeed);
@@ -224,10 +226,10 @@ public class SwerveDrive implements Driveable
     /**
      * Set angles in "turn in place" position
      * Wrap around will check whether the closest angle is facing forward or backward
-     * 
+     *
      * Front Left- / \ - Front Right<br>
      * Back Left - \ / - Back Right
-     * 
+     *
      * @param speed
      */
     @Override
@@ -237,13 +239,13 @@ public class SwerveDrive implements Driveable
         WheelCorrection frontLeft = wrapAroundCorrect(RobotMap.FRONT_LEFT, TURN_IN_PLACE_ANGLE, -speed);
         WheelCorrection frontRight = wrapAroundCorrect(RobotMap.FRONT_RIGHT, -TURN_IN_PLACE_ANGLE, speed);
         WheelCorrection backLeft = wrapAroundCorrect(RobotMap.BACK_LEFT, -TURN_IN_PLACE_ANGLE, -speed);
-        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);               
-        LOGGER.info("Calculated wheel corrections"); 
+        WheelCorrection backRight = wrapAroundCorrect(RobotMap.BACK_RIGHT, TURN_IN_PLACE_ANGLE, speed);
+        LOGGER.info("Calculated wheel corrections");
         this.fourWheelSteer(frontLeft.angle, frontRight.angle, backLeft.angle, backRight.angle);
         this.fourWheelDrive(frontLeft.speed, frontRight.speed, backLeft.speed, backRight.speed);
         LOGGER.info("Done turnDrive()");
  }
-    
+
     // Previous speeds for the four wheels
     private double lastSpeed[] = new double[]{0.0,0.0,0.0,0.0};
 
@@ -321,7 +323,7 @@ public class SwerveDrive implements Driveable
      */
     private void crabDrive(double angle, double speed, boolean fieldAlign)
     {
-        double gyroAngle = (fieldAlign) ? gyro.getYawAngle() : 0; // if field aligned use gyro.getAngle(), else 0        
+        double gyroAngle = (fieldAlign) ? gyro.getYawAngle() : 0; // if field aligned use gyro.getAngle(), else 0
 
         double gyroAngleRad = Math.toRadians(gyroAngle);
         // Calculate the wheel angle necessary to drive in the required direction.
@@ -357,7 +359,7 @@ public class SwerveDrive implements Driveable
         LOGGER.debug("NO DRIVE CALLED");
         this.fourWheelDrive(0, 0, 0, 0);// no drive for you!
     }
-    
+
     public void unwind()
     {
         for (Steering wheelpod : steering)
@@ -368,7 +370,7 @@ public class SwerveDrive implements Driveable
 
     /**
      * Drive left or right at a fixed speed.
-     * 
+     *
      * @param direction
      * @param speed
      */
@@ -391,7 +393,7 @@ public class SwerveDrive implements Driveable
                 angle = Math.PI;
                 break;
         }
-        
+
         double speed = SPEED_STRAFE;
 
         WheelCorrection corrected = wrapAroundCorrect(RobotMap.BACK_RIGHT, angle, speed);
@@ -440,7 +442,7 @@ public class SwerveDrive implements Driveable
         }
         fourWheelSteer(flCorrected.angle, frCorrected.angle, blCorrected.angle, brCorrected.angle);
     }
-    
+
     /**
      * Individually controls a specific driving motor
      *
@@ -498,7 +500,7 @@ public class SwerveDrive implements Driveable
 
     /**
      * Only used for steering
-     * 
+     *
      * @param steeringIndex
      *            - which wheel pod
      * @param targetAngle
@@ -575,7 +577,7 @@ public class SwerveDrive implements Driveable
     public void splitDrive(MainJoystick467 joystickLeft, RightJoystick467 joystickRight)
     {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

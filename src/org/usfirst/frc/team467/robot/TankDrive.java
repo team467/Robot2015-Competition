@@ -2,7 +2,8 @@ package org.usfirst.frc.team467.robot;
 
 import org.apache.log4j.Logger;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
@@ -13,17 +14,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TankDrive implements Driveable
 {
     private static final Logger LOGGER = Logger.getLogger(TankDrive.class);
-        
+
     SpeedController fl;
     SpeedController fr;
     SpeedController bl;
     SpeedController br;
-    
+
     private MotorSafetyHelper FLsafety = null;
     private MotorSafetyHelper FRsafety = null;
     private MotorSafetyHelper BLsafety = null;
     private MotorSafetyHelper BRsafety = null;
-    
+
     private double cartSpeed;
     private double ACCELERATION = 0.1;
     private final double SPEED_SLOW_MODIFIER = 0.7;
@@ -32,10 +33,10 @@ public class TankDrive implements Driveable
     private double MIN_SPEED = 0.1;
     private double prevLeft;
     private double prevRight;
-    
+
     /**
      * Use factory methods
-     * 
+     *
      * @param fl Front Left Motor Controller
      * @param fr Front Right Motor Controller
      * @param bl Back Left Motor Controller
@@ -47,13 +48,13 @@ public class TankDrive implements Driveable
         this.fr = fr;
         this.bl = bl;
         this.br = br;
-        
+
         FLsafety = new MotorSafetyHelper((MotorSafety)fl);
         FRsafety = new MotorSafetyHelper((MotorSafety)fr);
         BLsafety = new MotorSafetyHelper((MotorSafety)bl);
         BRsafety = new MotorSafetyHelper((MotorSafety)br);
     }
-    
+
     public static TankDrive makeTalonTank(int fl, int fr, int bl, int br)
     {
         Talon flMotor = new Talon(fl);
@@ -63,18 +64,18 @@ public class TankDrive implements Driveable
 
         return new TankDrive(flMotor, frMotor, blMotor, brMotor);
     }
-    
+
     public static TankDrive makeCANTalonTank(int fl, int fr, int bl, int br)
     {
         CANTalon flMotor = new CANTalon(fl);
         CANTalon frMotor = new CANTalon(fr);
         CANTalon blMotor = new CANTalon(bl);
         CANTalon brMotor = new CANTalon(br);
-        
-        return new TankDrive(flMotor, frMotor, blMotor, brMotor);        
+
+        return new TankDrive(flMotor, frMotor, blMotor, brMotor);
     }
 
-    
+
     public static TankDrive makeJaguarTank(int fl, int fr, int bl, int br)
     {
         Jaguar flMotor = new Jaguar(fl);
@@ -83,7 +84,7 @@ public class TankDrive implements Driveable
         Jaguar brMotor = new Jaguar(br);
         return new TankDrive(flMotor, frMotor, blMotor, brMotor);
     }
-    
+
     @Override
     public void feedMotorSafety()
     {
@@ -104,10 +105,10 @@ public class TankDrive implements Driveable
             BRsafety.feed();
         }
     }
-    
+
     /**
      * Squares a number but keeps the sign
-     * 
+     *
      * @param number Usually speed
      * @return Squared value
      */
@@ -122,7 +123,7 @@ public class TankDrive implements Driveable
             return -(number * number);
         }
     }
-    
+
     /**
      * Limit the rate at which the robot can change speed once driving fast.
      * This is to prevent causing mechanical damage - or tipping the robot
@@ -147,7 +148,7 @@ public class TankDrive implements Driveable
 //            LOGGER.info("Invalid Acceleration in String 4, assuming 0.1");
 //            SmartDashboard.putString("DB/String 4", "0.1");
 //        }
-        
+
         if (DriverStation2016.getInstance().getSlow())
         {
             newSpeed *= SPEED_SLOW_MODIFIER;
@@ -174,15 +175,15 @@ public class TankDrive implements Driveable
             }
         }
         LOGGER.debug("LIMITED SPEED: " + newSpeed);
-        
+
         // If speed is too slow just stop
         newSpeed = (Math.abs(newSpeed) >= MIN_SPEED) ? newSpeed: 0.0;
         return newSpeed;
     }
-    
+
     /**
      * Tank Drive as per usual
-     * 
+     *
      * @param leftSpeed
      * @param rightSpeed
      */
@@ -198,7 +199,7 @@ public class TankDrive implements Driveable
 
         final double LEFT_SCALE = 1; // Double.valueOf((SmartDashboard.getString("DB/String 2"))) / 100.0;
         LOGGER.debug(LEFT_SCALE);
-        
+
        // Drift control
         final double RIGHT_SCALE = 0.88; // Double.valueOf((SmartDashboard.getString("DB/String 3"))) / 100.0;
         LOGGER.debug(RIGHT_SCALE);
@@ -206,7 +207,7 @@ public class TankDrive implements Driveable
         bl.set(square(-leftSpeed) * LEFT_SCALE);
         fr.set(square(rightSpeed) * RIGHT_SCALE);
         br.set(square(rightSpeed) * RIGHT_SCALE);
-        
+
         feedMotorSafety();
     }
 
@@ -224,10 +225,10 @@ public class TankDrive implements Driveable
         final double speed = joystick.getTankSpeed();
         arcadeDrive(turn, speed);
     }
-    
+
     /**
      * Copied from WPILib
-     * 
+     *
      * @param turn
      * @param speed
      */
@@ -243,7 +244,7 @@ public class TankDrive implements Driveable
         turn *= (1.0 - Math.abs(speed)) * (maxTurn - minTurn) + minTurn;
         turn = square(turn);
         SmartDashboard.putString("DB/String 8", String.valueOf(turn));
-        
+
         // turn;
         LOGGER.debug("turn=" + turn + " speed=" + speed);
         if (speed > 0.0) {
